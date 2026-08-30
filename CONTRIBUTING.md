@@ -1,193 +1,83 @@
 # 贡献指南
 
-欢迎为 dsh-plugin-upgrade-skill 贡献新版本的迁移数据！
+欢迎贡献版本卡片、实测证据、示例和校验工具。开始前先搜索现有 Issue/PR，避免与正在
+认领的版本或文件重复；发现并行工作时先协调，不覆盖他人分支。
 
-## 快速开始
+## 开发流程
 
-1. Fork 本仓库
-2. 创建新分支：`git checkout -b feat/add-version-x.x.x`
-3. 按照下方规范添加内容
-4. 提交 PR
+1. Fork 仓库并从最新 `main` 创建 `feat/`、`fix/` 或 `docs/` 分支；
+2. 阅读目标目录的 `SKILL.md` 与 `references/README.md`；
+3. 只改当前 PR 拥有的路径，不自动 stash/reset/clean 用户工作；
+4. 运行根目录校验并在 PR 中如实列出结果；
+5. 一个 PR 只解决一个逻辑主题。
 
-## 添加新版本迁移数据
+## 新增 DSH 版本卡片
 
-当 DSH 发布新版本时，按以下步骤添加迁移数据：
+卡片的唯一规范是
+[`skills/plugin-upgrade/references/README.md`](skills/plugin-upgrade/references/README.md)。
+不要在本文件复制另一套 schema。
 
-### 1. 创建版本卡片
+### 1. 认领与确定版本走廊
 
-在 `skills/plugin-upgrade/references/` 下创建新文件，命名规范：
-- 大版本：`vX.Y.Z.md`（如 `v0.1.3.md`）
-- Alpha/Beta：`vX.Y.Z-alpha.N.md`（如 `v0.1.3-alpha.1.md`）
+- 建 Issue：`[版本跟踪] DSH <from> → <to>`；
+- 使用精确官方 tag/commit，不用 `latest` 或记忆推断；
+- 确认 `references/README.md` 中不存在同一条 `from → to` 边；
+- 先读完整走廊，折叠中间删除、目标版本恢复等净变化。
 
-### 2. 版本卡片格式
+### 2. 创建 card-set 文件
 
-```markdown
-# DSH X.Y.Z(-alpha.N) 迁移指南
+在 `skills/plugin-upgrade/references/` 创建 `vX.Y.Z[-suffix].md`，并按 card schema 添加：
 
-> 素材来源：官方 release notes + 社区实践 + 上游 Agent Notes
+- `kind/schema/from/to/status/coverage/cardCount/idPrefix/verifiedAt` frontmatter；
+- 完整且全仓唯一的 ID，例如 `DSH-X.Y.Z-A1-01`（落地时把版本占位符替换为真实坐标）；
+- `类型/适用对象/影响触点/操作级别/症状/迁移配方/验证/来源` 全部字段；
+- 固定 tag/commit 的一手来源；同 tag 可取得源码时，不只引用 release notes。
 
-## 概述
+触点编号使用 [pre-flight](skills/plugin-upgrade/references/pre-flight.md) 的 **#1–#7**。
+`curated` 表示精选清单，不得描述成完整 API diff。来源没有具体 API 坐标时，配方应要求
+查目标 tag，而不是自造调用形状。
 
-简要说明本版本的主要变更和影响。
+### 3. 更新索引与交叉引用
 
----
+- 更新 `references/README.md` 的有向走廊表和精确卡数；
+- 更新 `plugin-upgrade/SKILL.md` 的参考表；
+- 使用完整卡片 ID 做交叉引用；
+- 若改了触点模式，同步 `pre-flight.md`、`pre-flight-patterns.json` 与静态 fixture。
 
-## 破坏性变更清单
+### 4. 示例和实测证据
 
-### BC-01 · 变更名称
-
-**影响触点**: #N 触点类型
-
-**详细说明**: ...
-
-**迁移配方**:
-
-\`\`\`typescript
-// 旧代码
-...
-
-// 新代码
-...
-\`\`\`
-
-**验证方法**: ...
-
----
-
-## 行为变更（非破坏性）
-
-### 变更-01 · ...
-
----
-
-## 新能力（可选升级）
-
-### 能力-01 · ...
-
----
-
-## 参考资料
-
-- 官方 release notes 链接
-- 相关 GitHub discussions
-- 社区迁移实践
-```
-
-### 3. 版本卡片编号规范
-
-- **破坏性变更**: `BC-01`, `BC-02`, ...
-- **行为变更**: `变更-01`, `变更-02`, ...
-- **新能力**: `能力-01`, `能力-02`, ...
-
-每个卡片必须包含：
-- **影响触点**: 引用 pre-flight.md 中的六类触点（#1-#6）
-- **迁移配方**: 具体的代码修改示例
-- **验证方法**: 如何确认迁移成功
-
-### 4. 更新 references/README.md
-
-在版本卡片索引中添加新版本：
-
-```markdown
-| 文件 | 内容 |
-| --- | --- |
-| `vX.Y.Z.md` | A → B：N 张卡（简述主要变更） |
-```
-
-### 5. 添加典型示例（可选但推荐）
-
-如果新版本引入了常见迁移模式，在 `examples/` 下添加示例：
-
-```markdown
-# 示例 NN：场景名称
-
-**场景**: 简要描述
-
-**影响触点**: #N
-
-**复杂度**: ⭐⭐（1-5 星）
-
----
-
-## 升级前
-...
-
-## 升级后
-...
-
-## 迁移步骤
-...
-
-## 验证
-...
-
-## 常见错误
-...
-```
-
-## 内容质量标准
-
-### ✅ 好的版本卡片
-
-- 基于官方 release notes 和真实迁移实践
-- 提供完整可运行的代码示例
-- 说明清楚为什么要这样改
-- 包含验证方法和常见错误
-- 链接到相关参考资料
-
-### ❌ 避免的内容
-
-- 凭记忆猜测的 API 变更
-- 缺少代码示例的抽象描述
-- 未验证的迁移配方
-- 重复 pre-flight.md 的触点定义
-- 复制粘贴官方文档而不加实战注释
+- 可执行示例必须声明精确 DSH tag、安装方式和实际运行命令；
+- 仅用于扫描的夹具必须明显标为“静态、不得执行”；
+- 区分 Host、Web Client 和普通 Cordis plugin，不把不同 face 的 API 对号替换；
+- 报告只声称实际验证的范围，列出未跑的平台、密钥、浏览器和产品入口；
+- 本地观察与一手来源冲突时并列记录、复现并上报，不静默覆盖。
 
 ## 信息来源优先级
 
-1. **官方 release notes** - 权威来源
-2. **上游 Agent Notes** - deepseek-harness 仓库的 `.agents/notes/`
-3. **社区 GitHub discussions** - 真实迁移实践
-4. **个人实战经验** - 经过验证的迁移记录
+1. 固定 tag/commit 的官方源码、类型、测试和架构决策；
+2. 同一 tag 的 release notes 与包文档；
+3. 可复现的社区迁移记录；
+4. 个人经验（必须附版本、平台和复现步骤）。
 
-标注信息来源：
+禁止提交凭记忆猜测的 API、无法说明适用 face 的代码片段，或把安装成功当作运行验证。
 
-```markdown
-> 素材来源：官方 release notes + discussion #NNNN（链接）社区迁移实践
+## 本地验证
+
+```sh
+node scripts/validate.mjs
+node scripts/validate-manifests.mjs
 ```
 
-## 协作与致谢
-
-- 在 PR 描述中致谢原始信息提供者
-- 如果基于他人的迁移实践，链接到原始讨论或仓库
-- 欢迎补充和修正现有版本卡片
-
-## 版本跟踪认领
-
-为避免重复工作，请在开始前：
-
-1. 查看 [Issues](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/issues) 中是否已有人认领
-2. 创建新 Issue 声明认领，格式：`[版本跟踪] DSH vX.Y.Z 迁移数据`
-3. 完成后关闭 Issue 并提交 PR
+修改 Skill、命令、manifest、版本卡或示例时，两条都运行。示例有自己的 build/test 时，
+还要运行对应命令。没运行或受凭据/平台限制的检查必须在 PR 中注明。
 
 ## PR 检查清单
 
-提交 PR 前确认：
+- [ ] 与现有 Issue/PR 无重复或已完成协调
+- [ ] card schema、完整 ID、七类触点和索引一致
+- [ ] 配方引用固定一手来源并说明适用 face
+- [ ] 示例/报告没有扩大验证结论
+- [ ] 两个仓库校验器通过
+- [ ] PR 描述包含验证命令、未覆盖边界和致谢
 
-- [ ] 版本卡片遵循格式规范
-- [ ] 代码示例可运行且已验证
-- [ ] 更新了 references/README.md 索引
-- [ ] 标注了信息来源
-- [ ] 如有新触点类型，更新了 pre-flight.md
-- [ ] PR 标题：`feat: add DSH vX.Y.Z migration guide`
-- [ ] PR 描述包含变更摘要和致谢
-
-## 问题反馈
-
-- 卡片内容有误：提 Issue 并附上正确信息来源
-- 建议改进格式：在 Discussions 讨论
-- 急需某版本数据：在 Issues 中请求社区协助
-
----
-
-感谢你的贡献！每一份迁移数据都在帮助社区更顺利地升级。
+卡片错误请附一手证据提 Issue；新版本需求可创建版本跟踪 Issue。
