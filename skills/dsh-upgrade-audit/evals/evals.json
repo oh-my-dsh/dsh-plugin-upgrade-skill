@@ -1,0 +1,29 @@
+{
+  "skill_name": "dsh-upgrade-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "检查一下 dsh-v0.1.1-rc.1 -> dsh-v0.1.1-rc.2 对于外部兼容来说相对 rc.1 是否有更多的改动或者回滚？如果有请制作一个 ./tmp/0.1.1rc1-to-0.1.1rc2/（在 deepseek-harness 源码检出里执行）",
+      "expected_output": "检测到 tmp/0.1.1rc1-to-0.1.1rc2/ 已存在（技能诞生前的手工报告），先询问而非覆盖；31-commit 区间走内联单跑（不全量扇出）；merge-base 纯度通过；rc.1..rc.2 恰有一个 Revert commit（projection 注册形式），必须方向性上报为回滚。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "对比 dsh-v0.1.0-rc.8 和 dsh-v0.1.1-rc.1，我主要关心 SDK/协议和 session 数据这两块的外部兼容，生成 upgrade 报告目录。",
+      "expected_output": "按用户关注点缩放为 2 个侦察面（SDK & 线上协议、会话数据）而非六面全量，但仍产出全套工件（含边界签名表）；两个格式守卫的值从两侧树读取并报告；报告目录 tmp/0.1.0rc8-to-0.1.1rc1/。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我没拉 deepseek-harness 源码，就在这个插件仓库里直接对比 0.1.2-alpha.1 和 0.1.2-alpha.2 两个 npm 版本，出个兼容报告。",
+      "expected_output": "npm 模式陷阱：0.1.2-alpha.1 从未发布到 npm——正确行为是物化脚本 exit 1 后向用户展示已发布清单与 dist-tags、说明缺口并确认替代对（如 rc.2 → alpha.2），绝不静默替换版本对继续审计；若用户确认替代对，则 materialize-npm 产出 a/、b/ 树、manifest-diff.txt 与 GitHub 富化的 commits.txt/reverts.txt，报告头部记录 Mode: npm packages 与版本出处。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "帮我审计 dsh-v0.1.0-rc.7 到 dsh-v0.1.0-rc.8 之间的 breaking changes 和回滚，输出报告目录，并和上一个区间的破坏密度对比一下。",
+      "expected_output": "337-commit 全量六面扇出 + merge-base 纯度检查 + 回滚清查 + 报告目录 tmp/0.1.0rc7-to-0.1.0rc8/。密度对比陷阱：rc.7→rc.8 是时间上最早的已审计对，正确行为是指出不存在可比较的前序对报告，而不是抓 tmp/ 里最新的目录（那是更晚的区间）或编造对比。",
+      "files": []
+    }
+  ]
+}
