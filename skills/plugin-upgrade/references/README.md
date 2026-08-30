@@ -10,8 +10,8 @@ alpha.1 删除、alpha.2 恢复时，不应先删再加。
 
 | 顺序 | 卡片文件 | from | to | 卡数 | 状态 / 覆盖 |
 |---|---|---|---|---:|---|
-| 1 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 13 | reviewed / curated |
-| 2 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 4 | reviewed / curated |
+| 1 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 14 | reviewed / curated |
+| 2 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 6 | reviewed / curated |
 
 `curated` 表示只收录已识别的插件相关变化，**不表示完整 API diff**。走廊缺边时停止
 自动迁移，向用户报告缺口；为当前任务做临时上游调研与给本仓库补卡是两件事，后者

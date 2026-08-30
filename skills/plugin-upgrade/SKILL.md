@@ -98,8 +98,8 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 |---|---|
 | [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
-| [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1：13 张 curated 卡 |
-| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：4 张 curated 卡 |
+| [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1：14 张 curated 卡 |
+| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：6 张 curated 卡 |
 | [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
 
 规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
