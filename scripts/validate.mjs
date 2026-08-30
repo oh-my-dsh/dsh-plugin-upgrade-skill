@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, readdir } from 'node:fs/promises'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const failures = []
@@ -197,10 +197,19 @@ for (const entry of patternData.classes) {
   if (!hit) fail(patternFile, `#${entry.id} has no fixture hit`)
 }
 
+// The planner must stay read-only, redact source lines, resolve card corridors, and report gaps.
+const plannerCheckFile = join(root, 'scripts', 'plan-migration.check.mjs')
+try {
+  const { runMigrationPlannerChecks } = await import(pathToFileURL(plannerCheckFile).href)
+  await runMigrationPlannerChecks()
+} catch (error) {
+  fail(plannerCheckFile, `migration planner check failed: ${error.stack ?? error.message}`)
+}
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`)
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, read-only planner`)
