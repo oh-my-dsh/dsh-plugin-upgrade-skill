@@ -40,4 +40,4 @@ description: 一句话说明做什么、何时触发，以及重要的只读/写
 
 ## 版本兼容审计（独立条目）
 
-**[dsh-upgrade-audit](dsh-upgrade-audit/)**（作者 [@oh-my-dsh](https://github.com/oh-my-dsh)）——审计两个 DSH 版本间的外部兼容性与回滚：源码检出走 git tag 对比，无源码自动降级下载 npm 双版本；产出标准 upgrade-report 目录（UPGRADE-ADAPTATION + 边界签名表），为版本变更卡片提供证据。独立分节维护，不改上方收录清单，避免 upstream 更新表格时的冲突。
+**[dsh-upgrade-audit](dsh-upgrade-audit/)**（[@oh-my-dsh](https://github.com/oh-my-dsh)）——审计两个 DSH 版本间的外部兼容与回滚，产出 UPGRADE-ADAPTATION 报告 + 边界签名表，为版本卡片提供证据。独立分节维护，不改收录清单。

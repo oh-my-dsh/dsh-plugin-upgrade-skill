@@ -116,7 +116,7 @@ cp -r dsh-plugin-upgrade-skill/skills/* .cursor/skills/
 
 ## 版本兼容审计（dsh-upgrade-audit）
 
-[dsh-upgrade-audit](skills/dsh-upgrade-audit/) 审计两个 DSH 版本间的外部兼容性与回滚——npm 包公共 API、CLI 面、线上协议、会话落盘数据、模型可见契约，并显式检测 revert。有源码检出时走 git tag 对比；无源码自动降级下载 npm 双版本分析。产出标准 upgrade-report 目录（UPGRADE-ADAPTATION 报告 + 边界签名表），为 plugin-upgrade 的版本变更卡片提供证据。真实案例：[0.1.2-alpha.1 → alpha.2 审计报告](skills/dsh-upgrade-audit/examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md)。
+[dsh-upgrade-audit](skills/dsh-upgrade-audit/) 审计两个 DSH 版本间的外部兼容性与回滚，产出 UPGRADE-ADAPTATION 报告 + 边界签名表，为版本卡片提供证据。案例：[0.1.2-alpha.1 → alpha.2](skills/dsh-upgrade-audit/examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md)。
 
 ## 版本数据现状
 
