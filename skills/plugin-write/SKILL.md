@@ -1,6 +1,6 @@
 ---
 name: plugin-write
-description: Use when creating a DeepSeek Harness plugin, an external DSH plugin package, or a workspace package inside the deepseek-harness repository. Covers the full workflow from plugin-form selection through validation. Routes tool, LLM adapter, hook, service, and configuration forms to their corresponding references while separating upstream-monorepo rules from external-package rules. For an existing plugin crossing Harness versions, use this Skill's built-in version-adaptation workflow before implementing against the exact target contract.
+description: Use when creating a DeepSeek Harness plugin, choosing public names for a new external DSH plugin, validating a dsh-plugin.naming.json manifest, or creating a workspace package inside the deepseek-harness repository. Covers the full workflow from repository-mode and plugin-form selection through offline naming checks and package validation. Routes tool, LLM adapter, hook, service, and configuration forms to their corresponding references while separating upstream-monorepo rules from external-package rules. For an existing plugin crossing Harness versions, use this Skill's built-in version-adaptation workflow before implementing against the exact target contract.
 ---
 
 # Write DeepSeek Harness Plugins
@@ -16,6 +16,8 @@ Create a plugin package. First classify the repository mode and plugin form, the
 | An existing plugin being adapted to a new DSH host | Read [`references/version-adaptation.md`](references/version-adaptation.md), build the complete version corridor, and run the seven-class touchpoint preflight. If a change is `breaking` and the user has not yet authorized implementation, present the migration plan and wait for confirmation. After authorization, complete the version adaptation before using this Skill's form references. Form examples must never override target source, type declarations, or release notes. |
 
 Derive Cordis, Schemastery, and DSH package names and version ranges from the manifest of the exact target version. Current examples use scoped `@deepseek-ai/*` identifiers. Older targets may differ and must follow their own published contracts.
+
+For every new external plugin, read [`references/naming-conventions.md`](references/naming-conventions.md) before choosing public identifiers. Create `dsh-plugin.naming.json` at the plugin repository root and run the bundled read-only validator before final package validation. Treat compatibility errors as target-contract failures and prefix warnings as community recommendations; use `--strict` only when the plugin adopts the collision-resistant profile. This is not an official Harness manifest or a global reservation. For an existing external plugin, report naming deviations but preserve published names unless the user explicitly authorizes a compatibility-breaking rename. Packages inside the official monorepo follow the exact target checkout instead of this external naming profile.
 
 ## Then Classify the Plugin Form
 
@@ -54,7 +56,7 @@ A plugin may combine forms freely, such as a configurable tool plugin or a servi
 
 2. **Register an in-repository package** — Only in the official monorepo, add the package to the Host or Client aggregate exactly as required by the development guide in the target checkout. A normal package belongs to one aggregate only. Do not copy historical exceptions or file lists without checking the target version. External plugins must never modify Harness root configuration.
 
-3. **Create an external package** — Preserve the existing package manager and build system. Keep `main`, `types`, `exports`, `files`, optional `bin`, packaged-composition or Profile metadata, and the packed tarball consistent. Declare every runtime dependency explicitly and mirror the DSH peer dependencies needed for compilation in development dependencies. Do not make a publishable external plugin `private` or give it workspace version ranges merely because an in-repository template does so.
+3. **Create an external package** — Preserve the existing package manager and build system. For a new plugin, apply the external naming policy and include a validated `dsh-plugin.naming.json`; for an existing plugin, do not silently rename public surfaces. Keep `main`, `types`, `exports`, `files`, optional `bin`, packaged-composition or Profile metadata, and the packed tarball consistent. Declare every runtime dependency explicitly and mirror the DSH peer dependencies needed for compilation in development dependencies. Do not make a publishable external plugin `private` or give it workspace version ranges merely because an in-repository template does so.
 
 4. **Choose the package topology** — For a replaceable capability, split service definition, provider, and consumer into separate packages only when they will evolve independently. Keep a single-purpose plugin in one package.
 
@@ -88,7 +90,7 @@ A plugin may combine forms freely, such as a configurable tool plugin or a servi
    - **Consumer-visible gap** — State the exact missing operation or condition, its consequence, and any maintainer constraint.
    ````
 
-6. **Validate** — Run the applicable validation block below, then run the focused checks and coverage gate required by the changed behavior.
+6. **Validate** — For a new external plugin, first run `node <plugin-write-skill>/scripts/validate-names.mjs --manifest ./dsh-plugin.naming.json`; add `--strict` only for the collision-resistant community profile. Then run the applicable validation block below, focused checks, and coverage gate required by the changed behavior.
 
 ## Rules While Writing
 
