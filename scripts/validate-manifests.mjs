@@ -119,6 +119,20 @@ if (claudeCommands && geminiCommands) {
   }
 }
 
+// Distribution docs must use commands supported by the current CLI surfaces.
+const readme = readFileSync(join(root, 'README.md'), 'utf8')
+if (/\bcodex plugin add\b/.test(readme)) fail('README.md 使用不存在的 codex plugin add')
+if (!/codex plugin marketplace add/.test(readme)) fail('README.md 缺少 Codex marketplace add 安装路径')
+if (/git config --global url\./.test(readme)) fail('README.md 不得建议全局重写 GitHub URL')
+
+// The conventional local entry point must run both dependency-free validators.
+const rootPackage = readJson('package.json')
+const validateScript = rootPackage?.scripts?.validate ?? ''
+if (!validateScript.includes('scripts/validate.mjs') || !validateScript.includes('scripts/validate-manifests.mjs')) {
+  fail('package.json scripts.validate 必须串联两个 validator')
+}
+if (rootPackage?.scripts?.test !== 'npm run validate') fail('package.json scripts.test 必须委托 npm run validate')
+
 if (errors.length > 0) {
   console.error('清单校验失败：')
   for (const error of errors) console.error(`  - ${error}`)
