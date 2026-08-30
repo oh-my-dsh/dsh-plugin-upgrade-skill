@@ -18,6 +18,12 @@ When adapting an existing plugin to a new DSH host version:
 
 The commands and repository paths below use test-level names from the official Harness monorepo. For external plugins, use equivalent scripts and paths from their own repositories. Do not add nonexistent Harness root commands or impose the monorepo layout on them.
 
+## Run a Docker Release Smoke Test
+
+For a pre-release external plugin check, read [`references/docker-release-smoke.md`](references/docker-release-smoke.md) and use the included runner on the packaged artifact. Pin one exact DSH version and a non-`latest` Node image, install the artifact into an isolated Profile, cold-start the real DSH entry, and add one argv-based functional probe when startup alone does not exercise the changed behavior.
+
+Treat the generated JSON and Markdown as narrow evidence for that artifact and target. Report skipped providers, browsers, operating systems, security checks, and additional versions as unverified; a passing Docker smoke test does not expand its own coverage. Keep generated reports, raw logs, temporary Profiles, and Docker cache outside the Skill directory.
+
 ## Test Levels
 
 | Level | Command | What it proves |
