@@ -1,15 +1,15 @@
-# plugin-write 参考索引
+# plugin-write Reference Index
 
-按任务只读需要的文件：
+Read only the file needed for the task:
 
-| 文件 | 适用场景 |
+| File | When to read it |
 |---|---|
-| [version-adaptation.md](version-adaptation.md) | 将现有插件适配到新的 Harness 版本 |
-| [tool-plugin.md](tool-plugin.md) | 编写模型可调用工具 |
-| [llm-adapter-plugin.md](llm-adapter-plugin.md) | 接入模型供应商 |
-| [hook-plugin.md](hook-plugin.md) | 编写事件与策略钩子 |
-| [service-plugin.md](service-plugin.md) | 向其他插件提供服务 |
-| [config-plugin.md](config-plugin.md) | 定义可配置的插件行为 |
+| [version-adaptation.md](version-adaptation.md) | Adapt an existing plugin to a new Harness version |
+| [tool-plugin.md](tool-plugin.md) | Write a model-callable tool |
+| [llm-adapter-plugin.md](llm-adapter-plugin.md) | Connect a model provider |
+| [hook-plugin.md](hook-plugin.md) | Write event and policy hooks |
+| [service-plugin.md](service-plugin.md) | Expose a service to other plugins |
+| [config-plugin.md](config-plugin.md) | Define configurable plugin behavior |
 
-新建插件直接阅读对应形态文件；版本适配先读
-`version-adaptation.md`，再读对应形态文件。
+For a new plugin, read the matching form reference directly. For a version adaptation, read
+`version-adaptation.md` first and then the matching form reference.

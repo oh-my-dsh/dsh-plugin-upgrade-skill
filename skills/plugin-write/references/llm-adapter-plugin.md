@@ -1,10 +1,10 @@
-# 大语言模型（LLM）适配器插件参考
+# Large Language Model (LLM) Adapter Plugin Reference
 
-通过实现 `LlmAdapter` 并在 `ctx.llm` 上注册，连接新的模型供应商。如果目标版本包含 `packages/llm/llm-deepseek` 和 `packages/llm/llm-pi-ai`，可将它们作为参考实现。
+Connect a new model provider by implementing `LlmAdapter` and registering it on `ctx.llm`. If the target version contains `packages/llm/llm-deepseek` and `packages/llm/llm-pi-ai`, use them as reference implementations.
 
-> 目标版本守卫：本文档是形态参考，不是版本迁移权威。必须根据精确的目标 Harness 检出版本验证适配器接口、流式语汇、请求字段、源码路径和供应商钩子。升级时，先按 [`version-adaptation.md`](version-adaptation.md) 建立迁移账本，再以实际观测到的目标行为为准。
+> Target-version guard: this document is a form reference, not version-migration authority. Verify adapter interfaces, streaming vocabulary, request fields, source paths, and provider hooks against the exact target Harness checkout. For an upgrade, build the migration ledger from [`version-adaptation.md`](version-adaptation.md) first, then follow the observed target behavior.
 
-## 形态
+## Shape
 
 ```ts ignore-check
 class MyAdapter extends LlmAdapter {
@@ -20,11 +20,11 @@ export function apply(ctx: Context, config: Config) {
 }
 ```
 
-注册基于 effect，且对 HMR 安全。每个供应商路由只能有一个适配器；重复注册会抛出异常，多路由注册要么全部成功，要么全部失败。`options.provider` 选择适配器，`options.model` 是供应商模型 ID，因此动态目录适配器无需重新配置生命周期，就能支持新模型。`registerAdapter()` 返回操作句柄：包含 disposer，以及为同一适配器实例原子替换路由集合的 `replace(providers)`。替换时允许空数组，初始注册时不允许；句柄释放后调用会抛出异常。密钥使用 Cordis 原生机制：在 Schemastery Config 中声明环境变量回退，再通过 `cordis.yml` 的 `!!js process.env.MY_KEY` 传入。绝不在代码中随意读取密钥文件。
+Registration is effect-based and HMR-safe. Only one adapter may own a provider route. Duplicate registration throws, and multi-route registration either succeeds for every route or fails for all of them. `options.provider` selects the adapter, while `options.model` is the provider model ID, so a dynamic-catalog adapter can support new models without reconfiguring its lifecycle. `registerAdapter()` returns an operation handle with a disposer and `replace(providers)`, which atomically replaces the route set for the same adapter instance. Replacement allows an empty array; initial registration does not. Calls after handle disposal throw. Handle credentials through native Cordis mechanisms: declare an environment-variable fallback in the Schemastery Config, then pass it through `cordis.yml` with `!!js process.env.MY_KEY`. Never read arbitrary credential files in code.
 
-## 流式语汇
+## Streaming Vocabulary
 
-`stream()` 发出一个封闭的 chunk 联合。对 `type` 的 switch 要以 `assertNever` 结尾，使新增变体会在每个必须处理它的消费者处导致编译失败：
+`stream()` emits a closed chunk union. End every switch on `type` with `assertNever` so a new variant causes a compile failure in every consumer that must handle it:
 
 ```ts
 type StreamChunk =
@@ -37,31 +37,31 @@ type StreamChunk =
   | { type: 'finish'; reason: FinishReason; replayState?: unknown }
 ```
 
-`TokenUsage` 的各项计数互不重叠：`inputTokens` 只包含未命中缓存的输入；缓存输入分别记在 `cacheReadTokens` 和 `cacheWriteTokens` 中，计费输入是三者之和。`reasoningTokens` 如果存在，只是已包含在 `outputTokens` 中的信息性细分；计算总量时不能再加一次。当供应商把缓存命中合并进单一提示词总量（如 DeepSeek 的 `prompt_tokens`）时，要从中减去缓存部分。
+`TokenUsage` counters do not overlap. `inputTokens` contains only uncached input. Cached input is reported separately as `cacheReadTokens` and `cacheWriteTokens`; billable input is the sum of all three. When present, `reasoningTokens` is only an informational subset already included in `outputTokens`; do not add it again when computing totals. When a provider merges cache hits into one prompt total, as DeepSeek does with `prompt_tokens`, subtract the cached portion.
 
-## 接收的请求
+## Accepted Request
 
-`GenerateOptions` 包含：`provider`（选择适配器的已注册路由）、`model`（供应商模型 ID）、`reasoningEffort?`（适配器所有的思考强度 ID）、`messages`（系统槽之后按顺序排列，与供应商实际所见完全一致的对话）、`system?`（系统提示词文本）、`tools?`（JSON Schema 工具说明）、`temperature?`、`maxTokens?`、`stop?`（停止序列）、`signal?`（AbortSignal，必须遵守）、`sessionId?`（由循环标记，用于重放路由；适配器忽略）和 `purpose?`（辅助调用使用 `'compaction' | 'session-title'`）。`packages/llm/llm/src/assembler.ts` 中的 `BlockAssembler` 将 chunk 流折叠回内容块、用量、结束原因和重放状态。消费者应使用它，不要重新实现折叠；适配器自身不进行组装。
+`GenerateOptions` contains `provider` for the registered route that selects the adapter; `model` for the provider model ID; optional `reasoningEffort` for an adapter-owned reasoning-effort ID; `messages` in the exact order seen by the provider after the system slot; optional `system` prompt text; optional JSON Schema `tools`; optional `temperature`, `maxTokens`, and stop-sequence `stop`; optional `signal`, which must be honored; optional `sessionId`, marked by the loop for replay routing and ignored by the adapter; and optional `purpose` for auxiliary calls with `'compaction' | 'session-title'`. `BlockAssembler` in `packages/llm/llm/src/assembler.ts` folds the chunk stream back into content blocks, usage, finish reason, and replay state. Consumers should use it instead of reimplementing the fold. The adapter itself does not assemble.
 
-## 协议义务
+## Protocol Obligations
 
-- 在 `finish` **之前**发出 `usage`；`finish` 之后不得再发出任何内容。在供应商的流结束标记到达前缓冲 finish 和 usage，然后一并刷出，避免尾部只含 usage 的 chunk 破坏顺序。
-- 工具调用 `arguments` 在端到端流程中始终保持原始 JSON 字符串，分片通过 `argumentsDelta` 传输。如果供应商返回已解析对象，在 `block-end` 时重新序列化。
-- 按内容块在流中首次出现的顺序分配 `index`；同一内容块的每个 delta 都复用同一个 index。
-- 错误只有两条允许的路径：传输和协议失败从 `stream()` 中抛出，使用带稳定错误码的 `LlmError`；供应商带内失败通过 `finish { kind: 'error' | 'aborted', failure }` 结束流。两条路径都要规范化为同一个可序列化的 `LlmFailure`：`message`（人类可读）、`code`（稳定、与供应商无关的机器路由码）、`status?`（HTTP 状态码）、`providerRetryAfterMs?`（经验证的供应商正数延迟要求，不是重试决策）和 `requestId?`（供应商签发的不透明诊断 ID）。消费者必须处理两条路径；按失败类型选择并写入文档。空完成是可重试错误，不是静默成功：将不含任何内容块的终止 `stop` finish 映射为带规范 `EMPTY_RESPONSE` 码的 `finish { kind: 'error' }`。
-- 遵守 `options.signal`，将它传给 fetch 或 SDK。
-- 如果供应商无法遵守某个 `GenerateOptions` 字段，例如不支持停止序列的供应商收到 `stop` 列表，应抛出 `LlmError(..., 'UNSUPPORTED')`，不能默默丢弃。
-- 如果供应商在后续调用中需要响应 ID、签名或其他原生元数据，将最小无损 JSON 投影发出为 `finish.replayState`，并在重建历史时验证。只有历史供应商路由和目标供应商路由当前归属于同一个适配器实例时，`LlmService` 才传递该状态。适配器自行决定是否允许同模型、跨模型或跨供应商恢复。状态缺失时，绝不根据供应商或模型名称推断原生重放。
-- 上下文溢出只有一个规范错误码：通过 `isContextWindowExceededError()` 对供应商的明确细节进行分类，并向上层提供 `CONTEXT_WINDOW_EXCEEDED`，无论失败是抛出的 `LlmError` 还是流内 finish 错误。
-- 供应商特定的思考模式开关保留在适配器 Config 中。精确模型元数据使用与供应商无关的能力接缝：实现 `resolveModel()`，提供供应商或模型标识，以及可选的 `context`（供应商所有的 `contextWindow`）和 `reasoning`（有序 `efforts`、可选 `defaultEffort`）。只有默认强度确实存在时才声明已配置的 `defaultEffort`。遵守解析器的可选 `AbortSignal`，实现必须在中止后迅速完成。思考强度是适配器映射到供应商请求的有序不透明 ID。保留适配器权威的可选列表，包括受支持时由适配器定义的 `off`；不要暴露最终线上拼写，也不要将不支持的值强行截断到范围内。
-- 每个供应商 HTTP 请求都要携带应用归属请求头：发送 `attributionHeaders()`，包含 `User-Agent` 基线和从包清单（manifest）读取的 `{ product, version, url }`，并用传输线级测试证明它已发送。
-- 一次适配器调用只对应一次供应商尝试：禁用库自带重试。Agent 级恢复会打开另一个持久化编号轮次；直接的 `ctx.llm.stream()` 调用方仍然只尝试一次。
-- 在传输层限制供应商停滞：暴露正数且有限的 `streamIdleTimeoutMs`（已发布适配器的默认值为五分钟），仅在迭代器 `next()` 尚未完成时计时，整个请求使用同一个稳定 signal，将自身过期映射为 `TIMEOUT`，并保留更早发生的调用方中止为 `ABORTED`。
+- Emit `usage` **before** `finish`, and emit nothing after `finish`. Buffer finish and usage until the provider's end-of-stream marker arrives, then flush them together so a trailing usage-only chunk cannot break ordering.
+- Keep tool-call `arguments` as the original JSON string end to end, carrying fragments through `argumentsDelta`. If the provider returns a parsed object, serialize it again at `block-end`.
+- Assign each content block's `index` by first appearance in the stream and reuse the same index for every delta belonging to that block.
+- There are only two allowed error paths. Transport and protocol failures throw from `stream()` as `LlmError` with a stable code. In-band provider failures end the stream with `finish { kind: 'error' | 'aborted', failure }`. Normalize both paths to the same serializable `LlmFailure`: human-readable `message`; stable provider-independent routing `code`; optional HTTP `status`; optional positive validated provider delay requirement `providerRetryAfterMs`, which is not a retry decision; and optional opaque provider-issued diagnostic `requestId`. Consumers must handle both paths. Choose and document the path by failure type. An empty completion is a retryable error, not silent success: map a terminal `stop` finish with no content blocks to `finish { kind: 'error' }` with canonical code `EMPTY_RESPONSE`.
+- Honor `options.signal` and pass it to fetch or the provider SDK.
+- If the provider cannot honor a `GenerateOptions` field, such as receiving a `stop` list when stop sequences are unsupported, throw `LlmError(..., 'UNSUPPORTED')` instead of silently dropping it.
+- If later calls require a response ID, signature, or other native provider metadata, emit the smallest lossless JSON projection as `finish.replayState` and validate it while rebuilding history. `LlmService` passes that state only when the historical provider route and current target route belong to the same adapter instance. The adapter decides whether replay is valid across the same model, different models, or different providers. When state is absent, never infer native replay from provider or model names.
+- Context overflow has one canonical error code. Classify explicit provider details with `isContextWindowExceededError()` and expose `CONTEXT_WINDOW_EXCEEDED` upstream, whether the failure is a thrown `LlmError` or an in-stream finish error.
+- Keep provider-specific reasoning-mode switches in adapter Config. Expose exact model metadata through the provider-independent capability seam: implement `resolveModel()` to return the provider or model identity and optional `context` with provider-owned `contextWindow`, plus optional `reasoning` with ordered `efforts` and optional `defaultEffort`. Declare the configured `defaultEffort` only when a real default exists. Honor the resolver's optional `AbortSignal`; implementations must settle promptly after abort. Reasoning efforts are ordered opaque IDs that the adapter maps to provider requests. Preserve the adapter-authoritative optional list, including adapter-defined `off` when supported. Do not expose final wire spelling or clamp unsupported values into range.
+- Send application-attribution headers on every provider HTTP request. `attributionHeaders()` must include the `User-Agent` baseline and `{ product, version, url }` read from the package manifest. Prove transmission with a wire-level test.
+- One adapter call equals one provider attempt. Disable retries built into client libraries. Agent-level recovery opens another persisted numbered turn; direct `ctx.llm.stream()` callers still receive one attempt.
+- Bound provider stalls in the transport layer. Expose a finite positive `streamIdleTimeoutMs`, with five minutes as the default for published adapters. Run the timer only while iterator `next()` is unresolved, use one stable signal for the whole request, map adapter-owned expiry to `TIMEOUT`, and preserve an earlier caller abort as `ABORTED`.
 
-## 实现结构
+## Implementation Structure
 
-将线上类型、请求序列化、传输解析、chunk 转换和适配器类分离为独立职责；`llm-deepseek` 是参考布局。可选触面包括：`providerRetryPolicy()`（每路由不可变策略，省略时使用常规默认值）、`providerInfo()` 和异步 `listModels()`（只是建议性选择器元数据，目录绝不是请求白名单），以及用于声明设置页可激活的休眠路由的 `registerConfigurableProviders()`。
+Separate wire types, request serialization, transport parsing, chunk conversion, and the adapter class into distinct responsibilities. `llm-deepseek` is the reference layout. Optional surfaces include `providerRetryPolicy()` for immutable per-route policy with ordinary defaults when omitted; `providerInfo()` and asynchronous `listModels()` for advisory selector metadata, never a request allowlist; and `registerConfigurableProviders()` for dormant routes that settings pages may activate.
 
-## 验证
+## Validation
 
-对 chunk 转换和错误分类执行单元测试；通过传输线级测试证明 `attributionHeaders()`；当供应商密钥已可用且已授权执行时，运行真实 API 端到端测试，无密钥时测试套件自动跳过；如果包发布运行时入口，执行构建入口烟雾测试。在 Harness 单仓内，满足其逐文件覆盖率门槛；在外部仓库中，满足所属仓库声明的覆盖率门槛，并报告无法覆盖的真实供应商边界。
+Unit-test chunk conversion and error classification. Prove `attributionHeaders()` with a wire-level test. When provider credentials are available and execution is authorized, run real-API end-to-end tests; otherwise let the suite skip itself. If the package publishes a runtime entry, run a built-entry smoke test. In the Harness monorepo, satisfy its per-file coverage gate. In an external repository, satisfy its declared coverage gate and report the real-provider boundary that remains untested.

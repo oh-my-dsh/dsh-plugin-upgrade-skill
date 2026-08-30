@@ -1,117 +1,117 @@
 ---
 name: plugin-write
-description: 当需要创建 DeepSeek Harness 插件、外部 DSH 插件包，或 deepseek-harness 仓库内的工作区包时使用，覆盖从形态选择到验证的全流程。将工具、LLM 适配器、钩子、服务和配置等形态路由到对应参考文件，并区分上游单仓规则与外部包规则。对跨 Harness 版本的现有插件，使用本 Skill 内置的版本适配流程，再按精确的目标合约实施。
+description: Use when creating a DeepSeek Harness plugin, an external DSH plugin package, or a workspace package inside the deepseek-harness repository. Covers the full workflow from plugin-form selection through validation. Routes tool, LLM adapter, hook, service, and configuration forms to their corresponding references while separating upstream-monorepo rules from external-package rules. For an existing plugin crossing Harness versions, use this Skill's built-in version-adaptation workflow before implementing against the exact target contract.
 ---
 
-# 编写 DeepSeek Harness 插件
+# Write DeepSeek Harness Plugins
 
-创建一个插件包。先分类仓库模式和插件形态，再阅读对应的参考文件，最后使用能覆盖变更的最小门槛集合验证发布入口。
+Create a plugin package. First classify the repository mode and plugin form, then read the matching reference files, and finally validate the published entry with the smallest set of gates that covers the change.
 
-## 先选择仓库模式
+## Select the Repository Mode First
 
-| 目标 | 适用规则 |
+| Target | Rules to apply |
 |---|---|
-| 官方 `deepseek-harness` 单仓内的包 | 使用下文的仓内包、tsconfig、文档和根门槛规则。 |
-| 外部可安装 DSH 插件 | 保留该仓库的包布局和脚本。只使用精确目标 DSH 版本公开的包和导出；不要复制 `private`、workspace 版本、根 tsconfig 注册或单仓专用 README 门槛。 |
-| 适配新 DSH 宿主的现有插件 | 阅读 [`references/version-adaptation.md`](references/version-adaptation.md)，确定完整版本走廊，并执行七类触点预检。如果变更类型为 `breaking`，而用户尚未明确授权实施，先展示迁移计划并等待确认；获得授权后先完成版本适配，再使用本 Skill 的形态参考。形态示例绝不能覆盖目标源码、类型声明或发行说明。 |
+| A package inside the official `deepseek-harness` monorepo | Use the in-repository package, tsconfig, documentation, and root-gate rules below. |
+| An externally installable DSH plugin | Preserve that repository's package layout and scripts. Use only packages and exports published by the exact target DSH version. Do not copy `private`, workspace versions, root tsconfig registration, or monorepo-only README gates. |
+| An existing plugin being adapted to a new DSH host | Read [`references/version-adaptation.md`](references/version-adaptation.md), build the complete version corridor, and run the seven-class touchpoint preflight. If a change is `breaking` and the user has not yet authorized implementation, present the migration plan and wait for confirmation. After authorization, complete the version adaptation before using this Skill's form references. Form examples must never override target source, type declarations, or release notes. |
 
-从精确目标版本的清单（manifest）中确定 Cordis、Schemastery 和 DSH 的包名与版本范围。当前示例使用带作用域的 `@deepseek-ai/*` 标识；旧版目标可能不同，必须遵循其自身的发布合约。
+Derive Cordis, Schemastery, and DSH package names and version ranges from the manifest of the exact target version. Current examples use scoped `@deepseek-ai/*` identifiers. Older targets may differ and must follow their own published contracts.
 
-## 再分类插件形态
+## Then Classify the Plugin Form
 
-| 所需能力 | 形态 | 参考文件 |
+| Required capability | Form | Reference |
 |---|---|---|
-| 模型可调用的工具：读写文件、运行命令、搜索 Web | 工具插件 | `references/tool-plugin.md` |
-| 新的模型供应商 | LLM 适配器插件 | `references/llm-adapter-plugin.md` |
-| 拦截请求、工具或轮次：权限、策略、指标、遥测 | 钩子插件 | `references/hook-plugin.md` |
-| 供其他插件通过 `ctx` 消费的能力 | 服务插件 | `references/service-plugin.md` |
-| 通过 `cordis.yml` 提供用户可配置行为 | 配置插件 | `references/config-plugin.md` |
+| Model-callable tools for reading files, running commands, or searching the Web | Tool plugin | `references/tool-plugin.md` |
+| A new model provider | LLM adapter plugin | `references/llm-adapter-plugin.md` |
+| Request, tool, or turn interception for permissions, policy, metrics, or telemetry | Hook plugin | `references/hook-plugin.md` |
+| A capability consumed by other plugins through `ctx` | Service plugin | `references/service-plugin.md` |
+| User-configurable behavior supplied through `cordis.yml` | Config plugin | `references/config-plugin.md` |
 
-一个插件可以自由组合多种形态，例如带 Config 的工具插件，或同时注册工具的服务；每种形态的合约仍然全部适用。当需求不属于上述五种形态时，将其映射到已有扩展点，编写在该扩展点注册的插件；绝不直接修改 Agent 循环。
+A plugin may combine forms freely, such as a configurable tool plugin or a service that also registers tools. Every included form still has to satisfy its own contract. When a requirement does not match one of the five forms above, map it to an existing extension point and write a plugin that registers there. Never modify the Agent loop directly.
 
-| 目标 | 机制 |
+| Goal | Mechanism |
 |---|---|
-| 添加模型可调用能力 | 在 `ctx.tools` 上注册 |
-| 添加模型供应商 | 在 `ctx.llm` 上注册适配器 |
-| 为某个会话提供不同的能力集 | 在 Agent 预设中组装 |
-| 添加 Shell 执行 | 实现并注册 `ctx.bash` 后端 |
-| 添加持久终端执行 | 注册 `ctx.pty` 后端并加载 `dsh-tool-pty` |
-| 添加人类命令 | 在 `ctx.commands` 上注册 |
-| 添加后台任务 | 在 `ctx.tasks` 上注册 |
-| 添加文件系统访问或策略 | 实现 `ctx.fs` 提供方，或监听 `fs/*` 策略事件 |
-| 约束所启动的进程 | 使用 `ctx.sandbox` 后端 |
-| 拦截请求、工具或轮次 | 使用 `agent/*` 或 `tools/*` 事件；`agent/turn-stopping` 是停止轮次的事件 |
-| 添加模型可见上下文 | 调用 `agent.inject()` |
-| 添加 UI 或编辑器集成 | 驱动 `ctx.agents`，并从 `session/event` 渲染 |
-| 添加 Web 客户端聊天节点 | 注册 `ConversationNodeDefinition` 和带键渲染器 |
-| 添加持久化会话状态 | 扩展 `SessionEventMap`，并从日志渲染和重放 |
-| 分叉实时会话 | 调用 `ctx.sessions.fork(source, boundary?, childSessionId?)` |
-| 将注册范围限定到单个 Agent | 使用该 Agent 的 `agent.ctx` |
+| Add a model-callable capability | Register it on `ctx.tools` |
+| Add a model provider | Register an adapter on `ctx.llm` |
+| Provide a different capability set for one session | Assemble it in an Agent preset |
+| Add Shell execution | Implement and register a `ctx.bash` backend |
+| Add persistent terminal execution | Register a `ctx.pty` backend and load `dsh-tool-pty` |
+| Add human commands | Register them on `ctx.commands` |
+| Add background tasks | Register them on `ctx.tasks` |
+| Add filesystem access or policy | Implement a `ctx.fs` provider or listen for `fs/*` policy events |
+| Constrain launched processes | Use a `ctx.sandbox` backend |
+| Intercept requests, tools, or turns | Use `agent/*` or `tools/*` events; `agent/turn-stopping` is the turn-stopping event |
+| Add model-visible context | Call `agent.inject()` |
+| Add UI or editor integration | Drive `ctx.agents` and render from `session/event` |
+| Add Web-client conversation nodes | Register a `ConversationNodeDefinition` and keyed renderers |
+| Add persistent session state | Extend `SessionEventMap`, then render and replay from the log |
+| Fork a live session | Call `ctx.sessions.fork(source, boundary?, childSessionId?)` |
+| Scope registrations to one Agent | Use that Agent's `agent.ctx` |
 
-## 包检查清单
+## Package Checklist
 
-1. **创建仓内包** —— 只在官方单仓内，创建包含 `package.json`、`tsconfig.json`、`src/index.ts` 和 `README.md` 的 `packages/<group>/<pkg>/`。复制目标检出版本的 `packages/core/tools/package.json`，再调整名称、说明和依赖；保留目标版本的不变式：`private: true`、与根包一致的 `version`、`type: module`、`main: "lib/index.js"`、`types: "lib/types/index.d.ts"`、同时将 `exports["."]` 的 `types` 和 `default` 指向 `lib`，在对等依赖和开发依赖（peer/dev）中使用相同范围的目标 Cordis 包，在开发依赖中镜像所有 DSH 对等依赖，在 `dependencies` 中声明目标 Schemastery 包，并保留目标的 `files` 布局和包特定运行时产物。CLI 应用包要包含构建后的 `bin`。不要发布未声明的源码或过期产物。遵循目标检出版本的相对导入约定。优先选择角色匹配的现有分组；新分组只是纯容器，包必须正好位于其下一层。
+1. **Create an in-repository package** — Only in the official monorepo, create `packages/<group>/<pkg>/` with `package.json`, `tsconfig.json`, `src/index.ts`, and `README.md`. Copy `packages/core/tools/package.json` from the target checkout, then adjust its name, description, and dependencies. Preserve target-version invariants: `private: true`; the root package `version`; `type: module`; `main: "lib/index.js"`; `types: "lib/types/index.d.ts"`; both `types` and `default` in `exports["."]` pointing to `lib`; the same target Cordis range in peer and development dependencies; every DSH peer dependency mirrored in development dependencies; the target Schemastery package declared in `dependencies`; and the target `files` layout plus package-specific runtime artifacts. CLI application packages must include the built `bin`. Do not publish undeclared source or stale artifacts. Follow relative-import conventions from the target checkout. Prefer an existing group with the matching role. A new group is only a container, and the package must sit exactly one level below it.
 
-2. **注册仓内包** —— 只在官方单仓内，按目标检出版本当前开发指南的精确要求，将包加入 Host 或 Client 聚合。普通包只属于一个聚合；不要在未检查目标版本的情况下复制历史特例或文件列表。外部插件绝不修改 Harness 根配置。
+2. **Register an in-repository package** — Only in the official monorepo, add the package to the Host or Client aggregate exactly as required by the development guide in the target checkout. A normal package belongs to one aggregate only. Do not copy historical exceptions or file lists without checking the target version. External plugins must never modify Harness root configuration.
 
-3. **创建外部包** —— 保留现有包管理器和构建系统。保持 `main`、`types`、`exports`、`files`、可选 `bin`、打包组合/Profile 元数据与打包后的 tarball 一致。显式声明每个运行时依赖；在开发依赖中镜像编译所需的 DSH 对等依赖。不要仅因仓内模板如此，就把可发布的外部插件设为 `private` 或赋予 workspace 版本范围。
+3. **Create an external package** — Preserve the existing package manager and build system. Keep `main`, `types`, `exports`, `files`, optional `bin`, packaged-composition or Profile metadata, and the packed tarball consistent. Declare every runtime dependency explicitly and mirror the DSH peer dependencies needed for compilation in development dependencies. Do not make a publishable external plugin `private` or give it workspace version ranges merely because an in-repository template does so.
 
-4. **决定包拓扑** —— 对可替换能力，只在服务定义、服务提供方和消费者会独立演进时才拆分为多个包；单一用途插件保持一个包。
+4. **Choose the package topology** — For a replaceable capability, split service definition, provider, and consumer into separate packages only when they will evolve independently. Keep a single-purpose plugin in one package.
 
-5. **编写仓内包 README** —— 只在目标单仓要求时，将包特定的服务 API、配置、事件、扩展点和设计说明放在前面。在 README 末尾使用目标检出版本的规范“模型体验”顺序和“已知限制”章节。根据实现填写模型体验：每个直接、条件式、受上限约束、生命周期或辅助模型触面使用一个 H3，其下依次放置下述三个 H4，且每个标题下都要有一段正文。引用包自身拥有的稳定文本；工具 Schema 触面只描述生成工具目录中尚未包含的差异。在“KV 缓存影响”中，区分仅追加增长、稳定重复前缀、替换早期请求 token 和独立模型请求，然后列出包自身哪些变更会使复用失效。
+5. **Write the in-repository package README** — Only when required by the target monorepo, put package-specific service APIs, configuration, events, extension points, and design notes first. End the README with the canonical "Model Experience" ordering and "Known Limitations" section from the target checkout. Describe each direct, conditional, capped, lifecycle, or auxiliary-model surface in its own H3 with the following three H4 sections, each containing a prose paragraph. Quote stable text owned by the package. For a tool Schema surface, describe only differences not already present in the generated tool catalog. Under "KV Cache Impact," distinguish append-only growth, stable repeated prefixes, replacement of earlier request tokens, and independent model requests. Then list the package changes that invalidate reuse.
 
    ````markdown
-   ## 模型体验
+   ## Model Experience
 
-   ### 请求触面与生效条件
+   ### Request Surface and Activation Conditions
 
-   #### 模型看到的内容
+   #### What the Model Sees
 
-   写明精确的数据依赖字段、带锚点的生成目录链接，或引出下方逐字文本。
+   Name the exact data-dependent field, link to the generated catalog with an anchor, or introduce the verbatim text below.
 
-   ##### 需要时，在此放置该字段的逐字文本
+   ##### Place the Verbatim Field Text Here When Needed
 
    ```markdown
-   从源码精确复制任意长度的稳定系统提示词正文，或其他长篇非生成字面量。
+   Copy any stable system-prompt body or other long nongenerated literal exactly from source.
    ```
 
-   #### Token 影响
+   #### Token Impact
 
-   说明影响是固定、条件式、保留、替换、受上限约束，还是零直接 token 影响。
+   State whether the impact is fixed, conditional, retained, replaced, capped, or has zero direct token impact.
 
-   #### KV 缓存影响
+   #### KV Cache Impact
 
-   说明仅追加、前缀稳定、替换或独立行为，包括可能使复用失效的精确条件。
+   Describe append-only, prefix-stable, replacement, or independent behavior, including exact conditions that may invalidate reuse.
 
-   ## 已知限制与延后工作
+   ## Known Limitations and Deferred Work
 
-   - **消费者可见缺口** —— 写明缺失的精确操作或情况、其后果以及任何维护者约束。
+   - **Consumer-visible gap** — State the exact missing operation or condition, its consequence, and any maintainer constraint.
    ````
 
-6. **验证** —— 执行下文适用的验证块，再运行变更行为所需的专项检查和覆盖率门槛。
+6. **Validate** — Run the applicable validation block below, then run the focused checks and coverage gate required by the changed behavior.
 
-## 编写时的规则
+## Rules While Writing
 
-- 每次注册都是一项 effect：通过 `ctx` 辅助方法或带 disposer 的 `ctx.effect()` 注册，并让插件卸载清理事件监听器、工具和计时器等所有资源。
-- 在有文档的扩展点上添加新行为；不要修改 `agent-loop`。
-- 公开服务方法和类型化事件要有带 `@param`/`@returns` 的 JSDoc；类型化事件通过目标 Cordis `Events` 接口的声明合并定义，并用 `@mode` 说明分发模式。
-- 不要硬编码可调参数：不同部署可能改变的值，必须是经验证且可通过 `cordis.yml` 修改的 `Config` 字段。
-- 模型看到的所有内容都必须可以从会话日志重建。
-- 配置错误必须明确失败：绝不默默跳过缺失的引用对象；在解析器、配置、连线和进程边界验证，不要信任同进程中经类型化的调用方。
+- Treat every registration as an effect. Register through `ctx` helpers or `ctx.effect()` with a disposer, and make plugin unload clean up every event listener, tool, timer, and other resource.
+- Add new behavior at documented extension points. Do not modify `agent-loop`.
+- Give public service methods and typed events JSDoc with `@param` and `@returns`. Define typed events through declaration merging on the target Cordis `Events` interface, and document the dispatch mode with `@mode`.
+- Do not hard-code tunable values. Any value that may differ across deployments must be a validated `Config` field changeable through `cordis.yml`.
+- Everything the model sees must be reconstructible from the session log.
+- Fail explicitly on configuration errors. Never silently skip a missing referenced object. Validate at parser, configuration, wiring, and process boundaries instead of trusting an in-process typed caller.
 
-## 验证
+## Validation
 
-对官方 Harness 单仓内的包，使用目标检出版本当前的根命令；下列名称只是示例，执行前必须确认它们存在：
+For packages inside the official Harness monorepo, use current root commands from the target checkout. The names below are examples only; confirm they exist before running them:
 
 ```sh
-pnpm install            # 注册工作区
+pnpm install            # Register the workspace
 pnpm run doc-sync
 pnpm run constraints && pnpm run typecheck && pnpm run lint
 pnpm run build && pnpm run hygiene
 ```
 
-对外部插件，使用其自身的安装、类型检查、测试、静态检查和构建命令；打包可发布产物，检查内容，并将该产物加载到运行精确目标 DSH 的隔离 Profile 中。当任务是升级时，完成冷启动和一次完整的消息→工具→回复或等价核心流程，并报告所有无法覆盖的供应商、操作系统、UI 或凭据边界。
+For an external plugin, use its own install, typecheck, test, static-check, and build commands. Pack the publishable artifact, inspect its contents, and load it into an isolated Profile running the exact target DSH. For an upgrade, cold-start it and complete one message → tool → reply flow or an equivalent core flow. Report every provider, operating-system, UI, or credential boundary that remains uncovered.
 
-根据变更触面选择测试：逻辑使用单元测试；执行所属仓库的覆盖率门槛；当供应商密钥已可用且在授权范围内时，执行真实 API 端到端测试；对模型、协议或用户可见行为使用无密钥快照；对用户可见插件使用真实组合测试。包的 `bin` 入口还需要在原生 Node 下运行的构建产物烟雾测试。按上述规则完成最小充分测试集合，不要为此加载其他 Skill。
+Select tests from the changed surface: unit-test logic; run the repository's coverage gate; run real-API end-to-end tests when provider credentials are available and execution is authorized; use credential-free snapshots for model-, protocol-, or user-visible behavior; and use a real-composition test for user-visible plugins. A package `bin` entry also needs a built-artifact smoke test under native Node. Complete the minimum sufficient test set under these rules without loading another Skill.
 
-参考文件入口见 [`references/README.md`](references/README.md)。
+See [`references/README.md`](references/README.md) for the reference index.

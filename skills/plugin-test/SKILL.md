@@ -1,66 +1,66 @@
 ---
 name: plugin-test
-description: 当需要为 DeepSeek Harness 插件、外部 DSH 插件包或 deepseek-harness 仓库内的包变更编写或审查测试时使用。在单元测试、覆盖率、真实 API 端到端测试、快照、Web、真实组合和构建产物烟雾测试中选择最小充分层级。对 Harness 版本迁移，使用本 Skill 内置的七类触点测试流程，并验证精确的目标版本运行时。
+description: Use when writing or reviewing tests for DeepSeek Harness plugins, external DSH plugin packages, or package changes in the deepseek-harness repository. Select the minimum sufficient levels from unit tests, coverage, real-API end-to-end tests, snapshots, Web tests, real compositions, and built-artifact smoke tests. For Harness version migrations, use this Skill's built-in seven-touchpoint test workflow and validate the exact target-version runtime.
 ---
 
-# 测试 DeepSeek Harness 插件
+# Test DeepSeek Harness Plugins
 
-选择能够证明变更正确的最小测试层级集合；不要默认运行全量测试，也不要重复已通过的检查。
+Select the smallest set of test levels that proves the change is correct. Do not run the full suite by default or repeat checks that have already passed.
 
-## 测试 Harness 版本迁移
+## Test Harness Version Migrations
 
-当任务是将现有插件适配到新的 DSH 宿主版本时：
+When adapting an existing plugin to a new DSH host version:
 
-1. 阅读 [`references/version-migration-testing.md`](references/version-migration-testing.md)，用精确的 from/to 版本建立迁移账本，并扫描七类触点。
-2. 为每条适用的 `breaking` 或 `behavior` 变更添加针对性回归测试。变更级测试只证明对应的迁移映射，不代表整个插件已通过验证。
-3. 在真实产品入口上完成精确目标版本的冷启动和完整用户轮次。类型检查、配置解析、Loader 烟雾测试和模拟 Context 都不能替代这项运行时证明。
-4. 如实报告无法获取的密钥、供应商、操作系统、浏览器、PTY 和破坏性迁移边界，不要声称已实现全面兼容。
+1. Read [`references/version-migration-testing.md`](references/version-migration-testing.md), build a migration ledger for the exact from/to versions, and scan all seven touchpoint classes.
+2. Add a targeted regression test for every applicable `breaking` or `behavior` change. A change-level test proves only that migration mapping; it does not prove the whole plugin is valid.
+3. Cold-start the exact target version through the real product entry point and complete a full user turn. Typechecking, config parsing, Loader smoke tests, and mock Contexts cannot replace this runtime proof.
+4. Report unavailable credentials, providers, operating systems, browsers, PTYs, and destructive-migration boundaries honestly. Do not claim comprehensive compatibility when any remain unverified.
 
-下文命令和仓库路径使用官方 Harness 单仓的测试层级名称。对外部插件，使用所属仓库中等价的脚本和路径；不要添加不存在的 Harness 根命令，也不要强加其单仓布局。
+The commands and repository paths below use test-level names from the official Harness monorepo. For external plugins, use equivalent scripts and paths from their own repositories. Do not add nonexistent Harness root commands or impose the monorepo layout on them.
 
-## 测试层级
+## Test Levels
 
-| 层级 | 命令 | 能够证明的内容 |
+| Level | Command | What it proves |
 |---|---|---|
-| 单元测试 | `pnpm run test` | 包的 `tests/**` 目录下的 vitest 用例，以及仓库 `scripts/**/*.spec.ts` 中的脚本用例；覆盖边界情况、错误路径、事件顺序、并发竞态和合约回归。每个注册表都要有 HMR 安全性测试：释放贡献该注册的 fiber，并断言资源已清理。 |
-| 覆盖率门槛 | `pnpm run test:coverage` | 在 Harness 单仓中，`packages/*/*/src` 要满足逐文件 100% 覆盖率；在外部插件中，遵守所属仓库声明的覆盖率门槛。覆盖率只证明代码行已执行，不证明发布后的功能真正可用。 |
-| 真实 API 端到端测试 | `pnpm run test:e2e` | 验证真实供应商 API 上的行为：包括 DeepSeek 模型，以及由各自密钥（`EXA_API_KEY`、`PERPLEXITY_API_KEY` 等）控制的供应商烟雾测试。没有对应密钥时，每个测试套件自行跳过，使无密钥 CI 保持通过。 |
-| 快照测试 | `pnpm run test:snapshot` | 验证无密钥的预期输出：固定传输合约和展示结果，同时用持久化日志固定组装后的后端行为。 |
-| Web 浏览器快照 | `pnpm run test:web` | 将 Chromium 重放结果与 `apps/web/tests/snapshots/` 比较；这是 Linux PR 的必需门槛。CI 强制使用只读的 `DSH_SNAPSHOT=replay`，绝不写入预期输出；录制和刷新只在本地进行，且所有差异都必须审查。 |
+| Unit tests | `pnpm run test` | Runs vitest cases under each package's `tests/**` and script tests under repository `scripts/**/*.spec.ts`. Cover edge cases, error paths, event ordering, concurrency races, and contract regressions. Every registry needs an HMR-safety test: dispose the fiber that contributed the registration and assert that the resource is removed. |
+| Coverage gate | `pnpm run test:coverage` | In the Harness monorepo, every file under `packages/*/*/src` must reach 100% coverage. In an external plugin, follow the coverage threshold declared by its repository. Coverage proves only that lines executed, not that the published feature actually works. |
+| Real-API end-to-end tests | `pnpm run test:e2e` | Validates behavior against real provider APIs, including DeepSeek models and provider smoke tests gated by their own credentials such as `EXA_API_KEY` and `PERPLEXITY_API_KEY`. Each suite skips itself when its credential is absent so credential-free CI remains green. |
+| Snapshot tests | `pnpm run test:snapshot` | Validates expected credential-free output, pinning transport contracts and presentation while using persisted logs to fix the assembled backend behavior. |
+| Web browser snapshots | `pnpm run test:web` | Compares Chromium replay output with `apps/web/tests/snapshots/`. This is a required Linux PR gate. CI forces read-only `DSH_SNAPSHOT=replay` and never writes expected output. Record or refresh snapshots only locally and review every difference. |
 
-当供应商密钥已可用且已授权执行真实 API 时，运行对应的端到端测试，不要因惜用推理而省略。无密钥测试只能证明管线连通；只有携密钥运行才能证明 Agent 能与真实模型协作。根据变更覆盖文件写入提示、多轮会话、工具使用和流式输出中途取消。价值最高的烟雾测试会启动真实示例、发送一条提示，并从外部检查结果。自动跳过能使无密钥 CI 不受阻塞；记录被跳过的供应商边界，绝不为了让测试通过而索要、暴露或持久化密钥。
+When provider credentials are available and real-API execution is authorized, run the corresponding end-to-end tests. Do not skip them merely to save inference spend. Credential-free tests prove only that the pipeline is connected; only credentialed runs prove that the Agent can work with a real model. Based on the change, cover file-writing prompts, multi-turn sessions, tool use, and cancellation during streaming output. The highest-value smoke test starts a real example, sends one prompt, and verifies the outcome from outside the Agent. Automatic skipping keeps credential-free CI unblocked. Record every skipped provider boundary, and never request, expose, or persist credentials merely to make tests pass.
 
-## 根据变更触面选择层级
+## Select Levels from the Change Surface
 
-- 纯逻辑或内部辅助函数 → 只运行单元测试。
-- 新增或修改包源码 → 执行所属仓库的覆盖率门槛；只有 Harness 单仓明确定义该门槛时，才使用逐文件 100% 规则。
-- 模型可见行为（提示词、工具 Schema、工具输出、Skill 目录） → 在所属示例的测试套件中添加无密钥快照，再添加真实组合测试。
-- 协议可见行为（ACP、JSON-RPC、线上传输） → 在所属示例的测试套件中添加无密钥快照。
-- 用户可见行为（CLI 输出记录、交互式终端、GUI 操作流程） → 在 Harness 单仓内使用 `apps/cli/tests/snapshots/` 或 `apps/web/tests/snapshots/`；外部插件使用所属产品入口的测试套件。
-- 供应商行为（新适配器、真实供应商特性） → 在密钥可用且已授权时执行真实 API 端到端测试。
-- 用户会实际使用的插件 → 执行非单元级的真实组合测试（见下文），绝不能只测试手工组装的 `ctx.plugin(...)`。
+- Pure logic or internal helpers → run unit tests only.
+- New or modified package source → run the repository's coverage gate. Apply the per-file 100% rule only when the Harness monorepo explicitly defines it.
+- Model-visible behavior such as prompts, tool Schemas, tool output, or Skill directories → add a credential-free snapshot to the owning example suite, then add a real-composition test.
+- Protocol-visible behavior such as ACP, JSON-RPC, or wire transport → add a credential-free snapshot to the owning example suite.
+- User-visible behavior such as CLI transcripts, interactive terminals, or GUI flows → in the Harness monorepo, use `apps/cli/tests/snapshots/` or `apps/web/tests/snapshots/`; in an external plugin, use the product-entry test suite owned by that repository.
+- Provider behavior such as a new adapter or real provider feature → run real-API end-to-end tests when credentials are available and execution is authorized.
+- A plugin that users will actually run → execute a non-unit real-composition test as described below. Never test only a manually assembled `ctx.plugin(...)`.
 
-## 必须使用快照测试的情况
+## When Snapshot Tests Are Mandatory
 
-每个非平凡的模型可见、协议可见或用户可见变更，都要通过所属仓库的可运行组合添加或更新无密钥场景。包测试、端到端断言、仅测试用的模拟组合和 PR 说明，都不能取代组装后的完整记录。在 Harness 单仓内，ACP 快照位于 `examples/<name>/tests/snapshots/`，无界面 JSONL 快照位于 `examples/headless-agent`，终端操作流程位于 `apps/cli/tests/snapshots/`，浏览器操作流程位于 `apps/web/tests/snapshots/`。使用目标检出版本当前的录制或刷新命令，并审查每一处生成差异。外部插件使用自己的快照测试框架；如果没有，则添加一个最小的真实 Loader 组合。
+Every nontrivial model-visible, protocol-visible, or user-visible change must add or update a credential-free scenario through a runnable composition owned by the repository. Package tests, end-to-end assertions, test-only mock compositions, and PR descriptions cannot replace the complete assembled record. In the Harness monorepo, ACP snapshots live under `examples/<name>/tests/snapshots/`, headless JSONL snapshots live under `examples/headless-agent`, terminal flows live under `apps/cli/tests/snapshots/`, and browser flows live under `apps/web/tests/snapshots/`. Use the record or refresh command provided by the exact target checkout and review every generated difference. External plugins should use their own snapshot framework. If they have none, add a minimal composition that runs through the real Loader.
 
-## 测试真实入口路径
+## Test the Real Entry Path
 
-- 用户可见插件需要真实组合测试：通过 Loader 和应用或进程启动测试专用 `cordis.yml`；只模拟外部服务或非确定性输入；断言模型可见请求或日志、持久化状态或用户可见输出。不要把测试选项写入发布默认值。
-- 只有回归真的会导致守卫测试失败，该守卫才有意义。当精确的目标合约要求无 `inject` 的打包或组合模块使用具名导出时，添加显式的 `expect('default' in mod).toBe(false)` 和 `unwrapExports` 往返断言，并证明它在引入回归时变红、修复后变绿。不要对目标版本支持的默认插件对象或 `Service` 类应用该守卫；应通过它的实际 Loader 合约验证这种形态。
-- “真实入口路径”指已发布的产物：包的 `bin` 必须在原生 Node 下运行其构建入口，以暴露 tsx 可能掩盖的问题，如收敛竞态、模块解析和被吞掉的加载失败。非默认索引的运行时入口和跨打包组合共享的单例模块也遵守同样要求。在 Harness 单仓中，保持其构建产物烟雾测试通过（例如目标版本中存在的 `packages/examples/*/tests/built-bin.e2e.ts` 和 `packages/code-runtime/code-runtime-worker/tests/built-lib.e2e.ts`）。在外部插件中，烟雾测试对应的打包入口。并断言在配置确实缺失时进程以非零状态退出。
-- 在 Harness 单仓中，常规测试解析使用已配置的源码平面，构建产物只由明确的构建入口烟雾测试消费。在外部插件中，遵循其解析器，但仍要添加一个明确的打包产物消费者，防止源码别名掩盖缺失导出或第二份运行时单例。
-- Harness 单仓中的子进程启动方式：CI 和已构建的测试通道通过目标检出版本的共享启动器，从构建后的 `lib/` 运行所有示例或 Cordis 配置子进程；绝不要为这些子进程手写 `--import tsx`。不加载 Cordis 的协议和操作系统夹具遵循目标仓库当前的 Node/TypeScript 约定。外部插件遵循自己的启动器，但必须覆盖打包产物。只有以源码路径解析为测试对象时才能选择 `src`，并在测试中说明该合约。
+- User-visible plugins need a real-composition test. Start a test-only `cordis.yml` through the Loader and application or process entry point. Mock only external services or nondeterministic inputs. Assert the model-visible request or log, persisted state, or user-visible output. Do not add test options to published defaults.
+- A guard test is useful only if the regression truly makes it fail. When the exact target contract requires a bundled or composition module without `inject` to use named exports, add explicit `expect('default' in mod).toBe(false)` and `unwrapExports` round-trip assertions. Prove that the test turns red when the regression is introduced and green after the fix. Do not apply this guard to default plugin objects or `Service` classes supported by the target version. Validate those forms through their actual Loader contract.
+- The "real entry path" means the published artifact. A package `bin` must run its built entry under native Node to expose issues that tsx may hide, including shutdown races, module resolution, and swallowed load failures. Apply the same rule to runtime entries outside the default index and singleton modules shared across bundle compositions. In the Harness monorepo, keep its built-artifact smoke tests green, such as `packages/examples/*/tests/built-bin.e2e.ts` and `packages/code-runtime/code-runtime-worker/tests/built-lib.e2e.ts` when they exist in the target version. In an external plugin, smoke-test its packaged entry. Assert that the process exits nonzero when required configuration is truly missing.
+- In the Harness monorepo, normal tests resolve through the configured source plane, while only explicit built-entry smoke tests consume build artifacts. In an external plugin, follow its resolver but still add one explicit packaged-artifact consumer so source aliases cannot hide a missing export or a second runtime singleton.
+- For subprocess startup in the Harness monorepo, CI and built-test channels must use the shared launcher from the target checkout to run every example or Cordis config subprocess from built `lib/`. Never hand-write `--import tsx` for those subprocesses. Protocol and operating-system fixtures that do not load Cordis follow the current Node/TypeScript convention of the target repository. External plugins follow their own launcher but must cover the packaged artifact. Choose `src` only when source-path resolution itself is the test subject, and document that contract in the test.
 
-## 保持测试有效
+## Keep Tests Effective
 
-- 优先使用真实实现，而非模拟对象。只模拟成本高或不确定的边界（LLM 适配器、网络、时钟），并保持其下游全部使用真实实现。手写替身只能证明桥接层传递了字节，不能证明发布工具具有所声称的行为。桥接工具调用测试应使用脚本化模拟模型，并保持工具和执行器真实。
-- 验证外部世界，不要相信 Agent 自报：端到端断言应在外部重新运行命令或重新读取文件；只检查 Agent 输出中的关键词，会让作弊的 Agent 通过。断言未修改文件的字节完全一致。
-- 端到端测试必须自主管理资源：在测试内创建 Harness，并在 `afterEach` 中释放，即使发生失败、重试或超时也一样。共享夹具放在普通的 `tests/harness.ts` 中，绝不要放在另一个 `*.e2e.ts` 中；导入用例会重新注册其 `describe`，从而重复调用真实 API。
-- 恢复测试按步骤分离 chunk 之前和之后的失败，并证明失败 chunk 不会派生任何消息或工具副作用；覆盖耗尽、取消、策略组合、持久化、状态、传输线计数、传输关闭型空闲超时和发布用 Loader 组合。
+- Prefer real implementations over mocks. Mock only expensive or nondeterministic boundaries such as LLM adapters, networks, and clocks, while keeping everything downstream real. A handwritten fake proves only that a bridge moved bytes; it does not prove that the published tool delivers its claimed behavior. Tests for bridged tool calls should use a scripted mock model while keeping the tool and executor real.
+- Verify the external world instead of trusting the Agent's report. End-to-end assertions should rerun commands or reread files outside the Agent. Checking only keywords in Agent output lets a cheating Agent pass. Assert that untouched files remain byte-for-byte identical.
+- End-to-end tests must own their resources. Create the Harness inside the test and dispose it in `afterEach`, including after failure, retry, or timeout. Put shared fixtures in a normal `tests/harness.ts`, never another `*.e2e.ts`; importing a test file registers its `describe` again and duplicates real-API calls.
+- Recovery tests must separate failures before and after each chunk boundary and prove that a failed chunk derives no messages or tool side effects. Cover exhaustion, cancellation, policy composition, persistence, state, wire counts, transport-close idle timeouts, and the production Loader composition.
 
-## 命令
+## Commands
 
-在 Harness 单仓中，使用目标检出版本实际提供的命令，例如 `pnpm run test`、`test:coverage`、`test:e2e`、`test:snapshot` 和 `test:web`；先确认脚本存在，不要假设历史命令列表仍然有效。在外部插件中，使用其自身脚本，打包产物，安装到隔离的精确目标版本 Profile 中，并执行产品入口冷启动和核心路径烟雾测试。对覆盖变更触面的最小测试集合只运行一次；CI 只负责其实际定义的门槛。
+In the Harness monorepo, use commands that actually exist in the target checkout, such as `pnpm run test`, `test:coverage`, `test:e2e`, `test:snapshot`, and `test:web`. Confirm each script exists instead of assuming a historical command list is still valid. In an external plugin, use its own scripts, package the artifact, install it into an isolated Profile running the exact target version, and execute a cold-start plus core-path smoke test through the product entry. Run the smallest set that covers the changed surface only once. CI proves only the gates it actually defines.
 
-参考文件入口见 [`references/README.md`](references/README.md)。
+See [`references/README.md`](references/README.md) for the reference index.
