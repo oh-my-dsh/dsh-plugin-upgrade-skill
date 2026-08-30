@@ -76,6 +76,36 @@ for (const file of markdownFiles) {
   }
 }
 
+// Slash commands are thin delegates; copied workflows drift independently from SKILL.md.
+const commandFiles = [
+  join(root, '.claude', 'commands', 'dsh-upgrade.md'),
+  join(root, '.gemini', 'commands', 'dsh-upgrade.toml'),
+]
+for (const file of commandFiles) {
+  if (!existsSync(file)) {
+    fail(file, 'missing dsh-upgrade command wrapper')
+    continue
+  }
+  const text = await readFile(file, 'utf8')
+  if (!/plugin-upgrade/.test(text)) fail(file, 'command must delegate to plugin-upgrade')
+  if (!/不要.*复制|不要.*重写/.test(text)) fail(file, 'command must forbid duplicated workflow logic')
+  if (/^\s*\d+\.\s+\*\*/m.test(text)) fail(file, 'command must not duplicate numbered workflow steps')
+  if (/六类|全零命中|只需烟测|缺卡片时先补卡/.test(text)) fail(file, 'command contains a retired workflow rule')
+}
+
+// CONTRIBUTING delegates the card schema instead of maintaining a second copy.
+const contributingFile = join(root, 'CONTRIBUTING.md')
+const contributingText = await readFile(contributingFile, 'utf8')
+for (const required of [
+  'skills/plugin-upgrade/references/README.md',
+  '#1–#7',
+  'scripts/validate.mjs',
+  'scripts/validate-manifests.mjs',
+]) {
+  if (!contributingText.includes(required)) fail(contributingFile, `missing current contribution contract: ${required}`)
+}
+if (/\bBC-\d{2}\b|六类触点/.test(contributingText)) fail(contributingFile, 'contains retired card schema')
+
 // Standalone skills must not reach into sibling skill directories.
 for (const name of ['plugin-test', 'plugin-write']) {
   const skillRoot = join(skillsRoot, name)
@@ -166,12 +196,23 @@ for (const start of edges.keys()) {
   }
 }
 
-// Every full card reference in Markdown must resolve to a defined ID.
+// Every full card reference in Markdown must resolve; retired short IDs are forbidden.
 for (const file of markdownFiles) {
   const text = await readFile(file, 'utf8')
   for (const match of text.matchAll(/\bDSH-\d+\.\d+\.\d+-A\d+-\d{2}\b/g)) {
     if (!allCardIds.has(match[0])) fail(file, `unknown card reference: ${match[0]}`)
   }
+  if (/\bALPHA[12]-\d{2}\b/.test(text)) fail(file, 'contains retired short card ID')
+}
+
+// The rollup is a current navigation document, not an unchecked historical snapshot.
+const rollupFile = join(referencesDir, 'rollup-0.1.2.md')
+const rollupText = await readFile(rollupFile, 'utf8')
+for (const required of ['（14 张）', '（6 张）', '#7 子进程']) {
+  if (!rollupText.includes(required)) fail(rollupFile, `missing current rollup contract: ${required}`)
+}
+if (/Consumer.*永不 reject|#6 子进程|git checkout <tag> -- pnpm-lock\.yaml/.test(rollupText)) {
+  fail(rollupFile, 'contains a retired Remote, touchpoint, or rollback rule')
 }
 
 // Executable pre-flight patterns must be valid and hit the static fixture.
@@ -197,6 +238,15 @@ for (const entry of patternData.classes) {
   if (!hit) fail(patternFile, `#${entry.id} has no fixture hit`)
 }
 
+// Host and Web Client examples must execute their distinct control-flow contracts.
+const faceCheckFile = join(root, 'skills', 'plugin-upgrade', 'examples', 'face-contracts', 'check.mjs')
+try {
+  const { runFaceContractChecks } = await import(pathToFileURL(faceCheckFile).href)
+  await runFaceContractChecks()
+} catch (error) {
+  fail(faceCheckFile, `face contract check failed: ${error.stack ?? error.message}`)
+}
+
 // The planner must stay read-only, redact source lines, resolve card corridors, and report gaps.
 const plannerCheckFile = join(root, 'scripts', 'plan-migration.check.mjs')
 try {
@@ -212,4 +262,4 @@ if (failures.length) {
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, read-only planner`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only planner`)

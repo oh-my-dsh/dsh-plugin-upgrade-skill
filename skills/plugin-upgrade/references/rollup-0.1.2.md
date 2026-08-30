@@ -7,7 +7,7 @@
 ## 怎么用这份 rollup
 
 1. 先按 [pre-flight.md](pre-flight.md) 测出命中的触点类；
-2. 按序读卡片，只应用命中触点的条目：[v0.1.2-alpha.1.md](v0.1.2-alpha.1.md)（12 张）→ [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md)（4 张）；
+2. 按 `from → to` 读完整走廊并先计算净状态：[v0.1.2-alpha.1.md](v0.1.2-alpha.1.md)（14 张）→ [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md)（6 张）；
 3. 回到本文件处理走廊层问题——这些跨越单版本，卡片里没有；
 4. 按本文件末尾的分层验证清单收工。
 
@@ -15,70 +15,60 @@
 
 | 触点 | 相关卡片 |
 |---|---|
-| #1 源码 patch | [ALPHA1-03](v0.1.2-alpha.1.md)（会话视图拆分） |
-| #2 内部事件名 | [ALPHA1-02](v0.1.2-alpha.1.md) → [ALPHA2-01](v0.1.2-alpha.2.md)（`ignorable` 一删一复，**读完走廊再删防御代码**） |
-| #3 服务探测 | [ALPHA1-01](v0.1.2-alpha.1.md)（APIProxy 移除，含 17 条操作映射表）、[ALPHA2-02](v0.1.2-alpha.2.md)（`RemoteError` 封装） |
-| #4 宿主目录读写 | [ALPHA1-04](v0.1.2-alpha.1.md)（Profile 统一启动） |
-| #5 UI / 命令注册 | [ALPHA1-03](v0.1.2-alpha.1.md)（破坏面）、[ALPHA1-08](v0.1.2-alpha.1.md) / [ALPHA1-09](v0.1.2-alpha.1.md) / [ALPHA1-10](v0.1.2-alpha.1.md)（机会面） |
-| #6 子进程 / stdout | [ALPHA1-05](v0.1.2-alpha.1.md)（headless 输出语义）、[ALPHA1-04](v0.1.2-alpha.1.md)、[ALPHA1-12](v0.1.2-alpha.1.md) / [ALPHA2-04](v0.1.2-alpha.2.md)（workaround 可能过期） |
-| 打包 / 分发 | [ALPHA2-03](v0.1.2-alpha.2.md)（peer deps 裁剪） |
+| #1 源码 patch | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md) |
+| #2 事件 / 持久事件 | [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md)，另见 [DSH-0.1.2-A1-06](v0.1.2-alpha.1.md) |
+| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md) |
+| #4 宿主目录读写 | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md) |
+| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md) |
+| #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md) |
+| #7 子进程 / stdout / stderr | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-04](v0.1.2-alpha.2.md) |
+| 特殊面 | 权限 [DSH-0.1.2-A1-07](v0.1.2-alpha.1.md)；隐私 [DSH-0.1.2-A1-12](v0.1.2-alpha.1.md) / [DSH-0.1.2-A1-14](v0.1.2-alpha.1.md)；打包 [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md) |
 
 > **跨版本回滚型变更先读完整走廊再动手**：字段或语义在中间版本删除、后续版本又恢复
-> （典型如 `ignorable` 的 [ALPHA1-02](v0.1.2-alpha.1.md) → [ALPHA2-01](v0.1.2-alpha.2.md) 一删一复）。
+> （典型如 `ignorable` 的 [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md) 一删一复）。
 > 迁移时必须先折叠走廊的净状态再修改源码——不要在 alpha.1 删一次、到 alpha.2 又加回来；
 > 若最终目标已恢复该语义，旧版适配里的防御代码应当删除而不是保留。
 
 ## Remote 调用的错误流
 
-承接 [ALPHA1-01](v0.1.2-alpha.1.md) 与 [ALPHA2-02](v0.1.2-alpha.2.md)。alpha.2 把错误面重构为 `RemoteError` + `RemoteResult`，**Consumer 侧 Remote 方法签名统一为 `Promise<RemoteResult<T>>`，永不 reject**。业务失败不是异常。
+承接 [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md) 与
+[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)。alpha.2 的 unary Remote 返回
+`Promise<RemoteResult<T>>`：业务/载体失败走 `ok: false`；参数个数、未挂载方法、缺少
+Context adapter 等装配/编程错误仍可能 reject，应暴露修复而不是吞掉重试。
 
 ```typescript
-// 业务失败走 ok === false 分支；result.error 是 typed RemoteFailure，无需 cast
 const result = await ctx.remote.session.list({ limit: 10 })
 if (!result.ok) {
-  if (result.error.code === 'session/not-found') {
-    return null
+  switch (result.error.code) {
+    case 'gateway/cancelled':
+      return // 结束或传播取消，不重试、不报通用错误
+    case 'session/not-found':
+      return null
+    default:
+      // 保留 code/details 并上报；仅明确瞬态、幂等且策略允许时重试
+      throw result.error
   }
-  // 需要向上传播时：result.error 是真 Error，带 stack 与 message
-  throw result.error
 }
 return result.value
 ```
 
-catch 只适用于 Gateway client 层与传输层——`gateway/internal`、`gateway/cancelled`、以及 Gateway 的 17 个 `gateway/*` 装配码：
+只有上层接住主动 `throw result.error` 的值时，才用
+`isRemoteFailure`（`@deepseek-ai/dsh-api-gateway/client`）区分 Remote failure 与本地
+缺陷；本地缺陷继续抛出。禁止跨 realm 使用 `instanceof RemoteError`。`gateway/internal`
+和未知码不证明请求未执行，默认保留原始 `code/details` 并上报，不盲重试。
 
-```typescript
-import { isRemoteFailure } from '@deepseek-ai/dsh-api-gateway/client'
-
-try {
-  const result = await gateway.invoke('session', 'list', wireArgs)
-  // ... 仍按 result.ok 分支处理业务失败
-} catch (error) {
-  // 传输/装配故障；判别永远读 code，不用 instanceof（跨 bundle 原型不同一）
-  if (isRemoteFailure(error) && error.code === 'gateway/cancelled') {
-    return
-  }
-  throw error
-}
-```
-
-三条易错点：
-
-- **不要**用 `error.failure.code`——那是 alpha.1 时代 `TypertRemoteFailure` 的形状，alpha.2 已删除；
-- **不要**用 `instanceof RemoteError` 判别：Client 与 Host 是分别打包的程序，worker transport 又会再打包一份，同一个类存在多份拷贝；
-- 未分类的 Host 抛出会被 Gateway 折叠一次成 `gateway/internal`，诊断链保留在 `message`——不要自己预先折叠成业务码。
-
-来源：架构笔记 [ctx-remote-failure-vocabulary](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.md)（status: implemented）。
+来源：[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md) 与
+[ctx-remote-failure-vocabulary](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.md)。
 
 ## 走廊层增量
 
 以下四类问题跨越单个版本或落在卡片之外，来自社区实战（[discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)，dsh-web 约 20 个包的迁移）。
 
-### R-01 · 目标 cohort 未发布 npm
+### R-01 · 目标 cohort 的依赖包未完整发布 npm
 
 - **类型**: process
-- **症状**: 任何 `0.1.2-alpha.*` 包名 npm 返回 404，常规 `pnpm install` 装不到目标 cohort。
-- **配方**: 隔离 worktree 从官方 tag 构建一次，`pnpm pack` 出 tarball，用 `overrides` 钉到 `file:` 路径。
+- **症状**: 根包或 dist-tag 可用不代表插件直接依赖的每个内部 cohort 包都已发布；只有实际 registry 查询返回缺失时，才进入本配方。
+- **配方**: 先记录缺失的精确包名/版本。确认 registry 确实不可用后，在隔离 worktree 从官方 tag 构建并 `pnpm pack`，用 `overrides` 钉到 `file:` tarball；不要把所有 `0.1.2-alpha.*` 一概描述成 404。
 
   ```sh
   git clone https://github.com/deepseek-ai/deepseek-harness.git /tmp/dsh-build
@@ -145,7 +135,7 @@ try {
 ### R-05 · 迁移前盘点被删包的下游
 
 - **类型**: process
-- **症状**: 依赖被删 SDK 包才能构建的插件（承接 [ALPHA1-01](v0.1.2-alpha.1.md)），迁移中途才发现无法构建，只能随迁移退役。
+- **症状**: 依赖被删 SDK 包才能构建的插件（承接 [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)），迁移中途才发现无法构建，只能随迁移退役。
 - **配方**: 迁移前先对全部插件跑一次「import 了哪些被删包」的盘点，把「必须退役」与「可迁移」分开排期，而不是边迁边发现。
 - **验证**: 盘点清单与实际迁移结果一致，无中途新增退役项。
 - **来源**: [#5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 第 10 条。
@@ -155,18 +145,19 @@ try {
 按顺序跑，前一层不过不进下一层：
 
 1. **依赖解析**: `pnpm list --depth 0 | grep @deepseek-ai` 版本一致；lockfile 无混合 cohort。
-2. **静态**: typecheck + build。注意静态全绿证明不了 wire 契约正确——描述符层的参数漂移在这一层是静默的（[ALPHA1-01](v0.1.2-alpha.1.md)）。
+2. **静态**: typecheck + build。注意静态全绿证明不了 wire 契约正确——描述符层的参数漂移在这一层是静默的（[DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)）。
 3. **卡片级单测**: 每个命中触点至少一条断言。Remote 调用点覆盖 `ok: false` 的已知业务码、未知码兜底，以及 gateway 层 catch 分支；测试替身编码同一套描述符表，多/缺 key 就 fail，让漂移变成测试失败事件。
 4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。
 5. **跨 cohort**（若做了 R-02）: 旧宿主与新宿主各跑一次第 4 步。
-6. **headless**（若命中 #6）: 比对 stdout/stderr 的内容分类（[ALPHA1-05](v0.1.2-alpha.1.md)）。
+6. **headless**（若命中 #7）: 比对退出码及 stdout/stderr 内容分类（[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)）。
 
 ## 回退
 
-1. 升级前提交干净状态并打 tag；
-2. tarball overrides 回滚：删掉 `overrides` 段，`git checkout <tag> -- pnpm-lock.yaml`；
-3. 在独立分支迁移，不与功能改动混在一个提交；
-4. 若问题源于宿主升级，优先回退宿主而不是把插件改成兼容两边。
+1. 升级前记录 branch/HEAD、resolved 版本、lockfile 与将改配置的 hash；有陌生修改就停止；
+2. 在独立 branch/worktree 迁移，不自动 stash/reset/clean/checkout 用户文件；
+3. tarball overrides 回退只恢复本次明确拥有的配置与 lockfile 路径，并在执行前展示 diff、取得确认；
+4. 第三方 lifecycle script 的任意副作用不能承诺由 Git 回滚；如实列出残留风险；
+5. 若问题源于宿主升级，优先切回记录的宿主版本，而不是盲目扩大插件双版本分支。
 
 ## 待确认
 

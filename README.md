@@ -15,7 +15,7 @@
 
 ### 使用 skills CLI（推荐）
 
-最快路径——一条命令安装到 70+ 种 agent：
+最快路径——由 [skills CLI](https://github.com/justjavac/skills) 安装到它当前支持的 agent：
 
 ```bash
 npx skills add oh-my-dsh/dsh-plugin-upgrade-skill
@@ -35,11 +35,6 @@ npx skills add oh-my-dsh/dsh-plugin-upgrade-skill
 > /plugin marketplace add https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill.git
 > /plugin install dsh-plugin-upgrade-skill
 > ```
-> 或全局配置 Git 重写 SSH 为 HTTPS：
-> ```bash
-> git config --global url."https://github.com/".insteadOf git@github.com:
-> ```
-
 **本地/开发模式**：
 
 ```bash
@@ -49,16 +44,18 @@ claude --plugin-dir /path/to/dsh-plugin-upgrade-skill
 
 ### Codex
 
-通过 marketplace 或本地目录安装：
+先添加 marketplace，再在 Codex 的插件界面中安装/启用该插件：
 
 ```bash
-# Marketplace
-codex plugin add oh-my-dsh/dsh-plugin-upgrade-skill
+# GitHub marketplace
+codex plugin marketplace add oh-my-dsh/dsh-plugin-upgrade-skill
 
-# 本地
+# 本地开发 marketplace
 git clone https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill.git
-codex plugin add ./dsh-plugin-upgrade-skill
+codex plugin marketplace add ./dsh-plugin-upgrade-skill
 ```
+
+当前 Codex CLI 没有直接安装子命令；GitHub 与本地路径都通过 `plugin marketplace add` 注册。
 
 ### Gemini CLI
 

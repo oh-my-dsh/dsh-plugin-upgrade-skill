@@ -1,17 +1,7 @@
 ---
-description: 升级 DSH 插件 — 定走廊、测触点、套卡片、分层验证
+description: 升级 DSH 插件 — 由 plugin-upgrade Skill 选择只读检查、插件升级或宿主迁移模式
 ---
 
-调用 dsh-plugin-upgrade-skill:plugin-upgrade skill。
+调用 `dsh-plugin-upgrade-skill:plugin-upgrade` Skill，并把 `$ARGUMENTS` 原样作为用户的目标版本或附加要求。
 
-按以下流程升级当前仓库的 DSH 插件：
-
-1. **盘点** — 读取 `cordis.yml` 与 `package.json`，列出已挂载插件与 `@deepseek-ai/*` 依赖的当前版本
-2. **定走廊** — 确认 from → to 版本区间，按序取 `references/` 下的版本卡片；缺卡片时先补卡，不要凭记忆猜变更
-3. **测触点** — 按 `references/pre-flight.md` 的六类接触面（源码 patch / 内部事件名 / 服务探测 / 文件读写 / UI·命令注册 / 子进程·stdout 解析）扫描；六类全零命中则只需烟测
-4. **套卡片** — 对命中的触点逐条套用版本卡片里的迁移配方
-5. **分层验证** — typecheck → build → 挂载烟测 → 功能验证
-
-参数 `$ARGUMENTS` 可指定目标版本（如 `0.1.2`）。未指定时先探测已安装版本并询问目标版本。
-
-先输出触点扫描结果与迁移计划，确认后再改代码。
+严格遵守该 Skill 当前定义的模式分流、只读/写入边界、七类 pre-flight、版本走廊、确认、验证和报告规则。不要在命令文件中复制、简化或重写工作流；用户意图不明确时先确认模式。

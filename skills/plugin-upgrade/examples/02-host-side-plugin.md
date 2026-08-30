@@ -1,160 +1,50 @@
-# 示例 02：宿主侧插件（已更新为 RemoteResult）
+# 示例 02：Host 平面插件改为领域服务直连
 
-**场景**: 插件需要调用宿主的 session 管理 API。
+**场景**：0.1.1 插件在 Host 平面注入 `apiProxy`，用于读取模型提供方；升级后入口永久
+`pending (waiting for service: apiProxy)`。
 
-**影响触点**: #3 内部服务探测（APIProxy 调用 → Remote）
+**影响触点**：#3 服务探测　**复杂度**：⭐⭐
 
-**复杂度**: ⭐⭐
+## 为什么不能改成 `ctx.remote`
 
----
+`apiProxy` 是旧 Host 平面门面；`ctx.remote` 是 Web Client 平面门面。两者不是同一运行时，
+把 `inject: ['apiProxy']` 对号替换为 `inject: ['remote']` 只会从等待一个不存在的服务变成
+等待另一个不存在的服务。
 
-## 升级前
+Host 插件应直接注入 owning domain service。容器实测的 provider 场景是：
 
-```typescript
-// src/service.ts
-import { executeRemote } from '@deepseek-ai/dsh-host-apiproxy'
+```js
+// 0.1.1
+export const inject = ['apiProxy']
+const providers = await ctx.apiProxy.llm.providers()
 
-export class MyService {
-  async listSessions() {
-    return executeRemote('session', 'list', { limit: 10 })
-  }
-  
-  async getSession(id: string) {
-    return executeRemote('session', 'get', { id })
-  }
-}
+// 0.1.2-alpha.2 Host plane
+export const inject = ['llm']
+const providers = ctx.llm.listProviders()
 ```
 
----
-
-## 升级后（alpha.2 RemoteResult 契约）
-
-```typescript
-// src/service.ts
-import type { Context } from '@deepseek-ai/cordis'
-
-export class MyService {
-  constructor(private ctx: Context) {}
-
-  async listSessions() {
-    // Consumer 侧 Remote 方法返回 RemoteResult<T>，永不 reject
-    const result = await this.ctx.remote.session.list({ limit: 10 })
-    
-    // 业务失败走 ok === false 分支
-    if (!result.ok) {
-      // result.error 是 typed RemoteFailure，code 直接可读
-      if (result.error.code === 'session/permission-denied') {
-        return []
-      }
-      throw result.error  // 真 Error，带 stack
-    }
-    return result.value
-  }
-  
-  async getSession(id: string) {
-    const result = await this.ctx.remote.session.get({ id })
-    if (!result.ok) {
-      if (result.error.code === 'session/not-found') {
-        return null
-      }
-      throw result.error
-    }
-    return result.value
-  }
-}
-```
-
----
+可执行控制流以 [`face-contracts/host-domain.mjs`](face-contracts/host-domain.mjs) 为唯一代码源；
+测试会给 `ctx.remote` 安装一个抛错 getter，证明 Host 路径不会访问 Client face。
 
 ## 迁移步骤
 
-1. **删除 APIProxy 导入**:
-   ```typescript
-   // 删除这行
-   import { executeRemote } from '@deepseek-ai/dsh-host-apiproxy'
-   ```
-
-2. **注入 Context**:
-   ```typescript
-   constructor(private ctx: Context) {}
-   ```
-
-3. **改写所有调用为 RemoteResult 流**:
-   
-   | 旧调用 | 新调用 | 错误处理 |
-   |---|---|---|
-   | `executeRemote('session', 'list', args)` | `ctx.remote.session.list(args)` | `if (!result.ok)` 分支 |
-   | `executeRemote('session', 'get', args)` | `ctx.remote.session.get(args)` | 读 `result.error.code` |
-
-   参考 [ALPHA1-01](../references/v0.1.2-alpha.1.md) 的 17 条操作映射表。
-
-4. **错误处理三原则**:
-   - Consumer 侧 Remote 方法**永不 reject**，返回 `RemoteResult<T>`
-   - 业务失败 `result.ok === false`，读 `result.error.code`
-   - catch 只用于 Gateway client 层（`gateway/internal` 等传输故障）
-
-5. **更新 package.json**:
-   ```sh
-   pnpm remove @deepseek-ai/dsh-host-apiproxy
-   ```
-
----
+1. 判定运行平面；本例是 Host entry，不是 `dsh.client` 浏览器插件；
+2. 删除 `@deepseek-ai/dsh-host-apiproxy` 依赖和 `apiProxy` inject；
+3. 从目标 tag 的 owning package/类型确认领域服务与方法；本例经真实容器验证为 `llm` / `listProviders()`；
+4. 添加 `inject: ['llm']`，调用 `ctx.llm.listProviders()`；
+5. 用真实 profile 验证 entry activate、服务不 pending，并执行该领域方法。
 
 ## 验证
 
 ```sh
-# 1. 检查无残留引用
-grep -r "dsh-host-apiproxy\|executeRemote" src/
-# 预期：无输出
-
-# 2. 构建
-pnpm run build
-
-# 3. 静态通过不等于运行时契约正确——Remote 描述符漂移在静态层是静默的
-# 必须真实冷启动 + 完整对话
-
-# 4. 观察日志
-# - 无 service-unavailable 循环
-# - 业务失败走 ok:false 分支
-# - 错误码能读到且 typed
+node skills/plugin-upgrade/examples/face-contracts/check.mjs
 ```
 
----
+该依赖零 fixture 只防止 Host/Client 平面再次写反；它不能替代固定 tag 的 build 或真实 DSH
+profile。产品级实测与正控见
+[`docs/validation-report-2026-08-30.md`](../../../docs/validation-report-2026-08-30.md)。
 
-## 常见错误
+## 来源
 
-### 错误 1: 仍用 try/catch 包 Remote 调用
-
-**症状**: 业务失败被当异常处理。
-
-**原因**: alpha.2 重构为 `RemoteResult`，Consumer 侧永不 reject。
-
-**修正**:
-```typescript
-// 错误
-try {
-  const data = await ctx.remote.session.list({})
-} catch (error) {
-  // 永远不会进这里（业务失败不是异常）
-}
-
-// 正确
-const result = await ctx.remote.session.list({})
-if (!result.ok) {
-  // 业务失败在这处理
-}
-```
-
-### 错误 2: 读 `error.failure.code`
-
-**原因**: alpha.1 时代 `TypertRemoteFailure` 的形状，alpha.2 已删除。
-
-**修正**: `result.error.code`（直接访问）。
-
-### 错误 3: Gateway client 层误用 RemoteResult
-
-**场景**: 直接调 `gateway.invoke()` 而非 `ctx.remote.*`。
-
-**说明**: Gateway client 层仍可能 reject（`gateway/cancelled`、`gateway/internal`），需 catch + `isRemoteFailure` 判别；但其返回值也是 `RemoteResult`，业务失败仍走 `ok: false`。两层都要处理。
-
-**来源**: [ctx-remote-failure-vocabulary](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.md)（status: implemented）。
+- [DSH-0.1.2-A1-01](../references/v0.1.2-alpha.1.md)
+- [容器全链验证](../../../docs/validation-report-2026-08-30.md)
