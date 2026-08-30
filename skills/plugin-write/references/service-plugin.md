@@ -1,10 +1,10 @@
-# 服务插件参考
+# Service Plugin Reference
 
-服务是一个插件通过 `ctx` 暴露给其他插件的能力；`tools`、`llm` 和 `agents` 是常见示例。
+A service is a capability one plugin exposes to other plugins through `ctx`. `tools`, `llm`, and `agents` are common examples.
 
-> 目标版本守卫：本文档是形态参考，不是版本迁移权威。必须根据精确的目标 Harness 检出版本验证服务名称、生命周期行为、事件和 Agent 作用域。升级时，以 `plugin-upgrade` 的版本卡片和实际观测到的目标行为为准。
+> Target-version guard: this document is a form reference, not version-migration authority. Verify service names, lifecycle behavior, events, and Agent scope against the exact target Harness checkout. For an upgrade, build the migration ledger from [`version-adaptation.md`](version-adaptation.md) first, then follow the observed target behavior.
 
-## 形态
+## Shape
 
 ```ts
 import { Service, type Context } from '@deepseek-ai/cordis'
@@ -16,25 +16,25 @@ declare module '@deepseek-ai/cordis' {
 }
 
 export default class MetricsService extends Service {
-  static inject = ['llm']  // 服务可以依赖其他服务。
+  static inject = ['llm']  // A service may depend on other services.
 
   constructor(ctx: Context) {
-    super(ctx, 'metrics')  // 'metrics' 是服务名。
+    super(ctx, 'metrics')  // 'metrics' is the service name.
   }
 
   record(event: string, value: number) { /* … */ }
 }
 ```
 
-加载后，消费者通过 `ctx.metrics` 访问服务；它们声明 `inject: ['metrics']`，并在 `apply` 中使用。插件向其他插件提供服务时使用类形态；只消费服务的插件使用函数形态即可。公开服务方法要使用 JSDoc `@param`/`@returns` 说明参数和非 void 返回值。服务名是传给 `super(ctx, ...)` 的字符串。生成的子系统页面会记录服务名、公开方法和源码位置；不要维护第二份静态列表。
+After loading, consumers access the service through `ctx.metrics`. They declare `inject: ['metrics']` and use it in `apply`. Use the class form when a plugin provides a service to other plugins. A plugin that only consumes services may use the function form. Document public service methods with JSDoc `@param` and `@returns` for parameters and non-void return values. The service name is the string passed to `super(ctx, ...)`. Generated subsystem pages record the service name, public methods, and source locations; do not maintain a second static list.
 
-## 依赖
+## Dependencies
 
-`inject` 列出必需服务。服务缺失时，插件不会加载，而是等待所有已声明服务就绪；因此在 `apply` 中，`ctx.tools` 已存在且就绪。可选依赖不声明 `inject`，而是在使用点通过 `ctx.get('name')` 查询，并对可能缺失的结果做保护。如果必需服务在运行时消失（提供方卸载），依赖插件会自动释放，服务恢复后再重新加载，从而避免调用不再存在的服务。`cordis.yml` 可以按插件分组隔离服务，例如在分组行上使用 `isolate: { bash: true }`，使不同插件分组看到同一服务的不同实例，且 effect 不跨组传播。
+`inject` lists required services. When a service is missing, the plugin waits for every declared service instead of loading, so `ctx.tools` already exists and is ready inside `apply`. Do not declare optional dependencies in `inject`; query them at the use site with `ctx.get('name')` and guard a missing result. If a required service disappears at runtime because its provider unloads, the dependent plugin is disposed automatically and reloads when the service returns, avoiding calls into a vanished service. `cordis.yml` may isolate services by plugin group, for example `isolate: { bash: true }` on a group row, so separate groups see different instances of the same service and effects do not cross groups.
 
-## 类型化事件
+## Typed Events
 
-事件是插件之间的松耦合扩展 API。通过精确目标 Cordis `Events` 接口的 TypeScript 声明合并定义，事件名使用 `namespace/action`，并用 `@mode` 说明分发模式：
+Events are loosely coupled extension APIs between plugins. Define them through TypeScript declaration merging on the exact target Cordis `Events` interface, use `namespace/action` event names, and document dispatch mode with `@mode`:
 
 ```ts
 import '@deepseek-ai/cordis'
@@ -48,20 +48,20 @@ declare module '@deepseek-ai/cordis' {
 }
 ```
 
-分发模式：`emit`（广播，所有监听器同步运行，忽略返回值）、`bail`（短路，监听器按顺序运行，第一个非 `undefined` 结果成为最终结果）、`serial`（顺序执行，第一个非空值会停止后续执行）、`waterfall`（管线，每个监听器可以包装下游结果，但必须调用 `next()` 才会委派；省略就会按设计短路）。通过 `ctx.on()` 注册的监听器是一项 effect，插件卸载时会自动移除。Harness 事件名使用 `namespace/action`，例如 `agent/step`、`agent/request`、`agent/request-error`、`tools/result` 和 `session/event`。`turn/*`、`step/*`、`tool/call`、`tool/result` 和 `compact/*` 是持久化会话事件类型，不是同名 Cordis 事件。如需观测它们，监听 `session/event` 并检查 `event.type`。
+Dispatch modes are `emit`, which broadcasts synchronously to every listener and ignores return values; `bail`, which runs listeners in order and uses the first non-`undefined` result; `serial`, which runs in order and stops after the first nonempty value; and `waterfall`, a pipeline in which each listener may wrap the downstream result but must call `next()` to delegate, with omission intentionally short-circuiting the chain. A listener registered through `ctx.on()` is an effect and is removed automatically when the plugin unloads. Harness event names use `namespace/action`, such as `agent/step`, `agent/request`, `agent/request-error`, `tools/result`, and `session/event`. `turn/*`, `step/*`, `tool/call`, `tool/result`, and `compact/*` are persisted session-event types, not same-named Cordis events. To observe them, listen to `session/event` and inspect `event.type`.
 
-## 生命周期
+## Lifecycle
 
-加载由依赖驱动。通过 `ctx` 注册的所有内容，包括事件监听器、工具和计时器，都会在插件卸载时清理，无需手动调用 `removeListener` 或 `clearInterval`。对需要显式拆除的资源，例如网络连接，通过 `ctx.effect()` 提供 disposer。如果拆除顺序很重要，将相关工作放在同一个 effect 中，使释放按预期顺序撤销。修改配置会热替换插件：框架卸载旧实例并撤销其注册，然后加载新实例。
+Loading is dependency-driven. Everything registered through `ctx`, including event listeners, tools, and timers, is cleaned up on plugin unload without manual `removeListener` or `clearInterval` calls. For resources that require explicit teardown, such as network connections, provide a disposer through `ctx.effect()`. When teardown order matters, keep the related work in one effect so disposal unwinds in the intended order. A configuration change hot-replaces the plugin: the framework unloads the old instance and revokes its registrations, then loads the new instance.
 
-## 智能体（Agent）作用域
+## Agent Scope
 
-每个 Agent 都有一个带作用域的 `agent.ctx`。在其上完成的注册会进入该 Agent 的层，并在 Agent 释放时按照等待完成的清理顺序撤销。有作用域的监听器会过滤分发，共享存储会在保留领域视图的同时，将其条目覆盖到全局注册表上。`CreateAgentOptions.setup(agentCtx)` 在发布前完成组装。如需将注册范围限定到单个 Agent，使用其 `agent.ctx` 而非根 Context。必须存活于 Agent 预设中的服务行需要 `isolate` realm。
+Every Agent has a scoped `agent.ctx`. Registrations made there enter that Agent's layer and are revoked in awaitable cleanup order when the Agent is disposed. Scoped listeners filter dispatch. Shared stores overlay their entries on the global registry while retaining domain views. `CreateAgentOptions.setup(agentCtx)` completes assembly before publication. To scope a registration to one Agent, use its `agent.ctx` instead of the root Context. Service rows that must survive inside an Agent preset require an `isolate` realm.
 
-## 能力接缝
+## Capability Seams
 
-可替换能力包含三个角色：服务定义（接口）、服务提供方（实现）和消费者（使用该服务的模型可见代码或集成代码）。只有这些角色会独立演进时，才将它们拆成多个包；bash 三包组（定义、提供方、消费者）是模板。单一用途服务保持一个包。只有三个角色都齐全，能力接缝才完整；只有角色确实独立演进时才拆包。
+A replaceable capability has three roles: service definition or interface, service provider or implementation, and consumer code that exposes the service to the model or integrates it elsewhere. Split them into separate packages only when those roles evolve independently. The three-package bash group of definition, provider, and consumer is the template. Keep a single-purpose service in one package. A capability seam is complete only when all three roles exist; split packages only when the roles truly evolve independently.
 
-## 验证
+## Validation
 
-执行单元测试，包括 HMR 安全性测试：释放贡献该注册的 fiber，并断言资源已清理。对用户可见插件，还要执行非单元级的真实组合测试：通过 Loader 启动 `cordis.yml`，并断言模型可见请求或日志、持久化状态或用户可见输出。在 Harness 单仓内，满足其逐文件覆盖率门槛；在外部仓库中，满足所属仓库声明的覆盖率门槛。模型、协议或用户可见行为变更，必须在同一次变更中添加无密钥快照。
+Run unit tests, including an HMR-safety test that disposes the fiber contributing a registration and asserts that the resource is removed. For a user-visible plugin, also run a non-unit real-composition test: start `cordis.yml` through the Loader and assert the model-visible request or log, persisted state, or user-visible output. In the Harness monorepo, satisfy its per-file coverage gate. In an external repository, satisfy its declared coverage gate. Add a credential-free snapshot in the same change for any model-, protocol-, or user-visible behavior change.

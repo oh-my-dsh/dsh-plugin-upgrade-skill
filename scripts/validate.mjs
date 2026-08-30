@@ -76,6 +76,26 @@ for (const file of markdownFiles) {
   }
 }
 
+// Standalone skills must not reach into sibling skill directories.
+for (const name of ['plugin-test', 'plugin-write']) {
+  const skillRoot = join(skillsRoot, name)
+  const files = (await walk(skillRoot)).filter((file) => file.endsWith('.md'))
+  for (const file of files) {
+    const text = await readFile(file, 'utf8')
+    if (/\bplugin-upgrade\b/.test(text)) fail(file, 'standalone skill must not depend on plugin-upgrade')
+    for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+      let target = match[1].trim().replace(/^<|>$/g, '')
+      if (/^(https?:|mailto:|#)/.test(target)) continue
+      target = target.split('#', 1)[0].split('?', 1)[0]
+      if (!target) continue
+      const resolved = resolve(dirname(file), target)
+      if (relative(skillRoot, resolved).startsWith('..')) {
+        fail(file, `standalone skill link leaves its directory: ${match[1]}`)
+      }
+    }
+  }
+}
+
 // Version-card schema, IDs and directed corridor metadata.
 const referencesDir = join(root, 'skills', 'plugin-upgrade', 'references')
 const cardFiles = (await readdir(referencesDir))

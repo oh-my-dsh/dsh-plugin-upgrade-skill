@@ -23,6 +23,11 @@
 | #6 子进程 / stdout | [ALPHA1-05](v0.1.2-alpha.1.md)（headless 输出语义）、[ALPHA1-04](v0.1.2-alpha.1.md)、[ALPHA1-12](v0.1.2-alpha.1.md) / [ALPHA2-04](v0.1.2-alpha.2.md)（workaround 可能过期） |
 | 打包 / 分发 | [ALPHA2-03](v0.1.2-alpha.2.md)（peer deps 裁剪） |
 
+> **跨版本回滚型变更先读完整走廊再动手**：字段或语义在中间版本删除、后续版本又恢复
+> （典型如 `ignorable` 的 [ALPHA1-02](v0.1.2-alpha.1.md) → [ALPHA2-01](v0.1.2-alpha.2.md) 一删一复）。
+> 迁移时必须先折叠走廊的净状态再修改源码——不要在 alpha.1 删一次、到 alpha.2 又加回来；
+> 若最终目标已恢复该语义，旧版适配里的防御代码应当删除而不是保留。
+
 ## Remote 调用的错误流
 
 承接 [ALPHA1-01](v0.1.2-alpha.1.md) 与 [ALPHA2-02](v0.1.2-alpha.2.md)。alpha.2 把错误面重构为 `RemoteError` + `RemoteResult`，**Consumer 侧 Remote 方法签名统一为 `Promise<RemoteResult<T>>`，永不 reject**。业务失败不是异常。
@@ -84,7 +89,7 @@ try {
   ```
 
   manifest 里 range 写 `^0.1.2-alpha.2`，将来正式发布删掉 overrides 段即回到 registry 解析。
-- **注意**: pnpm 版本关键——`11.9.0` 对 file: tarball 的传递依赖在有第三方 peer 时会绕过 overrides 去 registry 找不存在的版本；钉 `packageManager: pnpm@11.24.0` 才解析正确。
+- **注意（待确认）**: 以下 pnpm 版本钉点来自**单一实战报告，尚未在其他仓库复现验证**——报告称 `11.9.0` 对 file: tarball 的传递依赖在有第三方 peer 时会绕过 overrides 去 registry 找不存在的版本，钉 `packageManager: pnpm@11.24.0` 才解析正确。落地前先在目标仓库做最小复现确认，验证通过后回填结果并把本条目转正（与本文件末尾「待确认」小节同步更新）。
 - **验证**: `pnpm list --depth 0 | grep @deepseek-ai` 全部指向目标版本，无混合。
 - **来源**: [#5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 第 1 条。**未在官方 release notes 覆盖范围内**，属社区实践。
 
