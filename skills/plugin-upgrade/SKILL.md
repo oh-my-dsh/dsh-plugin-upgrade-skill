@@ -1,108 +1,92 @@
 ---
 name: plugin-upgrade
-description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或让插件源码适配新的 DSH 宿主版本。仅检查时保持只读；任何配置、依赖或源码写入前必须先展示计划并获得确认。
+description: Inspect or upgrade installed DSH (DeepSeek Harness) plugins, or migrate plugin source to a newer DSH host. Inspection stays read-only; show a plan and obtain confirmation before changing configuration, dependencies, or source. 用于检查、升级或适配 DSH 插件。
 ---
+
+**English** | [简体中文](SKILL.zh-CN.md)
 
 # plugin-upgrade
 
-安全完成三类任务：只读更新检查、已安装插件升级、DSH 宿主版本兼容迁移。若用户意图
-不明确，先确认模式；不要从“帮我看看更新”自行滑入安装或改代码。
+Safely handle three tasks: read-only update inspection, installed-plugin updates, and DSH host compatibility migration. If intent is unclear, confirm the mode; never turn “check for updates” into installation or source changes.
 
-## 第 0 步：选择模式
+## Step 0: choose a mode
 
-| 模式 | 用户意图 | 允许的默认动作 |
+| Mode | User intent | Default allowed action |
 |---|---|---|
-| A · inspect | 检查更新、判断是否受某版 DSH 影响 | 只读调查与报告；完成后停止 |
-| B · update | 把已安装插件升级到明确版本 | 先计划和确认，再改 composition/依赖 |
-| C · host-migrate | DSH 宿主升级后适配插件源码 | 先建版本走廊和触点清单，再计划和确认 |
+| A · inspect | Check updates or assess impact from a DSH release | Read-only investigation and report; then stop |
+| B · update | Upgrade an installed plugin to an explicit version | Plan and confirm before changing composition or dependencies |
+| C · host-migrate | Adapt plugin source after a DSH host upgrade | Build the version corridor and touchpoint inventory, then plan and confirm |
 
-本 skill 不负责“只升级 DSH core 且不处理插件”；也不允许修改 DSH core 来掩盖插件兼容
-问题。
+This skill does not handle DSH core-only upgrades, and it must not modify DSH core to conceal plugin incompatibility.
 
-## 通用只读准备
+## Shared read-only preparation
 
-1. 阅读目标仓库的 `AGENTS.md` / `CLAUDE.md` 等规则；检查 branch、HEAD、working tree、
-   submodule。发现陌生修改或未跟踪文件就停止并报告，不自动 stash/reset/clean/checkout。
-2. 识别安装轨：registry 包、Git checkout、workspace/junction 或复制安装；记录 declared
-   版本、resolved 版本、Git SHA 与当前 DSH/Node 版本。
-3. 区分文件所有权：
-   - `package.json` / lockfile：包与依赖；
-   - `dsh-plugin.json`：社区标准 manifest（若采用）；
-   - `cordis.patch.yml` / `agent.cordis.yml` / 历史 `cordis.yml`：profile composition；
-   - resolved config：运行时组合结果，只用于核对，不整对象回写。
-4. 核对目标版本来源、tag/包名、兼容范围、release notes、安装脚本与已知 breaking changes。
-   不读取、打印或提交 token、`.npmrc` 内容、凭据或会话日志。
-5. 记录回滚基线：当前 HEAD/包版本、lockfile 与将改配置的 hash/路径；说明失败后如何恢复
-   **本次明确路径**，不要承诺回滚第三方安装脚本的任意副作用。
+1. Read repository rules such as `AGENTS.md` and `CLAUDE.md`; inspect branch, HEAD, working tree, and submodules. Stop and report unfamiliar changes or untracked files. Never auto-stash, reset, clean, or checkout.
+2. Identify the installation track: registry package, Git checkout, workspace/junction, or copied install. Record declared and resolved versions, Git SHA, and current DSH/Node versions.
+3. Preserve file ownership boundaries:
+   - `package.json` and lockfile: package and dependencies;
+   - `dsh-plugin.json`: community-standard manifest, when present;
+   - `cordis.patch.yml`, `agent.cordis.yml`, and legacy `cordis.yml`: profile composition;
+   - resolved config: runtime evidence only; never write the whole object back.
+4. Verify the target source, tag/package name, compatibility range, release notes, install scripts, and known breaking changes. Never read, print, or commit tokens, `.npmrc` contents, credentials, or session logs.
+5. Record the rollback baseline: current HEAD/package version, lockfile, and hashes or paths for configuration that may change. Describe recovery only for the explicit paths owned by this task; do not promise rollback of arbitrary third-party script effects.
 
-## 模式 A · inspect（只读）
+## Mode A · inspect (read-only)
 
-输出：当前/可用版本、来源、兼容范围、breaking changes、建议目标、风险与验证计划。不得
-改文件、安装依赖、执行 lifecycle script、`git pull` 或切换版本。用户若决定执行，再进入
-模式 B 或 C 并单独确认。
+Report current and available versions, source, compatibility range, breaking changes, recommended target, risks, and validation plan. Do not edit files, install dependencies, run lifecycle scripts, use `git pull`, or switch versions. If the user chooses to proceed, enter Mode B or C with separate confirmation.
 
-## 模式 B · update（升级已安装插件）
+## Mode B · update an installed plugin
 
-1. 按安装轨选择唯一更新方式；有 lockfile 时只使用对应包管理器，不混用 npm/pnpm/bun。
-2. 生成变更计划：精确目标版本、将执行的命令、会改的文件、可能执行的生命周期脚本、
-   配置迁移和回滚步骤。
-3. **任何写入或安装前取得用户明确确认**；即使没有 breaking change 也一样。
-4. 在独立 branch/worktree 中做最小修改；配置用路径级 patch，保留未知字段。Git 来源先
-   fetch/比较明确 tag 或 commit，不对脏工作区直接 `git pull`。
-5. 按“验证与报告”执行；失败时只恢复本次拥有的路径并报告残留副作用。
+1. Select one update mechanism from the installation track. When a lockfile exists, use its package manager only; do not mix npm, pnpm, and bun.
+2. Present the exact target, commands, files, lifecycle scripts, configuration migration, and rollback steps.
+3. **Obtain explicit confirmation before any write or install**, even when no breaking change is known.
+4. Make the smallest change in a dedicated branch or worktree. Patch configuration by path and preserve unknown fields. For Git installs, fetch and compare an explicit tag or commit; never `git pull` a dirty worktree.
+5. Run “Validation and reporting.” On failure, restore only paths owned by this task and report residual effects.
 
-## 模式 C · host-migrate（插件随 DSH 升级）
+## Mode C · migrate with a DSH host upgrade
 
-1. 用精确 tag 确认 from/to；按 [references/README.md](references/README.md) 的
-   `from → to` 元数据连接版本走廊，禁止按文件名字典序。
-2. 先读完整走廊并计算最终净状态。字段在中间版本删除、目标版又恢复时，不先删再加。
-3. 按 [pre-flight.md](references/pre-flight.md) 扫描七类触点：源码 patch、事件、服务/
-   Remote、宿主文件系统、UI/命令/工具、自建通道、子进程/输出。零命中只是启发式结果，
-   仍须检查依赖/导入并跑 build 与真实挂载。
-4. 只保留与命中触点和实际 face（Host/Web Client/普通 plugin）相交的卡片。卡片是 curated
-   清单，不是完整 API diff；缺走廊边或 API 坐标时标 unsupported/待确认，不凭记忆改。
-5. 生成按 seam 分组的源码迁移计划，列命中文件、卡片、目标行为与测试；取得确认后再在
-   独立 branch/worktree 实施。`capability` 卡仅建议，不自动采用。
+1. Confirm exact from/to tags. Build the corridor from the `from → to` metadata in [references/README.md](references/README.md), never filename sort order.
+2. Read the full corridor and compute the final net state before editing. If a field is removed in one version and restored later, do not delete and re-add it.
+3. Use [pre-flight.md](references/pre-flight.md) to scan seven touchpoint classes: source patches, events, services/Remote, host filesystem, UI/commands/tools, custom channels, and subprocess/output. Zero hits are heuristic only; still inspect dependencies/imports and run build plus a real mount.
+4. Keep only cards intersecting the detected touchpoints and the actual face: Host, Web Client, or ordinary plugin. Cards are curated, not a complete API diff. Mark missing corridor edges or API coordinates unsupported/pending instead of guessing.
+5. Group the migration plan by seam, naming hit files, cards, target behavior, and tests. After confirmation, implement in a dedicated branch or worktree. Suggest `capability` cards; never adopt them automatically.
 
-## 安全边界
+## Safety boundaries
 
-- 所有写文件、安装、拉取/切换版本、运行包脚本的动作都要先展示并确认；
-- 不自动 stash/reset/clean/强制更新，不覆盖用户或其他 Agent 的工作；
-- 不泄露凭据；诊断只报告是否配置及非敏感版本/来源；
-- 不把未知 `gateway/internal` 或其他失败默认重试；仅在错误可重试、操作幂等且策略允许时重试；
-- 迁移方式不能由一手来源或可复现行为高置信确定时，停止自动修改并标「待确认」；
-- 本地观察与一手来源冲突时并列记录、复现并上报，不静默选择一方。
+- Show the plan and obtain confirmation before file writes, installs, version fetch/switch operations, or package scripts.
+- Never auto-stash, reset, clean, force-update, or overwrite user or agent work.
+- Never expose credentials; diagnostics may report only configuration presence and non-sensitive versions or sources.
+- Do not retry unknown `gateway/internal` or other failures by default. Retry only a classified transient error for an idempotent operation when policy allows it.
+- If primary sources or reproducible behavior cannot establish a migration with high confidence, stop and mark it pending review.
+- When local evidence conflicts with a primary source, record both, reproduce, and report the discrepancy.
 
-## 验证与报告
+## Validation and reporting
 
-至少按适用层级验证：
+Validate the applicable layers:
 
-1. 安装/解析：对应包管理器、lockfile 与依赖图只发生预期变化；
-2. 静态：build、typecheck、插件测试；
-3. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
-   pending；
-4. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
-5. 包装器：核对退出码、stdout、stderr、取消与 teardown。
+1. Resolution: package manager, lockfile, and dependency graph contain only expected changes.
+2. Static: build, typecheck, and plugin tests.
+3. Runtime: cold-start a real DSH profile; verify entry activation and that required/provided Cordis services do not remain pending.
+4. Behavior: execute one core plugin path. Host migrations require at least one message → tool → response flow or an equivalent specialized path.
+5. Wrapper: verify exit code, stdout, stderr, cancellation, and teardown.
 
-报告固定分为：
+Structure the report as:
 
-- **已完成**：版本、文件、卡片与验证；
-- **跳过**：未命中或不适用及依据；
-- **待确认/残留风险**：缺来源、未跑平台、生命周期脚本副作用；
-- **回滚**：已记录基线与可恢复路径；
-- **建议**：可选 capability 和迁到公开 seam 的后续工作。
+- **Completed**: versions, files, cards, and validation;
+- **Skipped**: non-hits or inapplicable items with evidence;
+- **Pending/residual risk**: missing sources, untested platforms, lifecycle-script effects;
+- **Rollback**: recorded baseline and recoverable paths;
+- **Recommendations**: optional capabilities and future migration to public seams.
 
-## 参考材料
+## References
 
-| 文件 | 内容 |
+| File | Purpose |
 |---|---|
-| [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
-| [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
-| [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1：14 张 curated 卡 |
-| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：6 张 curated 卡 |
-| [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1 → 0.1.2 走廊（rollup）：跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、分层验证清单；**基于 alpha.2，正式版需复核** |
-| [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
+| [references/README.md](references/README.md) | Version corridors, card schema, and maintenance rules |
+| [references/pre-flight.md](references/pre-flight.md) | Seven-class touchpoint scan and report template |
+| [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1: 14 curated cards |
+| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2: 6 curated cards |
+| [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1→0.1.2 corridor rollup: cross-cohort compatibility, unpublished cohort installation, `RemoteResult` flow, and layered validation; **based on alpha.2 and subject to final-release review** |
+| [examples/legacy-plugin/](examples/legacy-plugin/) | Static seven-touchpoint fixture; never execute it |
 
-规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
-负责 manifest、契约坐标与协商；本 skill 处理现有插件的实际升级，引用其分类而不重定义
-规范语义。官方征集出处见 [deepseek-harness discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)。
+[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard) owns manifest, contract-coordinate, and negotiation conventions. This skill handles practical upgrades and reuses that classification without redefining it. The official migration call is [deepseek-harness discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120).
