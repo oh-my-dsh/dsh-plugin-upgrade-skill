@@ -224,7 +224,7 @@ for (const file of markdownFiles) {
 // The rollup is a current navigation document, not an unchecked historical snapshot.
 const rollupFile = join(referencesDir, 'rollup-0.1.2.md')
 const rollupText = await readFile(rollupFile, 'utf8')
-for (const required of ['（14 张）', '（6 张）', '#7 子进程']) {
+for (const required of ['（15 张）', '（6 张）', '#7 子进程']) {
   if (!rollupText.includes(required)) fail(rollupFile, `missing current rollup contract: ${required}`)
 }
 if (/Consumer.*永不 reject|#6 子进程|git checkout <tag> -- pnpm-lock\.yaml/.test(rollupText)) {
