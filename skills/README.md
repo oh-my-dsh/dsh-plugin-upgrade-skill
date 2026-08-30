@@ -33,5 +33,11 @@ description: 一句话说明做什么、何时触发，以及重要的只读/写
 ## 收录清单
 
 | Skill | 说明 | 作者 |
-1: @ours
-| [dsh-upgrade-audit](dsh-upgrade-audit/) | 审计两个 DSH 版本间的外部兼容性与回滚：源码检出走 git tag 对比，无源码自动降级下载 npm 双版本；产出标准 upgrade-report 目录（UPGRADE-ADAPTATION + 边界签名表），为版本变更卡片提供证据 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
+|---|---|---|
+| [plugin-upgrade](plugin-upgrade/) | 只读检查、已安装插件升级、宿主兼容迁移；七类触点 + 版本卡片 + 安全回滚 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
+| [plugin-write](plugin-write/) | 编写 DSH 插件，按目标 Harness 版本选择扩展形态，并区分官方单仓与外部插件规则 | [@omdsh-dev](https://github.com/omdsh-dev) |
+| [plugin-test](plugin-test/) | 为 DSH 插件变更选择测试层级，并覆盖真实组合、发布产物与目标版本产品入口 | [@omdsh-dev](https://github.com/omdsh-dev) |
+
+## 版本兼容审计（独立条目）
+
+**[dsh-upgrade-audit](dsh-upgrade-audit/)**（作者 [@oh-my-dsh](https://github.com/oh-my-dsh)）——审计两个 DSH 版本间的外部兼容性与回滚：源码检出走 git tag 对比，无源码自动降级下载 npm 双版本；产出标准 upgrade-report 目录（UPGRADE-ADAPTATION + 边界签名表），为版本变更卡片提供证据。独立分节维护，不改上方收录清单，避免 upstream 更新表格时的冲突。
