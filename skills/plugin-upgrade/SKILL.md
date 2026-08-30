@@ -78,7 +78,8 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 至少按适用层级验证：
 
 1. 安装/解析：对应包管理器、lockfile 与依赖图只发生预期变化；
-2. 静态：build、typecheck、插件测试；
+2. 静态：build、typecheck、插件测试；存在本地 DSH 类型桩或 `paths` alias 时，另用目标
+   tag 的真实声明做隔离 typecheck；
 3. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
    pending；
 4. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
@@ -99,7 +100,7 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 | [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1：14 张 curated 卡 |
-| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：6 张 curated 卡 |
+| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：7 张 curated 卡 |
 | [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1 → 0.1.2 走廊（rollup）：跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、分层验证清单；**基于 alpha.2，正式版需复核** |
 | [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
 

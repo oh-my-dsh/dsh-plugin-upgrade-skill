@@ -13,11 +13,14 @@
 扫描全部受跟踪的源码、测试、脚本、CI 和根配置，排除生成物、vendor 与
 `node_modules`。至少记录：
 
-- `package.json` 的插件版本、`peerDependencies`、`engines` 与 `@deepseek-ai/*` 导入；
+- `package.json` 的版本、`peerDependencies`、`engines`、`dsh.client.inject` 与
+  `@deepseek-ai/*` 导入；核对 `remote`、`connection`、`slots` 等服务的 Client contribution；
 - resolved 版本与 lockfile（只认仓库正在使用的包管理器）；
 - 标准 manifest `dsh-plugin.json`（若存在）；
 - profile composition：`cordis.patch.yml`、`agent.cordis.yml`、历史 `cordis.yml`；
 - 实际安装轨：registry 包、Git checkout、workspace/junction 或复制安装。
+- 本地 `dsh.d.ts`、ambient `declare module '@deepseek-ai/…'` 和 `paths` alias；命中后
+  排除替身，用目标 tag 的真实声明重跑 typecheck。
 
 这些文件所有权不同，不能统一称为 manifest，也不能整对象重写未知字段。
 
@@ -57,12 +60,13 @@ rg -n "tool/code-dispatch|tools-code-mode|connection/reset" .
 ```sh
 rg -n "APIProxy|apiProxy|ctx\.get\(|ctx\.remote|@Remote" .
 rg -n "@deepseek-ai/dsh-api-.+/client|/internal" .
+rg -n "JsonValue.*from ['\"]@deepseek-ai/dsh-(tools|session)" .
 ```
 
 同时记录调用所在 face（Host、Web Client、普通 Cordis plugin）与包入口；内部架构迁移
 不能直接当成所有插件的公开 API 建议。
 
-**关联卡**: `DSH-0.1.2-A1-01`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A2-02`、`DSH-0.1.2-A2-05`、`DSH-0.1.2-A2-06`
+**关联卡**: `DSH-0.1.2-A1-01`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A2-02`、`DSH-0.1.2-A2-05`、`DSH-0.1.2-A2-06`、`DSH-0.1.2-A2-07`
 
 ## #4 直接读写宿主目录
 
@@ -80,10 +84,12 @@ rg -n "readFile|writeFile|mkdir|openPath" .
 
 ```sh
 rg -n "registerCommand|registerView|contributes|ctx\.tools" .
-rg -n "ctx\.effect\(|/internal" .
+rg -n "ctx\.slots\.(inject|register)|ctx\.effect\(|/internal" .
+rg -n "@deepseek-ai/dsh-client-|dsh\.client\.inject" . -g 'package.json' -g 'dsh-plugin.json'
 ```
 
-将公开 seam 与内部路径分开；机会型 capability 只建议、不自动采用。
+命中 `ctx.slots` 后，同时核对 slot 名、实际服务与 `package.json#dsh.client.inject`；本地
+类型桩不能证明 contribution 已装配。机会型 capability 只建议、不自动采用。
 
 **关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`
 
@@ -113,6 +119,7 @@ rg -n "headless|--profile" .
 
 - 权限/审批：另查 `DSH-0.1.2-A1-07`；
 - 打包/依赖：另查 `DSH-0.1.2-A2-03`；
+- 类型导出/本地宿主类型桩：另查 `DSH-0.1.2-A2-07`；
 - 隐私/数据出境：另查 `DSH-0.1.2-A1-12`、`DSH-0.1.2-A1-14`。
 
 ## 汇总模板

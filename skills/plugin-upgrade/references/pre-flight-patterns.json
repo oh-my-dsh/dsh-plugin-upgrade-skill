@@ -26,7 +26,8 @@
       "name": "内部服务探测 / Remote",
       "patterns": [
         "APIProxy|apiProxy|ctx\\.get\\(|ctx\\.remote|@Remote",
-        "@deepseek-ai/dsh-api-.+/client|/internal"
+        "@deepseek-ai/dsh-api-.+/client|/internal",
+        "JsonValue.*@deepseek-ai/dsh-(tools|session)|@deepseek-ai/dsh-(tools|session).*JsonValue"
       ]
     },
     {
@@ -43,8 +44,9 @@
       "slug": "internal-ui-commands",
       "name": "内部 UI / 命令 / 工具注册",
       "patterns": [
-        "registerCommand|registerView|contributes|ctx\\.tools",
-        "ctx\\.effect\\(|/internal"
+        "registerCommand|registerView|contributes|ctx\\.tools|ctx\\.slots\\.(inject|register)",
+        "ctx\\.effect\\(|/internal",
+        "@deepseek-ai/dsh-client-|dsh\\.client\\.inject"
       ]
     },
     {
