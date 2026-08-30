@@ -267,10 +267,19 @@ try {
   fail(namingCheckFile, `naming validator check failed: ${error.stack ?? error.message}`)
 }
 
+// The online phase must consume only registry v2, preserve offline validation, and distinguish unavailable from free.
+const registryCheckFile = join(root, 'skills', 'plugin-write', 'scripts', 'query-registry.check.mjs')
+try {
+  const { runRegistryQueryChecks } = await import(pathToFileURL(registryCheckFile).href)
+  await runRegistryQueryChecks()
+} catch (error) {
+  fail(registryCheckFile, `registry query check failed: ${error.stack ?? error.message}`)
+}
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`)
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only planner, offline naming validator`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only planner, offline naming validator, read-only registry v2 query`)

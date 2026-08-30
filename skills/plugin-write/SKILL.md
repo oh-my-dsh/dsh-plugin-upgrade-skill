@@ -1,6 +1,6 @@
 ---
 name: plugin-write
-description: Use when creating a DeepSeek Harness plugin, choosing public names for a new external DSH plugin, validating a dsh-plugin.naming.json manifest, or creating a workspace package inside the deepseek-harness repository. Covers the full workflow from repository-mode and plugin-form selection through offline naming checks and package validation. Routes tool, LLM adapter, hook, service, and configuration forms to their corresponding references while separating upstream-monorepo rules from external-package rules. For an existing plugin crossing Harness versions, use this Skill's built-in version-adaptation workflow before implementing against the exact target contract.
+description: Use when creating a DeepSeek Harness plugin, choosing public names for a new external DSH plugin, validating a dsh-plugin.naming.json manifest, checking reviewed central registrations for known conflicts, or creating a workspace package inside the deepseek-harness repository. Covers the full workflow from repository-mode and plugin-form selection through separate offline naming validation, optional online registry lookup, and package validation. Routes tool, LLM adapter, hook, service, and configuration forms to their corresponding references while separating upstream-monorepo rules from external-package rules. For an existing plugin crossing Harness versions, use this Skill's built-in version-adaptation workflow before implementing against the exact target contract.
 ---
 
 # Write DeepSeek Harness Plugins
@@ -18,6 +18,8 @@ Create a plugin package. First classify the repository mode and plugin form, the
 Derive Cordis, Schemastery, and DSH package names and version ranges from the manifest of the exact target version. Current examples use scoped `@deepseek-ai/*` identifiers. Older targets may differ and must follow their own published contracts.
 
 For every new external plugin, read [`references/naming-conventions.md`](references/naming-conventions.md) before choosing public identifiers. Create `dsh-plugin.naming.json` at the plugin repository root and run the bundled read-only validator before final package validation. Treat compatibility errors as target-contract failures and prefix warnings as community recommendations; use `--strict` only when the plugin adopts the collision-resistant profile. This is not an official Harness manifest or a global reservation. For an existing external plugin, report naming deviations but preserve published names unless the user explicitly authorizes a compatibility-breaking rename. Packages inside the official monorepo follow the exact target checkout instead of this external naming profile.
+
+After the offline declaration passes, read [`references/registry-check.md`](references/registry-check.md) and run the separate central lookup when public network access is available. Supply the exact target Harness version. Treat a completed no-match result only as “no reviewed match”; treat timeout, malformed data, unsupported contract, or network failure as “unknown/not checked.” Never let the online lookup modify the local manifest, automatically rename a published surface, or turn an automated discovery candidate into a reservation. A formal reservation exists only after a source-backed entry is reviewed and merged in the central registry.
 
 ## Then Classify the Plugin Form
 
@@ -90,7 +92,7 @@ A plugin may combine forms freely, such as a configurable tool plugin or a servi
    - **Consumer-visible gap** — State the exact missing operation or condition, its consequence, and any maintainer constraint.
    ````
 
-6. **Validate** — For a new external plugin, first run `node <plugin-write-skill>/scripts/validate-names.mjs --manifest ./dsh-plugin.naming.json`; add `--strict` only for the collision-resistant community profile. Then run the applicable validation block below, focused checks, and coverage gate required by the changed behavior.
+6. **Validate** — For a new external plugin, first run `node <plugin-write-skill>/scripts/validate-names.mjs --manifest ./dsh-plugin.naming.json`; add `--strict` only for the collision-resistant community profile. After it passes, run `node <plugin-write-skill>/scripts/query-registry.mjs --manifest ./dsh-plugin.naming.json --harness-version <exact-semver>` when network access is available, and report an unavailable query as unknown rather than available. Then run the applicable validation block below, focused checks, and coverage gate required by the changed behavior.
 
 ## Rules While Writing
 

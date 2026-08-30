@@ -31,7 +31,7 @@ Primary sources: [first plugin](https://github.com/deepseek-ai/deepseek-harness/
 
 ## Community coordinate and recommendations
 
-Choose a publisher namespace and plugin name in kebab-case. The community coordinate is `<namespace>/<plugin>`. It exists for future registry lookup and does not replace any official Harness field.
+Choose a publisher namespace and plugin name in kebab-case. The community coordinate is `<namespace>/<plugin>`. It is the lookup key used by the optional community registry and does not replace any official Harness field.
 
 For namespace `alice` and plugin `web-search`, the collision-resistant projections are:
 
@@ -98,4 +98,6 @@ For a new plugin that adopts every community recommendation, add `--strict`. Use
 
 ## Registry boundary
 
-A future registry must not compare strings without context. It needs the target Harness version, registration scope, Loader patch layer and override intent, Skill provider/rank, and Web route kind. Events are shared channels and should be checked for incompatible schemas, not rejected merely because two plugins use the same event name. Ports belong to deployment configuration and require a composition-time check rather than a naming reservation.
+The optional central registry uses the local declaration only as phase-one source evidence. Its v2 entry separately records the target Harness range, registration scope, Loader patch layer and override intent, Skill provider/rank, event publisher/schema, and Web route kind. Events remain shared channels and are checked for incompatible publisher schemas instead of being rejected merely for the same name. Ports remain deployment configuration and require a composition-time check rather than a naming reservation.
+
+Read [`registry-check.md`](registry-check.md) after this offline validator passes. Keep a missing central match, an unavailable query, an automated discovery candidate, and a reviewed formal registration as four distinct states.
