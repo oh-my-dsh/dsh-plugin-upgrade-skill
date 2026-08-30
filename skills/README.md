@@ -1,40 +1,37 @@
 # skills/
 
-所有 skill 都放这里。**一个 skill 一个文件夹**，文件夹名用 kebab-case，见名知意。
+所有 Skill 都放在这里。**一个 Skill 一个文件夹**，文件夹名使用 kebab-case。
 
 ## 编写规范
 
-每个 skill 文件夹至少包含一个 `SKILL.md`：
-
-```
+```text
 skills/<skill-name>/
-├── SKILL.md          # 必须。skill 主体
-├── scripts/          # 可选。skill 可调用的脚本
-├── references/       # 可选。参考文档，按需加载
-└── examples/         # 可选。示例
+├── SKILL.md          # 必需：触发描述与决策流程
+├── scripts/          # 可选：Skill 自有脚本
+├── references/       # 可选：按需加载的详细事实
+└── examples/         # 可选：静态示例/夹具
 ```
 
-`SKILL.md` 格式：
+`SKILL.md` 至少包含：
 
 ```markdown
 ---
-name: skill-name          # 与文件夹名一致
-description: 一句话说明这个 skill 做什么、什么时候触发。agent 靠它决定何时加载，写清楚触发场景。
+name: skill-name
+description: 一句话说明做什么、何时触发，以及重要的只读/写入边界。
 ---
-
-# 标题
-
-（正文：skill 的具体指令、流程、注意事项）
 ```
 
-注意：
+要求：
 
-- `description` 是最重要的字段——它决定 agent 什么时候会用到这个 skill，务必写清触发场景
-- 正文保持精简，详细参考材料放 `references/` 按需引用，不要一次性全塞进 `SKILL.md`
-- skill 聚焦单一职责；一个 skill 做太多事就拆成多个
+- `name` 与文件夹名一致；
+- `description` 同时说明操作和触发场景；
+- 主文件只保留决策流程，详细材料放 `references/`；
+- 一个 Skill 聚焦一项用户目标；同一目标有只读/写入模式时先显式分流；
+- 写操作必须先展示计划并取得确认；
+- 新增/修改后运行根目录 `node scripts/validate.mjs`。
 
 ## 收录清单
 
 | Skill | 说明 | 作者 |
-| --- | --- | --- |
-| [plugin-upgrade](plugin-upgrade/) | 升级 DSH 插件：盘点版本 → 评估 changelog → 迁移 cordis.yml → 执行升级 → 验证；含宿主版本迁移分支（触点自查 + 版本变更卡片） | [@oh-my-dsh](https://github.com/oh-my-dsh) |
+|---|---|---|
+| [plugin-upgrade](plugin-upgrade/) | 只读检查、已安装插件升级、宿主兼容迁移；七类触点 + 版本卡片 + 安全回滚 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
