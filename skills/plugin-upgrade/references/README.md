@@ -1,38 +1,68 @@
 # references/ · 按需加载的参考材料
 
-> SKILL.md 保持精简，详细材料都在这里按需引用（见
-> [skills/README.md](../../README.md) 编写规范）。
+> `SKILL.md` 只保留决策流程，版本事实与扫描模式放在这里按需加载。
 
-## 版本卡片索引
+## 版本走廊索引
 
-| 卡片文件 | 版本区间 | 卡数 | 要点 |
-|---|---|---|---|
-| [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | 0.1.1(-rc.2) → alpha.1 | 12 | APIProxy→`@Remote`（17 条操作映射表）、`SessionEvent.ignorable` 移除、会话视图拆分、headless 输出语义、Profile 统一启动、WebFetch 默认开、4 张新能力卡 |
-| [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | alpha.1 → alpha.2 | 4 | `ignorable` 恢复（与 alpha.1 卡交叉引用）、`RemoteError` 统一封装、peer deps 裁剪、Node 24 修复 |
+按表中 `from → to` 的有向边构造走廊，**不要按文件名排序**；`alpha.10` 的字典序会早于
+`alpha.2`。目标跨多版时先读完整走廊并计算最终净状态，再修改源码——例如字段在
+alpha.1 删除、alpha.2 恢复时，不应先删再加。
 
-配套：[pre-flight.md](pre-flight.md)（升级前六类触点自查，含 ripgrep 检出模式）。
+| 顺序 | 卡片文件 | from | to | 卡数 | 状态 / 覆盖 |
+|---|---|---|---|---:|---|
+| 1 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 13 | reviewed / curated |
+| 2 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 4 | reviewed / curated |
 
-## 新增一版卡片的格式
+`curated` 表示只收录已识别的插件相关变化，**不表示完整 API diff**。走廊缺边时停止
+自动迁移，向用户报告缺口；为当前任务做临时上游调研与给本仓库补卡是两件事，后者
+不应成为修改用户插件的隐式副作用。
 
-DSH 每发一个版本，这里就需要一份新卡片（`vX.Y.Z-<suffix>.md`）：
+配套材料：
 
-1. 从官方 release notes + 上游架构笔记（`.agents/notes/`）提炼**插件相关**变更；
-   对插件无触点的宿主内部变化收进文件尾注，不建卡，控制信噪比；
-2. 每条变更一张卡，字段如下：
+- [pre-flight.md](pre-flight.md)：七类触点自查与迁移任务汇总；
+- [pre-flight-patterns.json](pre-flight-patterns.json)：可执行校验使用的正则真源；
+- [examples/legacy-plugin/](../examples/legacy-plugin/)：七类触点静态夹具。
 
-```markdown
-### <RELEASE>-NN · 标题
-- **类型**: breaking | behavior | capability | fix
-- **影响触点**: #<触点编号，对应 pre-flight.md 的六类>
-- **症状**: 升级后什么会坏/变
-- **迁移配方**: 具体步骤；旧→新映射表（如适用）
-- **验证**: 怎么确认迁移成功
-- **来源**: 上游 release notes / 架构笔记链接
-- **实战批注**（可选）: 真实迁移中观察到的与笔记不符的行为，注明日期与插件名
+## 卡片文件元数据
+
+每个 `vX.Y.Z-<suffix>.md` 以 frontmatter 声明：
+
+```yaml
+---
+kind: dsh-version-card-set
+schema: 1
+from: dsh-v0.1.2-alpha.1
+to: dsh-v0.1.2-alpha.2
+status: reviewed
+coverage: curated
+cardCount: 4
+idPrefix: DSH-0.1.2-A2
+verifiedAt: 2026-08-30
+---
 ```
 
-3. 规则：
-   - ID 为 `<RELEASE>-NN` 顺序编号，不复用；
-   - 每张卡至少一条一手来源；
-   - 跨版本的波动（如字段删了又恢复）用卡片交叉引用记录；
-   - 提 PR 时标题带版本号。
+版本顺序由 `from/to` 决定；`cardCount`、ID 前缀与必需字段由仓库校验脚本检查。
+
+## 单张卡片格式
+
+```markdown
+### DSH-0.1.2-A2-01 · 标题
+
+- **类型**: breaking | behavior | capability | fix | security | privacy
+- **适用对象**: client / server plugin / profile wrapper / packaging 等
+- **影响触点**: #1…#7，或“无（打包/隐私面）”
+- **操作级别**: required | required-if-hit | required-if-target-is-… | conditional | optional | informational
+- **症状**: 升级后什么会坏或变化
+- **迁移配方**: 可核对的步骤；旧→新 ledger（如适用）
+- **验证**: 如何证明最终行为，而不是只证明安装成功
+- **来源**: 固定 release tag / commit 的一手来源
+- **实战批注**（可选）: 可复现的真实迁移差异，注明日期、插件、平台与版本
+```
+
+规则：
+
+1. ID 必须包含完整宿主版本并在仓库内唯一；
+2. 每张卡至少引用一条一手来源，同版本材料存在时优先钉在同一个 tag；
+3. release notes 只给出方向、没有 API 坐标时，配方必须要求再查目标 tag 类型，不能自造接口；
+4. 跨版本回滚/恢复用完整 ID 交叉引用；
+5. 本地观察与一手来源冲突时，先复现并并列记录差异，不静默覆盖任何一方。

@@ -1,132 +1,135 @@
-# Pre-flight 清单 · 升级前触点自查
+# Pre-flight · 宿主升级前触点自查
 
-> 用途：升级 DSH 宿主版本前，先弄清插件与宿主的接触面有多大。
-> 六类触点与 [dsh-community-standard 迁移指南](https://github.com/oh-my-dsh/dsh-community-standard/blob/main/guides/migration.md)
-> 的调研分类对齐。检出模式以 ripgrep 示意，等效 grep 即可。
+> 这是启发式扫描，不是兼容性证明。七类零命中只表示“未被当前模式发现”，仍须检查
+> 依赖/配置并执行 build、真实挂载和功能烟测。
 
-## 使用方法
+前六类沿用 [dsh-community-standard 迁移指南](https://github.com/oh-my-dsh/dsh-community-standard/blob/main/guides/migration.md)
+的分类；本 skill 另加 #7 子进程/输出解析。机器校验读取
+[pre-flight-patterns.json](pre-flight-patterns.json)。下列 `rg` 仅为示例；Agent 应优先
+使用当前环境提供的内容搜索工具。
 
-1. 先确定版本区间（from → to），到本目录（references/）按文件名序取版本卡片；
-2. 对插件源码逐类跑检出，记录命中（文件 + 行）；
-3. 按每类末尾的「去查哪张卡」索引，把命中的卡片集合汇总成迁移任务清单；
-4. 六类全零命中 → 插件只经公共契约耦合，跑一遍烟测即可收工。
+## 0. 先做配置与依赖盘点
 
----
+扫描全部受跟踪的源码、测试、脚本、CI 和根配置，排除生成物、vendor 与
+`node_modules`。至少记录：
+
+- `package.json` 的插件版本、`peerDependencies`、`engines` 与 `@deepseek-ai/*` 导入；
+- resolved 版本与 lockfile（只认仓库正在使用的包管理器）；
+- 标准 manifest `dsh-plugin.json`（若存在）；
+- profile composition：`cordis.patch.yml`、`agent.cordis.yml`、历史 `cordis.yml`；
+- 实际安装轨：registry 包、Git checkout、workspace/junction 或复制安装。
+
+这些文件所有权不同，不能统一称为 manifest，也不能整对象重写未知字段。
+
+## 1. 构造版本走廊
+
+1. 用精确 tag 确认 from/to；
+2. 按 [版本走廊索引](README.md#版本走廊索引) 的 `from → to` 边连接，禁止按文件名字典序；
+3. 先读完整走廊并折叠“移除后又恢复”等净变化，再生成修改计划；
+4. 缺卡时报告 unsupported gap，先做一手来源调研，不凭记忆自动改插件。
 
 ## #1 源码 patch / monkey patch
 
-**查什么**: 改写宿主文件或函数的一切手段。
-
 ```sh
-rg -n "cordis\.patch|patch\.yml|monkeypatch|monkey-patch" .
-rg -n "DSH_HARNESS_SOURCE_ROOT|patch-surface" .
+rg -n "cordis\.patch\.yml|patch\.yml|patchedDependencies|patch-package" .
+rg -n "DSH_HARNESS_SOURCE_ROOT|patch-surface|monkeypatch|monkey-patch" .
 ```
 
-**命中意味着**: 宿主文件一旦移动/拆分/重命名，patch 直接失效——通常是最痛的
-一类。
+命中后逐个记录宿主目标路径与替换意图；目标 tag 中找不到等价 owning 模块时标
+「待确认」，不猜路径。
 
-**去查哪张卡**: ALPHA1-03（会话视图拆分）；每版 release notes 的「其他变更」
-节里出现「工程拆分/迁移」字样时必有新卡。
+**关联卡**: `DSH-0.1.2-A1-03`
 
----
-
-## #2 内部事件名
-
-**查什么**: 硬编码订阅宿主内部事件字符串。
+## #2 内部事件名与持久事件
 
 ```sh
-rg -n "SessionEvent|session/event|\.on\(['\"]|subscribe\(" src/
+rg -n "SessionEvent|session/event|ctx\.on\(|subscribe\(" .
+rg -n "tool/code-dispatch|tools-code-mode|connection/reset" .
 ```
 
-**命中意味着**: 事件字段增删波动会直接改变插件行为。
+区分 producer、persistence、reload、transport 与普通 observer；未知 required 事件不能
+因白名单而被放过。
 
-**去查哪张卡**: ALPHA1-02 / ALPHA2-01（`ignorable` 一删一复）。
+**关联卡**: `DSH-0.1.2-A1-02`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A2-01`
 
----
-
-## #3 内部服务探测（APIProxy / Remote / ctx.get）
-
-**查什么**: 反射、结构探测、旧代理接口调用。
+## #3 内部服务探测 / Remote
 
 ```sh
-rg -n "APIProxy|apiProxy" .
-rg -n "ctx\.get\(|ctx\.remote" src/
+rg -n "APIProxy|apiProxy|ctx\.get\(|ctx\.remote|@Remote" .
+rg -n "@deepseek-ai/dsh-api-.+/client|/internal" .
 ```
 
-**命中意味着**: APIProxy 已整体移除（ALPHA1-01），这是 0.1.1 → 0.1.2 最大的
-一个坑；Remote 调用则要按 RemoteError 重写错误处理（ALPHA2-02）。
+同时记录调用所在 face（Host、Web Client、普通 Cordis plugin）与包入口；内部架构迁移
+不能直接当成所有插件的公开 API 建议。
 
-**去查哪张卡**: ALPHA1-01（含 17 条操作映射表）、ALPHA2-02。
-
----
+**关联卡**: `DSH-0.1.2-A1-01`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A2-02`
 
 ## #4 直接读写宿主目录
 
-**查什么**: 往 profile、工作区、宿主配置目录写文件或读内部结构。
-
 ```sh
-rg -n "DSH_HOME|\.dsh|profiles[/\\\\]" src/ scripts/
-rg -n "(readFile|writeFile|mkdir).*profile" src/
+rg -n "DSH_HOME|\.dsh[/\\]|profiles[/\\]|homedir\(" .
+rg -n "readFile|writeFile|mkdir|openPath" .
 ```
 
-**命中意味着**: 启动链路统一经 Profile 后（ALPHA1-04），目录解析假设可能
-失配。
+同一行搜索无法发现数据流；命中路径构造函数后继续追踪变量来源与写入目标。不得打印
+配置内容、token、`.npmrc` 或会话日志。
 
-**去查哪张卡**: ALPHA1-04。
+**关联卡**: `DSH-0.1.2-A1-04`、`DSH-0.1.2-A1-13`
 
----
-
-## #5 内部 UI / 命令注册
-
-**查什么**: 注册视图、组件、命令到宿主内部结构。
+## #5 内部 UI / 命令 / 工具注册
 
 ```sh
-rg -n "registerCommand|registerView|contributes" src/
+rg -n "registerCommand|registerView|contributes|ctx\.tools" .
+rg -n "ctx\.effect\(|/internal" .
 ```
 
-**命中意味着**: 宿主 UI 工程拆分时注册路径失效；同时也是新能力的接入点
-（提供方登录控件、第三方语言、子代理参数）。
+将公开 seam 与内部路径分开；机会型 capability 只建议、不自动采用。
 
-**去查哪张卡**: ALPHA1-03（破坏面）、ALPHA1-08/09/10（机会面）。
+**关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`
 
----
-
-## #6 子进程 / stdout 解析
-
-**查什么**: spawn 宿主进程、解析其输出、包装启动。
+## #6 自建 HTTP / WS / RPC / DOM / CSS 通道
 
 ```sh
-rg -n "spawn|execFile|fork\(" src/
-rg -n "headless|--profile" src/ scripts/
+rg -n "createServer\(|WebSocket|MutationObserver|insertRule" .
+rg -n "127\.0\.0\.1|localhost|router\.(get|post|put|delete)\(|/api/" .
 ```
 
-**命中意味着**: headless 输出语义变了（ALPHA1-05）、启动统一走 Profile
-（ALPHA1-04）、平台级 workaround 可能过期（ALPHA1-12、ALPHA2-04）。
+检查认证、Host/Origin、端口生命周期和 teardown；不能因“只监听 loopback”就跳过认证。
 
-**去查哪张卡**: ALPHA1-04 / 05 / 06 / 12、ALPHA2-04。
+**关联卡**: `DSH-0.1.2-A1-08`
 
----
+## #7 子进程 / stdout / stderr 解析
 
-## 特殊类别
+```sh
+rg -n "node:child_process|spawn\(|exec(File)?Sync\(|execa|Bun\.spawn" .
+rg -n "headless|--profile" .
+```
 
-**权限/审批类插件**（挂钩子到审批流的，跨 #2/#3）: 另查 ALPHA1-07——公网
-WebFetch 默认开启后审批钩子的触发集合会变。
+记录 argv、cwd、env、取消、退出码、stdout/stderr 所有权；不要只验证进程能启动。
 
----
+**关联卡**: `DSH-0.1.2-A1-04`、`DSH-0.1.2-A1-05`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-13`、`DSH-0.1.2-A2-04`
+
+## 特殊面
+
+- 权限/审批：另查 `DSH-0.1.2-A1-07`；
+- 打包/依赖：另查 `DSH-0.1.2-A2-03`；
+- 隐私披露：另查 `DSH-0.1.2-A1-12`。
 
 ## 汇总模板
 
 ```markdown
-## 触点体检结果（<插件名>，<from> → <to>）
+## 触点体检（<插件>，<from> → <to>）
 
-| 触点类 | 命中数 | 代表文件 | 待查卡片 |
-|---|---|---|---|
-| #1 patch | | | |
-| #2 事件名 | | | |
-| #3 服务探测 | | | |
-| #4 文件读写 | | | |
-| #5 UI/命令 | | | |
-| #6 子进程 | | | |
+| 触点 | 命中 | 文件/行 | 适用卡 | 置信说明 |
+|---|---:|---|---|---|
+| #1 patch | | | | |
+| #2 事件 | | | | |
+| #3 服务/Remote | | | | |
+| #4 文件系统 | | | | |
+| #5 UI/命令/工具 | | | | |
+| #6 自建通道 | | | | |
+| #7 子进程/输出 | | | | |
 
-结论：迁移工作量预估 = <零命中=烟测 / 1-2 类=点改 / ≥3 类或含 #1=分支单独迁>
+未命中说明：<扫描范围、排除目录、依赖/配置另行检查结果>
+必须验证：<build/typecheck、真实 profile 挂载、功能路径>
 ```

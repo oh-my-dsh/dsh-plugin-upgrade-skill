@@ -1,23 +1,22 @@
-# legacy-plugin · 六类触点测试夹具
+# legacy-plugin · 七类触点静态夹具
 
-一个**故意停留在 0.1.1 时代写法**的最小插件，覆盖 pre-flight 清单的六类触点，
-供 plugin-upgrade skill 自测与演示：
+这是一个**故意包含旧耦合与错误假设**的静态夹具，用来验证
+[pre-flight.md](../../references/pre-flight.md) 能检出七类触点。它不是可安装插件，
+**不得执行、不得发布、不能编译是设计使然**。
 
-- 在 `examples/legacy-plugin/` 上跑 [pre-flight.md](../../references/pre-flight.md) 的
-  六类 ripgrep 检出，应当**六类全命中**；
-- 再按 [references/](../../references/) 的版本卡片走一遍「套卡片 → 分层验证」流程，
-  每类触点都有对应卡片可套（ALPHA1-01/03/04/05、ALPHA2-01/02 等）。
+运行仓库 `node scripts/validate.mjs` 时，校验器会使用
+[pre-flight-patterns.json](../../references/pre-flight-patterns.json) 扫描本目录（排除本
+README），七类都必须至少命中一次。
 
-> ⚠️ 代码为示意复原：API 按 0.1.1 → 0.1.2 迁移知识库（#1）中的旧写法编写，
-> **不能编译是设计使然**——它存在的意义就是"被检出、被迁移"。
+| 触点 | 命中位置 |
+|---|---|
+| #1 源码 patch | [cordis.patch.yml](cordis.patch.yml) · [patch.yml](patch.yml) · [apply-patch.mjs](scripts/apply-patch.mjs) |
+| #2 内部/持久事件 | [src/index.ts](src/index.ts) · 外部 informational SessionEvent producer |
+| #3 内部服务/Remote | [src/index.ts](src/index.ts) · `ctx.get('apiProxy')` |
+| #4 宿主文件系统 | [src/index.ts](src/index.ts) · 固定 `~/.dsh/profiles/default` |
+| #5 内部 UI/命令 | [src/index.ts](src/index.ts) · internal import + `registerCommand` |
+| #6 自建通道 | [src/index.ts](src/index.ts) · loopback HTTP `/api/legacy` |
+| #7 子进程/输出 | [src/index.ts](src/index.ts) · [apply-patch.mjs](scripts/apply-patch.mjs) · 错误假设 stdout 是 JSONL |
 
-## 触点对照
-
-| 触点类 | 命中位置 |
-| --- | --- |
-| #1 源码 patch | [cordis.yml](cordis.yml) · [patch.yml](patch.yml) · [scripts/apply-patch.mjs](scripts/apply-patch.mjs) |
-| #2 内部事件名 | [src/index.ts](src/index.ts) · `session/event` 订阅 + `SessionEvent.ignorable` |
-| #3 内部服务探测 | [src/index.ts](src/index.ts) · `ctx.get('apiProxy')` |
-| #4 直接读写宿主目录 | [src/index.ts](src/index.ts) · `~/.dsh/profiles/default` |
-| #5 内部 UI / 命令注册 | [src/index.ts](src/index.ts) · 内部路径 import + `registerCommand` |
-| #6 子进程 / stdout 解析 | [src/index.ts](src/index.ts) · [scripts/apply-patch.mjs](scripts/apply-patch.mjs) · spawn `dsh headless` 解析 stdout |
+相关卡使用完整 ID（如 `DSH-0.1.2-A1-01`、`DSH-0.1.2-A2-02`）。该夹具只证明扫描
+模式有已知正样本，不证明扫描零命中时没有宿主耦合。

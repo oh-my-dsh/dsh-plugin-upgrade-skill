@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "scope": "heuristic",
+  "classes": [
+    {
+      "id": 1,
+      "slug": "source-patch",
+      "name": "源码 patch / monkey patch",
+      "patterns": [
+        "cordis\\.patch\\.yml|patch\\.yml|patchedDependencies|patch-package",
+        "DSH_HARNESS_SOURCE_ROOT|patch-surface|monkeypatch|monkey-patch"
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "internal-events",
+      "name": "内部事件名与持久事件",
+      "patterns": [
+        "SessionEvent|session/event|ctx\\.on\\(|subscribe\\(",
+        "tool/code-dispatch|tools-code-mode|connection/reset"
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "internal-services",
+      "name": "内部服务探测 / Remote",
+      "patterns": [
+        "APIProxy|apiProxy|ctx\\.get\\(|ctx\\.remote|@Remote",
+        "@deepseek-ai/dsh-api-.+/client|/internal"
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "host-filesystem",
+      "name": "直接读写宿主目录",
+      "patterns": [
+        "DSH_HOME|\\.dsh[/\\\\]|profiles[/\\\\]|homedir\\(",
+        "readFile|writeFile|mkdir|openPath"
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "internal-ui-commands",
+      "name": "内部 UI / 命令 / 工具注册",
+      "patterns": [
+        "registerCommand|registerView|contributes|ctx\\.tools",
+        "ctx\\.effect\\(|/internal"
+      ]
+    },
+    {
+      "id": 6,
+      "slug": "custom-channel",
+      "name": "自建 HTTP / WS / RPC / DOM / CSS 通道",
+      "patterns": [
+        "createServer\\(|WebSocket|MutationObserver|insertRule",
+        "127\\.0\\.0\\.1|localhost|router\\.(get|post|put|delete)\\(|/api/"
+      ]
+    },
+    {
+      "id": 7,
+      "slug": "subprocess-output",
+      "name": "子进程 / stdout / stderr 解析",
+      "patterns": [
+        "node:child_process|spawn\\(|exec(File)?Sync\\(|execa|Bun\\.spawn",
+        "headless|--profile"
+      ]
+    }
+  ]
+}

@@ -1,52 +1,107 @@
 ---
 name: plugin-upgrade
-description: 升级 DSH（DeepSeek Harness）插件的 skill。当用户想检查已安装插件的更新、升级某个插件到新版、处理插件升级带来的 breaking changes，或 DSH 宿主升级后需要适配插件源码时使用。
+description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或让插件源码适配新的 DSH 宿主版本。仅检查时保持只读；任何配置、依赖或源码写入前必须先展示计划并获得确认。
 ---
 
 # plugin-upgrade
 
-把已安装的 DSH 插件安全地升级到新版本：从检查更新、阅读 changelog，到迁移配置、验证升级结果。也覆盖「DSH 宿主升级后插件挂掉」的场景——用 [references/](references/) 里的版本变更卡片做源码级迁移。
+安全完成三类任务：只读更新检查、已安装插件升级、DSH 宿主版本兼容迁移。若用户意图
+不明确，先确认模式；不要从“帮我看看更新”自行滑入安装或改代码。
 
-## 流程
+## 第 0 步：选择模式
 
-1. **盘点**：读取 `cordis.yml`，列出已挂载插件与本地版本，对照上游 registry / git 仓库找出可升级项
-2. **评估**：拉取目标版本的 changelog 与 release notes，总结 breaking changes，判断升级影响面
-3. **迁移**：manifest（`cordis.yml`）有变更时改写；配置项重命名/废弃时给出迁移建议
-4. **升级**：git pull / 包管理器升级；必要时按 changelog 指导修复接缝（seam）层面的 breaking changes
-5. **验证**：运行插件自带的测试 / typecheck / e2e 注册检查，确认插件在 DSH 中正常挂载
+| 模式 | 用户意图 | 允许的默认动作 |
+|---|---|---|
+| A · inspect | 检查更新、判断是否受某版 DSH 影响 | 只读调查与报告；完成后停止 |
+| B · update | 把已安装插件升级到明确版本 | 先计划和确认，再改 composition/依赖 |
+| C · host-migrate | DSH 宿主升级后适配插件源码 | 先建版本走廊和触点清单，再计划和确认 |
 
-### 宿主版本迁移（插件随 DSH 升级适配）
+本 skill 不负责“只升级 DSH core 且不处理插件”；也不允许修改 DSH core 来掩盖插件兼容
+问题。
 
-当升级的是 **DSH 宿主本身**（如 0.1.1 → 0.1.2），或插件因宿主升级而挂载失败时，第 2–4 步改走本节：
+## 通用只读准备
 
-1. **定走廊**：确认 from → to 版本区间，按序取 `references/` 下的版本卡片；区间内有版本缺卡片时，先按 [references/README.md](references/README.md) 的格式补卡，**不要凭记忆猜变更**
-2. **测触点**：按 [pre-flight 清单](references/pre-flight.md) 把插件与宿主的接触面分成六类（源码 patch / 内部事件名 / 服务探测 / 文件读写 / UI·命令注册 / 子进程·stdout 解析）；六类全零命中 → 插件只经公共契约耦合，跑一遍烟测即可收工
-3. **套卡片**：只应用命中触点的卡片，一次迁一类；卡片没写的 API 不臆造，查不到的调用点标「待确认」；跨 alpha 版本存在字段波动（删了又恢复），走廊读完再删防御代码；`capability` 类卡片是机会不是义务，向用户建议、不自动应用
-4. **分层验证**：typecheck / build → 卡片级单测（如错误码分支）→ 真实冷启动 + 完整一轮对话（发消息 → 工具调用 → 回复）；headless 包装要比对 stdout/stderr 内容分类
-5. **报告**：已迁移（触点类 → 卡片 → 验证结果）/ 跳过（未命中及原因）/ 待确认 / 建议采纳的新能力，四档列清
+1. 阅读目标仓库的 `AGENTS.md` / `CLAUDE.md` 等规则；检查 branch、HEAD、working tree、
+   submodule。发现陌生修改或未跟踪文件就停止并报告，不自动 stash/reset/clean/checkout。
+2. 识别安装轨：registry 包、Git checkout、workspace/junction 或复制安装；记录 declared
+   版本、resolved 版本、Git SHA 与当前 DSH/Node 版本。
+3. 区分文件所有权：
+   - `package.json` / lockfile：包与依赖；
+   - `dsh-plugin.json`：社区标准 manifest（若采用）；
+   - `cordis.patch.yml` / `agent.cordis.yml` / 历史 `cordis.yml`：profile composition；
+   - resolved config：运行时组合结果，只用于核对，不整对象回写。
+4. 核对目标版本来源、tag/包名、兼容范围、release notes、安装脚本与已知 breaking changes。
+   不读取、打印或提交 token、`.npmrc` 内容、凭据或会话日志。
+5. 记录回滚基线：当前 HEAD/包版本、lockfile 与将改配置的 hash/路径；说明失败后如何恢复
+   **本次明确路径**，不要承诺回滚第三方安装脚本的任意副作用。
 
-## 原则
+## 模式 A · inspect（只读）
 
-- 有 breaking change 必须停下来向用户说明影响并等待确认，不要直接升级
-- 重点检查接缝（seam）API 变更：DSH 插件通过 `ctx.tools` / `ctx.effect()` / `ctx.on()` 注册，接口变更最容易导致挂载失败
-- 诚实优先：未知标「待确认」，不编造迁移配方；卡片与实际行为冲突时信实际行为，并把差异回馈到卡片的「实战批注」
-- 在独立分支上迁移，不把迁移改动和功能改动混在一个提交里
+输出：当前/可用版本、来源、兼容范围、breaking changes、建议目标、风险与验证计划。不得
+改文件、安装依赖、执行 lifecycle script、`git pull` 或切换版本。用户若决定执行，再进入
+模式 B 或 C 并单独确认。
 
-## 背景
+## 模式 B · update（升级已安装插件）
 
-- 上游生态：[oh-my-dsh](https://github.com/LaplaceYoung/oh-my-dsh) —— DSH 的能力插件库
-- DSH 插件约定：ESM 包，经 `cordis.yml` 挂载，遵循 interface / implementation / consumer 三段式接缝
-- 插件规范：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard) —— manifest / 契约坐标 / 协商；本 skill 的触点分类与其迁移指南对齐，引用其概念、不重复定义
+1. 按安装轨选择唯一更新方式；有 lockfile 时只使用对应包管理器，不混用 npm/pnpm/bun。
+2. 生成变更计划：精确目标版本、将执行的命令、会改的文件、可能执行的生命周期脚本、
+   配置迁移和回滚步骤。
+3. **任何写入或安装前取得用户明确确认**；即使没有 breaking change 也一样。
+4. 在独立 branch/worktree 中做最小修改；配置用路径级 patch，保留未知字段。Git 来源先
+   fetch/比较明确 tag 或 commit，不对脏工作区直接 `git pull`。
+5. 按“验证与报告”执行；失败时只恢复本次拥有的路径并报告残留副作用。
 
-## references/
+## 模式 C · host-migrate（插件随 DSH 升级）
+
+1. 用精确 tag 确认 from/to；按 [references/README.md](references/README.md) 的
+   `from → to` 元数据连接版本走廊，禁止按文件名字典序。
+2. 先读完整走廊并计算最终净状态。字段在中间版本删除、目标版又恢复时，不先删再加。
+3. 按 [pre-flight.md](references/pre-flight.md) 扫描七类触点：源码 patch、事件、服务/
+   Remote、宿主文件系统、UI/命令/工具、自建通道、子进程/输出。零命中只是启发式结果，
+   仍须检查依赖/导入并跑 build 与真实挂载。
+4. 只保留与命中触点和实际 face（Host/Web Client/普通 plugin）相交的卡片。卡片是 curated
+   清单，不是完整 API diff；缺走廊边或 API 坐标时标 unsupported/待确认，不凭记忆改。
+5. 生成按 seam 分组的源码迁移计划，列命中文件、卡片、目标行为与测试；取得确认后再在
+   独立 branch/worktree 实施。`capability` 卡仅建议，不自动采用。
+
+## 安全边界
+
+- 所有写文件、安装、拉取/切换版本、运行包脚本的动作都要先展示并确认；
+- 不自动 stash/reset/clean/强制更新，不覆盖用户或其他 Agent 的工作；
+- 不泄露凭据；诊断只报告是否配置及非敏感版本/来源；
+- 不把未知 `gateway/internal` 或其他失败默认重试；仅在错误可重试、操作幂等且策略允许时重试；
+- 迁移方式不能由一手来源或可复现行为高置信确定时，停止自动修改并标「待确认」；
+- 本地观察与一手来源冲突时并列记录、复现并上报，不静默选择一方。
+
+## 验证与报告
+
+至少按适用层级验证：
+
+1. 安装/解析：对应包管理器、lockfile 与依赖图只发生预期变化；
+2. 静态：build、typecheck、插件测试；
+3. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
+   pending；
+4. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
+5. 包装器：核对退出码、stdout、stderr、取消与 teardown。
+
+报告固定分为：
+
+- **已完成**：版本、文件、卡片与验证；
+- **跳过**：未命中或不适用及依据；
+- **待确认/残留风险**：缺来源、未跑平台、生命周期脚本副作用；
+- **回滚**：已记录基线与可恢复路径；
+- **建议**：可选 capability 和迁到公开 seam 的后续工作。
+
+## 参考材料
 
 | 文件 | 内容 |
-| --- | --- |
-| [README.md](references/README.md) | 卡片索引 + 新增一版卡片的格式规范 |
-| [pre-flight.md](references/pre-flight.md) | 六类触点自查清单（含 ripgrep 检出模式与汇总模板） |
-| [v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | 0.1.1 → alpha.1：12 张卡（含 APIProxy→`@Remote` 17 条操作映射表） |
-| [v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1 → alpha.2：4 张卡（`ignorable` 恢复、`RemoteError` 封装等） |
+|---|---|
+| [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
+| [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
+| [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1：13 张 curated 卡 |
+| [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2：4 张 curated 卡 |
+| [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
 
-自测夹具：[examples/legacy-plugin/](examples/legacy-plugin/) —— 一个停留在 0.1.1 写法的
-最小插件，覆盖六类触点；在上面跑 pre-flight 检出应六类全命中，再走一遍
-「套卡片 → 分层验证」即可验证本 skill 是否好使。
+规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
+负责 manifest、契约坐标与协商；本 skill 处理现有插件的实际升级，引用其分类而不重定义
+规范语义。
