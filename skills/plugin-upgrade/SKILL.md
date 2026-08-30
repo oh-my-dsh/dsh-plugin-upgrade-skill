@@ -23,8 +23,9 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 
 1. 阅读目标仓库的 `AGENTS.md` / `CLAUDE.md` 等规则；检查 branch、HEAD、working tree、
    submodule。发现陌生修改或未跟踪文件就停止并报告，不自动 stash/reset/clean/checkout。
-2. 识别安装轨：registry 包、Git checkout、workspace/junction 或复制安装；记录 declared
-   版本、resolved 版本、Git SHA 与当前 DSH/Node 版本。
+2. 分开记录代码来源与安装身份：registry 包、Git checkout、workspace/junction 或复制安装；
+   记录来源仓库/URL、Git SHA、实际包名、declared/resolved 版本与当前 DSH/Node 版本。GitHub
+   owner/repo 与 registry scope/package 是独立坐标，不能从前者推导或改写后者。
 3. 区分文件所有权：
    - `package.json` / lockfile：包与依赖；
    - `dsh-plugin.json`：社区标准 manifest（若采用）；
@@ -43,13 +44,16 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 
 ## 模式 B · update（升级已安装插件）
 
-1. 按安装轨选择唯一更新方式；有 lockfile 时只使用对应包管理器，不混用 npm/pnpm/bun。
+1. 按实际解析的包身份与安装轨选择唯一更新方式；有 lockfile 时只使用对应包管理器，不混用
+   npm/pnpm/bun，也不为匹配 GitHub owner 而改写 registry 包名。
 2. 生成变更计划：精确目标版本、将执行的命令、会改的文件、可能执行的生命周期脚本、
    配置迁移和回滚步骤。
 3. **任何写入或安装前取得用户明确确认**；即使没有 breaking change 也一样。
 4. 在独立 branch/worktree 中做最小修改；配置用路径级 patch，保留未知字段。Git 来源先
    fetch/比较明确 tag 或 commit，不对脏工作区直接 `git pull`。
-5. 按“验证与报告”执行；失败时只恢复本次拥有的路径并报告残留副作用。
+5. 安装依赖成功不等于 DSH 已启用插件；核对目标 profile 的 composition 确实解析到目标包，
+   若存在则移除本次升级拥有的旧来源行，并确认运行时 entry active。
+6. 按“验证与报告”执行；失败时只恢复本次拥有的路径并报告残留副作用。
 
 ## 模式 C · host-migrate（插件随 DSH 升级）
 
@@ -77,12 +81,13 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 
 至少按适用层级验证：
 
-1. 安装/解析：对应包管理器、lockfile 与依赖图只发生预期变化；
-2. 静态：build、typecheck、插件测试；
-3. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
+1. 依赖解析：对应包管理器、lockfile 与依赖图只发生预期变化；
+2. 启用解析：目标 profile 的 composition 指向预期包身份，且无旧来源或重复 row；
+3. 静态：build、typecheck、插件测试；
+4. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
    pending；
-4. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
-5. 包装器：核对退出码、stdout、stderr、取消与 teardown。
+5. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
+6. 包装器：核对退出码、stdout、stderr、取消与 teardown。
 
 报告固定分为：
 
