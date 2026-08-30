@@ -104,4 +104,4 @@ description: 检查或升级已安装的 DSH（DeepSeek Harness）插件，或�
 
 规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
 负责 manifest、契约坐标与协商；本 skill 处理现有插件的实际升级，引用其分类而不重定义
-规范语义。
+规范语义。官方征集出处见 [deepseek-harness discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)。

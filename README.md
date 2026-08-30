@@ -4,7 +4,9 @@ DSH 插件生态的 **Skill 合集仓库**，社区共建。
 
 [DSH（DeepSeek Harness）](https://github.com/deepseek-ai/deepseek-harness) 是
 “Everything is a Plugin”的 agent harness；[oh-my-dsh](https://github.com/LaplaceYoung/oh-my-dsh)
-是面向 DSH 的社区插件生态。本仓库收集插件升级、审计、迁移和开发相关 Skill。
+是面向 DSH 的社区插件生态。本仓库收集插件升级、审计、迁移和开发相关 Skill。官方在
+[deepseek-harness discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)
+征集包括 0.1.1 → 0.1.2 在内的定点升级 Skill。
 
 ## Skill 索引
 
