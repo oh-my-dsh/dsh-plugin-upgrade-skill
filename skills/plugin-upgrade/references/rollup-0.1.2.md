@@ -7,7 +7,7 @@
 ## 怎么用这份 rollup
 
 1. 先按 [pre-flight.md](pre-flight.md) 测出命中的触点类；
-2. 按 `from → to` 读完整走廊并先计算净状态：[v0.1.2-alpha.1.md](v0.1.2-alpha.1.md)（14 张）→ [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md)（6 张）；
+2. 按 `from → to` 读完整走廊并先计算净状态：[v0.1.2-alpha.1.md](v0.1.2-alpha.1.md)（14 张）→ [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md)（7 张）；
 3. 回到本文件处理走廊层问题——这些跨越单版本，卡片里没有；
 4. 按本文件末尾的分层验证清单收工。
 
@@ -17,7 +17,7 @@
 |---|---|
 | #1 源码 patch | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md) |
 | #2 事件 / 持久事件 | [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md)，另见 [DSH-0.1.2-A1-06](v0.1.2-alpha.1.md) |
-| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md) |
+| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-07](v0.1.2-alpha.2.md) |
 | #4 宿主目录读写 | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md) |
 | #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md) |
 | #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md) |
@@ -139,6 +139,39 @@ return result.value
 - **配方**: 迁移前先对全部插件跑一次「import 了哪些被删包」的盘点，把「必须退役」与「可迁移」分开排期，而不是边迁边发现。
 - **验证**: 盘点清单与实际迁移结果一致，无中途新增退役项。
 - **来源**: [#5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 第 10 条。
+
+### R-06 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
+
+- **类型**: behavior
+- **症状**: 仅组合 `dsh-base`（+ 自家 bundle）的 profile 上，挂 shipped `standard` preset 失败：`tool-subagent: modelSelectionSettings requires @deepseek-ai/dsh-tool-subagent/model-selection-settings in the Host scope`；用自定义 root 里同名空 preset 想遮蔽 shipped 时，遮蔽不生效——发现顺序 shipped 优先。
+- **配方**:
+  - Host composition（bundle 的 `cordis.patch.yml`）补一行 `@deepseek-ai/dsh-tool-subagent/model-selection-settings`（官方 web-app bundle 有此行，`dsh-base` 没有）：
+
+    ```yaml
+    - insert:
+        - id: subagent-model-selection-settings
+          name: '@deepseek-ai/dsh-tool-subagent/model-selection-settings'
+    ```
+
+  - 测试/受控面想用自己的同名 preset 时，agent-presets 配置加 `includeShippedRoot: false`，否则自定义 root 的同名行被 shipped 行遮蔽。
+- **验证**: base-only profile 冷启动无「启动默认预设未生效」警告且 `composedPreset` 返回 standard；`includeShippedRoot: false` 下自定义同名 preset 确实被挂载（而非 shipped 版本）。
+- **来源**: [alpha.2 discovery.ts 健康检查](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/preset/agent-presets/src/discovery.ts) · [alpha.2 standard preset 的 tool-subagent 行](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/preset/agent-presets/presets/standard/agent.cordis.yml) · [官方 web-app bundle 宿主行](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/bundle/web-app/cordis.patch.yml) · dsh-tui 实测（2026-08-30，cordis.patch.yml + preset-join composition 测试）
+
+### R-07 · 0.1.2 类型面导出漂移（未入 release notes 的 ledger）
+
+- **类型**: breaking（typecheck 面）
+- **症状**: rc.2 可直接导入的多个类型/函数在 alpha.2 移包或移出公开面，typecheck 批量 TS2305/TS2614；运行时不一定同步崩，属于「静态漂移」。
+- **配方**（ledger，2026-08-30 按 npm tarball 导出比对）:
+
+  | 旧 | 新 |
+  |---|---|
+  | `CallId` from `@deepseek-ai/dsh-llm` | `ToolCallId`（同包根导出，branded） |
+  | `JsonValue` from `@deepseek-ai/dsh-session` | `@deepseek-ai/dsh-util-values`（补直接依赖，见 [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md)） |
+  | `collectSessionTitleMessages` from `@deepseek-ai/dsh-session-title` | 移出公开面——按 rc.2 同语义本地折叠（首条 `source.kind === 'user'` 的 `user/message` 文本）或走 `foldSessionTitle` |
+  | `'todo/write'` 的 `SessionEventMap` 类型声明 | 只在 `@deepseek-ai/dsh-tool-todo` 内合并；不依赖该包时本地按官方 `TodoItem` 结构补 `declare module '@deepseek-ai/dsh-session/types'`（runtime 事件词汇未变，`known-event-types` 仍收录） |
+
+- **验证**: typecheck 全绿且不靠 `@ts-ignore`；本地合并的声明与官方结构逐字段一致；运行时事件流与 rc.2 相同。
+- **来源**: 各包 `0.1.2-alpha.2` tarball 导出比对 + [alpha.2 todo 工具 types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/todo/tool-todo/src/types.ts) · dsh-tui 实测（2026-08-30）
 
 ## 分层验证清单
 

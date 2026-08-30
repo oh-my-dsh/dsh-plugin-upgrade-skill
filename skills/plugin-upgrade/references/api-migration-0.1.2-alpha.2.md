@@ -26,6 +26,8 @@
 | Headless process | `dsh headless`、`-p`、JSONL stdout、stderr 非空即失败 | argv 不被接受、JSON parse 失败、成功任务被误报 | `dsh --profile headless "task"`；stdout 是最终文本，stderr 是 reasoning/诊断，以退出码为准 |
 | Package subpath | 看到 `exports["./src/*"]` 就直接导入 | 发布包可能根本不含 `src`，运行时报 module not found | 同时核对 exports、`files` 和实际 packed artifact；优先 `.` / `/client` 等稳定入口 |
 | `cordis.patch.yml` | 按文件名当源码 patch | 误报并生成错误迁移任务 | 先按官方 Profile composition overlay 处理；只有真实替换宿主源码时才归源码 patch |
+| Structured questions answerer | `userQuestions.registerProvider({ ask })` | attach 抛 `TypeError`；提问无人 answer（`NO_PROVIDER`） | `ctx.on('user-questions/request', (req, next) => answer)`；不带 agent 的 `ask()` 在服务自身 ctx 派发，同 fiber 树其他 entry 的监听者收不到（详见 [DSH-0.1.2-A2-07](v0.1.2-alpha.2.md)） |
+| Type export drift | `CallId` / `JsonValue` / `collectSessionTitleMessages` / `todo/write` 类型声明 | typecheck 批量 TS2305 / TS2614 | 按 ledger 迁移：`ToolCallId`（dsh-llm 根导出）、`@deepseek-ai/dsh-util-values`、本地同语义折叠、本地 event-map 合并（详见 [rollup R-07](rollup-0.1.2.md)） |
 
 ## API-01 · APIProxy 迁到实际 `ctx.remote` projection
 
