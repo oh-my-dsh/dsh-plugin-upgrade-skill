@@ -1,27 +1,20 @@
 # 典型迁移示例
 
-本目录包含常见插件类型从 0.1.1 升级到 0.1.2 的完整示例。
+示例必须明确运行平面、验证范围和是否可执行。Markdown 片段不能冒充真实产品验证。
 
-## 示例列表
-
-| 示例 | 场景 | 复杂度 |
+| 示例 | 场景 | 验证状态 |
 |---|---|---|
-| [01-simple-client-plugin.md](01-simple-client-plugin.md) | 纯客户端 UI 插件（仅 SDK 包迁移） | ⭐ |
-| [02-host-side-plugin.md](02-host-side-plugin.md) | 宿主侧插件（Gateway 调用迁移） | ⭐⭐ |
-| `03-dual-cohort-plugin.md`（待补充） | 跨 cohort 兼容插件（双版本支持） | ⭐⭐⭐ |
-| `04-preview-cohort-upgrade.md`（待补充） | 未发布 preview cohort 升级（完整流程） | ⭐⭐⭐⭐ |
-| `05-third-party-plugin-patch.md`（待补充） | 第三方预构建插件 pnpm patch | ⭐⭐⭐ |
+| [01-simple-client-plugin.md](01-simple-client-plugin.md) | 历史客户端 SDK 包迁移 | 文档示例，尚未做固定 tag 编译 |
+| [02-host-side-plugin.md](02-host-side-plugin.md) | Host APIProxy → owning domain service | 控制流可执行 + alpha.2 容器实测 |
+| [03-client-remote-plugin.md](03-client-remote-plugin.md) | Web Client `ctx.remote` / `RemoteResult` | 控制流可执行；产品 Web smoke 待补 |
+| [face-contracts/](face-contracts/) | Host/Client 分平面回归守卫 | `node .../check.mjs` |
+| `04-dual-cohort-plugin.md`（待补） | 双 cohort 共存 | 未实现 |
+| `05-third-party-plugin-patch.md`（待补） | 第三方预构建插件 patch | 未实现 |
 
-## 如何使用
+## 贡献要求
 
-1. 根据你的插件类型选择最接近的示例
-2. 对照示例中的"升级前"和"升级后"代码
-3. 参考"验证"章节确认迁移成功
-4. 如遇问题，查看"常见错误"部分
-
-## 贡献新示例
-
-欢迎补充更多典型场景！提交 PR 时请：
-1. 遵循现有示例的格式（场景 → 升级前 → 升级后 → 验证 → 常见错误）
-2. 提供可运行的完整代码片段
-3. 说明适用的触点类型（参考 pre-flight.md）
+1. Host、Web Client 与普通 Cordis plugin 必须分开；
+2. 可执行代码只保留一个源文件，文档链接它，不复制第二份会漂移的实现；
+3. 明确区分控制流测试、固定 tag build、Loader/profile smoke 与完整产品验证；
+4. 引用完整卡片 ID和固定一手来源；
+5. 不能执行的扫描夹具必须明确标注“不得执行”。

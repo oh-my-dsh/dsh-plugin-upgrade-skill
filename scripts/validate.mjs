@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, readdir } from 'node:fs/promises'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const failures = []
@@ -197,10 +197,19 @@ for (const entry of patternData.classes) {
   if (!hit) fail(patternFile, `#${entry.id} has no fixture hit`)
 }
 
+// Host and Web Client examples must execute their distinct control-flow contracts.
+const faceCheckFile = join(root, 'skills', 'plugin-upgrade', 'examples', 'face-contracts', 'check.mjs')
+try {
+  const { runFaceContractChecks } = await import(pathToFileURL(faceCheckFile).href)
+  await runFaceContractChecks()
+} catch (error) {
+  fail(faceCheckFile, `face contract check failed: ${error.stack ?? error.message}`)
+}
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`)
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts`)
