@@ -88,10 +88,11 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
-其他 agent 直接在对话中提问，skill 按 description 自动触发：
+也可以直接在对话中提问（任意 agent），skill 按 description 自动触发；只读检查直接给结果，升级或迁移会先出计划再等确认：
 
 ```
 我需要把插件从 0.1.1 升级到 0.1.2，有哪些破坏性变更？
+帮我把 dsh-ads 这个插件升级到 dsh-v0.1.2-alpha.2
 ```
 
 ## Skill 索引
