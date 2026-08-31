@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task 配置：dsh 插件迁移考题 M4-peer-prerelease-range（容器冷启动实操题）
+[task]
+name = "dsh-plugin-upgrade/m4-peer-prerelease-range"
+version = "1.0.0"
+description = "A plugin declares @deepseek-ai/cordis peerDependencies with the legacy ^0.1.0-rc.8 lower bound: npm semver prerelease rules judge it incompatible with 0.1.2-alpha.2 and install emits peer warnings — fix the ranges"
+keywords = ["dsh", "plugin-migration", "cold-boot", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "container-task", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096
