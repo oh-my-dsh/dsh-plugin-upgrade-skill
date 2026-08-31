@@ -1,10 +1,12 @@
-// benchmark 判分公共库（harbor 版，零依赖）。
-// 约定：
-// - 每个 judge.mjs 退出码恒为 0，stdout 最后一行输出 {"score": 0-100, "max": 100, "reasons": [...]}；
-// - 静态题 agent 产物在 /app/agent-output/<task-id>/ 下；
-// - 容器题（M1/H1/H2/H3）由 agent 直接改 /app/fixture/，judge 在任务容器内做真实冷启动验证
-//   （镜像已全局安装 dsh 0.1.2-alpha.2，无需 docker exec）；
-// - 每个任务使用独立 profile（bench-<task>）与独立 /tmp 插件目录，judge 负责清理自建资产。
+// Shared grading library for the benchmark (harbor edition, zero dependencies).
+// Conventions:
+// - Every judge.mjs always exits 0; the last stdout line is {"score": 0-100, "max": 100, "reasons": [...]};
+// - For static tasks, agent artifacts live under /app/agent-output/<task-id>/;
+// - For container tasks (M1/H1/H2/H3), the agent modifies /app/fixture/ directly and the judge does real
+//   cold-boot verification inside the task container (the image has dsh 0.1.2-alpha.2 installed globally,
+//   no docker exec needed);
+// - Each task uses its own profile (bench-<task>) and its own /tmp plugin directory; the judge cleans up
+//   the assets it created.
 import { execFile } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
@@ -15,7 +17,7 @@ export const DEFAULT_AGENT_OUTPUT = join(APP_ROOT, 'agent-output')
 export const BENCH_TMP = (taskId) => `/tmp/bench-${taskId.toLowerCase()}`
 export const PROFILE = (taskId) => `bench-${taskId.toLowerCase()}`
 
-// ── 结果输出 ──────────────────────────────────────────────
+// ── result output ──────────────────────────────────────────────
 
 export function emit(score, reasons) {
   const result = { score: Math.max(0, Math.min(100, Math.round(score))), max: 100, reasons }
@@ -23,7 +25,7 @@ export function emit(score, reasons) {
   process.exit(0)
 }
 
-// ── agent 输出收集（静态题）───────────────────────────────
+// ── agent output collection (static tasks) ─────────────────────
 
 const TEXT_EXT = new Set(['.md', '.txt', '.json', '.jsonl', '.log'])
 
@@ -39,7 +41,7 @@ function walkFiles(dir) {
   return out
 }
 
-/** 收集 <agentOutput>/<taskId>/ 下全部文本产物，拼接为一个大字符串。 */
+/** Collect all text artifacts under <agentOutput>/<taskId>/ and join them into a single string. */
 export function readAgentText(agentOutput, taskId) {
   const root = agentOutput || DEFAULT_AGENT_OUTPUT
   const dir = join(root, taskId)
@@ -48,7 +50,7 @@ export function readAgentText(agentOutput, taskId) {
   return { text, files: files.map((file) => relative(root, file)) }
 }
 
-// ── git 状态（fixture 是否被改动）─────────────────────────
+// ── git status (whether the fixture changed) ───────────────────
 
 function git(args, cwd) {
   return new Promise((resolvePromise) => {
@@ -58,18 +60,18 @@ function git(args, cwd) {
   })
 }
 
-/** 返回 fixture 相对 APP_ROOT 的路径列表（被修改/新增/删除）。空数组 = 未改动。 */
+/** Return the fixture paths relative to APP_ROOT (modified/added/deleted). Empty array = unchanged. */
 export async function fixtureChanges(relFixtureDir = 'fixture') {
   const result = await git(['status', '--porcelain', '--', relFixtureDir], APP_ROOT)
-  if (result.code !== 0) return { changed: null, detail: `git status 失败: ${result.stderr.trim()}` }
+  if (result.code !== 0) return { changed: null, detail: `git status failed: ${result.stderr.trim()}` }
   const lines = result.stdout.split('\n').filter(Boolean)
   return {
     changed: lines.length > 0 ? true : false,
-    detail: lines.length ? lines.join('; ') : 'fixture 相对基线无改动',
+    detail: lines.length ? lines.join('; ') : 'fixture unchanged relative to baseline',
   }
 }
 
-// ── 本地命令原语（judge 运行在任务容器内）──────────────────
+// ── local command primitives (the judge runs inside the task container) ──
 
 export function localExec(script, { stdin = '', timeout = 60000 } = {}) {
   return new Promise((resolvePromise) => {
@@ -91,9 +93,9 @@ export async function dshAvailable() {
   return result.code === 0
 }
 
-// ── profile 生命周期 ──────────────────────────────────────
+// ── profile lifecycle ──────────────────────────────────────
 
-/** 创建隔离 profile（bundles 为宿主包名数组）。 */
+/** Create an isolated profile (bundles is an array of host package names). */
 export async function createProfile(profile, bundles) {
   const dir = `/root/.dsh/profiles/${profile}`
   const pkg = {
@@ -105,13 +107,13 @@ export async function createProfile(profile, bundles) {
   const write = await localExec(`rm -rf '${dir}' && mkdir -p '${dir}' && base64 -d > '${dir}/package.json'`, {
     stdin: Buffer.from(JSON.stringify(pkg, null, 2) + '\n').toString('base64'),
   })
-  if (write.code !== 0) return { ok: false, detail: `profile 写入失败: ${write.stderr.trim()}` }
+  if (write.code !== 0) return { ok: false, detail: `profile write failed: ${write.stderr.trim()}` }
   const seed = await localExec(
     `cp /root/.dsh/profiles/headless/pnpm-workspace.yaml '${dir}/' 2>/dev/null || printf 'packages:\\n  - .\\n\\nnodeLinker: hoisted\\nautoInstallPeers: false\\n' > '${dir}/pnpm-workspace.yaml'
 printf '[]\\n' > '${dir}/cordis.patch.yml'
 printf '[]\\n' > '${dir}/cordis.yml'`,
   )
-  if (seed.code !== 0) return { ok: false, detail: `profile 种子文件失败: ${seed.stderr.trim()}` }
+  if (seed.code !== 0) return { ok: false, detail: `profile seed files failed: ${seed.stderr.trim()}` }
   return { ok: true, dir }
 }
 
@@ -120,33 +122,34 @@ export async function addPlugin(profile, pluginDir) {
   return { ok: result.code === 0, detail: (result.stdout + result.stderr).trim().slice(-400) }
 }
 
-/** 清理任务自建资产：profile、临时插件目录、残留 boot 进程。 */
+/** Clean up task-created assets: the profile, the temporary plugin directory, and leftover boot processes. */
 export async function cleanupProfile(profile, tmpDir) {
-  // pkill 模式用 [首字母] 括号技巧，避免匹配到正在执行本清理脚本的 sh -c 自身。
+  // The pkill pattern uses the [first-letter] bracket trick to avoid matching the sh -c process that is running this cleanup script itself.
   const selfSafe = `[${profile[0]}]${profile.slice(1)}`
   await localExec(
     `pkill -f 'profile ${selfSafe}' 2>/dev/null; rm -rf '/root/.dsh/profiles/${profile}' '${tmpDir}' /tmp/${profile}-boot.log; true`,
   )
 }
 
-// ── 冷启动判定信号 ────────────────────────────────────────
+// ── cold-boot judgment signals ─────────────────────────────────
 
 export const NEGATIVE_SIGNAL = /plugin tree failed|did not activate|pending \(waiting for service|FAILED fiber|ClientPackageCompositionError/i
-// headless profile 无 API key 时必然走到 MISSING_CREDENTIAL —— 能输出这行即证明
-// 插件树已整体激活、启动流程推进到了宿主应用层（与验证报告的归因一致）。
+// A headless profile without an API key is guaranteed to reach MISSING_CREDENTIAL — being able to emit
+// this line proves the plugin tree activated as a whole and startup progressed to the host application layer
+// (consistent with the validation report's attribution).
 export const HEADLESS_ACTIVATED_SIGNAL = /MISSING_CREDENTIAL|no API key|dsh: AUTH/i
 
-/** headless 冷启动：返回完整输出。exit code 不做判定依据（无 key 时成功也是 1）。 */
+/** Headless cold boot: returns the full output. The exit code is not used for judgment (even a success exits 1 when there is no key). */
 export async function bootHeadless(profile) {
   const result = await localExec(`cd /root && timeout 30 dsh --profile '${profile}' 'ping' 2>&1`, { timeout: 60000 })
   return { output: result.stdout + result.stderr, code: result.code }
 }
 
 /**
- * web 冷启动并读取 __DSH_BOOT__：
- * 1. 后台拉起 `dsh --profile <p> --no-open`，等待日志出现 dsh web: URL；
- * 2. 用 bootstrap token 兑换 Cookie，GET / 取 HTML；
- * 3. 返回 { output, html }，由调用方判负向信号与插件 entry。
+ * Web cold boot and read of __DSH_BOOT__:
+ * 1. Launch `dsh --profile <p> --no-open` in the background and wait for a dsh web: URL in the log;
+ * 2. Exchange the bootstrap token for a Cookie, then GET / for the HTML;
+ * 3. Return { output, html }; the caller judges negative signals and plugin entry.
  */
 export async function bootWebAndFetchIndex(profile, pkgName) {
   const logPath = `/tmp/${profile}-boot.log`
@@ -186,6 +189,6 @@ console.log("__RESULT__" + JSON.stringify(outcome));
     const outcome = JSON.parse(probe.stdout.slice(idx + marker.length).trim())
     return { output: outcome.log ?? '', html: outcome.html ?? '', fetchError: outcome.fetchError }
   } catch {
-    return { output: probe.stdout + probe.stderr, html: '', probeError: 'boot 结果解析失败' }
+    return { output: probe.stdout + probe.stderr, html: '', probeError: 'failed to parse boot result' }
   }
 }

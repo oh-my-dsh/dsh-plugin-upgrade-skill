@@ -1,23 +1,14 @@
-# H3 · 客户端平面（能装能激活，浏览器里也得在名册上）
+# H3 · Client Plane (Installs and Activates, and Must Be Listed in the Browser Roster)
 
-## 无人值守评测授权（BENCHMARK-AUTH-v1）
+## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 
-这是一次在一次性隔离容器中运行的无人值守评测，不会有后续用户消息。本题面即用户
-对完成本题所需方案与执行的明确授权和确认：请自行完成必要的分析与计划，并在计划
-形成后立即继续执行，不要暂停等待“确认”，也不要向用户追问。该确认持续适用于你
-依据适用 skill 产生的具体计划，但仅限以下范围：
+This is an unattended benchmark run in a disposable isolated container; there will be no follow-up user messages. This task statement is itself the user's explicit authorization and confirmation for the solution and execution needed to complete the task: complete the necessary analysis and planning on your own, and continue executing immediately once the plan is formed — do not pause to wait for "confirmation" and do not press the user with follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
 
-- 可以读取 `/app/fixture/`、容器内本地文档和本地工具；可以直接修改
-  `/app/fixture/`，并按题面写入指定的 `/app/agent-output/` 目录；
-- 可以创建一次性的本地验证 profile、临时文件并运行本地测试、构建和 dsh 命令；
-- 不得修改 skill、评测器或参考答案，不得发布、推送、访问外部服务或改动容器外资源；
-- 如果无法完成，请如实说明阻塞，但不得仅因为缺少另一轮确认而停止。
+- You may read `/app/fixture/`, local in-container documentation, and local tools; you may modify `/app/fixture/` directly and write to the specified `/app/agent-output/` directory as instructed;
+- You may create disposable local verification profiles and temporary files, and run local tests, builds, and dsh commands;
+- You must not modify the skill, the grader, or the reference solution, and must not publish, push, access external services, or change resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
 
-我还有一个浏览器插件（工作目录：`/app/fixture/`，即容器内的 fixture 目录），
-0.1.1 时代的写法，页面上往输入框贴剪贴板内容那种。宿主已经升到 dsh
-0.1.2-alpha.2，麻烦你把它迁移好：**直接改 `/app/fixture/` 里的文件**，让它在
-0.1.2-alpha.2 上能装、能激活，浏览器侧也能真正加载到它。
+I also have a browser plugin (working directory: `/app/fixture/`, i.e., the fixture directory inside the container) written in the 0.1.1-era style — the kind that pastes clipboard content into an input box on the page. The host has already been upgraded to dsh 0.1.2-alpha.2; please migrate it: **edit the files under `/app/fixture/` directly** so that it installs and activates on 0.1.2-alpha.2 and the browser side actually loads it.
 
-容器里已全局安装 dsh 0.1.2-alpha.2，你可以自行创建隔离 profile，用
-`dsh plugin add` / `dsh --profile …` 做冷启动验证（`dsh web` 能起）；
-另外，除 `/app/fixture/` 以外的文件不是本题内容，不要动。
+dsh 0.1.2-alpha.2 is already installed globally in the container. You may create an isolated profile yourself and run cold boot verification with `dsh plugin add` / `dsh --profile …` (`dsh web` should start). Everything outside `/app/fixture/` is not part of this task — leave it alone.

@@ -1,26 +1,17 @@
-# S3 迁移评估报告（参考答案）
+# S3 Migration Assessment Report (Reference Answer)
 
-## 会坏的面与迁移写法
+## Breaking surfaces and migration forms
 
-1. **类型导入（src/client/index.ts:6, Pet.tsx:8）**：`@deepseek-ai/dsh-client-runtime/client`
-   包在 alpha 已移除。`ClientContext`/`ConversationSnapshot` 类型改从
-   `@deepseek-ai/cordis` 导入；`package.json` `client.inject` 里的
-   `dsh-client-runtime` 声明同步删除（残留会启动报服务缺失）。
-2. **平铺快照读取（Pet.tsx isThinking / toolRunning / lastTurnEnd）**：
-   `partial`、`runningCalls`、`turnEnds` 等平铺字段移入
-   `views.get('chat')?.legacy` 兼容投影。第一步先全量走 legacy 投影
-   （两步走），字段语义不变；`turnEnds` 的时间线语义后续迁 `timeline`。
-3. **生命周期字段（Pet.tsx running）**：`running` 不在 legacy 投影内，
-   必须经 `useSession` 座读取（会话生命周期拆分到 SessionSnapshot）。
-4. **slot 注册（index.ts apply 尾部）**：`ctx.slots.register` 改为
-   `ctx.slots.inject(name, () => ctx.slots.register(...))`；
-   `ctx.slots` 类型需引入 `@deepseek-ai/dsh-client-ui-renderer/client`。
+1. **Type imports (src/client/index.ts:6, Pet.tsx:8)**: the `@deepseek-ai/dsh-client-runtime/client` package was removed in alpha. The `ClientContext`/`ConversationSnapshot` types must be imported from `@deepseek-ai/cordis` instead; also delete the `dsh-client-runtime` declaration under `client.inject` in `package.json` (a leftover would fail startup with a missing-service error).
+2. **Flat snapshot reads (Pet.tsx isThinking / toolRunning / lastTurnEnd)**: flat fields such as `partial`, `runningCalls`, `turnEnds` move into the `views.get('chat')?.legacy` compatibility projection. First step: read everything through the legacy projection (two-step move), field semantics unchanged; the `turnEnds` timeline semantics migrate to `timeline` later.
+3. **Lifecycle fields (Pet.tsx running)**: `running` is not in the legacy projection and must be read through the `useSession` seat (session lifecycle was split into SessionSnapshot).
+4. **Slot registration (end of index.ts apply)**: `ctx.slots.register` becomes `ctx.slots.inject(name, () => ctx.slots.register(...))`; the `ctx.slots` type requires importing `@deepseek-ai/dsh-client-ui-renderer/client`.
 
-## 对应卡片
+## Corresponding cards
 
-- DSH-0.1.2-A1-03（会话视图工程大幅拆分）：以上 2/3/4 全部出自该卡。
+- DSH-0.1.2-A1-03 (heavy split of the session-view project): items 2/3/4 above all come from this card.
 
-## 两步走结论
+## Two-step conclusion
 
-可先走兼容投影跑起来的：partial / runningCalls / turnEnds（legacy 投影全量可读）。
-必须立即换路径的：running（useSession 座）、类型导入与 inject 声明（否则不激活）。
+Can run first through the compatibility projection: partial / runningCalls / turnEnds (fully readable through the legacy projection).
+Must switch paths immediately: running (`useSession` seat), type imports, and the inject declaration (otherwise the plugin does not activate).

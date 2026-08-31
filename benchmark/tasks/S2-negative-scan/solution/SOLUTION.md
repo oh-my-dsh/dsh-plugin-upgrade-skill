@@ -1,12 +1,9 @@
-# S2 参考解法
+# S2 Reference Solution
 
-## 参考报告
+## Reference report
 
-见 [solution/report.md](report.md)，期望 judge 得分 100。
+See [solution/report.md](report.md), expected judge score 100.
 
-## 考点（一句话）
+## Point under test (in one sentence)
 
-pre-flight 的负面清单：启发式扫描不是兼容性证明。插件只命中 #3（apiProxy →
-DSH-0.1.2-A1-01），其余六类零命中；agent 必须说清楚「零命中 ≠ 兼容」——仍须按
-走廊逐卡核对依赖/配置，并在目标版本真实挂载验证（build/typecheck、冷启动、功能
-烟测），而不是扫完就说“应该没问题”。
+pre-flight's negative checklist: heuristic scanning is not a compatibility proof. The plugin hits only #3 (apiProxy → DSH-0.1.2-A1-01); the other six categories have zero hits; the agent must make clear that "zero hits ≠ compatible" — it still has to check dependencies/config card by card against the corridor, and verify on a real mount of the target version (build/typecheck, cold boot, functional smoke test), instead of concluding "should be fine" right after scanning.

@@ -1,4 +1,5 @@
-# bench-catalog（考题素材）
+# bench-catalog (Exam Material)
 
-H4 题的 fixture：一个"已完成迁移"的插件 + 遗留的 0.1.1 时代构建产物。
-**只是考题素材，不能运行、不许发布。** `src/` 只读；`lib/` 是陈旧产物，可清理。
+The H4 task's fixture: a "fully migrated" plugin plus leftover build artifacts from the
+0.1.1 era. **Exam material only — cannot be run, must not be published.** `src/` is
+read-only; `lib/` holds stale artifacts and may be cleaned.

@@ -1,7 +1,5 @@
-# S2 fixture · 最小触点插件（负向扫描题）
+# S2 fixture · Minimal touchpoint plugin (negative-scan task)
 
-测试夹具，**不得发布**。整个插件只命中一类触点（#3 内部服务/Remote：`apiProxy`），
-另有一个看似可疑实则零命中的 `src/session-notes.js`（纯工具函数）。
+Test fixture, **do not publish**. The whole plugin hits only one touchpoint category (#3 internal service/Remote: `apiProxy`), plus a `src/session-notes.js` that looks suspicious but actually has zero hits (pure utility functions).
 
-用途：考察 agent 在「大部分触点零命中」时是否会草率得出“差不多兼容”的结论——
-正确做法是按走廊逐卡核对，并声明零命中不等于兼容、仍须真实验证。
+Purpose: tests whether the agent jumps to a hasty "roughly compatible" conclusion when most touchpoint categories are zero-hit — the correct approach is to check card by card against the corridor, and to state that zero hits does not equal compatibility and that real verification is still required.

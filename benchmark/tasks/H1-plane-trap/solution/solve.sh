@@ -1,5 +1,5 @@
 #!/bin/bash
-# Oracle 解法：把参考插件文件覆盖到 /app/fixture/ 对应相对路径。
+# Oracle solution: overwrite the reference plugin files into their relative paths under /app/fixture/.
 set -e
 solution_dir="$(dirname "$0")"
 cp "$solution_dir/plugin/index.js" /app/fixture/index.js

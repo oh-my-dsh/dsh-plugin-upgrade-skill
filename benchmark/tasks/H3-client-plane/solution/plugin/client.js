@@ -1,5 +1,5 @@
-// 浏览器半边（0.1.2-alpha.2）：ctx.remote 调用返回 RemoteResult，按 DSH-0.1.2-A2-02
-// 在结果分支里处理业务失败，不要防御性 catch 吞错。
+// Browser half (0.1.2-alpha.2): ctx.remote calls return a RemoteResult; per DSH-0.1.2-A2-02,
+// handle business failures in the result branch instead of swallowing errors with a defensive catch.
 export function apply(ctx) {
   const button = document.createElement('button')
   button.textContent = '📋'

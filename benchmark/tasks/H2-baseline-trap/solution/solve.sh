@@ -1,6 +1,6 @@
 #!/bin/bash
-# Oracle 解法：把迁移后的插件文件覆盖到 /app/fixture/（不动 test/ 与 README），
-# 并把迁移报告写到 agent 输出目录。
+# Oracle solution: overwrite the migrated plugin files into /app/fixture/ (leaving test/ and README untouched),
+# and write the migration report to the agent output directory.
 set -e
 SOLUTION_DIR="$(dirname "$0")"
 cp "$SOLUTION_DIR/plugin/index.js" "$SOLUTION_DIR/plugin/package.json" "$SOLUTION_DIR/plugin/cordis.patch.yml" /app/fixture/

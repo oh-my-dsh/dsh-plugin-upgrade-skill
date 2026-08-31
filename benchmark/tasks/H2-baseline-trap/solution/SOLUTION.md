@@ -1,12 +1,10 @@
-# H2 参考解法
+# H2 Reference Solution
 
-## 参考改动与报告
+## Reference Changes and Report
 
-- 插件迁移：见 [solution/plugin/](plugin/)（同 M1：宿主平面直连 `llm`）。
-- 迁移报告：见 [solution/report.md](report.md)，期望 judge 得分 100。
+- Plugin migration: see [solution/plugin/](plugin/) (same as M1: host-plane direct connection to `llm`).
+- Migration report: see [solution/report.md](report.md); expected judge score 100.
 
-## 考点（一句话）
+## Core Point (In One Sentence)
 
-rollup R-06「迁移前 baseline 归因」：迁移前先把机械测试套件跑一遍，把预存失败
-记入豁免清单；迁移报告必须把它归为「迁移前已有、非本次迁移引入」，且不许顺手
-修掉——修了就是污染迁移 diff（judge 对改 `test/basic.test.mjs` 扣 30 分）。
+rollup R-06 "pre-migration baseline attribution": run the mechanical test suite before migrating and record pre-existing failures in an exemption list; the migration report must attribute them as "already present before the migration, not introduced by this migration", and they must not be fixed as a side task — fixing them pollutes the migration diff (the judge deducts 30 points for touching `test/basic.test.mjs`).

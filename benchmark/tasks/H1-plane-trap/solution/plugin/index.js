@@ -1,10 +1,11 @@
-// 0.1.2-alpha.2 迁移版 —— 按 skill 卡片定位变更后分平面迁移：
-//   ALPHA1-01: APIProxy 整体移除。
-//     · host 平面（本插件原所在平面）：不再走网关门面，直接注入领域服务
-//       inject "apiProxy" → inject "llm"；llm.providers → ctx.llm.listProviders()
-//     · client 平面（浏览器插件）：inject "remote"，走 ctx.remote.llm.listProviders()
-//       （永不 reject，业务失败判 result.ok === false —— ALPHA2-02）
-//   另：删除依赖 @deepseek-ai/dsh-host-apiproxy（SDK 包已随 alpha.1 移除）
+// 0.1.2-alpha.2 migration — locate the changes via the skill cards, then migrate per plane:
+//   ALPHA1-01: APIProxy removed entirely.
+//     · host plane (this plugin's original plane): no longer go through the gateway facade;
+//       inject the domain service directly — inject "apiProxy" → inject "llm";
+//       llm.providers → ctx.llm.listProviders()
+//     · client plane (browser plugin): inject "remote", go through ctx.remote.llm.listProviders()
+//       (never rejects; business failures are judged via result.ok === false — ALPHA2-02)
+//   Also: drop the @deepseek-ai/dsh-host-apiproxy dependency (the SDK package was removed with alpha.1)
 export const inject = ["llm"]
 
 export function apply(ctx) {

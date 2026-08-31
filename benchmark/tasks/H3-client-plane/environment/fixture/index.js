@@ -1,4 +1,4 @@
-// 宿主半边：浏览器插件同样有宿主挂载行（bundle patch），这里只做生命周期登记。
+// Host half: browser plugins also have a host mount line (bundle patch); here we only register the lifecycle.
 export function apply(ctx) {
   console.error("[bench-paste] host half apply() 执行")
 }

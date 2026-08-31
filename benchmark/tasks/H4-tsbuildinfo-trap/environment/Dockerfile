@@ -1,10 +1,10 @@
 FROM node:24-bookworm
 
-# git 供 judge 检测 fixture 是否被改动（src 只读纪律门禁）
+# git lets the judge detect whether the fixture was changed (src read-only discipline gate)
 RUN apt-get update && apt-get install -y --no-install-recommends git     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY fixture /app/fixture
 
-# 基线提交：judge 用 `git status --porcelain -- fixture/src` 判定 agent 是否守只读纪律
+# Baseline commit: the judge uses `git status --porcelain -- fixture/src` to check that the agent kept the read-only discipline
 RUN git init -q && git add -A && git -c user.email=bench@local -c user.name=bench commit -q -m "baseline"

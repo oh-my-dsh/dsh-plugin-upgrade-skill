@@ -1,26 +1,29 @@
-# H4 诊断报告（参考答案）
+# H4 Diagnostic Report (Reference Answer)
 
-## 报错来源
+## Error Source
 
-`MISSING_EXPORT resolveSessionPreset` 出现在**构建期**（rolldown/oxc 读构建图），
-而 `tsc --noEmit` 通过——两者矛盾指向构建缓存假阳性。核对 fixture：
+`MISSING_EXPORT resolveSessionPreset` appears at **build time** (rolldown/oxc reads the
+build graph), while `tsc --noEmit` passes — the contradiction points to a build cache
+false positive. Checking the fixture:
 
-- `lib/index.js`：0.1.1-rc.2 时代的陈旧产物，仍 `import { resolveSessionPreset }`；
-- `lib/tsconfig.tsbuildinfo`：增量构建状态，referencedMap 仍把
-  `resolveSessionPreset` 挂在旧依赖图上；
-- `src/`：全仓搜索零命中，源码对 `resolveSessionPreset` 没有任何引用。
+- `lib/index.js`: a stale artifact from the 0.1.1-rc.2 era that still
+  `import { resolveSessionPreset }`;
+- `lib/tsconfig.tsbuildinfo`: incremental build state whose referencedMap still pins
+  `resolveSessionPreset` to the old dependency graph;
+- `src/`: zero hits across the repository — the source has no reference to
+  `resolveSessionPreset` at all.
 
-结论：报错源自陈旧构建产物与增量缓存，不是源码真实依赖
-（DSH-0.1.2-A1-21 的删除确实发生，但本插件从未调用它）。
+Conclusion: the error comes from stale build artifacts and the incremental cache, not
+from a real source dependency (the DSH-0.1.2-A1-21 deletion did happen, but this plugin
+never called it).
 
-## 源码该不该改
+## Should the Source Be Changed
 
-**无需改动。** DSH-0.1.2-A1-21 的迁移配方只适用于真实调用方；对零引用的代码
-套配方是无的放矢。
+**No changes needed.** The DSH-0.1.2-A1-21 migration recipe only applies to real callers;
+applying it to code with zero references is pointless.
 
-## 处置步骤
+## Remediation Steps
 
-1. `pnpm run clean`（删除 `lib/` 与增量缓存）；
-2. 重新 `pnpm run build` —— 构建图从当前源码重建，报错消失；
-3. 验证纪律：此后每次迁移验证前都先 clean，再 typecheck/build/test
-   （增量检查的结论不可信，见 migration-hygiene §1）。
+1. `pnpm run clean` (removes `lib/` and the incremental cache);
+2. Re-run `pnpm run build` — the build graph is rebuilt from the current source and the error disappears;
+3. Verification discipline: from now on, run clean before every migration verification, then typecheck/build/test (incremental check results are not trustworthy; see migration-hygiene §1).

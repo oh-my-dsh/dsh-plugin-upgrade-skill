@@ -1,50 +1,52 @@
-// H4-tsbuildinfo-trap 判分：src 只读门禁 + 假阳性归因三要点 + 陷阱封顶。
-// 考点（migration-hygiene §1 + DSH-0.1.2-A1-21 实战批注）：
-//   - 报错来自陈旧构建产物/增量缓存（lib/index.js 与 lib/tsconfig.tsbuildinfo
-//     里残留 resolveSessionPreset），不是源码真实引用；
-//   - 正确处置 = pnpm run clean 后重建，源码零改动；
-//   - 陷阱 = 照 DSH-0.1.2-A1-21 迁移配方去"修"不存在的引用（改源码即 0 分）。
+// H4-tsbuildinfo-trap grading: src read-only gate + three false-positive attribution points + trap cap.
+// Points (migration-hygiene §1 + DSH-0.1.2-A1-21 field notes):
+//   - the error comes from stale build artifacts/incremental cache (resolveSessionPreset
+//     left over in lib/index.js and lib/tsconfig.tsbuildinfo), not a real source reference;
+//   - correct remediation = pnpm run clean, then rebuild, with zero source changes;
+//   - the trap = "fixing" a non-existent reference per the DSH-0.1.2-A1-21 migration
+//     recipe (changing the source scores 0).
 import { emit, fixtureChanges, readAgentText } from './judge-utils.mjs'
 
 const TASK = 'H4-tsbuildinfo-trap'
 const TRAP = /resolveRecordedPreset|presets\//
 
-main().catch((error) => emit(0, ['judge 异常: ' + error.message]))
+main().catch((error) => emit(0, ['judge error: ' + error.message]))
 
 async function main() {
   const reasons = []
 
-  // 门禁：src 必须零改动（lib/ 允许清理）。
+  // Gate: src must stay completely unchanged (lib/ may be cleaned).
   const gate = await fixtureChanges('fixture/src')
   if (gate.changed === true) {
-    emit(0, ['src 被改动，本题 0 分（陷阱命中：源码本就无需迁移）: ' + gate.detail])
+    emit(0, ['src was modified; this task scores 0 (trap hit: the source never needed migration): ' + gate.detail])
   }
-  if (gate.changed === null) reasons.push('警告: ' + gate.detail)
-  else reasons.push('src 未被修改（门禁通过）')
+  if (gate.changed === null) reasons.push('warning: ' + gate.detail)
+  else reasons.push('src was not modified (gate passed)')
 
   const { text, files } = readAgentText('', TASK)
   if (!text.trim()) {
-    emit(0, [...reasons, '未在 /app/agent-output/' + TASK + '/ 找到报告，按 0 分处理'])
+    emit(0, [...reasons, 'no report found under /app/agent-output/' + TASK + '/; graded as 0'])
   }
-  reasons.push('读取到 agent 报告: ' + files.join(', '))
+  reasons.push('read agent report: ' + files.join(', '))
 
   let score = 0
-  const hasConclusion = /零引用|没有(任何)?(真实)?引用|并非(真实)?(引用|依赖)|不是真实|伪报错|无需(改动|修改|迁移)/.test(text)
-  if (/tsbuildinfo|增量缓存|构建缓存|陈旧|stale|假阳性/i.test(text)) {
-    score += 30; reasons.push('命中要点「识别构建缓存/产物假阳性」(+30)')
-  } else { reasons.push('缺少要点「识别构建缓存/产物假阳性」(-30)') }
+  const hasConclusion = /零引用|没有(任何)?(真实)?引用|并非(真实)?(引用|依赖)|不是真实|伪报错|无需(改动|修改|迁移)|zero references?|no (real )?references?|not (a |from a )?real (reference|dependency)|not referenced|false (error|positive)|phantom error|no (source )?change(s)? (needed|required)|no need to (change|modify|migrate)|does not need to be (changed|modified|migrated)/i.test(text)
+  if (/tsbuildinfo|增量缓存|构建缓存|陈旧|stale|假阳性|incremental cache|build cache|false positive/i.test(text)) {
+    score += 30; reasons.push('point hit: "identified the build cache/artifact false positive" (+30)')
+  } else { reasons.push('point missing: "identified the build cache/artifact false positive" (-30)') }
   if (/clean/i.test(text)) {
-    score += 30; reasons.push('命中要点「clean 后重建的处置」(+30)')
-  } else { reasons.push('缺少要点「clean 后重建的处置」(-30)') }
+    score += 30; reasons.push('point hit: "clean then rebuild remediation" (+30)')
+  } else { reasons.push('point missing: "clean then rebuild remediation" (-30)') }
   if (hasConclusion) {
-    score += 40; reasons.push('命中要点「源码无需改动的明确结论」(+40)')
-  } else { reasons.push('缺少要点「源码无需改动的明确结论」(-40)') }
+    score += 40; reasons.push('point hit: "explicit conclusion that the source needs no changes" (+40)')
+  } else { reasons.push('point missing: "explicit conclusion that the source needs no changes" (-40)') }
 
-  // 陷阱封顶：只有未得出"源码无需改动"结论却照 DSH-0.1.2-A1-21 配方"修复"时才触发；
-  // 引用卡片原文（含 presets/ 等字面量）但正确结论在，不误伤。
+  // Trap cap: triggers only when the report "fixes" per the DSH-0.1.2-A1-21 recipe without
+  // reaching the "source needs no changes" conclusion; quoting the card verbatim (including
+  // literals like presets/) alongside the correct conclusion does not false-positive.
   if (TRAP.test(text) && !hasConclusion) {
     score = Math.min(score, 30)
-    reasons.push('陷阱命中：报告按 DSH-0.1.2-A1-21 配方"修复"不存在的引用，封顶 30')
+    reasons.push('trap hit: the report "fixed" a non-existent reference per the DSH-0.1.2-A1-21 recipe; capped at 30')
   }
 
   emit(score, reasons)

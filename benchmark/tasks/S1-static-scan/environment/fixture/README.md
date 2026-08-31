@@ -1,19 +1,16 @@
-# S1 fixture · 七类触点静态夹具（S1 专用副本）
+# S1 fixture · Static fixture of the seven touchpoints (S1-specific copy)
 
-这是 `skills/plugin-upgrade/examples/legacy-plugin/` 的逐字副本（本 README 除外），
-用于 benchmark 任务 S1-static-scan：agent 需要对它做**只读**触点扫描。它不是可
-安装插件，是测试夹具，**不得执行、不得发布**；不能编译是设计使然。
+This is a verbatim copy of `skills/plugin-upgrade/examples/legacy-plugin/` (except this README), used by the benchmark task S1-static-scan: the agent must perform a **read-only** touchpoint scan of it. It is not an installable plugin; it is a test fixture — **do not execute or publish it**; that it cannot be compiled is by design.
 
-- 本题判定要求 fixture 相对 git HEAD 零改动，任何修改/新增/删除文件都会使本题 0 分。
-- 本目录不参与仓库 `node scripts/validate.mjs` 的触点正样本校验（校验器只读
-  `skills/` 下的原始夹具）。
+- This task's grading requires the fixture to be unchanged relative to git HEAD; modifying/adding/deleting any file scores 0 for the task.
+- This directory does not take part in the touchpoint positive-sample validation of the repository's `node scripts/validate.mjs` (the validator only reads the original fixture under `skills/`).
 
-| 触点 | 命中位置 |
+| Touchpoint | Hit location |
 |---|---|
-| #1 源码 patch | cordis.patch.yml · patch.yml · scripts/apply-patch.mjs |
-| #2 内部/持久事件 | src/index.ts · 外部 informational SessionEvent producer |
-| #3 内部服务/Remote | src/index.ts · `ctx.get('apiProxy')` |
-| #4 宿主文件系统 | src/index.ts · 固定 `~/.dsh/profiles/default` |
-| #5 内部 UI/命令 | src/index.ts · internal import + `registerCommand` |
-| #6 自建通道 | src/index.ts · loopback HTTP `/api/legacy` |
-| #7 子进程/输出 | src/index.ts · scripts/apply-patch.mjs · 错误假设 stdout 是 JSONL |
+| #1 Source patch | cordis.patch.yml · patch.yml · scripts/apply-patch.mjs |
+| #2 Internal/persistent events | src/index.ts · external informational SessionEvent producer |
+| #3 Internal service/Remote | src/index.ts · `ctx.get('apiProxy')` |
+| #4 Host filesystem | src/index.ts · fixed `~/.dsh/profiles/default` |
+| #5 Internal UI/commands | src/index.ts · internal import + `registerCommand` |
+| #6 Custom channel | src/index.ts · loopback HTTP `/api/legacy` |
+| #7 Subprocess/output | src/index.ts · scripts/apply-patch.mjs · wrong assumption that stdout is JSONL |

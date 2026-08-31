@@ -1,32 +1,20 @@
-# S1 · 静态触点扫描（只读）
+# S1 · Static Touchpoint Scan (Read-Only)
 
-## 无人值守评测授权（BENCHMARK-AUTH-v1）
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
 
-这是一次在一次性隔离容器中运行的无人值守评测，不会有后续用户消息。本题面即用户
-对完成本题所需方案与执行的明确授权和确认：请自行完成必要的分析与计划，并在计划
-形成后立即继续执行，不要暂停等待“确认”，也不要向用户追问。该确认持续适用于你
-依据适用 skill 产生的具体计划，但仅限以下范围：
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for "confirmation", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
 
-- 可以只读检查 `/app/fixture/`、容器内本地文档和本地工具；`/app/fixture/` 必须保持
-  零改动；可以按题面把报告写入指定的 `/app/agent-output/` 目录；
-- 可以创建报告所需的临时文件并运行只读的本地扫描命令，但不得执行迁移或安装；
-- 不得修改 skill、评测器或参考答案，不得发布、推送、访问外部服务或改动容器外资源；
-- 如果无法完成，请如实说明阻塞，但不得仅因为缺少另一轮确认而停止。
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
 
-我是一个 DSH 插件维护者。容器里 `/app/fixture/` 有一份旧插件源码，写法停留在
-dsh 0.1.1 时代，我计划把它迁移到 dsh 0.1.2-alpha.2，但动手前想先知道它会撞上
-哪些已知变更（静态副本，不可执行）。
+I am a DSH plugin maintainer. `/app/fixture/` in the container holds the source of a legacy plugin written in the dsh 0.1.1 era. I plan to migrate it to dsh 0.1.2-alpha.2, but before touching anything I want to know which known changes it will collide with (static copy, not executable).
 
-请你**只读扫描**这份源码（不要修改 `/app/fixture/` 里的任何文件），输出一份
-触点体检报告，写到 `/app/agent-output/S1-static-scan/` 下（文件名随意，.md/.txt
-均可）。要求：
+Please **scan this source read-only** (do not modify any file under `/app/fixture/`) and produce a touchpoint inspection report, written under `/app/agent-output/S1-static-scan/` (any filename; .md/.txt both fine). Requirements:
 
-1. 按七类触点（#1 源码 patch、#2 事件、#3 服务/Remote、#4 宿主目录、#5 UI/命令/工具、
-   #6 自建通道、#7 子进程/输出解析）逐类给出：是否命中、命中文件/行、命中的具体耦合点；
-2. 把每个命中点映射到 0.1.1-rc.2 → 0.1.2-alpha.2 走廊里的具体变更卡片
-   （卡片 ID 用 `A1-01` 或完整 ID 均可）。注意走廊折叠：某字段在走廊中间版本被移除、
-   在目标版本又恢复时，按最终净状态处理，想想这该怎么映射；
-3. 对没有命中的触点类，写清楚你扫描了哪些文件、排除了什么，为什么不能直接得出
-   “没命中 = 没问题”的结论。
+1. For each of the seven touchpoint categories (#1 source patch, #2 events, #3 service/Remote, #4 host directory, #5 UI/commands/tools, #6 custom channel, #7 subprocess/output parsing), report: whether it hits, the hit files/lines, and the concrete coupling points hit;
+2. Map every hit to the specific change card in the 0.1.1-rc.2 → 0.1.2-alpha.2 corridor (card IDs may be written as `A1-01` or as the full ID). Note the corridor folding: when a field is removed in an intermediate corridor version and restored in the target version, treat it by the final net state — think through how that should be mapped;
+3. For the touchpoint categories with no hits, state clearly which files you scanned, what you ruled out, and why you cannot directly conclude "no hit = no problem".
 
-题面里没有任何陷阱，考的就是扫描是否完整、卡片映射是否准确、只读纪律是否遵守。
+There are no traps in this brief; what is tested is whether the scan is complete, the card mapping is accurate, and read-only discipline is respected.

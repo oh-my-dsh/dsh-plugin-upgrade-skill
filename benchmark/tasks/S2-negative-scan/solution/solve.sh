@@ -1,5 +1,5 @@
 #!/bin/bash
-# Oracle 解法：把参考报告写到 agent 输出目录（不碰 fixture，满足只读纪律）。
+# Oracle solution: write the reference report to the agent output directory (does not touch the fixture, honoring read-only discipline).
 set -e
 mkdir -p /app/agent-output/S2-negative-scan
 cp "$(dirname "$0")/report.md" /app/agent-output/S2-negative-scan/report.md

@@ -1,19 +1,14 @@
-# H1 参考解法
+# H1 Reference Solution
 
-## 参考改动
+## Reference Changes
 
-见 [solution/plugin/](plugin/)（与 M1 参考解法同款：宿主平面直连领域服务，
-`inject: ["llm"]` + `ctx.llm.listProviders()`，删除死依赖），期望 judge 得分 100。
-注意参考解法**保留或删除那段误导注释均可**——judge 只看最终 inject 的平面归属。
+See [solution/plugin/](plugin/) (same approach as the M1 reference solution: host-plane direct connection to the domain service, `inject: ["llm"]` + `ctx.llm.listProviders()`, and removal of the dead dependency); expected judge score 100.
+Note that the reference solution may **keep or delete the misleading comment** — the judge only looks at which plane the final inject belongs to.
 
-## 考点（一句话）
+## Core Point (In One Sentence)
 
-源码里的「换成 `inject: ["remote"]` 就省事」注释是陷阱：apiProxy 是宿主平面门面、
-`remote` 是客户端平面门面，两者不在同一运行时。宿主平面插件误注 remote 会
-`pending (waiting for service: remote)`（DSH-0.1.2-A1-01 实战批注、验证报告第四节）。
-agent 必须先判定运行平面再选目标注入名，而不是照抄注释。
+The "switch to `inject: ["remote"]` and you are done" comment in the source is a trap: apiProxy is a host-plane facade and `remote` is a client-plane facade, and the two do not live in the same runtime. A host-plane plugin that injects remote instead ends up `pending (waiting for service: remote)` (DSH-0.1.2-A1-01 field note, section 4 of the validation report). The agent must determine the runtime plane first and then pick the target injection name, instead of copying the comment.
 
-## 负测锚点
+## Negative-Test Anchor
 
-如果 agent 照注释改成 `inject: ["remote"]`：容器冷启动必然
-`pending (waiting for service: remote)` → 40 分档，再被静态门槛封顶到 **20**。
+If the agent follows the comment and switches to `inject: ["remote"]`: the container cold boot is guaranteed to end up `pending (waiting for service: remote)` → the 40-point tier, then capped to **20** by the static gate.

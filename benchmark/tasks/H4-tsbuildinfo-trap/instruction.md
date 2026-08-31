@@ -1,36 +1,27 @@
-# H4 · 构建缓存假阳性陷阱（只读）
+# H4 · Build Cache False-Positive Trap (Read-Only)
 
-## 无人值守评测授权（BENCHMARK-AUTH-v1）
+## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 
-这是一次在一次性隔离容器中运行的无人值守评测，不会有后续用户消息。本题面即用户
-对完成本题所需方案与执行的明确授权和确认：请自行完成必要的分析与计划，并在计划
-形成后立即继续执行，不要暂停等待“确认”，也不要向用户追问。该确认持续适用于你
-依据适用 skill 产生的具体计划，但仅限以下范围：
+This is an unattended benchmark run in a disposable isolated container; there will be no follow-up user messages. This task statement is itself the user's explicit authorization and confirmation for the solution and execution needed to complete the task: complete the necessary analysis and planning on your own, and continue executing immediately once the plan is formed — do not pause to wait for "confirmation" and do not press the user with follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
 
-- 可以只读检查 `/app/fixture/`、容器内本地文档和本地工具；`/app/fixture/src/` 必须保持
-  零改动；可以清理 `/app/fixture/lib/` 中题面明确允许处理的陈旧构建产物，并把报告写入
-  指定的 `/app/agent-output/` 目录；
-- 可以创建报告所需的临时文件并运行本地诊断命令，但不得借诊断之名修改源码或其他
-  fixture 路径；
-- 不得修改 skill、评测器或参考答案，不得发布、推送、访问外部服务或改动容器外资源；
-- 如果无法完成，请如实说明阻塞，但不得仅因为缺少另一轮确认而停止。
+- You may read-only inspect `/app/fixture/`, local in-container documentation, and local tools; `/app/fixture/src/` must remain completely unchanged; you may clean the stale build artifacts in `/app/fixture/lib/` that the task explicitly allows, and write the report to the specified `/app/agent-output/` directory;
+- You may create temporary files needed for the report and run local diagnostic commands, but must not modify source code or other fixture paths in the name of diagnostics;
+- You must not modify the skill, the grader, or the reference solution, and must not publish, push, access external services, or change resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
 
-我按走廊卡把一个 DSH 插件从 0.1.1-rc.2 迁到了 0.1.2-alpha.2，源码都改完了，
-`tsc --noEmit` 也过了。但一跑构建就报：
+I migrated a DSH plugin from 0.1.1-rc.2 to 0.1.2-alpha.2 following the corridor cards; all source changes are done and `tsc --noEmit` passes. But every build run reports:
 
 ```
 Error: MISSING_EXPORT: "resolveSessionPreset" is not exported by
 node_modules/@deepseek-ai/dsh-agent-presets/src/index.ts
 ```
 
-我在源码里怎么搜都找不到 `resolveSessionPreset`。同事说"肯定是 DSH-0.1.2-A1-21
-那个删除没迁干净，照它的迁移配方再改改源码就好了"。
+No matter how I search the source, I cannot find `resolveSessionPreset`. A colleague says "it must be that the DSH-0.1.2-A1-21 deletion wasn't migrated cleanly — just rework the source a bit per its migration recipe and it will be fine".
 
-请你诊断（工作目录：`/app/fixture/`）：
+Please diagnose (working directory: `/app/fixture/`):
 
-1. 这个报错到底从哪来（指出真实来源，别猜）；
-2. 源码该不该改？给出结论和依据；
-3. 处置步骤写成报告，放 `/app/agent-output/H4-tsbuildinfo-trap/` 下
-   （.md/.txt/.json 均可）。
+1. Where does this error actually come from (point to the real source — don't guess);
+2. Should the source be changed? Give the conclusion and the evidence;
+3. Write the remediation steps as a report under `/app/agent-output/H4-tsbuildinfo-trap/` (.md/.txt/.json all acceptable).
 
-fixture 里的构建产物（`lib/`）你可以随便清理论证；`src/` 是只读的，被改动直接 0 分。
+You may freely clean up the build artifacts in the fixture (`lib/`) to demonstrate the diagnosis; `src/` is read-only — changing it scores 0 immediately.

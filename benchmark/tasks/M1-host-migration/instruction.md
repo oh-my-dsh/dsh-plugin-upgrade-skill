@@ -1,26 +1,18 @@
-# M1 · 宿主插件迁移（基础迁移题）
+# M1 · Host Plugin Migration (Basic Migration Task)
 
-## 无人值守评测授权（BENCHMARK-AUTH-v1）
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
 
-这是一次在一次性隔离容器中运行的无人值守评测，不会有后续用户消息。本题面即用户
-对完成本题所需方案与执行的明确授权和确认：请自行完成必要的分析与计划，并在计划
-形成后立即继续执行，不要暂停等待“确认”，也不要向用户追问。该确认持续适用于你
-依据适用 skill 产生的具体计划，但仅限以下范围：
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task statement itself is the user's explicit authorization and confirmation for the solution and execution needed to complete the task: perform the necessary analysis and planning on your own, and proceed with execution immediately once the plan takes shape — do not pause to wait for "confirmation", and do not ask the user follow-up questions. This confirmation continues to apply to the concrete plan you produce based on the applicable skill, but only within the following scope:
 
-- 可以读取 `/app/fixture/`、容器内本地文档和本地工具；可以直接修改
-  `/app/fixture/`，并按题面写入指定的 `/app/agent-output/` 目录；
-- 可以创建一次性的本地验证 profile、临时文件并运行本地测试、构建和 dsh 命令；
-- 不得修改 skill、评测器或参考答案，不得发布、推送、访问外部服务或改动容器外资源；
-- 如果无法完成，请如实说明阻塞，但不得仅因为缺少另一轮确认而停止。
+- You may read `/app/fixture/`, local in-container documentation, and local tools; you may modify `/app/fixture/` directly, and write to the designated `/app/agent-output/` directory as specified by the task;
+- You may create throwaway local verification profiles and temporary files, and run local tests, builds, and dsh commands;
+- You may not modify the skill, the verifier, or the reference solution; you may not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
 
-我维护一个 DSH 插件（工作目录：`/app/fixture/`），它按 dsh 0.1.1-rc.2 时代的
-API 编写。我们宿主已升级到 dsh 0.1.2-alpha.2，现在它激活不了。请你：
+I maintain a DSH plugin (working directory: `/app/fixture/`), written against the dsh 0.1.1-rc.2-era API. Our host has been upgraded to dsh 0.1.2-alpha.2, and the plugin no longer activates. Please:
 
-1. 找出它在 0.1.2-alpha.2 上激活失败的原因；
-2. 把插件源码迁移好，**直接改 `/app/fixture/` 里的文件**；
-3. 可选：把迁移报告写到 `/app/agent-output/M1-host-migration/` 下。
+1. Find out why it fails to activate on 0.1.2-alpha.2;
+2. Migrate the plugin source — **edit the files in `/app/fixture/` directly**;
+3. Optional: write the migration report under `/app/agent-output/M1-host-migration/`.
 
-目标只有一个：这个插件在 dsh 0.1.2-alpha.2 上能激活、能正常调用模型目录服务。
-容器里已全局安装 dsh 0.1.2-alpha.2，你可以自行创建隔离 profile，用
-`dsh plugin add` / `dsh --profile …` 做冷启动验证；容器里除 `/app/fixture/` 外
-的文件不是本题内容，不要动。
+There is only one goal: this plugin must activate on dsh 0.1.2-alpha.2 and call the model catalog service normally. dsh 0.1.2-alpha.2 is already installed globally in the container; you can create an isolated profile yourself and use `dsh plugin add` / `dsh --profile …` for cold-boot verification. Files in the container other than `/app/fixture/` are not part of this task — leave them alone.

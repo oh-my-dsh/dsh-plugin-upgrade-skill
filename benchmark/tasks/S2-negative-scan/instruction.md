@@ -1,31 +1,22 @@
-# S2 · 负向扫描（零命中 ≠ 兼容）
+# S2 · Negative Scan (Zero Hits ≠ Compatible)
 
-## 无人值守评测授权（BENCHMARK-AUTH-v1）
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
 
-这是一次在一次性隔离容器中运行的无人值守评测，不会有后续用户消息。本题面即用户
-对完成本题所需方案与执行的明确授权和确认：请自行完成必要的分析与计划，并在计划
-形成后立即继续执行，不要暂停等待“确认”，也不要向用户追问。该确认持续适用于你
-依据适用 skill 产生的具体计划，但仅限以下范围：
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for "confirmation", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
 
-- 可以只读检查 `/app/fixture/`、容器内本地文档和本地工具；`/app/fixture/` 必须保持
-  零改动；可以按题面把报告写入指定的 `/app/agent-output/` 目录；
-- 可以创建报告所需的临时文件并运行只读的本地扫描命令，但不得执行迁移或安装；
-- 不得修改 skill、评测器或参考答案，不得发布、推送、访问外部服务或改动容器外资源；
-- 如果无法完成，请如实说明阻塞，但不得仅因为缺少另一轮确认而停止。
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
 
-我又有一个旧插件，同样要迁到 dsh 0.1.2-alpha.2。这个插件很小，我觉得它应该
-没什么兼容问题。
+I have another legacy plugin that also needs to migrate to dsh 0.1.2-alpha.2. It is tiny, and I believe it should have no compatibility problems.
 
-容器里 `/app/fixture/` 有一份这份插件的源码（静态副本，不可执行）。
+`/app/fixture/` in the container holds this plugin's source (static copy, not executable).
 
-请你**只读扫描**这份源码（不要修改 `/app/fixture/` 里的任何文件），把报告写到
-`/app/agent-output/S2-negative-scan/` 下（文件名随意，.md/.txt 均可）。要求：
+Please **scan this source read-only** (do not modify any file under `/app/fixture/`) and write the report under `/app/agent-output/S2-negative-scan/` (any filename; .md/.txt both fine). Requirements:
 
-1. 按七类触点逐类给出命中/未命中结论与证据；
-2. 命中的触点映射到具体变更卡片；
-3. 我特别想知道：那些没有命中的触点类，能不能说明这个插件就兼容 0.1.2 了？
-   请给出你的判断和依据；如果你认为还需要做别的什么才能下结论，也写清楚。
+1. Give a hit/no-hit conclusion with evidence for each of the seven touchpoint categories;
+2. Map the hit touchpoints to the specific change cards;
+3. What I especially want to know: can the touchpoint categories with no hits tell me whether this plugin is compatible with 0.1.2? Give your judgment and the basis for it; if you think something else is needed before you can conclude, write that down too.
 
-容器里这份源码是静态副本（未安装 dsh，不可执行），只供阅读扫描。你给出的
-验证建议（如 build/typecheck、隔离 profile 冷启动、功能烟测）属于迁移后的必做
-步骤，写进报告即可，本题不要求实际执行；注意任何动作都不得改动 `/app/fixture/`。
+The source in the container is a static copy (dsh not installed, not executable), for reading and scanning only. The verification suggestions you give (e.g. build/typecheck, isolated-profile cold boot, functional smoke test) are mandatory steps after the migration; putting them in the report is enough — this task does not require actually running them. Note that no action may modify `/app/fixture/`.

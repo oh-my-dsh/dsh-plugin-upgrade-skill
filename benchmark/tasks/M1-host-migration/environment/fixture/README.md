@@ -1,12 +1,8 @@
-# M1 fixture · 旧写法宿主插件（0.1.1-rc.2 时代）
+# M1 fixture · Legacy-Style Host Plugin (0.1.1-rc.2 Era)
 
-测试夹具，**不得发布**。内容逐字复制自历史验证环境的 `/tmp/demo-plugin`
-（按 `@deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1` 真实接口编写的旧写法），仅
-package.json 增加 `"private": true`、补充本 README。
+Test fixture, **do not publish**. The content is copied verbatim from the `/tmp/demo-plugin` of the historical validation environment (legacy style written against the real interface of `@deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1`); the only additions are `"private": true` in package.json and this README.
 
-判活事实（来自 `validation-report-2026-08-30.md`）：
+Activation facts (from `validation-report-2026-08-30.md`):
 
-- 本插件挂上 dsh 0.1.2-alpha.2 冷启动即
-  `plugin tree failed ... pending (waiting for service: apiProxy)`，exit 1；
-- 按 skill 卡片迁移（`inject: ["llm"]` + `ctx.llm.listProviders()` + 删除死依赖）
-  后激活成功；容器无 API key 时路由数 0 是预期，调用走通即可。
+- With this plugin attached, dsh 0.1.2-alpha.2 cold boot immediately fails with `plugin tree failed ... pending (waiting for service: apiProxy)` and exit 1;
+- After migrating per the skill card (`inject: ["llm"]` + `ctx.llm.listProviders()` + removing the dead dependency), activation succeeds; with no API key in the container, a route count of 0 is expected — as long as the calls go through.

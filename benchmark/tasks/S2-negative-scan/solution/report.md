@@ -1,27 +1,21 @@
-# 触点体检（dsh-minimal-llm，dsh-v0.1.1-rc.2 → dsh-v0.1.2-alpha.2）
+# Touchpoint inspection (dsh-minimal-llm, dsh-v0.1.1-rc.2 → dsh-v0.1.2-alpha.2)
 
-扫描范围：`/app/fixture/` 全部文件（package.json、
-index.js、cordis.patch.yml、src/session-notes.js），只读，未修改任何文件。
+Scan scope: all files under `/app/fixture/` (package.json, index.js, cordis.patch.yml, src/session-notes.js), read-only, no file modified.
 
-| 触点 | 命中 | 文件/行 | 适用卡 | 说明 |
+| Touchpoint | Hit | File/Line | Card | Notes |
 |---|---|---|---|---|
-| #1 patch | ❌ | — | — | 无 patch 文件/声明 |
-| #2 事件 | ❌ | — | — | 无 SessionEvent/ctx.on |
-| #3 服务/Remote | ✅ | index.js:3、8 | DSH-0.1.2-A1-01 | `inject: ["apiProxy"]` + `ctx.apiProxy.llm.providers()`；apiProxy 已在 alpha.1 整体移除，必须迁移（宿主平面注入 `llm` 用 `ctx.llm.listProviders()`；客户端平面才走 `ctx.remote.*`） |
-| #4 宿主文件系统 | ❌ | — | — | 无 homedir/.dsh 读写 |
-| #5 UI/命令/工具 | ❌ | — | — | 无 registerCommand/contributes |
-| #6 自建通道 | ❌ | — | — | 无 createServer/WebSocket |
-| #7 子进程/输出 | ❌ | — | — | 无 spawn/stdout 解析 |
+| #1 patch | ❌ | — | — | no patch file/declaration |
+| #2 events | ❌ | — | — | no SessionEvent/ctx.on |
+| #3 service/Remote | ✅ | index.js:3, 8 | DSH-0.1.2-A1-01 | `inject: ["apiProxy"]` + `ctx.apiProxy.llm.providers()`; apiProxy removed entirely in alpha.1, must migrate (host plane injects `llm` and uses `ctx.llm.listProviders()`; only the client plane uses `ctx.remote.*`) |
+| #4 host filesystem | ❌ | — | — | no homedir/.dsh reads/writes |
+| #5 UI/commands/tools | ❌ | — | — | no registerCommand/contributes |
+| #6 custom channel | ❌ | — | — | no createServer/WebSocket |
+| #7 subprocess/output | ❌ | — | — | no spawn/stdout parsing |
 
-`src/session-notes.js` 零命中：纯字符串/数组工具函数，文件名里的 "session" 只是
-历史命名，不构成宿主耦合。
+`src/session-notes.js` zero hits: pure string/array utility functions; "session" in the filename is only historical naming, not host coupling.
 
-## 结论：零命中 ≠ 兼容
+## Conclusion: zero hits ≠ compatible
 
-- 唯一命中的 #3 就是决定性破坏点（DSH-0.1.2-A1-01）：不迁移的话插件在 0.1.2 上
-  会 `pending (waiting for service: apiProxy)` 直接起不来。
-- 其余六类零命中**只表示“当前模式没发现”**，不证明没有宿主耦合：本次扫描没有覆盖
-  依赖图解析（package.json 还依赖着已随 alpha.1 删除的 `@deepseek-ai/dsh-host-apiproxy`），
-  也不能替代真实运行。
-- 必须验证：迁移后删除死依赖、build/typecheck、在 0.1.2-alpha.2 隔离 profile 真实
-  冷启动确认无 pending，并跑通一次 `llm.listProviders()` 调用。
+- The single #3 hit is already the decisive break (DSH-0.1.2-A1-01): without migration the plugin goes `pending (waiting for service: apiProxy)` and never starts on 0.1.2.
+- Zero hits in the other six categories **only mean "not found in the current patterns"**, not proof of no host coupling: this scan did not cover dependency-graph resolution (package.json still depends on `@deepseek-ai/dsh-host-apiproxy`, which was deleted with alpha.1), and it cannot replace real execution.
+- Mandatory verification: after migration, remove the dead dependency, build/typecheck, do a real cold boot in an isolated 0.1.2-alpha.2 profile to confirm no pending, and run through one `llm.listProviders()` call.

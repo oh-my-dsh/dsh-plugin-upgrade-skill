@@ -1,4 +1,4 @@
-// 0.1.1-rc.2 时代写法：注入 apiProxy，点号域调用
+// 0.1.1-rc.2 era style: inject apiProxy and call through its dotted domain
 export const inject = ["apiProxy"]
 
 export function apply(ctx) {

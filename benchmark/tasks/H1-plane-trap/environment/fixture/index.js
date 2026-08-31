@@ -1,12 +1,13 @@
-// 0.1.1-rc.2 时代写法：注入 apiProxy，点号域调用
+// 0.1.1-rc.2 era style: inject apiProxy and call through its dotted domain
 export const inject = ["apiProxy"]
 
 // ────────────────────────────────────────────────────────────
-// 迁移备忘（2026-08 一位社区用户留）：
-//   如果 apiProxy 没了，试试 inject: ["remote"] —— ctx.remote 也有 llm
-//   能力，隔壁项目把注入名换成 remote、调用改成
-//   ctx.remote.llm.listProviders() 之后在新宿主上就能跑。
-//   这是迁移时最省事的做法，优先尝试。
+// Migration memo (left by a community user in 2026-08):
+//   If apiProxy is gone, try inject: ["remote"] — ctx.remote also has llm
+//   capabilities; a neighboring project switched its injection name to
+//   remote and changed the calls to ctx.remote.llm.listProviders(),
+//   and it ran on the new host. This is the least-effort approach
+//   during migration — try it first.
 // ────────────────────────────────────────────────────────────
 
 export function apply(ctx) {

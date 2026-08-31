@@ -1,56 +1,64 @@
-# benchmark v2.1 · Codex + plugin-upgrade 真实验证报告
+# benchmark v2.1 · Codex + plugin-upgrade live validation report
 
-> 验证日期：2026-08-31（Asia/Shanghai）
+> Validation date: 2026-08-31 (Asia/Shanghai)
 >
-> 验证协议：`BENCHMARK-AUTH-v1`
+> Protocol: `BENCHMARK-AUTH-v1`
 >
-> 被测 agent：Codex 0.151.0，`openai/gpt-5.6-sol`，`reasoning_effort=xhigh`
+> Agent under test: Codex 0.151.0, `openai/gpt-5.6-sol`, `reasoning_effort=xhigh`
 >
-> 被测 skill：仓库原始 `skills/plugin-upgrade/`，测试前后均未修改
+> Skill under test: the repo's original `skills/plugin-upgrade/`, unmodified before
+> and after the test
 >
-> 结论先行：**6 道题均取得 verifier 100/100、reward 1.0；有效试次均值 1.000。**
+> Bottom line: **all 6 tasks scored verifier 100/100 and reward 1.0; the effective
+> trials average 1.000.**
 
-范围说明：本报告记录的是仓库 HEAD `40a3f108441a` 上当时已有的 6 道题。之后上游
-`main` 新增了 S3-snapshot-migration 和 H4-tsbuildinfo-trap；它们不在本报告的实跑成绩
-内，也未被本文的“6/6”覆盖。本次 PR 只为两道新题补齐同版本授权契约和静态校验。
+Scope note: this report records the 6 tasks that existed at repo HEAD
+`40a3f108441a`. Upstream `main` has since added S3-snapshot-migration and
+H4-tsbuildinfo-trap; they are not part of this report's measured results and are not
+covered by this document's "6/6". This PR only added the same-version authorization
+contract and static validation for the two new tasks.
 
-## 一、结论口径
+## 1. Interpreting the conclusion
 
-本次不是 oracle 自检，而是把本仓库的 `plugin-upgrade` skill 真实挂给 Codex，令其在
-Harbor 的全新 Docker trial 中读取题面、制定计划、修改或扫描 fixture，并由每题自带的
-verifier 在同一容器内判分。
+This is not an oracle self-check: the repo's `plugin-upgrade` skill was actually
+attached to Codex, which read the prompts, made plans, and modified or scanned the
+fixtures inside fresh Harbor Docker trials, with each task's own verifier grading in
+the same container.
 
-最终有效结果为：
+Final effective results:
 
-- 主批次中 5 道进入 agent/verifier 的题全部通过；
-- H3 首次在环境构建阶段因 Docker Hub TLS handshake timeout 未启动 agent；
-- H3 随后以完全相同的 agent、模型、skill 和超时配置单题补跑，通过；
-- 合并 6 个有效试次后：**6/6 通过，600/600，平均 reward 1.000**；
-- 没有用旧报告、oracle 输出或历史 trial 补成绩。
+- all 5 tasks that reached agent/verifier in the main batch passed;
+- H3's agent did not start the first time because of a Docker Hub TLS handshake
+  timeout during environment build;
+- H3 was then re-run as a single task with the exact same agent, model, skill, and
+  timeout configuration, and passed;
+- across the 6 effective trials combined: **6/6 passed, 600/600, mean reward 1.000**;
+- no old reports, oracle outputs, or historical trials were used to make up scores.
 
-Harbor 主批次原始均值是 0.833，因为它把 H3 的镜像拉取异常计入了 6 题分母。本文的
-“6/6”是 5 个主批有效试次加 1 个 H3 同配置补跑试次；两层口径分别保留，不把基础设施
-异常伪装成一次性全绿主批。
+Harbor's raw main-batch mean is 0.833 because it counted H3's image-pull failure in
+the denominator of 6. This document's "6/6" is 5 valid main-batch trials plus 1 H3
+re-run trial under the same configuration; both readings are kept separate rather
+than dressing up an infrastructure failure as an all-green main batch.
 
-## 二、环境与执行配置
+## 2. Environment and execution configuration
 
-| 项目 | 实际值 |
+| Item | Actual value |
 | --- | --- |
-| 仓库 HEAD | `40a3f108441a` |
-| 当前分支 | `docs/plugin-upgrade-client-runtime-api-guide` |
+| Repo HEAD | `40a3f108441a` |
+| Current branch | `docs/plugin-upgrade-client-runtime-api-guide` |
 | Harbor | 0.22.0 |
 | Docker | client 29.7.2 / server 29.7.2 |
-| 题目环境 | Docker；实操题使用 `node:24-bookworm` 与 `@deepseek-ai/dsh@0.1.2-alpha.2` |
-| agent | Codex 0.151.0 |
-| 模型 | `openai/gpt-5.6-sol` |
-| 推理强度 | `xhigh` |
-| skill | `./skills/plugin-upgrade` |
-| 授权协议 | 6 题均为 `BENCHMARK-AUTH-v1` |
-| 并发 | 3 个 trial；Codex agent 并发上限 3 |
-| agent 超时 | 题目默认值的 3 倍，即 900 秒 |
-| 导出资产 | `/app/fixture`、`/app/agent-output` |
+| Task environment | Docker; hands-on tasks use `node:24-bookworm` and `@deepseek-ai/dsh@0.1.2-alpha.2` |
+| Agent | Codex 0.151.0 |
+| Model | `openai/gpt-5.6-sol` |
+| Reasoning effort | `xhigh` |
+| Skill | `./skills/plugin-upgrade` |
+| Authorization protocol | `BENCHMARK-AUTH-v1` for all 6 tasks |
+| Concurrency | 3 trials; Codex agent concurrency cap 3 |
+| Agent timeout | 3× the task default, i.e. 900 seconds |
+| Exported assets | `/app/fixture`, `/app/agent-output` |
 
-主批次实际命令：
+Actual command for the main batch:
 
 ```sh
 /private/tmp/dsh-plugin-upgrade-uv-cache/archive-v0/uQQ6k0y5JkgEljkkqXGUZ/bin/harbor run \
@@ -69,131 +77,156 @@ Harbor 主批次原始均值是 0.833，因为它把 H3 的镜像拉取异常计
   -y
 ```
 
-H3 补跑只把 `-p` 改为 `benchmark/tasks/H3-client-plane`、并发改为 1，其他 agent、
-模型、skill、授权、资产和超时配置保持一致。
+The H3 re-run only changed `-p` to `benchmark/tasks/H3-client-plane` and concurrency
+to 1; the agent, model, skill, authorization, asset, and timeout settings stayed the
+same.
 
-执行前静态门禁：
+Static gate run before execution:
 
 ```text
 Execution-contract validation OK: 6 tasks use BENCHMARK-AUTH-v1
 ```
 
-## 三、六题有效结果
+## 3. Effective results of the six tasks
 
-| 题目 | 有效 trial | trial 墙钟时间 | verifier 关键证据 | reward |
+| Task | Effective trial | Trial wall-clock | Key verifier evidence | reward |
 | --- | --- | ---: | --- | ---: |
-| S1-static-scan | `S1-static-scan__LbnKi7n` | 约 16m28s | fixture 零改动；读取 305 行报告；命中所需卡片并正确折叠 `DSH-0.1.2-A1-02` → `DSH-0.1.2-A2-01` | 1.0 |
-| S2-negative-scan | `S2-negative-scan__GYnXmPG` | 约 11m24s | 报告将唯一 #3 命中映射到 `DSH-0.1.2-A1-01`；交代六类零命中；明确零命中不等于兼容并要求真实验证 | 1.0 |
-| M1-host-migration | `M1-host-migration__KVw7Ruz` | 约 10m56s | fixture 已修改；`dsh plugin add` 成功；冷启动无 pending，推进至宿主应用层 | 1.0 |
-| H1-plane-trap | `H1-plane-trap__r2JCS6h` | 约 13m58s | 未被注释误导到 client `remote`；改用 Host `llm` 注入；安装及冷启动激活成功 | 1.0 |
-| H2-baseline-trap | `H2-baseline-trap__745Q48u` | 约 13m52s | 预存失败测试文件未触碰；报告正确归因；迁移后冷启动成功 | 1.0 |
-| H3-client-plane | `H3-client-plane__KQoJfzh` | 约 15m53s | 顶层 `dsh.client.platform=web`；安装成功；宿主半边无 pending；真实 `__DSH_BOOT__.entries` 含插件 | 1.0 |
+| S1-static-scan | `S1-static-scan__LbnKi7n` | ~16m28s | fixture unchanged; read a 305-line report; hit the required cards and correctly folded `DSH-0.1.2-A1-02` → `DSH-0.1.2-A2-01` | 1.0 |
+| S2-negative-scan | `S2-negative-scan__GYnXmPG` | ~11m24s | report mapped the only #3 hit to `DSH-0.1.2-A1-01`; accounted for six zero-hit categories; stated clearly that zero hits ≠ compatibility and demanded real verification | 1.0 |
+| M1-host-migration | `M1-host-migration__KVw7Ruz` | ~10m56s | fixture modified; `dsh plugin add` succeeded; cold boot without pending, reaching the host application layer | 1.0 |
+| H1-plane-trap | `H1-plane-trap__r2JCS6h` | ~13m58s | not misled by the comment into client `remote`; switched to Host `llm` injection; install and cold-boot activation succeeded | 1.0 |
+| H2-baseline-trap | `H2-baseline-trap__745Q48u` | ~13m52s | pre-existing failing test file untouched; report attributed correctly; cold boot after migration succeeded | 1.0 |
+| H3-client-plane | `H3-client-plane__KQoJfzh` | ~15m53s | top-level `dsh.client.platform=web`; install succeeded; host side without pending; real `__DSH_BOOT__.entries` contains the plugin | 1.0 |
 
 ### S1-static-scan
 
-Codex 明确把题目当成只读扫描，不安装、不执行 fixture，只把报告写到许可的输出目录。
-verifier 读取到：
+Codex explicitly treated the task as a read-only scan: it did not install or execute
+the fixture and only wrote the report to the permitted output directory. The verifier
+read:
 
 ```text
-S1-static-scan/touchpoint-report.md（305 行）
+S1-static-scan/touchpoint-report.md (305 lines)
 score=100/100
-fixture 未被修改
+fixture not modified
 ```
 
-轨迹还显示 agent 没有直接照抄 planner 的候选卡集合，而是人工剔除同触点下不适用的卡，
-并按最终目标版本处理 `SessionEvent.ignorable` 的走廊恢复。
+The trajectory also shows the agent did not copy the planner's candidate card set
+wholesale; it manually dropped the cards that did not apply under the same touchpoint
+and handled the `SessionEvent.ignorable` corridor recovery per the final target
+version.
 
 ### S2-negative-scan
 
-Codex 将唯一真实命中收敛为旧 Host `apiProxy`，映射到
-`DSH-0.1.2-A1-01`；没有把普通 Cordis composition、字符串或文件名误报成其他六类
-触点。报告同时列出扫描范围、未命中类别、残余不确定性和迁移后的真实验证梯度。
+Codex narrowed the only real hit down to the old Host `apiProxy` and mapped it to
+`DSH-0.1.2-A1-01`; it did not misreport ordinary Cordis composition, strings, or
+filenames as any of the other six touchpoint categories. The report also lists the
+scan scope, the zero-hit categories, residual uncertainty, and the real verification
+ladder for after the migration.
 
 ```text
-S2-negative-scan/report.md（122 行）
+S2-negative-scan/report.md (122 lines)
 score=100/100
 ```
 
 ### M1-host-migration
 
-Codex 先复现 `pending (waiting for service: apiProxy)`，再把 Host 平面插件迁到 `llm`
-领域服务并移除死依赖。全新隔离 profile 重新安装后，入口激活并成功调用
-`llm.listProviders()`；隔离环境返回空目录不等于调用失败。
+Codex first reproduced `pending (waiting for service: apiProxy)`, then migrated the
+Host-plane plugin to the `llm` domain service and removed the dead dependency. After
+a fresh install into a new isolated profile, the entry activated and
+`llm.listProviders()` was called successfully; an empty catalog returned by the
+isolated environment is not a failed call.
 
-verifier 独立重装后的结论是 `dsh plugin add` 成功、插件树无 pending；后续
-`MISSING_CREDENTIAL` 发生在宿主应用层，属于无 key 环境的预期边界。
+After its own independent reinstall, the verifier concluded `dsh plugin add`
+succeeded and the plugin tree had no pending; the subsequent `MISSING_CREDENTIAL`
+occurred at the host application layer, an expected boundary of a keyless
+environment.
 
 ### H1-plane-trap
 
-题目中的社区备忘注释诱导把注入名直接换成 client 平面的 `remote`。Codex 在计划阶段就
-指出这是平面错误，最终选择 Host 平面的 `llm` 注入与 `listProviders()`。verifier 检查了
-实际代码、独立安装和冷启动，均通过。
+A community memo comment in the task nudges toward swapping the injection name
+straight to the client plane's `remote`. Codex called this a plane error already in
+the planning stage and finally chose the Host plane's `llm` injection with
+`listProviders()`. The verifier checked the actual code, an independent install, and
+a cold boot — all passed.
 
 ### H2-baseline-trap
 
-Codex 在任何迁移修改前先运行 baseline，记录唯一预存失败的测试名、错误类型和
-actual/expected；迁移后同一失败指纹保持不变，测试文件 SHA-256 未变。它没有为了制造
-“全绿”去改测试。
+Codex ran a baseline before any migration change, recording the name, error type,
+and actual/expected of the only pre-existing failing test; after migration the
+failure fingerprint stayed identical and the test file's SHA-256 did not change. It
+did not touch the test to manufacture an all-green result.
 
 ```text
-H2-baseline-trap/migration-report.md（114 行）
-score=100/100：baseline 归因 60 分 + 冷启动 40 分
+H2-baseline-trap/migration-report.md (114 lines)
+score=100/100: baseline attribution 60 + cold boot 40
 ```
 
 ### H3-client-plane
 
-Codex 先复现“宿主半边激活，但真实页面启动图没有插件”的基线，再补齐顶层
-`dsh.client` 声明、client factory/注入和 RemoteResult 处理。补跑中完成了：
+Codex first reproduced the baseline of "host side activated, but the real page boot
+manifest has no plugin", then added the top-level `dsh.client` declaration, the
+client factory/injection, and RemoteResult handling. The re-run completed:
 
-1. `dsh plugin add` 与 composed config 检查；
-2. `dsh web --no-open --port 0` 真实冷启动；
-3. 用真实 token URL 换取 Cookie；
-4. 从页面读取 `__DSH_BOOT__.entries`；
-5. 请求宿主公告的插件资源并确认 HTTP 200；
-6. 执行服务器实际下发的 bundle，验证 factory、Cordis 注入、插件 DOM 标记与 Remote
-   成功流。
+1. `dsh plugin add` and composed config check;
+2. real cold boot with `dsh web --no-open --port 0`;
+3. Cookie exchange via the real token URL;
+4. read `__DSH_BOOT__.entries` from the page;
+5. request the host-advertised plugin assets and confirm HTTP 200;
+6. execute the bundle actually delivered by the server, verifying the factory, Cordis
+   injection, plugin DOM markers, and the Remote success flow.
 
-容器没有 Chromium、Firefox、Playwright 或 Puppeteer，所以 agent 没有声称做过完整 GUI
-自动化；verifier 的正式满分边界是启动图名册识别，已满足。
+The container has no Chromium, Firefox, Playwright, or Puppeteer, so the agent did
+not claim full GUI automation; the verifier's formal full-score boundary is
+boot-manifest roster recognition, which was satisfied.
 
-## 四、无人值守授权与 skill 使用审计
+## 4. Unattended authorization and skill-usage audit
 
-6 个有效轨迹的第一阶段都识别到题面的授权语义：先做只读盘点和计划，然后直接执行，
-没有停在“请用户再次确认”。典型轨迹表述包括：
+In all 6 effective trajectories, the first phase recognized the authorization
+semantics of the prompt: do a read-only inventory and plan first, then execute
+directly, without stopping to ask the user to confirm again. Typical trajectory
+statements include:
 
-- H1：题面已明确授权，计划后不等待二次确认；
-- H2：无人值守授权覆盖 skill 通常要求的方案确认；
-- M1：形成具体迁移计划后直接实施；
-- S1/S2：只读 fixture，只写指定报告目录；
-- H3：授权覆盖 fixture 写入确认，随后执行安装和 Web 冷启动。
+- H1: the prompt explicitly authorizes; no waiting for a second confirmation after
+  planning;
+- H2: the unattended authorization covers the plan confirmation the skill normally
+  requires;
+- M1: implement directly once a concrete migration plan is formed;
+- S1/S2: read-only on the fixture, writing only to the designated report directory;
+- H3: the authorization covers fixture-write confirmation, followed by the install
+  and the web cold boot.
 
-授权没有放宽题目边界：S1/S2 的容器内 Git/verifier 证明 fixture 零改动；H2 的预存失败
-测试未被触碰；实操题只修改题目 fixture，并只创建隔离本地验证资产。仓库本身的
-`skills/` 目录在本次测试前后无 diff。
+The authorization did not loosen the task boundaries: for S1/S2 the in-container
+Git/verifier proves zero fixture changes; H2's pre-existing failing test was
+untouched; the hands-on tasks modified only the task fixture and created only
+isolated local verification assets. The repo's own `skills/` directory shows no diff
+before or after this test run.
 
-## 五、原始任务与补跑记录
+## 5. Raw jobs and re-run records
 
-### 1. 300 秒校准批次：作废，不计成绩
+### 1. 300-second calibration batch: void, excluded from results
 
-首次按题目默认 agent 超时启动后，S1 在 300.0 秒处触发 `AgentTimeoutError`。轨迹显示它
-已经完成 skill/走廊读取和人工复核，但尚未来得及写报告，因此 verifier 按“缺报告”给 0。
-确认是 runner 时间预算不足后，主动终止该批：H1、M1、H2 为 `CancelledError`，S2、H3
-尚未开始。该批不进入本文 6 题成绩。
+Started with the task default agent timeout, S1 hit `AgentTimeoutError` at 300.0
+seconds. The trajectory shows it had finished the skill/corridor reading and manual
+review but had not yet written the report, so the verifier scored 0 for "missing
+report". After confirming the runner's time budget was the problem, the batch was
+terminated deliberately: H1, M1, H2 ended as `CancelledError`, and S2, H3 had not
+started. This batch is not part of this document's 6-task scores.
 
 ```text
 jobs/codex-plugin-upgrade-all6-auth-v1-rerun-20260831/
 job id: 20e1a96f-3c50-4c94-b960-9210479df1df
 ```
 
-### 2. 权威主批：5 题通过，H3 环境构建异常
+### 2. Authoritative main batch: 5 passed, H3 environment-build failure
 
 ```text
 jobs/codex-plugin-upgrade-all6-auth-v1-rerun-15m-20260831/
 job id: 9ce7ee7e-1dfa-4dac-bf8f-1856c59aa099
-Harbor 原始统计：5 个 reward=1.0，1 个 RuntimeError，mean=0.8333333333
+Harbor raw stats: 5 reward=1.0, 1 RuntimeError, mean=0.8333333333
 ```
 
-H3 首次异常发生在 environment build，agent token 数为 0，错误为：
+H3's first failure occurred during environment build, with 0 agent tokens and the
+error:
 
 ```text
 node:24-bookworm: failed to resolve source metadata
@@ -201,40 +234,41 @@ Head https://registry-1.docker.io/v2/library/node/manifests/24-bookworm
 net/http: TLS handshake timeout
 ```
 
-这不是题目、skill 或 agent 的语义失败。
+This is not a semantic failure of the task, the skill, or the agent.
 
-### 3. H3 同配置补跑：通过
+### 3. H3 re-run with the same configuration: passed
 
 ```text
 jobs/codex-plugin-upgrade-h3-auth-v1-rerun-15m-20260831/
 job id: 21b83720-43ad-40d5-bb0e-ac45b3bbfc7e
 trial: H3-client-plane__KQoJfzh
-reward=1.0，exception=0，mean=1.000
+reward=1.0, exception=0, mean=1.000
 ```
 
-## 六、资源消耗
+## 6. Resource consumption
 
-| 口径 | input tokens | cache tokens | output tokens | cost USD |
+| Basis | input tokens | cache tokens | output tokens | cost USD |
 | --- | ---: | ---: | ---: | ---: |
-| 权威主批 | 8,689,381 | 8,107,776 | 70,477 | 6.9790704 |
-| H3 有效补跑 | 4,069,308 | 3,925,504 | 18,966 | 2.5247376 |
-| 6 个有效试次合计 | 12,758,689 | 12,033,280 | 89,443 | 9.5038080 |
-| 作废的 300 秒校准批次 | 3,151,028 | 2,860,544 | 22,230 | 2.7507536 |
-| 本次实际总消耗 | 15,909,717 | 14,893,824 | 111,673 | 12.2545616 |
+| Authoritative main batch | 8,689,381 | 8,107,776 | 70,477 | 6.9790704 |
+| H3 effective re-run | 4,069,308 | 3,925,504 | 18,966 | 2.5247376 |
+| 6 effective trials total | 12,758,689 | 12,033,280 | 89,443 | 9.5038080 |
+| Voided 300-second calibration batch | 3,151,028 | 2,860,544 | 22,230 | 2.7507536 |
+| Total actual consumption this run | 15,909,717 | 14,893,824 | 111,673 | 12.2545616 |
 
-权威主批墙钟时间 26m03s；H3 补跑 15m53s。由于主批 3 并发，不能把逐题墙钟时间直接
-相加当作批次耗时。
+The authoritative main batch took 26m03s wall clock; the H3 re-run 15m53s. Because
+the main batch ran 3 concurrent trials, the per-task wall-clock times cannot be
+summed to get the batch duration.
 
-## 七、证据与资产
+## 7. Evidence and assets
 
-权威结果入口：
+Entry points for the authoritative results:
 
 ```text
 jobs/codex-plugin-upgrade-all6-auth-v1-rerun-15m-20260831/result.json
 jobs/codex-plugin-upgrade-h3-auth-v1-rerun-15m-20260831/result.json
 ```
 
-每个有效 trial 均保留：
+Every effective trial keeps:
 
 ```text
 agent/codex.txt
@@ -245,7 +279,8 @@ artifacts/manifest.json
 artifacts/app/fixture/
 ```
 
-M1、H2、S1、S2 还成功导出了题目要求或 agent 自愿生成的报告：
+M1, H2, S1, and S2 also exported the reports the tasks required or the agent chose
+to produce:
 
 ```text
 M1-host-migration__KVw7Ruz/artifacts/app/agent-output/M1-host-migration/report.md
@@ -254,30 +289,39 @@ S1-static-scan__LbnKi7n/artifacts/app/agent-output/S1-static-scan/touchpoint-rep
 S2-negative-scan__GYnXmPG/artifacts/app/agent-output/S2-negative-scan/report.md
 ```
 
-H1、H3 没有题目必需的 `/app/agent-output`，所以 artifact manifest 将该可选路径记为
-`failed`；两题的 fixture 导出均为 `ok`，不影响 verifier 结果。
+H1 and H3 have no task-required `/app/agent-output`, so the artifact manifest records
+that optional path as `failed`; both tasks' fixture exports are `ok`, which does not
+affect the verifier results.
 
-### Harbor 清洗副作用
+### Harbor redaction side effect
 
-本次通过 `--ae CODEX_FORCE_AUTH_JSON=true` 传入的值 `true` 被 Harbor 当作 secret 值。
-下载日志、trial `result.json` 和导出 fixture 时，所有同字面量的 `true` 都被替换成
-`[REDACTED]`，使部分下载后的 JSON 不再可直接解析，也使导出 fixture 不再是逐字节副本。
+The value `true` passed via `--ae CODEX_FORCE_AUTH_JSON=true` was treated by Harbor
+as a secret value. When downloading logs, trial `result.json` files, and exported
+fixtures, every `true` with the same literal was replaced with `[REDACTED]`, so parts
+of the downloaded JSON are no longer directly parseable and the exported fixtures are
+no longer byte-for-byte copies.
 
-这不影响判分：每题 verifier 在容器内、资产下载和清洗之前运行，S1/S2 的零改动与所有
-实操题的安装/冷启动都由容器内状态判定。审计下载产物时则应以 verifier、轨迹和
-artifact manifest 为准，不能对被清洗的 fixture 做字节级 diff。
+This does not affect grading: each task's verifier runs inside the container, before
+asset download and redaction, and S1/S2's zero changes and all hands-on tasks'
+install/cold boot are judged from in-container state. When auditing downloaded
+artifacts, rely on the verifier, the trajectory, and the artifact manifest instead —
+do not byte-diff the redacted fixtures.
 
-## 八、结论与后续建议
+## 8. Conclusion and follow-up recommendations
 
-**本轮 Codex + 原始 `plugin-upgrade` skill 在 `BENCHMARK-AUTH-v1` 下通过全部 6 道真实
-benchmark：有效成绩 6/6、mean 1.000。**
+**In this round, Codex with the original `plugin-upgrade` skill passed all 6 real
+benchmark tasks under `BENCHMARK-AUTH-v1`: 6/6 effective, mean 1.000.**
 
-这轮证明的是“with-skill 单次可完成性”，还不能单独证明 skill 的统计净增益。正式比较
-skill 效果时仍应：
+This round demonstrates "one-shot completability with the skill", which by itself
+does not prove the skill's statistical net gain. For a formal comparison of the
+skill's effect, still:
 
-1. 用相同题面、agent、模型和授权协议跑 without-skill 对照；
-2. 每个条件至少重复 3 次，报告中位数、离散度和基础设施异常；
-3. 对 Codex `xhigh` 明确设置不少于 900 秒的 agent 上限；
-4. 对 Docker registry 的 TLS/拉取异常配置有限重试；
-5. 避免把常见源码字面量（如 `true`）作为会进入 Harbor secret 清洗表的环境变量值，或在
-   采用等价值前先验证 Codex 兼容性。
+1. run a without-skill control with the same prompts, agent, model, and
+   authorization protocol;
+2. repeat each condition at least 3 times and report the median, the spread, and
+   infrastructure anomalies;
+3. set an explicit agent cap of at least 900 seconds for Codex `xhigh`;
+4. configure bounded retries for Docker registry TLS/pull failures;
+5. avoid using common source literals (e.g. `true`) as environment variable values
+   that would enter Harbor's secret-redaction list, or verify Codex compatibility
+   before adopting an equivalent value.

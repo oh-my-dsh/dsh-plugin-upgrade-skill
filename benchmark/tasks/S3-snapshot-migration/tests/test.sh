@@ -1,5 +1,5 @@
 #!/bin/bash
-# Harbor verifier：运行 judge.mjs（末行输出 0-100 分 JSON），归一化为 0~1 reward。
+# Harbor verifier: run judge.mjs (its last line outputs a 0-100 score JSON), normalized to a 0~1 reward.
 mkdir -p /logs/verifier
 node /tests/judge.mjs > /tmp/judge.out 2>&1
 cat /tmp/judge.out

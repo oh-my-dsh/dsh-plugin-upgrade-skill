@@ -56,34 +56,41 @@ for (const [taskId, mode] of expectedModes) {
   if (count(instruction, 'BENCHMARK-AUTH-v1') !== 1) {
     fail(instructionFile, 'must contain exactly one BENCHMARK-AUTH-v1 marker')
   }
-  for (const required of [
-    '不会有后续用户消息',
-    '在计划 形成后立即继续执行',
-    '不要暂停等待“确认”',
-    '不得修改 skill、评测器或参考答案',
-    '不得仅因为缺少另一轮确认而停止',
+  // Contract clauses are matched bilingually (Chinese originals and their English
+  // translations), so both language variants of the task briefs stay valid.
+  for (const [pattern, label] of [
+    [/不会有后续用户消息|there will be no follow-up user messages/, 'no-follow-up clause'],
+    [/在计划\s*形成后立即继续执行|(?:as soon as|immediately once|once) the plan (?:is )?(?:formed|takes shape)/, 'proceed-after-plan clause'],
+    [/不要暂停等待["“]确认["”]|do not pause (?:to wait|waiting) for ["“]?confirmation["”]?/, 'no-pause clause'],
+    [/不得修改 skill、评测器或参考答案|(?:must not|may not) modify the skill/, 'no-modify clause'],
+    [/不得仅因为缺少另一轮确认而停止|do not stop merely because another round of confirmation is missing/, 'no-stop clause'],
   ]) {
-    if (!normalized.includes(required)) fail(instructionFile, `missing contract text: ${required}`)
+    if (!pattern.test(normalized)) fail(instructionFile, `missing contract text: ${label}`)
   }
 
+  const mutableAuthorize = /可以直接修改 `\/app\/fixture\/`|may modify `\/app\/fixture\/` directly/
+  const readonlyZero = /`\/app\/fixture\/` 必须保持\s*零改动|`\/app\/fixture\/` must remain completely unchanged/
+  const srcZero = /`\/app\/fixture\/src\/` 必须保持\s*零改动|`\/app\/fixture\/src\/` must remain completely unchanged/
+  const libClean = /可以清理 `\/app\/fixture\/lib\/`|may clean (?:the stale build artifacts|up the build artifacts) in `\/app\/fixture\/lib\/`/
+
   if (mode === 'readonly') {
-    if (!normalized.includes('`/app/fixture/` 必须保持 零改动')) {
+    if (!readonlyZero.test(normalized)) {
       fail(instructionFile, 'read-only task must require zero fixture changes')
     }
-    if (normalized.includes('可以直接修改 `/app/fixture/`')) {
+    if (mutableAuthorize.test(normalized)) {
       fail(instructionFile, 'read-only task must not authorize fixture changes')
     }
   } else if (mode === 'build-artifacts-only') {
-    if (!normalized.includes('`/app/fixture/src/` 必须保持 零改动')) {
+    if (!srcZero.test(normalized)) {
       fail(instructionFile, 'build-artifact task must keep fixture source unchanged')
     }
-    if (!normalized.includes('可以清理 `/app/fixture/lib/`')) {
+    if (!libClean.test(normalized)) {
       fail(instructionFile, 'build-artifact task must limit writes to fixture build artifacts')
     }
-    if (normalized.includes('可以直接修改 `/app/fixture/`')) {
+    if (mutableAuthorize.test(normalized)) {
       fail(instructionFile, 'build-artifact task must not authorize arbitrary fixture changes')
     }
-  } else if (!normalized.includes('可以直接修改 `/app/fixture/`')) {
+  } else if (!mutableAuthorize.test(normalized)) {
     fail(instructionFile, 'mutable task must explicitly authorize fixture changes')
   }
 

@@ -1,18 +1,13 @@
-# H1-plane-trap · 平面陷阱（别信注释）
+# H1-plane-trap · Plane Trap (Don't Trust the Comment)
 
-agent 把 `/app/fixture/` 里的 dsh 0.1.1-rc.2 旧插件迁移到 0.1.2-alpha.2。源码里有一段
-误导性迁移注释（建议 `inject: ["remote"]`），照抄会落入平面陷阱：本插件是宿主平面
-消费者，应注入领域服务 `llm`，误注 `remote` 会 `pending (waiting for service: remote)`。
-考「先判定运行平面再选注入名 + 真实冷启动激活」。
+The agent migrates the legacy dsh 0.1.1-rc.2 plugin in `/app/fixture/` to 0.1.2-alpha.2. The source contains a misleading migration comment (suggesting `inject: ["remote"]`); following it blindly falls into the plane trap: this plugin is a host-plane consumer and should inject the domain service `llm`; injecting `remote` instead leaves it `pending (waiting for service: remote)`. Tests "determine the runtime plane before choosing the injection name + real cold-boot activation".
 
-- **环境**：`node:24-bookworm` + git（fixture 以 git 基线提交支持迁移门禁）+
-  全局安装 pnpm@11.24.0 与 dsh 0.1.2-alpha.2（容器题，judge 在容器内做冷启动验证）。
-- **Verifier**：judge 检查 fixture 有改动 + 静态门槛（inject 含 `remote` 不含 `llm`
-  封顶 20）+ 隔离 profile 冷启动激活信号，0-100 分归一化写 `/logs/verifier/reward.txt`。
-- **Oracle**：`harbor run -p benchmark/tasks/H1-plane-trap -a oracle`，期望 reward 1.0。
+- **Environment**: `node:24-bookworm` + git (the fixture is committed as a git baseline to support the migration gate) + globally installed pnpm@11.24.0 and dsh 0.1.2-alpha.2 (container task; the judge performs cold-boot verification inside the container).
+- **Verifier**: the judge checks that the fixture was changed + a static gate (inject containing `remote` but not `llm` caps the score at 20) + the isolated-profile cold-boot activation signal; the 0-100 score is normalized into `/logs/verifier/reward.txt`.
+- **Oracle**: `harbor run -p benchmark/tasks/H1-plane-trap -a oracle`, expected reward 1.0.
 
 ```
-environment/fixture/   # 旧写法宿主插件 + 误导性迁移注释（陷阱本体）
+environment/fixture/   # legacy host plugin + misleading migration comment (the trap itself)
 tests/                 # judge.mjs + judge-utils.mjs + test.sh
-solution/              # 参考插件文件 + SOLUTION.md + solve.sh
+solution/              # reference plugin files + SOLUTION.md + solve.sh
 ```

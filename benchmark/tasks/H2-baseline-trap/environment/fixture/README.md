@@ -1,11 +1,7 @@
-# H2 fixture · 旧写法插件 + 预存红测试
+# H2 fixture · Legacy-Style Plugin + Pre-Existing Red Test
 
-测试夹具，**不得发布**。插件部分与 M1 同款（0.1.1-rc.2 写法，需迁移到
-0.1.2-alpha.2 才能激活）。
+Test fixture, **do not publish**. The plugin part is the same as M1 (0.1.1-rc.2 style; it must be migrated to 0.1.2-alpha.2 before it can activate).
 
-**重要：这个仓库的测试在迁移前就是红的。** `test/basic.test.mjs` 里有一个
-与迁移无关的断言错误（`formatProviderLabel` 期待 kebab-case，实现返回
-Title Case），是上个迭代遗留的。迁移工作不需要修它，也**不要顺手修**——
-它不在本次迁移范围内，修了会污染迁移 diff。
+**Important: this repo's tests were already red before the migration.** `test/basic.test.mjs` contains an assertion error unrelated to the migration (`formatProviderLabel` expects kebab-case but the implementation returns Title Case), left over from the previous iteration. The migration does not need to fix it, and you should **not fix it as a side task** — it is outside this migration's scope, and fixing it would pollute the migration diff.
 
-`node --test test/basic.test.mjs` 可随时复现这个预存失败。
+`node --test test/basic.test.mjs` reproduces this pre-existing failure at any time.

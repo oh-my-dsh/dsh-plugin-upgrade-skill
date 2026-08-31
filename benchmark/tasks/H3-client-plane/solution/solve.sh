@@ -1,5 +1,5 @@
 #!/bin/bash
-# Oracle 解法：把参考插件文件覆盖到 /app/fixture/ 对应相对路径。
+# Oracle solution: copy the reference plugin files over the matching relative paths under /app/fixture/.
 set -e
 cp "$(dirname "$0")/plugin/package.json" /app/fixture/package.json
 cp "$(dirname "$0")/plugin/client.js" /app/fixture/client.js

@@ -1,154 +1,187 @@
-# dsh 插件迁移考题（benchmark v2.1 · Harbor 格式）
+# dsh plugin upgrade tasks (benchmark v2.1 · Harbor format)
 
-9 道"插件升级"考题，测一件事：**AI 装了我们的升级 skill 之后，到底会不会真的
-升级插件**。前 4 道是笔试（看代码写答案），后 5 道是实操（真的装 dsh、跑插件，
-活没活着一眼看穿）。每道题都带自动判分，不用人改卷。
+The 9 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+installed, will it actually upgrade the plugin**. The first 4 are written exams (read
+the code, produce the answer); the last 5 are hands-on (actually install dsh and run
+the plugin — whether it is alive is obvious at a glance). Every task ships with
+auto-grading, so no human marking is involved.
 
-**格式：本 benchmark 采用 [Harbor](https://github.com/harbor-framework/harbor)
-任务格式**，每题就是一个标准 Harbor task（目录布局见下），可直接用
-`harbor run` 跑在任何 harbor 支持的 agent / provider 上。
+**Format: this benchmark uses the [Harbor](https://github.com/harbor-framework/harbor)
+task format** — each question is a standard Harbor task (directory layout below) that
+can be run directly with `harbor run` on any agent / provider Harbor supports.
 
-每道题考的都是真坑：有的代码里埋了句"试试这样改"的误导注释（照做必死），有的
-插件本来就带着一个和升级无关的坏测试（考 AI 会不会如实报告，而不是偷偷修好
-装作没事）。
+Every task tests a real trap: some fixtures hide a misleading comment like "try
+changing it this way" (following it is fatal), and some plugins ship with a
+pre-existing failing test unrelated to the upgrade (testing whether the AI reports it
+honestly instead of quietly fixing it and pretending nothing happened).
 
-## 题目一览（说人话版）
+## Task overview (plain language)
 
-| 题号 | 类型 | 考什么 |
+| Task | Type | What it tests |
 |---|---|---|
-| S1-static-scan | 笔试 | 给你一份老插件代码：能不能找全"哪里会坏"、查对说明书，而且不乱改卷子 |
-| S2-negative-scan | 笔试 | 给你一份看着挺干净的代码：会不会傻乎乎说"一切正常"（没发现问题 ≠ 没问题） |
-| S3-snapshot-migration | 笔试 | 0.1.1 的平铺快照读取 + 旧注册写法：能不能给全迁移面（legacy 投影两步走、useSession、cordis 导入、slots.inject） |
-| H4-tsbuildinfo-trap | 笔试 | 迁移完构建报"还在用已删 API"但源码搜不到：会不会认出是陈旧构建产物的假阳性，而不是照卡片配方乱改源码 |
-| M1-host-migration | 实操 | 老插件在新版 dsh 上启不来（真实发生过的故障），修好它 |
-| H1-plane-trap | 实操 | 最难的坑：代码注释诱导你用一种必死的改法，考会不会被带偏 |
-| H2-baseline-trap | 实操 | 插件带着一个本来就红的测试：考会不会如实说"这锅不是升级造成的" |
-| H3-client-plane | 实操 | 网页插件少写了一条必需声明：考知不知道补上 |
-| H5-runtime-export-drift | 实操 | settings 运行时导出漂移：本地 install/typecheck/build/test 全绿，pack 进 alpha.2 宿主冷启动崩——考会不会被"pin 旧 runtime / 写 shim"的诱导带偏（两种绕法 boot 都会绿，只能静态封顶） |
+| S1-static-scan | Static | Given legacy plugin code: can it find every spot that will break, check the reference cards, and leave the fixture untouched |
+| S2-negative-scan | Static | Given code that looks clean: does it blindly report "all good" (no findings ≠ no problems) |
+| S3-snapshot-migration | Static | 0.1.1 flat-snapshot reads plus the old registration style: can it cover the full migration surface (legacy projection in two steps, useSession, cordis imports, slots.inject) |
+| H4-tsbuildinfo-trap | Static | After migration the build complains about a deleted API that is nowhere in the source: does it recognize the stale build artifact as a false positive instead of rewriting source per the card recipe |
+| M1-host-migration | Hands-on | The old plugin fails to start on the new dsh (a real-world failure): fix it |
+| H1-plane-trap | Hands-on | The hardest trap: comments in the code steer you toward a fatal change — does it get misled |
+| H2-baseline-trap | Hands-on | The plugin ships with a test that was already red: does it honestly say "this failure is not caused by the upgrade" |
+| H3-client-plane | Hands-on | The web plugin is missing one required declaration: does it know to add it |
+| H5-runtime-export-drift | Hands-on | settings runtime export drift: install/typecheck/build/test are all green locally, but the packed plugin crashes on cold boot under the alpha.2 host — does the agent fall for the "pin the old runtime / write a shim" bait (both bypasses boot green, so only static caps can catch them) |
 
-## 题目格式（Harbor task 布局）
+## Task format (Harbor task layout)
 
-每题目录 `tasks/<题号>/` 是一个自包含的 Harbor task：
+Each task directory `tasks/<task-id>/` is a self-contained Harbor task:
 
 ```
-tasks/<题号>/
-├── instruction.md        # 给 agent 的题面（原 task.md）
-├── task.toml             # Harbor 配置：名称、超时、资源、网络
+tasks/<task-id>/
+├── instruction.md        # the prompt given to the agent (was task.md)
+├── task.toml             # Harbor config: name, timeout, resources, network
 ├── environment/
-│   ├── Dockerfile        # 题目环境：node:24-bookworm + git 基线提交；
-│   │                     # 实操题（M/H 开头）还全局安装 dsh 0.1.2-alpha.2
-│   └── fixture/          # 题目用的插件代码（private:true，不能真运行、不能发布）
+│   ├── Dockerfile        # task environment: node:24-bookworm + git baseline commit;
+│   │                     # hands-on tasks (M/H prefix) also install dsh 0.1.2-alpha.2 globally
+│   └── fixture/          # the plugin code under test (private:true — cannot run, must not be published)
 ├── tests/
-│   ├── test.sh           # harbor verifier 入口：跑 judge 并把 0-100 分归一化
-│   │                     # 为 0~1 写入 /logs/verifier/reward.txt
-│   ├── judge.mjs         # 判分逻辑（考点、分档、信号判定全在这里）
-│   └── judge-utils.mjs   # 判分公共库（profile 生命周期、冷启动信号）
+│   ├── test.sh           # harbor verifier entry point: runs the judge and normalizes
+│   │                     # the 0-100 score to 0~1 in /logs/verifier/reward.txt
+│   ├── judge.mjs         # grading logic (checkpoints, score bands, signal detection — all here)
+│   └── judge-utils.mjs   # shared grading library (profile lifecycle, cold-boot signals)
 ├── solution/
-│   ├── solve.sh          # oracle 解法（静态题写报告；实操题把答案拷进 fixture）
-│   └── ...               # 标准答案 + 这道题在考什么（SOLUTION.md）
-└── README.md             # 本题说明
+│   ├── solve.sh          # oracle solution (static tasks write a report; hands-on tasks copy the answer into the fixture)
+│   └── ...               # reference answer + what this task tests (SOLUTION.md)
+└── README.md             # task description
 ```
 
-仓库另有 [`docs/execution-contract.md`](docs/execution-contract.md) 定义无人值守授权契约，
-以及 `scripts/validate-execution-contract.mjs` 检查所有题面和元数据是否使用同一版本。
+The repo also has [`docs/execution-contract.md`](docs/execution-contract.md), which
+defines the unattended-authorization contract, and
+`scripts/validate-execution-contract.mjs`, which checks that every task prompt and
+piece of metadata uses the same version.
 
-**自包含**：不再需要外部容器。agent 直接在题目环境（容器）里做题——fixture 在
-`/app/fixture/`，静态题报告写到 `/app/agent-output/<题号>/`；verifier 与 agent
-共用同一容器，实操题 judge 会在容器内真实建隔离 profile、装插件、冷启动判活。
+**Self-contained**: no external containers needed. The agent works directly inside the
+task environment (a container) — the fixture lives at `/app/fixture/`, and static-task
+reports are written to `/app/agent-output/<task-id>/`; the verifier shares the same
+container as the agent, and for hands-on tasks the judge really creates an isolated
+profile inside the container, installs the plugin, and cold-boots it to tell whether
+it is alive.
 
-## 前置条件
+## Prerequisites
 
-- Docker（harbor 默认在本机 Docker 跑环境；也可 `--env` 换 Daytona 等云沙箱）。
-- Harbor CLI：`uv tool install harbor` 或 `pip install harbor`。
-- agent 的模型 API key（如 `ANTHROPIC_API_KEY`，视选用的 agent 而定）。
+- Docker (Harbor runs environments on your local Docker by default; you can also
+  switch to a cloud sandbox such as Daytona with `--env`).
+- Harbor CLI: `uv tool install harbor` or `pip install harbor`.
+- A model API key for the agent (e.g. `ANTHROPIC_API_KEY`, depending on the agent you use).
 
-## 怎么跑
+## How to run
 
 ```sh
-# oracle 自检（不耗 API）：标准答案必须拿满分 1.0
+# oracle self-check (no API cost): the reference answer must score a perfect 1.0
 harbor run -p benchmark/tasks/S1-static-scan -a oracle
 
-# 单题评测某个 agent
+# evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# 全部 9 题：-p 指向 tasks/ 目录即按 dataset 批量跑
+# all 9 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
-每题结果在 harbor 的 trial 输出目录里，`/logs/verifier/reward.txt` 是 0~1 分
-（对应 judge 的 0-100 分），judge 的逐条 reasons 在 verifier 日志里。
+Each task's results land in Harbor's trial output directory:
+`/logs/verifier/reward.txt` holds the 0–1 score (mapped from the judge's 0–100), and
+the judge's per-item reasons are in the verifier log.
 
-## 怎么给 agent 用（评测协议）
+## How to use with an agent (evaluation protocol)
 
-### 无人值守授权
+### Unattended authorization
 
-全部 9 道题的 `instruction.md` 都包含 `BENCHMARK-AUTH-v1`：题面本身就是用户对限定范围
-内方案和执行的确认。agent 应完成必要的分析/计划，然后继续执行，不能因为 Harbor
-不会再发送第二轮“确认”而停止。授权不改变题目边界：S1/S2/S3 的 fixture 仍须零改动，
-H4 的 `src/` 仍须零改动且只允许清理 `lib/` 构建产物，M1/H1/H2/H3/H5 只允许修改
-fixture、写指定报告和创建一次性本地验证资产；发布、推送、外部服务、
-skill/评测器/参考答案修改均不在授权范围内。完整语义和维护规则见
-[`docs/execution-contract.md`](docs/execution-contract.md)。
+All 8 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+itself is the user's confirmation of the plan and the execution within the stated
+scope. The agent should complete the necessary analysis/planning and then proceed — it
+must not stop just because Harbor will not send a second round of "confirmation". The
+authorization does not change the task boundaries: the fixtures for S1/S2/S3 still
+require zero changes, H4 keeps `src/` unchanged and only permits cleaning the `lib/`
+build artifacts, and M1/H1/H2/H3/H5 may only modify the fixture, write the specified
+reports, and create one-off local verification assets; publishing, pushing, external
+services, and modifying the skill/judge/reference answers are all outside the
+authorized scope. See [`docs/execution-contract.md`](docs/execution-contract.md) for
+the full semantics and maintenance rules.
 
-先检查契约是否完整：
+First check that the contract is intact:
 
 ```sh
 node benchmark/scripts/validate-execution-contract.mjs
 ```
 
-1. **给 agent 的输入**：`instruction.md` 就是用户对 agent 说的话，按题面原样
-   投喂即可；题面里已写明工作目录（容器内 `/app`）。
-2. **agent 的落点约定**（题面里也已写明）：
-   - 静态扫描题（S1/S2/S3）：agent 只读 fixture，把报告写到
-     `/app/agent-output/<题号>/` 下（文件名随意，.md/.txt/.json 均可）；
-   - 构建缓存诊断题（H4）：agent 保持 `src/` 零改动，只能清理 `lib/` 构建产物并把
-     报告写到 `/app/agent-output/H4-tsbuildinfo-trap/`；
-   - 实操题（M1/H1/H2/H3/H5）：agent 直接改 `/app/fixture/` 里的文件；
-     H2 另需把迁移报告写到 `/app/agent-output/H2-baseline-trap/` 下。
-3. **判分**：harbor 在 agent 跑完后自动执行 `tests/test.sh`，
-   各题 judge 输出一行 JSON `{"score": 0-100, "max": 100, "reasons": [...]}`，
-   test.sh 汇总成 0~1 reward。评分细则与考点对照见 [docs/scoring.md](docs/scoring.md)。
+1. **Input for the agent**: `instruction.md` is exactly what the user says to the
+   agent — feed it as-is; the working directory (`/app` inside the container) is
+   already stated in the prompt.
+2. **Where the agent writes** (also stated in the prompts):
+   - Static scan tasks (S1/S2/S3): the agent only reads the fixture and writes its
+     report under `/app/agent-output/<task-id>/` (any filename; .md/.txt/.json all fine);
+   - Build-cache diagnosis task (H4): the agent keeps `src/` unchanged, may only clean
+     the `lib/` build artifacts, and writes its report to
+     `/app/agent-output/H4-tsbuildinfo-trap/`;
+   - Hands-on tasks (M1/H1/H2/H3/H5): the agent edits files under `/app/fixture/`
+     directly; H2 additionally requires writing the migration report to
+     `/app/agent-output/H2-baseline-trap/`.
+3. **Grading**: after the agent finishes, Harbor automatically runs `tests/test.sh`;
+   each task's judge prints a single JSON line
+   `{"score": 0-100, "max": 100, "reasons": [...]}`, and test.sh aggregates it into a
+   0–1 reward. See [docs/scoring.md](docs/scoring.md) for the scoring details and
+   checkpoint mapping.
 
-### with-skill vs without-skill 对照（隔离 skill 效果）
+### with-skill vs without-skill comparison (isolating the skill's effect)
 
-同一批 agent、同一批题，跑两轮：
+Run two rounds with the same agents and the same tasks:
 
-- **with-skill 轮**：把本仓库 `skills/plugin-upgrade/` 作为 skill 挂给 agent
-  （题面不变）；
-- **without-skill 轮**：裸 agent，只给题面。
+- **with-skill round**: attach this repo's `skills/plugin-upgrade/` to the agent as a
+  skill (prompts unchanged);
+- **without-skill round**: a bare agent, given only the prompts.
 
-两轮分差即 skill 的净效果。建议每轮跑 3 次取中位数（实操题有环境噪声）。
-每个 harbor trial 都是全新容器，两轮之间无需手工恢复 fixture。
-`BENCHMARK-AUTH-v1` 在两轮中完全相同，只消除无人值守环境缺少确认回合造成的假零分，
-不向任一轮泄露迁移答案。
+The score difference between the two rounds is the skill's net effect. We recommend
+running each round 3 times and taking the median (hands-on tasks have environmental
+noise). Every Harbor trial is a fresh container, so no manual fixture restoration is
+needed between rounds. `BENCHMARK-AUTH-v1` is identical in both rounds: it only
+removes the false zeros caused by the missing confirmation round in an unattended
+environment, and it does not leak migration answers to either round.
 
-## 判分设计要点
+## Grading design notes
 
-- **真激活才算过**：实操题 judge 把 agent 改后的 fixture 装进容器内隔离 profile
-  （`bench-<题号>`），冷启动后以 `pending (waiting for service: …)` /
-  `plugin tree failed` / 启动推进到应用层作为判活信号；judge 跑完清理自建资产。
-- **不依赖固定输出文本**：agent 的插件日志措辞不限，判据是宿主侧信号（如无 key
-  时 headless 必输出 `MISSING_CREDENTIAL`，证明插件树已整体激活）。
-- **错误容忍**：缺报告、dsh 异常等都按 0 分处理并在 reasons 里说明，judge 自身
-  永远 exit 0，test.sh 解析不到 JSON 也按 0 分兜底。
+- **Real activation counts**: for hands-on tasks the judge installs the agent's
+  modified fixture into an isolated profile inside the container (`bench-<task-id>`),
+  cold-boots it, and treats `pending (waiting for service: …)` /
+  `plugin tree failed` / startup reaching the application layer as the liveness
+  signals; the judge cleans up its own assets when done.
+- **No dependence on fixed output text**: the agent's plugin log wording is free; the
+  criteria are host-side signals (e.g. headless must print `MISSING_CREDENTIAL` when
+  there is no key, proving that the plugin tree activated as a whole).
+- **Error tolerance**: missing reports, dsh errors, etc. all count as 0 and are
+  explained in the reasons; the judge itself always exits 0, and if test.sh cannot
+  parse the JSON it falls back to a 0 score.
 
-## 历史文档
+## Historical documents
 
-- `validation-report-2026-08-30.md`：skill 有效性验证报告（v1 时代）。其中第六节
-  的 `dsh-verify` 手工容器复现方式已被自包含环境取代——现在每题镜像本身就按
-  该节同款步骤（node:24-bookworm + 全局安装 pnpm/dsh 0.1.2-alpha.2）构建。
-- 本目录 v1 的自研 harness（`run.mjs` + 外部容器）已删除，历史见 git。
+- `validation-report-2026-08-30.md`: the skill-effectiveness validation report (v1
+  era). The manual `dsh-verify` container reproduction in its section 6 has been
+  replaced by the self-contained environment — each task image is now built with the
+  same steps as that section (node:24-bookworm + globally installed pnpm/dsh
+  0.1.2-alpha.2).
+- The v1 in-house harness of this directory (`run.mjs` + external container) has been
+  removed; see git history.
 
-## 给维护者的注意事项（不改题不用看）
+## Notes for maintainers (skip if you are not changing tasks)
 
-- 每道题 `environment/fixture/` 里的假插件，package.json 都写着 `"private": true`，
-  它的 README 也注明了"只是考题素材，不许发布"。**新增题目时保持这两条**，
-  目的是防止有人不小心把这些假插件发到 npm 上——它们运行不了，发出去只会
-  污染环境。
-- 新增题目用 `harbor task init` 起骨架，再对照现有 9 题的布局补齐
-  judge / solve.sh，并用 `harbor run -p <题> -a oracle` 验证标准答案得 1.0。
-- 新增或修改题面后运行 `node benchmark/scripts/validate-execution-contract.mjs`，确保
-  授权标记、只读/实操边界和 `task.toml` 元数据一致。
-- 在 benchmark 的 Markdown 里引用升级卡时，要写完整编号（如
-  `DSH-0.1.2-A1-01`，不能简写成"A1-01"）。仓库自检会查两件事：这个编号
-  真实存在、链接点得开；写错的话 `node scripts/validate.mjs` 会直接报错。
+- Every fake plugin in a task's `environment/fixture/` has `"private": true` in its
+  package.json, and its README states it is "exam material only, do not publish".
+  **Keep both when adding tasks** — the point is to stop anyone from accidentally
+  publishing these fake plugins to npm: they cannot run, and publishing them would
+  only pollute the ecosystem.
+- When adding a task, scaffold it with `harbor task init`, then fill in
+  judge / solve.sh following the layout of the existing 9 tasks, and verify the
+  reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
+- After adding or modifying prompts, run
+  `node benchmark/scripts/validate-execution-contract.mjs` to make sure the
+  authorization marker, the read-only/hands-on boundaries, and the `task.toml`
+  metadata are consistent.
+- When referencing upgrade cards in benchmark Markdown, use the full ID (e.g.
+  `DSH-0.1.2-A1-01`, never the shorthand "A1-01"). The repo self-check verifies two
+  things: that the ID really exists and that its link resolves; if you get it wrong,
+  `node scripts/validate.mjs` fails outright.

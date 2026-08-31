@@ -1,5 +1,5 @@
-// 最小插件：只命中 #3（内部服务/Remote）一类触点。
-// 0.1.1-rc.2 写法：注入 apiProxy，点号域调用。
+// Minimal plugin: hits only one touchpoint category, #3 (internal service/Remote).
+// 0.1.1-rc.2 style: injects apiProxy, dot-domain calls.
 export const inject = ["apiProxy"]
 
 export function apply(ctx) {

@@ -1,4 +1,4 @@
-# bench-pet（考题素材）
+# bench-pet (task material)
 
-S3 题的 fixture：一个 0.1.1-rc.1 时代写法的浏览器宠物插件（裁剪自真实迁移前代码）。
-**只是考题素材，不能运行、不许发布。**
+S3 task fixture: a browser pet plugin written in the 0.1.1-rc.1 style (trimmed from real pre-migration code).
+**Task material only — cannot be run, must not be published.**
