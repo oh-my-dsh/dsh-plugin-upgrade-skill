@@ -1,0 +1,24 @@
+schema_version = "1.4"
+# Harbor task 配置：dsh 插件迁移考题 H1（平面陷阱，容器冷启动）
+[task]
+name = "dsh-plugin-upgrade/h1-plane-trap"
+version = "1.0.0"
+description = "Migrate a legacy dsh 0.1.1 plugin past a misleading comment trap: inject the correct host-plane llm service so the plugin activates on dsh 0.1.2-alpha.2"
+keywords = ["dsh", "plugin-migration", "host-plane", "inject-trap", "cold-boot", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "plane-trap", "chinese-prompt"]
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

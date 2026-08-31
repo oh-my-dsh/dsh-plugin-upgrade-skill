@@ -9,7 +9,7 @@ skills/<skill-name>/
 ├── SKILL.md          # 必需：触发描述与决策流程
 ├── scripts/          # 可选：Skill 自有脚本
 ├── references/       # 可选：按需加载的详细事实
-└── examples/         # 可选：静态示例/夹具
+└── examples/         # 可选：示例代码（只读，不要运行）
 ```
 
 `SKILL.md` 至少包含：
