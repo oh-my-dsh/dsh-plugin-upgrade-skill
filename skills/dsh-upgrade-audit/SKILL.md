@@ -1,85 +1,89 @@
 ---
 name: dsh-upgrade-audit
-description: 审计两个 DSH 版本之间的外部兼容性——npm 包 API、CLI 面、线上协议、会话落盘数据、配置、模型可见契约——并显式检测回滚（revert），产出标准化的 upgrade-report 目录。有 deepseek-harness 源码检出时走 git tag 对比；没有源码（第三方 repo 场景）时自动降级为下载 npm 两个版本的已发布包做分析。只要用户要求 检查/对比/审计 两个 DSH 版本——例如「检查 dsh-vX -> dsh-vY 对于外部兼容来说相对 X 是否有更多的改动或者回滚」「对比两个版本的 breaking changes」「版本升级审计」「生成 upgrade report」「这个版本能安全升吗」——即使用户只给了两个版本号、没说源码在哪，也要使用本 skill。
+description: Audit external compatibility between two DSH (DeepSeek Harness) versions — npm package API, CLI surface, wire protocol, session on-disk data, config, and model-visible contracts — and explicitly detect reverts, producing a standardized upgrade-report directory. With a deepseek-harness source checkout, compare git tags; without one (third-party repo scenario), degrade automatically to downloading the two published npm versions for analysis. Use whenever the user asks to check/compare/audit two DSH versions — e.g. "does dsh-vX -> dsh-vY have more changes or reverts relative to X for external compatibility", "compare the breaking changes between two versions", "version upgrade audit", "generate an upgrade report", "is it safe to upgrade to this version" — even if they only give two version numbers and never mention a source location. Read-only outside the audit output: writes are confined to tmp/<pair>/, and npm mode installs in isolation with --ignore-scripts.
 ---
+
+English | [简体中文](SKILL.zh-CN.md)
 
 # dsh-upgrade-audit
 
-审计两个 DSH 版本之间**仓库外消费者**可观察的一切变化，并写出用户期望的报告集。这个问题的固定形态是：*相对 from 而言，to 是否有更多的改动或者回滚？*——"更多改动"指外部可见的破坏（导出删除、线上错误码改名、数据格式拒读）；"回滚"指 `from` 中存在的行为在区间内被 revert 蓄意撤回。两者都要证据：commit message 和子代理摘要只是主张，只有对两棵树（源码文件或已发布包）读过之后的结论才是证据。
+Audit every change observable by consumers **outside the repository** between two DSH versions, and produce the set of reports the user expects. The fixed form of this problem: *relative to from, does to contain more changes or reverts?* — "more changes" means externally visible breakage (removed exports, renamed wire error codes, data formats refused on read); "revert" means behavior present in `from` deliberately withdrawn by a revert within the interval. Both need evidence: commit messages and subagent summaries are claims — only conclusions drawn after reading both trees (source files or published packages) count as evidence.
 
-外部兼容 = 仓库外消费者能观察到的一切：npm 包公共 API（exports、类型、签名、依赖面）、`dsh` CLI（命令、flag、profile、配置键）、线上协议（SDK JSON-RPC、remote 网关/BFF、ACP、hooks）、会话落盘数据（JSONL 日志、SQLite 库及其版本守卫）、模型可见面（工具名/schema、系统提示词输出）、Python SDK 的预期。内部重构只是背景，不是发现——聚合计数即可。
+External compatibility = everything observable by consumers outside the repository: the npm package public API (exports, types, signatures, dependency surface), the `dsh` CLI (commands, flags, profiles, config keys), the wire protocol (SDK JSON-RPC, remote gateway/BFF, ACP, hooks), session data on disk (JSONL logs, SQLite stores and their version guards), the model-visible surface (tool names/schemas, system-prompt output), and the Python SDK's expectations. Internal refactors are background, not findings — aggregate and count them.
 
-## Phase 0 — 解析输入与模式
+Note: `references/audit-playbook.md` is kept in Chinese, and the existing sample report under `examples/` is in English by historical convention; report language follows the user's language (see "Output contract" below).
 
-输入：两个版本标识（接受 `0.1.2-alpha.2`、`dsh-v0.1.2-alpha.2`、dist-tag `alpha`/`latest`/`next`）。按特异性从高到低选分析模式：
+## Phase 0 — Parse input and choose a mode
 
-1. **上下文路径**——用户在消息里点名了 deepseek-harness 检出目录。验证：根 `package.json` + `packages/` + `AGENTS.md` 齐备。
-2. **`DSH_SOURCE_PATH` 环境变量**——同样验证。（可选 `DSH_NPM_REGISTRY` 覆盖 npm registry。）
-3. **CWD 启发**——当前目录本身就是 deepseek-harness 检出（同样标记）。
-4. **npm 模式**——以上皆无（第三方 repo 的默认路径）：下载两个版本的已发布包做分析。
+Input: two version identifiers (accepts `0.1.2-alpha.2`, `dsh-v0.1.2-alpha.2`, dist-tags `alpha`/`latest`/`next`). Choose the analysis mode by specificity, high to low:
 
-源码模式审计 git tag；npm 模式审计发布工件。审计核心（侦察面、分类、核验、报告）两者共享，物化方式和部分证据源不同。选 npm 模式前要知道它的边界：**npm 版本集 ≠ git tag 集**（如 `0.1.2-alpha.1` 打了 tag 但从未发布——物化脚本会带已发布清单退出，应把缺口摆给用户，不要自行替换版本对）；CLI 闭包不含全部可发布包（SQLite 持久化后端不是 CLI 依赖，脚本以补充包形式安装）。
+1. **Context path** — the user named a deepseek-harness checkout directory in the message. Verify: root `package.json` + `packages/` + `AGENTS.md` all present.
+2. **`DSH_SOURCE_PATH` environment variable** — verify the same way. (Optional `DSH_NPM_REGISTRY` overrides the npm registry.)
+3. **CWD heuristic** — the current directory is itself a deepseek-harness checkout (marked the same way).
+4. **npm mode** — none of the above (the default path for third-party repos): download the published packages of the two versions for analysis.
 
-## 输出契约
+Source mode audits git tags; npm mode audits published artifacts. The audit core (recon surface, classification, verification, reporting) is shared; only the materialization and some evidence sources differ. Know npm mode's boundaries before choosing it: **the npm version set ≠ the git tag set** (e.g. `0.1.2-alpha.1` is tagged but was never published — the materialization script exits with the published list, so present the gap to the user instead of silently substituting a version pair); the CLI closure does not include every publishable package (the SQLite persistence backend is not a CLI dependency; the script installs it as a supplement package).
 
-全部落在一个目录：`tmp/<fromNorm>-to-<toNorm>/`（规范化：去 `dsh-v`、预发布段去点——`dsh-v0.1.2-alpha.1` → `0.1.2alpha1`）。源码模式建在检出内（已 gitignore）；npm 模式建在当前项目内。目标目录已存在时多半是先前手工做的报告——先停下来问，不要覆盖。
+## Output contract
 
-| 工件 | 源码模式 | npm 模式 |
+Everything lands in one directory: `tmp/<fromNorm>-to-<toNorm>/` (normalization: strip `dsh-v`, strip dots in the prerelease segment — `dsh-v0.1.2-alpha.1` → `0.1.2alpha1`). Source mode creates it inside the checkout (gitignored); npm mode creates it inside the current project. If the target directory already exists it is most likely a previously hand-made report — stop and ask first; do not overwrite.
+
+| Artifact | Source mode | npm mode |
 |---|---|---|
-| `commits.txt`、`reverts.txt` | 来自 git；revert 并入 CHANGELOG | 来自 GitHub compare 富化（私有仓库则无） |
-| `files.txt`、`diffstat.txt`、全量 `.diff` | git 树 diff | `manifest-diff.txt`（逐包 manifest diff）+ `a/`、`b/` 已发布包树 |
-| `CHANGELOG.md` | 按类型分类，**必须有 Reverts 分节** | 有富化时生成；否则省略并明说 |
-| `UPGRADE-ADAPTATION.md` | 审计报告（两模式同一骨架） | 相同；头部记录模式与版本出处 |
+| `commits.txt`, `reverts.txt` | from git; reverts folded into CHANGELOG | from GitHub compare enrichment (none if private repo) |
+| `files.txt`, `diffstat.txt`, full `.diff` | git tree diff | `manifest-diff.txt` (per-package manifest diff) + `a/`, `b/` published package trees |
+| `CHANGELOG.md` | categorized by type, **must have a Reverts section** | generated when enrichment exists; otherwise omitted with an explicit note |
+| `UPGRADE-ADAPTATION.md` | audit report (same skeleton in both modes) | same; header records mode and version provenance |
 
-报告语言跟随用户语言（[examples/](examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md) 既有报告为英文，属历史约定不强制）。
+Report language follows the user's language ([examples/](examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md) existing report is in English, a historical convention — not mandatory).
 
-## Phase 1 — 物化两棵树
+## Phase 1 — Materialize the two trees
 
-**源码模式**——先验纯度，merge base 不是 `from` 本身意味着基漂移，必须停下报告，不能对着移动的基线做 diff：
+**Source mode** — verify purity first; a merge base that is not `from` itself means base drift: stop and report, never diff against a moving baseline:
 
 ```sh
-git merge-base <from> <to>   # 必须等于 <from> 的 commit
+git merge-base <from> <to>   # must equal <from>'s commit
 node <skill-dir>/scripts/gen-artifacts.mjs <from> <to> tmp/<pair>
 ```
 
-**npm 模式**：
+**npm mode**:
 
 ```sh
 node <skill-dir>/scripts/materialize-npm.mjs <from> <to> tmp/<pair>
 ```
 
-脚本向 registry 解析两个版本（缺失则 exit 1 并带已发布清单——把缺口摆给用户），以 `--ignore-scripts` 把 `@deepseek-ai/dsh` 依赖闭包加 SQLite 补充包装进 `a/` 与 `b/`，对每个 `@deepseek-ai/*` 包做 manifest diff 生成 `manifest-diff.txt`，并从公开 GitHub 仓库富化（`commits.txt`、`reverts.txt`）——所以没有源码检出也能做回滚检测。
+The script resolves both versions against the registry (missing → exit 1 with the published list — present the gap to the user), installs the `@deepseek-ai/dsh` dependency closure plus the SQLite supplement package into `a/` and `b/` with `--ignore-scripts`, produces `manifest-diff.txt` from per-package manifest diffs for every `@deepseek-ai/*` package, and enriches from the public GitHub repository (`commits.txt`, `reverts.txt`) — so revert detection works even without a source checkout.
 
-按 stats 输出定侦察规模：≤40 个非合并 commit → 按侦察面清单单跑内联；40–250 → 合并 3–4 个面；更多 → 全量六面。密度对比要翻上一对的 `commits.txt`——按**时间序**取紧邻前一对，永远不要只抓 `tmp/` 里最新的目录。
+Size the recon from the stats output: ≤40 non-merge commits → run the recon-surface checklist inline; 40–250 → merge 3–4 facades; more → all six facades. For density comparison, open the *previous* pair's `commits.txt` — the immediately preceding pair in **chronological order**, never just the newest directory in `tmp/`.
 
-## Phase 2 — 先立共享事实
+## Phase 2 — Establish shared facts first
 
-跑一次，喂给每个子代理，免得各自重复推导：
+Run once and feed to every subagent, so they do not each re-derive them:
 
-- **格式守卫**——源码模式读两个 tag 上的 `SESSION_FORMAT_VERSION`（`packages/core/session/src/types.ts`）与 SQLite `SCHEMA_VERSION`（`packages/session/session-persistence-sqlite/src/schema.ts`）；npm 模式从 `dsh-session` 与补充包的已发布 `lib/*.js` 里 grep 同名常量。守卫跳号且无迁移路径 = 硬数据破坏，放报告最前面。
-- **回滚清单**——源码模式：`git log --grep='[Rr]evert' <from>..<to>`；npm 模式：富化的 `reverts.txt`（没有 → 回滚*意图*不可检测，明说，只做 from→to 差量审计）。
-- **Python SDK**——源码模式：diff `python/`；npm 模式：超出 npm 工件范围，一句话说明即可。
+- **Format guards** — source mode reads `SESSION_FORMAT_VERSION` on both tags (`packages/core/session/src/types.ts`) and the SQLite `SCHEMA_VERSION` (`packages/session/session-persistence-sqlite/src/schema.ts`); npm mode greps the same-named constants from the published `lib/*.js` of `dsh-session` and the supplement package. A guard that jumps with no migration path = hard data breakage; put it at the front of the report.
+- **Revert list** — source mode: `git log --grep='[Rr]evert' <from>..<to>`; npm mode: the enriched `reverts.txt` (absent → revert *intent* is undetectable; say so explicitly and do only the from→to delta audit).
+- **Python SDK** — source mode: diff `python/`; npm mode: outside the npm artifact scope, one sentence suffices.
 
-## Phase 3 — 并行面扫描
+## Phase 3 — Parallel facade scans
 
-一批并行派发每面一个只读侦察代理，带 Phase 2 共享事实和 [references/audit-playbook.md](references/audit-playbook.md) 的输出契约：分节 **REMOVED**（最前——候选破坏/回滚）、**CHANGED**（before → after）、**ADDED**、**RENAMED**；每条带 包/路径、符号或字段、影响面类别（SDK 消费者 / CLI 用户 / 配置作者 / 会话数据 / 模型可见 / 协议对端 / web UI / npm 安装者）；结尾一行判定。面的目标路径清单（分模式）在 playbook。
+Dispatch one read-only recon agent per facade in a parallel batch, each carrying the Phase 2 shared facts and the output contract from [references/audit-playbook.md](references/audit-playbook.md): sections **REMOVED** (first — candidate breakage/reverts), **CHANGED** (before → after), **ADDED**, **RENAMED**; every entry carries package/path, symbol or field, and an impact-surface class (SDK consumers / CLI users / config authors / session data / model-visible / protocol peers / web UI / npm installers); end with a one-line verdict. The per-facade target path lists (per mode) are in the playbook.
 
-## Phase 4 — 发布前核验
+## Phase 4 — Verify before publishing
 
-侦察输出是线索，不是发现。每条 REMOVED、回滚和线上声明都要亲自复核：源码模式用 `git show <tag>:<path>` / `git ls-tree` 对两个 tag；npm 模式读两棵已发布树（`a/node_modules/...` vs `b/node_modules/...`）。这一步有真实教训：侦察代理曾把 alpha.1 里就存在的包报成"alpha.2 新增"。无法核验的内容要么标 `[INFERENCE]`，要么删掉。
+Recon output is leads, not findings. Personally re-verify every REMOVED, revert, and wire claim: source mode with `git show <tag>:<path>` / `git ls-tree` against both tags; npm mode by reading both published trees (`a/node_modules/...` vs `b/node_modules/...`). This step has a real lesson: a recon agent once reported a package that already existed in alpha.1 as "added in alpha.2". Whatever cannot be verified is either marked `[INFERENCE]` or deleted.
 
-## Phase 5 — 写 UPGRADE-ADAPTATION.md
+## Phase 5 — Write UPGRADE-ADAPTATION.md
 
-按 [references/audit-playbook.md](references/audit-playbook.md) 骨架：头部（区间、统计、模式与出处、源码模式的纯性说明）、**Verdict**（直接回答比较性问题）、§1 回滚、按消费者影响排序的破坏分节（删除项在前，每条标注谁会被破坏，配 **Adapt:** 行）、**Confirmed unchanged**（兼容性成立的部分与破坏同等重要）、边界签名表 `[API surface | from | to | changed?]`、编号迁移清单。完整实例见 [examples/0.1.2alpha1-to-0.1.2alpha2/](examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md)（源码模式真实审计）。对话回复跟随用户语言。
+Per the [references/audit-playbook.md](references/audit-playbook.md) skeleton: header (range, stats, mode & provenance, source-mode purity note), **Verdict** (answer the comparative question directly), §1 reverts, breaking sections sorted by consumer impact (removals first, each annotating who breaks, with an **Adapt:** line), **Confirmed unchanged** (the parts where compatibility holds matter as much as the breaks), the boundary signature table `[API surface | from | to | changed?]`, and a numbered migration checklist. Full worked example at [examples/0.1.2alpha1-to-0.1.2alpha2/](examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md) (a real source-mode audit). Chat replies follow the user's language.
 
-## 护栏
+## Guards
 
-- 只读：源码模式不动 `tmp/<pair>/` 之外的任何东西；npm 模式只写自己的 `tmp/<pair>/` 且以 `--ignore-scripts` 装进该目录——绝不把 dsh 包装进宿主项目的 `node_modules`。
-- 优先树级事实（已发布文件、双 tag 读取），不信日志推导的叙事。
-- 内部无关 churn（测试、notes、i18n、样式）聚合成一个计数，不逐条列。
-- npm 模式如实记录局限：无富化就没有 git 历史；CLI tarball 只发 `lib/`（配置组成通过各 bundle 包的 `cordis.patch.yml` + manifest 审计）；Python SDK 超范围。
-- 20 个 commit 的区间不要全量扇出；500 个 commit 的区间不要内联。规模判错是审计变陈旧或变浅的主因。
+- Read-only: source mode touches nothing outside `tmp/<pair>/`; npm mode writes only its own `tmp/<pair>/` and installs with `--ignore-scripts` into that directory — never install the dsh package into the host project's `node_modules`.
+- Prefer tree-level facts (published files, two-tag reads); do not trust narratives inferred from logs.
+- Aggregate internal irrelevant churn (tests, notes, i18n, styles) into a single count; do not itemize it.
+- npm mode records its limitations honestly: no enrichment → no git history; the CLI tarball ships only `lib/` (config composition audited via each bundle package's `cordis.patch.yml` + manifest); Python SDK out of scope.
+- Do not fully fan out a 20-commit range; do not inline a 500-commit range. Misjudging the scale is the main reason audits go stale or shallow.
 
-## 与 plugin-upgrade 的关系
+## Relationship to plugin-upgrade
 
-本 skill 产出**宿主版本间的兼容性证据**（报告 + 边界签名表）；[plugin-upgrade](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/) 消费这类证据（版本变更卡片）执行单个插件的迁移。审计发现可直接供给卡片「实战批注」；给 `plugin-upgrade` 补卡时引用本 skill 的报告目录而非凭记忆转述。
+This skill produces **evidence of host-version compatibility** (report + boundary signature table); [plugin-upgrade](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/) consumes that evidence (version-change cards) to execute a single plugin's migration. Audit findings can feed a card's "field notes" directly; when adding cards to `plugin-upgrade`, cite this skill's report directory rather than restating from memory.
