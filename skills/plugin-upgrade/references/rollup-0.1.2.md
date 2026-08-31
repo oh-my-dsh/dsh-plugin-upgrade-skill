@@ -1,7 +1,7 @@
 # Rollup · 0.1.1 → 0.1.2 走廊
 
 > 状态: 基于 `dsh-v0.1.2-alpha.2`。0.1.2 正式版尚未发布——npm dist-tags 实测 `latest`/`next` = `0.1.1-rc.2`，`alpha` = `0.1.2-alpha.2`。正式发版后本文件需按 final tag 复核转正（[issue #1](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/issues/1) 的原始 caveat）。
-> 定位: 本文件不重复版本卡片。逐条变更以卡片为准，这里只写走廊层的增量——跨 cohort 共存、未发布 cohort 安装、CI/发布连带、迁移前盘点与 baseline 归因、boot race 处置、类型面导出漂移、宿主自身安全边界、分层验证清单。
+> 定位: 本文件不重复版本卡片。逐条变更以卡片为准，这里只写走廊层的增量——跨 cohort 共存、未发布 cohort 安装、CI/发布连带、迁移前盘点与 baseline 归因、boot race 处置、安装通道三坑、类型面导出漂移、宿主自身安全边界、分层验证清单。
 > 卡片格式见 [README.md](README.md)。触点编号对应 [pre-flight 清单](pre-flight.md)。
 
 ## 目录
@@ -17,6 +17,7 @@
   - R-05 · 迁移前盘点被删包的下游
   - R-06 · 迁移前 baseline 归因——先立豁免清单，再动迁移
   - R-07 · 启动服务竞态：有界重试，不延迟、不加 inject wait
+  - R-08 · 安装通道三坑：镜像延迟、pnpm 11 供应链规则、peer 下限 prerelease 语义
   - R-10 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
   - R-11 · 0.1.2 类型面导出漂移（未入 release notes 的 ledger）
   - R-12 · 升级对象可能就是当前运行宿主
@@ -39,9 +40,9 @@
 |---|---|
 | #1 源码 patch | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md) |
 | #2 事件 / 持久事件 | [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md)，另见 [DSH-0.1.2-A1-06](v0.1.2-alpha.1.md) |
-| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-20](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-22](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-08](v0.1.2-alpha.2.md) |
+| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-20](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-22](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-30](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-31](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-08](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-10](v0.1.2-alpha.2.md) |
 | #4 宿主目录读写 | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md) |
-| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md) |
+| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-29](v0.1.2-alpha.1.md) |
 | #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md) |
 | #7 子进程 / stdout / stderr | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-04](v0.1.2-alpha.2.md) |
 | #6/#7 Web 启动与验收 | [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md)（认证 URL、启动图资源发现与真实挂载） |
@@ -154,7 +155,9 @@ return result.value
 - **配方**:
   - 加一个脚本在任何机器 materialize tarball store（解析 overrides；store 已存在则秒退），用以 `pnpm-workspace.yaml`（或 `package.json`）hash 为 key 的 actions cache 服务所有 pnpm 消费 job；
   - `pnpm/action-setup` 删掉 `version` 输入，让 `packageManager` 成为唯一版本来源，避免与钉点冲突；
-  - release workflow 加 `NPM_PUBLISH_ENABLED` 开关：tag 仍跑全部门禁与 smoke，跳过 npm publish，直到 cohort 正式发布。
+  - release workflow 加 `NPM_PUBLISH_ENABLED` 开关：tag 仍跑全部门禁与 smoke，跳过 npm publish，直到 cohort 正式发布；
+  - **插件自身发版的 dist-tag**（实测 2026-08-30）: 适配 alpha cohort 的插件版本用 prerelease 号（如 `0.18.0-alpha.0`）发布到 npm **`alpha` dist-tag**，`latest` 留给 stable 宿主兼容线——否则 stable 宿主用户会被自动升级到 peer 不兼容的新版。可在 release workflow 里按版本号是否含 `-` 自动选 `--tag alpha|latest`；
+  - CI 挂载 lane 钉住与目标 cohort 一致的 dsh CLI 版本，scratch profile 引导时写 `minimumReleaseAgeExclude`（见 R-08），alpha 发布后首日的 CI 才不会因拒装新鲜包而挂。
 - **验证**: 干净 runner 上 `--frozen-lockfile` 安装成功；tag 演练确认未产生 publish。
 - **来源**: [#5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 第 8、9 条。
 
@@ -219,6 +222,20 @@ return result.value
   第 6 条（dsh-web 迁移记录，boot race 处置；帖内提及决策笔记
   `2026-08-28-task-board-roster-poll-boot-race.md`，未在仓库中定位到公开副本，故不附直链）。
   配方出自原帖作者 zhu1090093659，此处仅按 rollup 格式收录并致谢。
+
+### R-08 · 安装通道三坑：镜像延迟、pnpm 11 供应链规则、peer 下限 prerelease 语义
+
+- **类型**: process
+- **症状**: cohort 包**已发布**（alpha.2 起，npm `alpha` dist-tag）仍装不上或装不干净，三种独立机制：
+  1. 第三方镜像（npmmirror 等）对新鲜 `@deepseek-ai/*` 发布（含传递依赖）同步滞后数小时以上，安装报 E404/ETARGET；
+  2. pnpm 11 默认的 `minimumReleaseAge`（24h 供应链规则）拒装发布不足一天的新包——alpha 发布当日跑 lane 必撞；另一触发面是旧 lockfile 钉着已从 registry 消失的版本（如 `@deepseek-ai/*@0.0.1-rc.1`）或 `link:` 本地包的依赖，报同类 404/拒装；
+  3. peer 下限写 `^0.1.0-rc.8` 这类旧 range 时，npm semver 的 prerelease 匹配规则（comparator 须同元组且带 prerelease）判定它**不匹配** `0.1.2-alpha.2`——安装期 peer 警告/拒装，且与宿主实际兼容与否无关。
+- **配方**:
+  - 镜像延迟：CLI 安装与 profile 内 pnpm 都显式走官方源 `export npm_config_registry=https://registry.npmjs.org`；
+  - 供应链规则：优先**按作用域豁免**而非全局关闭——消费方 workspace（仓库根**和** scratch/用户 profile 的 `pnpm-workspace.yaml`）加 `minimumReleaseAgeExclude: ['@deepseek-ai/*', <你的插件名>]`；旧 lockfile 钉已消失版本时删除 `pnpm-lock.yaml` 重建；`minimumReleaseAge: 0` 会整仓放行供应链保护，仅作最后手段；
+  - peer 下限：升 cohort 时显式改写为 `^0.1.2-alpha.2`（改写后安装期 `Issues with peer dependencies` 警告消失，可作为落位信号）。
+- **验证**: `pnpm list --depth 0 | grep @deepseek-ai` 全部指向目标版本；`npm view @deepseek-ai/dsh dist-tags` 确认目标版本所属 dist-tag 与安装通道一致；安装日志无 peer 警告。
+- **来源**: 实测（2026-08-30，dsh-better-sidebar [PR #472](https://github.com/omdsh-dev/DSH-better-sidebar/pull/472)：镜像 E404、alpha 发布当日 CI 依赖豁免跑通、peer 下限改写后警告消失）。**未在官方 release notes 覆盖范围内**，属社区实践。
 
 ### R-10 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
 
@@ -316,8 +333,8 @@ return result.value
    新增」为准；其余层没有对应基线，保持各自的绝对门槛。
 1. **依赖解析**: `pnpm list --depth 0 | grep @deepseek-ai` 版本一致；扫描完整 lockfile，确认无旧 cohort、已删除 `dsh-client-runtime` 或偶然保留的旧 peer provider。
 2. **静态**: typecheck + build。注意静态全绿证明不了 wire 契约正确——描述符层的参数漂移在这一层是静默的（[DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)）。
-3. **卡片级单测**: 每个命中触点至少一条断言。Remote 调用点覆盖 `ok: false` 的已知业务码、未知码兜底，以及 gateway 层 catch 分支；测试替身编码同一套描述符表，多/缺 key 就 fail，让漂移变成测试失败事件。
-4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 用打印 token URL 换 Cookie，读取 boot entry、请求宿主公告资源，并验证 bundle 注册、真实挂载、remove 与 page error。
+3. **卡片级单测**: 每个命中触点至少一条断言。Remote 调用点覆盖 `ok: false` 的已知业务码、未知码兜底，以及 gateway 层 catch 分支；测试替身编码同一套描述符表，多/缺 key 就 fail，让漂移变成测试失败事件。另防「静默吞错」：调用点把错误 catch 掉会让 UI 永远空白而所有冒烟照绿（实例见 [DSH-0.1.2-A1-30](v0.1.2-alpha.1.md) 实战批注）——契约形状必须由单测钉死，空 UI 在验证里视同失败。
+4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 用打印 token URL 换 Cookie，读取 boot entry、请求宿主公告资源，并验证 bundle 注册、真实挂载、remove 与 page error。无 API key 也能确定性执行这层的替代形态——**挂载冒烟**：`pnpm build && pnpm pack` 出 tarball → 钉版 CLI `dsh plugin --profile web add file:<tarball>` 装进全新 scratch profile → 启动 keyless `dsh web --port 0` → Playwright 无头渲染逐 tab 扫描（断言挂载标记、无 pageerror/console 错误、懒加载 chunk 正常下发）。参考实现：[dsh-better-sidebar e2e-mount.sh](https://github.com/omdsh-dev/DSH-better-sidebar/blob/main/scripts/e2e-mount.sh)。
 5. **跨 cohort**（若做了 R-02）: 旧宿主与新宿主各跑一次第 4 步。
 6. **headless**（若命中 #7）: 比对退出码及 stdout/stderr 内容分类（[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)）。
 
