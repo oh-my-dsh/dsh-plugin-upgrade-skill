@@ -1,5 +1,5 @@
 // Source-backed control-flow fixture for the alpha.2 Host plane.
-// Full product validation is recorded separately in docs/validation-report-2026-08-30.md.
+// Full product validation is recorded separately in benchmark/validation-report-2026-08-30.md.
 export const inject = ['llm']
 
 export function listHostProviders(ctx) {

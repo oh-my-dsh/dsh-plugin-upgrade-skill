@@ -1,0 +1,24 @@
+schema_version = "1.4"
+# Harbor task 配置：dsh 插件迁移考题 S2（负向扫描，零命中 ≠ 兼容，只读）
+[task]
+name = "dsh-plugin-upgrade/s2-negative-scan"
+version = "1.0.0"
+description = "Read-only pre-migration scan of a tiny legacy dsh 0.1.1 plugin: recognize the single apiProxy hit and argue why zero hits elsewhere does not prove compatibility"
+keywords = ["dsh", "plugin-migration", "negative-scan", "compat-scan", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "negative-scan", "chinese-prompt"]
+
+[agent]
+timeout_sec = 300.0
+
+[verifier]
+timeout_sec = 120.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

@@ -11,6 +11,8 @@
 | `04-dual-cohort-plugin.md`（待补） | 双 cohort 共存 | 未实现 |
 | `05-third-party-plugin-patch.md`（待补） | 第三方预构建插件 patch | 未实现 |
 | [06-real-world-batch-migration.md](06-real-world-batch-migration.md)（[EN](06-real-world-batch-migration.en.md)） | 真实批量迁移实录（6 个插件，三种形态，含踩坑清单） | 实测记录：源自 6 个真实插件的实机 boot 验证 + 单测回归（非本仓库可执行夹具） |
+| [07-multi-repo-batch-migration.md](07-multi-repo-batch-migration.md) | 17 个工具插件 × 三个版本台阶的批量迁移操作手册（同步审计、批量门禁、推送与 profile 收尾） | 实测记录：三个版本台阶的连续迁移过程记录（技术触点引用卡片） |
+| [08-real-web-client-alpha2-migration.md](08-real-web-client-alpha2-migration.md) | 真实样本：从更早 unsupported 走廊段迁移 Host + Web Client 插件源码到 0.1.2-alpha.2 | 实测记录：2026-08-31 在隔离工作树完成的可复现迁移证据 |
 
 ## 贡献要求
 

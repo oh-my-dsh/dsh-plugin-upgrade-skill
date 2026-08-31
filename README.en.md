@@ -2,22 +2,23 @@
 
 [简体中文](README.md) | **English**
 
-**An agent skill for the DeepSeek Harness plugin ecosystem, community-built. It provides version-agnostic migration guides, breaking-change recipes, and real migration examples.**
+**A skill that teaches AI to upgrade your dsh plugins.** Community-built.
 
-[DSH (DeepSeek Harness)](https://github.com/deepseek-ai/deepseek-harness) is an "everything is a plugin" agent harness. This repository provides an agent skill for upgrading DSH plugins — from checking for updates and reading the changelog, to migrating configuration, adapting source code, and verifying results.
+[DSH (DeepSeek Harness)](https://github.com/deepseek-ai/deepseek-harness) is an AI runtime where every feature is a plugin. The catch: **every time dsh releases a new version, older plugins may stop working.** This repo turns every known pitfall into an upgrade manual that AI can read, so Claude Code, Codex, Gemini, and friends can migrate your plugin to the new version safely.
 
-## Features
+## What's in this repo
 
-- **Continuously updated** — each DSH version has its own dedicated migration card; apply them in order to upgrade across versions
-- **Community-driven** — based on real migration practice (e.g. [dsh-web #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)), with pain points and recipes continuously added
-- **Structured data** — version cards use a uniform format and support tooling (migration diffs can be auto-generated in the future)
-- **Multi-agent support** — compatible with mainstream AI coding tools such as Claude Code, Codex, Gemini CLI, and Cursor
+- **30 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.2.
+- **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
+- **5 skills** — check for upgrades, write new plugins, test plugins, release plugins, and diff two dsh versions. Each does one job.
+- **6 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded.
+- **One validation report** — we installed two real dsh versions in Docker and confirmed that following the cards really does fix plugins.
 
 ## Quick Start
 
 ### Using the skills CLI (recommended)
 
-The fastest path — installed by the [skills CLI](https://github.com/vercel-labs/skills) into the agents it currently supports:
+One command, installed into every agent it supports:
 
 ```bash
 npx skills add oh-my-dsh/dsh-plugin-upgrade-skill
@@ -92,81 +93,77 @@ What breaking changes are there for upgrading my plugin from 0.1.1 to 0.1.2?
 Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 ```
 
-## Skill Index
+## What each of the 5 skills does
 
-| Skill | Description | Version coverage |
-| --- | --- | --- |
-| [plugin-upgrade](skills/plugin-upgrade/) | Three-mode safe upgrade: read-only inspection, installed-plugin upgrade, and DSH host compatibility migration; includes seven touchpoint classes, version cards, and rollback constraints | 0.1.1 → 0.1.2 |
-| [plugin-write](skills/plugin-write/) | Write DSH plugins against the target Harness contract, distinguishing official monorepo packages from externally installable plugins | Per target Harness version |
-| [plugin-test](skills/plugin-test/) | Choose the minimal yet sufficient testing tier for DSH plugin changes, covering unit tests, coverage, real APIs, snapshots, web, and real release entry points | Cross-version validation |
-| [plugin-release](skills/plugin-release/) | Package, publish, and distribute DSH plugins: release-track selection, unpublished-cohort installation, CI gates, and rollback | Cross-version |
+| Skill | What it's for |
+| --- | --- |
+| [plugin-upgrade](skills/plugin-upgrade/) | The main one. Checks whether a plugin needs upgrading, performs the upgrade, adapts old plugins to a new dsh version |
+| [plugin-write](skills/plugin-write/) | Writing new plugins, with naming rules and a name-collision check |
+| [plugin-test](skills/plugin-test/) | Testing whether a plugin change is correct, including a Docker smoke test (actually boots dsh with your plugin) |
+| [plugin-release](skills/plugin-release/) | Packaging and releasing a plugin, with automatic pre-release checks |
+| [dsh-upgrade-audit](skills/dsh-upgrade-audit/) | Diffs two dsh versions to see what actually changed, as evidence for the upgrade cards |
 
-## Version Compatibility Audit (dsh-upgrade-audit)
+## Which versions are covered
 
-[dsh-upgrade-audit](skills/dsh-upgrade-audit/) audits external compatibility and rollback between two DSH versions, producing an UPGRADE-ADAPTATION report plus a boundary-signature table as evidence for version cards. Case study: [0.1.2-alpha.1 → alpha.2](skills/dsh-upgrade-audit/examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md).
-
-## Version Data Status
-
-| Version range | Status | Card file | Notes |
+| Version range | Status | Cards | Notes |
 | --- | --- | --- | --- |
-| 0.1.1 → 0.1.2 alpha.1 | ✅ Done | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | Alpha 1 breaking changes |
-| 0.1.1 → 0.1.2 alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | Alpha 2 incremental changes |
-| 0.1.1 → 0.1.2 corridor | ✅ Done (based on alpha.2) | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | Rollup-layer increments: cross-cohort coexistence, unpublished-cohort installation, `RemoteResult` error flow, layered validation |
-| 0.1.1 → 0.1.2 | 🔄 Awaiting official release tag | — | The official 0.1.2 release has not been published yet (latest: alpha.2) |
-| 0.1.2 → 0.1.3+ | 📝 Up for grabs | — | Awaiting community contribution ([contributing guide](CONTRIBUTING.md)) |
+| 0.1.1-rc.1 → 0.1.1-rc.2 | ✅ Done | [v0.1.1-rc.2.md](skills/plugin-upgrade/references/v0.1.1-rc.2.md) | 3 cards |
+| 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ Done | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 20 cards |
+| 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 7 cards |
+| Cross-version countermeasures | ✅ Done | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 items (running old and new side by side, back up first, what to do when startup hangs, etc.) |
+| 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.2); we'll re-verify everything once it is |
+| 0.1.2 → later versions | 📝 Up for grabs | — | Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
+
+## The exam (benchmark)
+
+The [benchmark/](benchmark/) folder has 6 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details; the validation report sits in the same folder: `validation-report-2026-08-30.md`.
 
 ## References
 
 - [Official repository](https://github.com/deepseek-ai/deepseek-harness) — the DSH main repository
-- [Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) — community migration practices and pain-point collection
+- [Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) — the community pain-point collection where this repo started
 - [dsh-web migration case study](https://github.com/zhu1090093659/dsh-web) — @zhu1090093659's complete migration case
 
-## Installation & Triggering
+## Use it inside your project
 
-For project-level use, copy `skills/plugin-upgrade/` to:
+Copy the whole `skills/plugin-upgrade/` folder into your project:
 
 ```text
 <your-project>/.agents/skills/plugin-upgrade/
 ```
 
-You can also have DSH's local Skill provider load the `skills/` root directory of this repository directly. Make sure `SKILL.md` and `references/` remain in the directory — don't copy only the main file.
+Keep `SKILL.md` and the `references/` folder inside — don't copy just one file. You can also point DSH's local skill loader at the `skills/` directory of this repo.
 
-Example requests:
-
-- `Do a read-only check for new versions of this DSH plugin; don't modify any files.`
-- `Upgrade the installed plugin to 1.4.0 — give me the plan first, and execute only after I confirm.`
-- `Adapt this plugin from dsh-v0.1.1-rc.2 to dsh-v0.1.2-alpha.2.`
-
-## Directory Structure
+## Repository layout
 
 ```text
 skills/<skill-name>/
-├── SKILL.md
-├── references/     # version facts and checklists loaded on demand
-└── examples/       # static fixtures, not executed by default
-scripts/validate.mjs            # Skill structure validation
-scripts/validate-manifests.mjs  # multi-agent manifest validation
+├── SKILL.md        # how the skill triggers and what it does
+├── references/     # upgrade cards and detailed material
+├── scripts/        # small executable tools
+└── examples/       # example code (read-only, do not run)
+scripts/validate.mjs            # repo self-check
+scripts/validate-manifests.mjs  # multi-agent manifest self-check
+benchmark/                      # 6 exam questions + grader + validation report
 ```
 
-## Contributing & Validation
+## Contributing
 
-1. Write or update a Skill following [skills/README.md](skills/README.md);
-2. Version cards follow the [card schema](skills/plugin-upgrade/references/README.md);
-3. Run:
+1. Follow the conventions in [skills/README.md](skills/README.md);
+2. Upgrade cards follow the [card format](skills/plugin-upgrade/references/README.md);
+3. Run both self-checks and make sure they pass before opening a PR:
 
 ```sh
 node scripts/validate.mjs
 node scripts/validate-manifests.mjs
 ```
 
-4. Open a PR, and state which validations you have run.
-
 ## Acknowledgments
 
 - [@hikariming](https://github.com/hikariming) — repository maintenance and the dsh skill index site [dshfind.com](https://dshfind.com)
 - [@ccch1mneyyy](https://github.com/ccch1mneyyy) — issue #1 proposal and the alpha version cards
 - [@zhu1090093659](https://github.com/zhu1090093659) — [dsh-web](https://github.com/zhu1090093659/dsh-web) migration practice and detailed pain-point records
-- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 migration field notes (user-questions waterfall card, preset host-scope prerequisite, type-drift ledger)
+- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 migration field notes
 - [@tianyicui](https://github.com/tianyicui) — initiated discussion #5120 and the official call for contributions
 
 ## License

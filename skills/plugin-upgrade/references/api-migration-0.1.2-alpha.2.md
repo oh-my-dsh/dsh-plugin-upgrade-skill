@@ -15,11 +15,11 @@
 ## 目录
 
 - 一页结论
-- API-01 · APIProxy 迁到实际 `ctx.remote` projection
-  - 最小正确写法
-  - 常用 consumer ledger
+- API-01 · APIProxy 按运行平面迁到领域服务或 `ctx.remote` projection
+  - Host / Web Client 最小正确写法
+  - Web Client consumer ledger
   - Best practice
-  - 验证
+  - 按 face 验证
 - API-02 · `RemoteResult` 版本边界与 alpha.2 `RemoteError`
   - 先把版本归属说清楚
   - Consumer 最新写法
@@ -66,7 +66,8 @@
 
 | 接口面 | 旧写法 | 旧写法在目标版本的症状 | alpha.2 best practice |
 |---|---|---|---|
-| Host API | APIProxy / `executeRemote(...)` | 包或服务消失；调用无法装配 | 使用已生成的 `ctx.remote.<namespace>.<method>`，声明 `remote` 与具体 namespace 注入 |
+| Host APIProxy consumer | APIProxy / `executeRemote(...)` | `apiProxy` 消失；机械改成 `remote` 会永久 pending | 跳过 Client gateway，直接注入目标 tag 已确认的 owning domain service，例如 `llm` / `settings` |
+| Web Client APIProxy consumer | APIProxy / `executeRemote(...)` | 旧 package/service 消失；猜错 namespace 或方法会装配失败 | 使用生成的 `ctx.remote.<namespace>.<method>`，声明 `remote` 与具体 namespace 注入 |
 | Unary failure | 只写 `try/catch`；解析 message；`instanceof` | `ok: false` 被当成功；跨 bundle 漏判；错误码分支失效 | 先分支 `result.ok`，按 `result.error.code` 处理；只在 stream/显式抛出等 catch boundary 用 `isRemoteFailure` |
 | Failure classes | `TypertRemoteFailure` / `TypertLookupFailure` / `RemoteStreamError` | removed export 或 typecheck 失败；无域前缀 code 不再匹配 | owner 抛 `RemoteError('<domain>/<reason>', message, details)`；details 由 code 收窄 |
 | Settings namespace | `settingsNamespace('x')` | `TS2305` / “no exported member” | 直接使用符合文法的字符串字面量，例如 `const NS = 'my-plugin'` |
@@ -80,16 +81,34 @@
 | Type export drift | `CallId` / `JsonValue` / `collectSessionTitleMessages` / `todo/write` 类型声明 | typecheck 批量 TS2305 / TS2614 | 按 ledger 迁移：`ToolCallId`（dsh-llm 根导出）、`@deepseek-ai/dsh-util-values`、本地同语义折叠、本地 event-map 合并（详见 [rollup R-07](rollup-0.1.2.md)） |
 | Web Client runtime | 从已删除的 `dsh-client-runtime/client` 导入类型并通过 `useSession` 读取平铺 `nodes[]` | 包不存在；selector 变 `any`；测试仍构造旧数组；Host 命令少一个参数 | 按 owning 包组合类型；用 `useChat` 读取 `order + nodes.get()`；Host `commands.execute` 无图片时显式传 `[]` |
 
-## API-01 · APIProxy 迁到实际 `ctx.remote` projection
+## API-01 · APIProxy 按运行平面迁到领域服务或 `ctx.remote` projection
 
 - **适用对象**：直接消费旧 APIProxy 的 Web Client、Host 集成或启动包装层。
-- **会怎么炸**：旧 APIProxy package/service 不再存在；照搬架构说明里的 wire route 字符串
-  容易写出目标 tag 中不存在的属性，例如 `ctx.remote.sessionTitle.rename`。
-- **核心规则**：插件调用的是目标 tag 生成的 consumer projection，不是自己拼
-  `namespace/method` 字符串。alpha.2 的 API Remotes assembly 来自
+- **会怎么炸**：旧 APIProxy package/service 不再存在。Host 侧把 `apiProxy` 机械替换为
+  `remote` 会永久等待只存在于 Client face 的服务；Web Client 照搬设计笔记中的 wire route
+  又容易写出目标 tag 中不存在的属性，例如 `ctx.remote.sessionTitle.rename`。
+- **核心规则**：先判定运行平面。Host 插件跳过 Client gateway，直接注入旧调用背后的
+  owning domain service；Web Client 才使用目标 tag 生成的 consumer projection，不自己拼
+  `namespace/method` 字符串。alpha.2 的 Client API Remotes assembly 来自
   `@deepseek-ai/dsh-api-remotes/client`。
 
-### 最小正确写法
+### Host / Web Client 最小正确写法
+
+Host 侧直接使用 owning domain service；下例的 `llm` / `listProviders()` 已有可执行契约，
+其他旧 APIProxy 调用必须按目标 tag 逐项确认，不能从 Client Remote 表反推：
+
+```ts
+export const inject = ['llm']
+
+export function listHostProviders(ctx) {
+  if (!ctx?.llm || typeof ctx.llm.listProviders !== 'function') {
+    throw new TypeError('Host fixture requires the llm domain service')
+  }
+  return ctx.llm.listProviders()
+}
+```
+
+Web Client 侧使用生成 projection：
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -112,7 +131,10 @@ export async function renameSession(
 `sessionTitle/rename` 是设计过程文本，不能凌驾于同一 tag 的实现、生成 projection 和
 consumer 测试。
 
-### 常用 consumer ledger
+### Web Client consumer ledger
+
+下表只适用于 Web Client 的生成 projection。Host 调用必须针对目标 tag 逐项确认 owning
+domain service，不得从本表反推 Host service key 或方法。
 
 | rc.2 / 历史 consumer 操作 | alpha.2 consumer projection | 迁移注意点 |
 |---|---|---|
@@ -143,17 +165,26 @@ consumer 测试。
 
 ### Best practice
 
-1. 先确认代码运行在哪个 face：Host、Web Client 还是普通 Cordis plugin；不要为了调用
-   Remote 把 Host-only package 拉进 Client bundle。
-2. Client contribution 显式声明 `remote` 和实际使用的 `remote.<namespace>`；不要依赖
+1. 先确认代码运行在哪个 face：Host、Web Client 还是普通 Cordis plugin。
+2. Host 直接注入 owning domain service，不声明只存在于 Client face 的 `remote`；也不要把
+   Host-only package 拉进 Client bundle。
+3. Client contribution 显式声明 `remote` 和实际使用的 `remote.<namespace>`；不要依赖
    其他插件碰巧先挂载。
-3. 以目标 tag 的 package exports、`.d.ts`、实现和 consumer 测试为准；架构笔记只解释
+4. 以目标 tag 的 package exports、`.d.ts`、实现和 consumer 测试为准；架构笔记只解释
    意图，不是生成 API 的替代品。
-4. `workspace.follow` 等 stream 使用 owning package 已提供的 reconnect/snapshot adapter；
+5. `workspace.follow` 等 stream 使用 owning package 已提供的 reconnect/snapshot adapter；
    普通 UI 使用 `ctx.workspaces`，不要自行重写 generation baseline、mutation echo/race 或定时
    `list()`。
 
-### 验证
+### 按 face 验证
+
+Host：
+
+- 在固定目标 tag 的真实 Host profile 中验证 entry active、不等待 `remote`，并执行一次对应
+  领域方法；
+- `examples/face-contracts` 只证明注入与控制流边界，不证明 Loader 激活或真实服务装配。
+
+Web Client：
 
 - typecheck 必须使用真实 `Context` 与生成 projection，不能用 `ctx: any` 掩盖错误路径；
 - 每个 unary 命中至少覆盖 `ok: true` 和一个领域错误码；支持 `AbortSignal` 的调用再覆盖取消；
@@ -164,7 +195,8 @@ consumer 测试。
   [alpha.2 SessionController 实际 Remote 方法](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/api/session-controller/src/index.ts) ·
   [alpha.2 API Remotes Client assembly](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/api/remotes/src/client/index.ts) ·
   [alpha.2 Workspace Remote owner](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/api/workspace-controller/src/index.ts) ·
-  [alpha.2 实际 rename consumer](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/api/session-controller/src/client/sessions/session.ts)
+  [alpha.2 实际 rename consumer](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/api/session-controller/src/client/sessions/session.ts) ·
+  [本仓库 Host / Web Client face 契约](../examples/face-contracts/README.md)
 
 ## API-02 · `RemoteResult` 版本边界与 alpha.2 `RemoteError`
 

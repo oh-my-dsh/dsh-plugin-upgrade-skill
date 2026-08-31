@@ -122,11 +122,11 @@
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated 卡 |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated 卡 |
-| [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | 面向插件作者的 alpha.2 API ledger，含 client runtime 移除与 keyed chat snapshot |
+| [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | rc.2→alpha.2 精确接口 ledger；命中 API、Remote、Settings、事件、Headless、打包或 composition 时读取；含 client runtime 移除与 keyed chat snapshot（API-10） |
 | [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1 → 0.1.2 走廊（rollup）：跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、迁移前 baseline 归因、boot race 有界重试、base-only preset 前置、类型面导出漂移、宿主自身安全边界、分层验证清单；基于 alpha.2，正式版需复核 |
 | [scripts/README.md](scripts/README.md) | 只读 migration planner：扫描目标仓库、连接卡片走廊并输出候选迁移计划 |
 | [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
-| [examples/07-real-web-client-alpha2-migration.md](examples/07-real-web-client-alpha2-migration.md) | 从更早 unsupported 走廊迁移 Host + Web Client 源码的真实样本 |
+| [examples/08-real-web-client-alpha2-migration.md](examples/08-real-web-client-alpha2-migration.md) | 从更早 unsupported 走廊迁移 Host + Web Client 源码的真实样本 |
 
 规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
 负责 manifest、契约坐标与协商；本 skill 处理现有插件的实际升级，引用其分类而不重定义

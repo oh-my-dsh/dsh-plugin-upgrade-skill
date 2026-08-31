@@ -42,9 +42,9 @@ node skills/plugin-upgrade/examples/face-contracts/check.mjs
 
 该依赖零 fixture 只防止 Host/Client 平面再次写反；它不能替代固定 tag 的 build 或真实 DSH
 profile。产品级实测与正控见
-[`docs/validation-report-2026-08-30.md`](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/docs/validation-report-2026-08-30.md)。
+[`benchmark/validation-report-2026-08-30.md`](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/benchmark/validation-report-2026-08-30.md)。
 
 ## 来源
 
 - [DSH-0.1.2-A1-01](../references/v0.1.2-alpha.1.md)
-- [容器全链验证](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/docs/validation-report-2026-08-30.md)
+- [容器全链验证](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/benchmark/validation-report-2026-08-30.md)

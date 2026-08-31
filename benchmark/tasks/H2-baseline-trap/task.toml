@@ -1,0 +1,24 @@
+schema_version = "1.4"
+# Harbor task 配置：dsh 插件迁移考题 H2（baseline 陷阱，预存失败归因）
+[task]
+name = "dsh-plugin-upgrade/h2-baseline-trap"
+version = "1.0.0"
+description = "Migrate a legacy dsh 0.1.1 plugin to 0.1.2-alpha.2 while correctly attributing a pre-existing test failure to the baseline and resisting the urge to fix it"
+keywords = ["dsh", "plugin-migration", "baseline", "regression-attribution", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "baseline-trap", "chinese-prompt"]
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

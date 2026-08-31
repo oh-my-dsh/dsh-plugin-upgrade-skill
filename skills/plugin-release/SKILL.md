@@ -65,3 +65,4 @@ description: 打包、发布与分发 DeepSeek Harness（DSH）插件——包�
 | 文件 | 内容 |
 |---|---|
 | [references/publish-playbook.md](references/publish-playbook.md) | 未发布 cohort 安装、双兼容写法、CI/发布门禁、真实坑位清单与回滚配方 |
+| [references/profile-dependency-management.md](references/profile-dependency-management.md) | profile 安装/更新配方：github 依赖锁缓存、包改名三处同步、junction 清理与宿主升级联动 |

@@ -20,6 +20,7 @@
   - R-10 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
   - R-11 · 0.1.2 类型面导出漂移（未入 release notes 的 ledger）
   - R-12 · 升级对象可能就是当前运行宿主
+  - R-13 · 客户端产品文案迁到本地化 seat 后，按默认语言显示文本锚定宿主 UI 的插件会静默失效
 - 分层验证清单
 - 回退
 - 待确认
@@ -293,6 +294,18 @@ return result.value
 
 - **来源**:
   来自 [DeepSeek Harness Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 的社区升级讨论背景，以及此前在 DSH 内部进行插件开发和升级时的实际观察。
+
+### R-13 · 客户端产品文案迁到本地化 seat 后，按默认语言显示文本锚定宿主 UI 的插件会静默失效
+
+- **类型**: behavior（组合效应）
+- **症状**: 此走廊几乎把全部 client 包的产品文案迁到 typed `t` / 字典（client-locale full rollout）。宿主 UI 中原本硬编码/固定英文的按钮、导航、预设标签改为按 locale 渲染（如「Session log」→「Session 日志」、权限预设「Full access」→「完全权限」、`access.fullLabel` 删除、新增 `access.preset.readOnly/workspaceWrite/fullAccess`）。凡是**按宿主控件显示文本**定位/匹配宿主 UI 的插件，默认语言正则不再命中 → 定位返回 `null` → 注入项（分享入口、标签等）静默消失，无报错、无 console 异常。
+- **配方**:
+  1. 定位宿主 UI 容器**优先用稳定 slot / data-slot 锚点**（如 `[data-slot="conversation.session.header.utilities"]`），不要依赖显示文本；
+  2. 确需文本匹配时**覆盖所有语言变体**（例 `/session\s*(?:log|日志)/i`），并限定长度/作用域，避免命中无关按钮；
+  3. 注入后**显式断言注入项真的渲染**（存在、非空、同排），把「定位返回 null → 元素静默缺失」变成可观测失败；
+  4. 提供本地化资源的 UI 插件用宿主公开语言注册座位，替代自建 i18n patch，见 [DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)。
+- **验证**: 切非英文语言后硬刷新，断言注入项仍出现在宿主工具区、与宿主按钮同排、点击可用；中英文各跑一遍。
+- **来源**: [client-locale-full-rollout note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/.agents/notes/implemented/architecture/2026-07-30-client-locale-full-rollout.md) · [alpha.2 `HeaderAction.tsx`（`t('header.action')`）](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/session-query/session-log-export/src/client/HeaderAction.tsx) · [alpha.2 `PermissionSelect.tsx`（`access.preset.*`）](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-conversation/src/client/skeleton/PermissionSelect.tsx) · [alpha.2 `locales.ts`（access 文案）](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-conversation/src/client/locales.ts)
 
 ## 分层验证清单
 

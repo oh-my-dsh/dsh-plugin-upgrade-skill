@@ -2,22 +2,23 @@
 
 **简体中文** | [English](README.en.md)
 
-**DeepSeek Harness 插件生态的 agent skill**，社区共建。提供版本无关的迁移指南、破坏性变更配方和真实迁移示例。
+**教 AI 帮你升级 dsh 插件的 skill**，社区共建。
 
-[DSH（DeepSeek Harness）](https://github.com/deepseek-ai/deepseek-harness) 是"一切皆插件"的 agent harness。本仓库提供 DSH 插件升级的 agent skill——从检查更新、阅读 changelog，到迁移配置、源码适配、验证结果。
+[DSH（DeepSeek Harness）](https://github.com/deepseek-ai/deepseek-harness) 是一个"所有功能都以插件形式存在"的 AI 运行框架。麻烦在于：**dsh 每次发新版，老插件就可能启动不了**。本仓库做的事情就是把所有已知的坑写成 AI 看得懂的升级手册，让 AI（Claude Code、Codex、Gemini 等）帮你把插件安全迁到新版本。
 
-## 特色
+## 这个仓库里有什么
 
-- **持续更新** — 每个 DSH 版本对应一张独立的迁移卡片，按序应用即可跨版本升级
-- **社区共建** — 基于真实迁移实践（如 [dsh-web #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120)），持续补充痛点与配方
-- **结构化数据** — 版本卡片格式统一，支持工具化（未来可自动生成迁移 diff）
-- **多 agent 支持** — 兼容 Claude Code、Codex、Gemini CLI、Cursor 等主流 AI 编程工具
+- **30 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.1 一路到 0.1.2-alpha.2。
+- **12 条通用对策**：有些坑和版本无关（比如"先备份再动手""新旧版本怎么共存"），这些写成了一份对策清单。
+- **5 个 skill**：查升级、写新插件、测插件、发插件、对比两个版本的差别，各管一件事。
+- **6 道考题（benchmark）**：用来测"AI 装了我们的 skill 之后到底会不会升级插件"，每道题都有自动判分。
+- **一份验证报告**：我们在 docker 里真的装了两个版本的 dsh，验证了"按卡片做就能修好插件"。
 
 ## 快速开始
 
 ### 使用 skills CLI（推荐）
 
-最快路径——由 [skills CLI](https://github.com/vercel-labs/skills) 安装到它当前支持的 agent：
+一条命令装到它支持的 agent：
 
 ```bash
 npx skills add oh-my-dsh/dsh-plugin-upgrade-skill
@@ -81,7 +82,7 @@ git clone https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill.git
 cp -r dsh-plugin-upgrade-skill/skills/* .cursor/skills/
 ```
 
-## 使用
+## 怎么用
 
 Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 
@@ -90,89 +91,84 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
-也可以直接在对话中提问（任意 agent），skill 按 description 自动触发；只读检查直接给结果，升级或迁移会先出计划再等确认：
+也可以直接在对话中提问（任意 agent），skill 按描述自动触发；只读检查直接给结果，升级或迁移会先出计划再等确认：
 
 ```
 我需要把插件从 0.1.1 升级到 0.1.2，有哪些破坏性变更？
 帮我把 dsh-ads 这个插件升级到 dsh-v0.1.2-alpha.2
 ```
 
-## Skill 索引
+## 5 个 skill 各自管什么
 
-| Skill | 说明 | 版本覆盖 |
-| --- | --- | --- |
-| [plugin-upgrade](skills/plugin-upgrade/) | 三模式安全升级：只读检查、已安装插件升级、DSH 宿主兼容迁移；含七类触点、版本卡片与回滚约束 | 0.1.1 → 0.1.2 |
-| [plugin-write](skills/plugin-write/) | 按目标 Harness 合约编写 DSH 插件，分离本地命名校验与可选中央注册冲突查询 | 按目标 Harness 版本 |
-| [plugin-test](skills/plugin-test/) | 为 DSH 插件变更选择最小充分测试层级，覆盖单元测试、覆盖率、真实 API、快照、Web 及真实发布入口 | 跨版本验证 |
-| [plugin-release](skills/plugin-release/) | 打包、发布与分发 DSH 插件：发布轨选择、未发布 cohort 安装、CI 门禁与回滚 | 跨版本 |
+| Skill | 干什么用 |
+| --- | --- |
+| [plugin-upgrade](skills/plugin-upgrade/) | 主角。检查插件要不要升级、执行升级、把老插件适配到新 dsh 版本 |
+| [plugin-write](skills/plugin-write/) | 写新插件，附命名规范和查重（避免和别人插件撞名） |
+| [plugin-test](skills/plugin-test/) | 测插件改得对不对，含 docker 冒烟测试（装上 dsh 真启动一遍） |
+| [plugin-release](skills/plugin-release/) | 打包发布插件，含发布前的自动检查 |
+| [dsh-upgrade-audit](skills/dsh-upgrade-audit/) | 对比两个 dsh 版本到底改了什么，给升级卡提供证据 |
 
-## 版本兼容审计（dsh-upgrade-audit）
+## 升级卡覆盖到哪个版本了
 
-[dsh-upgrade-audit](skills/dsh-upgrade-audit/) 审计两个 DSH 版本间的外部兼容性与回滚，产出 UPGRADE-ADAPTATION 报告 + 边界签名表，为版本卡片提供证据。案例：[0.1.2-alpha.1 → alpha.2](skills/dsh-upgrade-audit/examples/0.1.2alpha1-to-0.1.2alpha2/UPGRADE-ADAPTATION.md)。
-
-## 版本数据现状
-
-| 版本区间 | 状态 | 卡片文件 | 说明 |
+| 版本区间 | 状态 | 说明卡 | 备注 |
 | --- | --- | --- | --- |
-| 0.1.1 → 0.1.2 alpha.1 | ✅ 完成 | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | Alpha 1 破坏性变更 |
-| 0.1.1 → 0.1.2 alpha.2 | ✅ 完成 | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | Alpha 2 增量变更 |
-| 0.1.1 → 0.1.2 走廊 | ✅ 完成（基于 alpha.2） | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | Rollup 层增量：跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、分层验证 |
-| 0.1.1 → 0.1.2 | 🔄 待官方发布 tag | — | 0.1.2 正式版尚未发布（当前最新：alpha.2） |
-| 0.1.2 → 0.1.3+ | 📝 待认领 | — | 等待社区贡献（[贡献指南](CONTRIBUTING.md)） |
+| 0.1.1-rc.1 → 0.1.1-rc.2 | ✅ 完成 | [v0.1.1-rc.2.md](skills/plugin-upgrade/references/v0.1.1-rc.2.md) | 3 张卡 |
+| 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ 完成 | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 20 张卡 |
+| 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ 完成 | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 7 张卡 |
+| 跨版本通用对策 | ✅ 完成 | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 条（新旧共存、先备份、启动卡死怎么办等） |
+| 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（最新是 alpha.2），发了之后我们要复核一遍 |
+| 0.1.2 → 更新版本 | 📝 等社区认领 | — | 想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
+
+## 考题（benchmark）
+
+[benchmark/](benchmark/) 目录下有 6 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 dsh 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可出 0~1 分。同一只 AI 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。详见 [benchmark/README.md](benchmark/README.md)；验证报告在同目录的 `validation-report-2026-08-30.md`。
 
 ## 参考资源
 
 - [官方仓库](https://github.com/deepseek-ai/deepseek-harness) — DSH 主仓库
-- [Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) — 社区迁移实践与痛点征集
+- [Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) — 社区迁移踩坑征集（本仓库的起点）
 - [dsh-web 迁移实例](https://github.com/zhu1090093659/dsh-web) — @zhu1090093659 的完整迁移案例
 
-## 安装与触发
+## 项目里直接用
 
-项目级使用可把 `skills/plugin-upgrade/` 复制到：
+把 `skills/plugin-upgrade/` 整个文件夹复制到你的项目里：
 
 ```text
 <your-project>/.agents/skills/plugin-upgrade/
 ```
 
-也可以让 DSH 本地 Skill provider 直接加载本仓库的 `skills/` 根目录。确认目录中保留
-`SKILL.md` 与 `references/`，不要只复制主文件。
+注意保留里面的 `SKILL.md` 和 `references/` 文件夹，别只复制一个文件。也可以让 DSH 本地的 skill 加载方式直接指向本仓库的 `skills/` 目录。
 
-示例请求：
-
-- `只读检查这个 DSH 插件有没有新版本，不要修改任何文件。`
-- `把已安装插件升级到 1.4.0，先给计划，确认后再执行。`
-- `把这个插件从 dsh-v0.1.1-rc.2 适配到 dsh-v0.1.2-alpha.2。`
-
-## 目录
+## 仓库目录
 
 ```text
 skills/<skill-name>/
-├── SKILL.md
-├── references/     # 按需加载的版本事实与清单
-└── examples/       # 静态夹具，不默认执行
-scripts/validate.mjs            # Skill 结构校验
-scripts/validate-manifests.mjs  # 多 agent manifest 校验
+├── SKILL.md        # skill 的说明书（怎么触发、怎么干活）
+├── references/     # 升级说明卡和详细资料
+├── scripts/        # 可执行的小工具
+└── examples/       # 示例代码（只读，不要运行）
+scripts/validate.mjs            # 仓库自检
+scripts/validate-manifests.mjs  # 多 agent 清单自检
+benchmark/                      # 6 道考题 + 判分 + 验证报告
 ```
 
-## 贡献与验证
+## 想贡献？
 
-1. 按 [skills/README.md](skills/README.md) 编写或更新 Skill；
-2. 版本卡遵循 [card schema](skills/plugin-upgrade/references/README.md)；
-3. 运行：
+1. 按 [skills/README.md](skills/README.md) 的规范写；
+2. 升级卡按 [卡片格式](skills/plugin-upgrade/references/README.md) 填；
+3. 跑两条自检命令，全绿再提 PR：
 
 ```sh
 node scripts/validate.mjs
 node scripts/validate-manifests.mjs
 ```
 
-4. 提 PR，并说明已运行的验证。
-
 ## 致谢
 
 - [@hikariming](https://github.com/hikariming) — 仓库维护与 dsh 技能检索站 [dshfind.com](https://dshfind.com)
 - [@ccch1mneyyy](https://github.com/ccch1mneyyy) — issue #1 提案和 alpha 版本卡片
 - [@zhu1090093659](https://github.com/zhu1090093659) — [dsh-web](https://github.com/zhu1090093659/dsh-web) 迁移实践与详细痛点记录
-- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 迁移实测（userQuestions waterfall 卡、preset Host-scope 前置、类型漂移 ledger）
+- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 迁移实测
 - [@tianyicui](https://github.com/tianyicui) — discussion #5120 发起和官方征集
 
 ## License
