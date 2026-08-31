@@ -1,7 +1,7 @@
 # dsh 插件迁移考题（benchmark v2.1 · Harbor 格式）
 
-8 道"插件升级"考题，测一件事：**AI 装了我们的升级 skill 之后，到底会不会真的
-升级插件**。前 4 道是笔试（看代码写答案），后 4 道是实操（真的装 dsh、跑插件，
+9 道"插件升级"考题，测一件事：**AI 装了我们的升级 skill 之后，到底会不会真的
+升级插件**。前 4 道是笔试（看代码写答案），后 5 道是实操（真的装 dsh、跑插件，
 活没活着一眼看穿）。每道题都带自动判分，不用人改卷。
 
 **格式：本 benchmark 采用 [Harbor](https://github.com/harbor-framework/harbor)
@@ -24,6 +24,7 @@
 | H1-plane-trap | 实操 | 最难的坑：代码注释诱导你用一种必死的改法，考会不会被带偏 |
 | H2-baseline-trap | 实操 | 插件带着一个本来就红的测试：考会不会如实说"这锅不是升级造成的" |
 | H3-client-plane | 实操 | 网页插件少写了一条必需声明：考知不知道补上 |
+| H5-runtime-export-drift | 实操 | settings 运行时导出漂移：本地 install/typecheck/build/test 全绿，pack 进 alpha.2 宿主冷启动崩——考会不会被"pin 旧 runtime / 写 shim"的诱导带偏（两种绕法 boot 都会绿，只能静态封顶） |
 
 ## 题目格式（Harbor task 布局）
 
@@ -70,7 +71,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # 单题评测某个 agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# 全部 8 题：-p 指向 tasks/ 目录即按 dataset 批量跑
+# 全部 9 题：-p 指向 tasks/ 目录即按 dataset 批量跑
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -81,10 +82,10 @@ harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 
 ### 无人值守授权
 
-全部 8 道题的 `instruction.md` 都包含 `BENCHMARK-AUTH-v1`：题面本身就是用户对限定范围
+全部 9 道题的 `instruction.md` 都包含 `BENCHMARK-AUTH-v1`：题面本身就是用户对限定范围
 内方案和执行的确认。agent 应完成必要的分析/计划，然后继续执行，不能因为 Harbor
 不会再发送第二轮“确认”而停止。授权不改变题目边界：S1/S2/S3 的 fixture 仍须零改动，
-H4 的 `src/` 仍须零改动且只允许清理 `lib/` 构建产物，M1/H1/H2/H3 只允许修改
+H4 的 `src/` 仍须零改动且只允许清理 `lib/` 构建产物，M1/H1/H2/H3/H5 只允许修改
 fixture、写指定报告和创建一次性本地验证资产；发布、推送、外部服务、
 skill/评测器/参考答案修改均不在授权范围内。完整语义和维护规则见
 [`docs/execution-contract.md`](docs/execution-contract.md)。
@@ -102,7 +103,7 @@ node benchmark/scripts/validate-execution-contract.mjs
      `/app/agent-output/<题号>/` 下（文件名随意，.md/.txt/.json 均可）；
    - 构建缓存诊断题（H4）：agent 保持 `src/` 零改动，只能清理 `lib/` 构建产物并把
      报告写到 `/app/agent-output/H4-tsbuildinfo-trap/`；
-   - 实操题（M1/H1/H2/H3）：agent 直接改 `/app/fixture/` 里的文件；
+   - 实操题（M1/H1/H2/H3/H5）：agent 直接改 `/app/fixture/` 里的文件；
      H2 另需把迁移报告写到 `/app/agent-output/H2-baseline-trap/` 下。
 3. **判分**：harbor 在 agent 跑完后自动执行 `tests/test.sh`，
    各题 judge 输出一行 JSON `{"score": 0-100, "max": 100, "reasons": [...]}`，
@@ -144,7 +145,7 @@ node benchmark/scripts/validate-execution-contract.mjs
   它的 README 也注明了"只是考题素材，不许发布"。**新增题目时保持这两条**，
   目的是防止有人不小心把这些假插件发到 npm 上——它们运行不了，发出去只会
   污染环境。
-- 新增题目用 `harbor task init` 起骨架，再对照现有 8 题的布局补齐
+- 新增题目用 `harbor task init` 起骨架，再对照现有 9 题的布局补齐
   judge / solve.sh，并用 `harbor run -p <题> -a oracle` 验证标准答案得 1.0。
 - 新增或修改题面后运行 `node benchmark/scripts/validate-execution-contract.mjs`，确保
   授权标记、只读/实操边界和 `task.toml` 元数据一致。

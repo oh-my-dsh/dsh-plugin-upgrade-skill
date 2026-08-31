@@ -15,6 +15,7 @@ const expectedModes = new Map([
   ['H1-plane-trap', 'mutable'],
   ['H2-baseline-trap', 'mutable'],
   ['H3-client-plane', 'mutable'],
+  ['H5-runtime-export-drift', 'mutable'],
 ])
 
 const compact = (text) => text.replaceAll('\r\n', '\n').replace(/\s+/g, ' ')
