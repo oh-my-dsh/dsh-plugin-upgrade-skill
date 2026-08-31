@@ -18,6 +18,7 @@
   - R-06 · 迁移前 baseline 归因——先立豁免清单，再动迁移
   - R-07 · 启动服务竞态：有界重试，不延迟、不加 inject wait
   - R-08 · 安装通道三坑：镜像延迟、pnpm 11 供应链规则、peer 下限 prerelease 语义
+  - R-09 · 插件进 profile 的 `link:` 本地安装轨
   - R-10 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
   - R-11 · 0.1.2 类型面导出漂移（未入 release notes 的 ledger）
   - R-12 · 升级对象可能就是当前运行宿主
@@ -40,10 +41,10 @@
 |---|---|
 | #1 源码 patch | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md) |
 | #2 事件 / 持久事件 | [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md)，另见 [DSH-0.1.2-A1-06](v0.1.2-alpha.1.md) |
-| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-20](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-22](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-30](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-31](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-08](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-10](v0.1.2-alpha.2.md) |
+| #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-20](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-22](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-30](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-31](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-08](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-10](v0.1.2-alpha.2.md)、[DSH-0.1.2-A1-25](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-27](v0.1.2-alpha.1.md) |
 | #4 宿主目录读写 | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-21](v0.1.2-alpha.1.md) |
-| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-29](v0.1.2-alpha.1.md) |
-| #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md) |
+| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-29](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-26](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-28](v0.1.2-alpha.1.md) |
+| #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-28](v0.1.2-alpha.1.md) |
 | #7 子进程 / stdout / stderr | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-04](v0.1.2-alpha.2.md) |
 | #6/#7 Web 启动与验收 | [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md)（认证 URL、启动图资源发现与真实挂载） |
 | 特殊面 | 权限 [DSH-0.1.2-A1-07](v0.1.2-alpha.1.md)；隐私 [DSH-0.1.2-A1-12](v0.1.2-alpha.1.md) / [DSH-0.1.2-A1-14](v0.1.2-alpha.1.md) / [DSH-0.1.2-A1-23](v0.1.2-alpha.1.md)；打包 [DSH-0.1.2-A1-24](v0.1.2-alpha.1.md) / [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md) |
@@ -237,6 +238,14 @@ return result.value
 - **验证**: `pnpm list --depth 0 | grep @deepseek-ai` 全部指向目标版本；`npm view @deepseek-ai/dsh dist-tags` 确认目标版本所属 dist-tag 与安装通道一致；安装日志无 peer 警告。
 - **来源**: 实测（2026-08-30，dsh-better-sidebar [PR #472](https://github.com/omdsh-dev/DSH-better-sidebar/pull/472)：镜像 E404、alpha 发布当日 CI 依赖豁免跑通、peer 下限改写后警告消失）。**未在官方 release notes 覆盖范围内**，属社区实践。
 
+### R-09 · 插件进 profile 的 `link:` 本地安装轨
+
+- **类型**: process
+- **症状**: cohort 未发布 npm 时，[R-01](#r-01--目标-cohort-的依赖包未完整发布-npm) 解决的是插件仓库对 `@deepseek-ai/*` 的依赖；插件本体也要装进 profile 才能做 staging 验证，registry 安装同样不可用（镜像延迟、pnpm 供应链规则与 peer prerelease 语义等 registry 侧坑见安装通道三坑条目）。
+- **配方**: profile 级依赖用 `link:`：在 `profiles/<name>/package.json` 的 dependencies 写 `"<插件包名>": "link:<插件目录绝对路径>"`，`pnpm install` 生成 junction。配套两件事：装配行 `name` 用裸包名（[DSH-0.1.2-A1-26](v0.1.2-alpha.1.md)）；验证一律起独立 staging 实例（`dsh --profile <name> --port 30xx`，token 打在 stdout），不动生产实例。安装轨解析事实与 github 轨坑见 plugin-release skill 的 「profile 依赖管理配方」（#67）。
+- **验证**: junction 生成；`dsh --profile <name> --dump-config` 行名正确、无 pending；boot 图含插件；功能 e2e 通过。
+- **来源**: 社区实战（dsh-input-history 0.1.1 → 0.2.0 迁移，2026-08）；安装轨事实来自 plugin-release 的 profile 依赖管理配方（#67，2026-08-31 已合入）。
+
 ### R-10 · base-only profile 挂 shipped preset 的新前置（Host scope 服务与同名遮蔽）
 
 - **类型**: behavior
@@ -334,7 +343,7 @@ return result.value
 1. **依赖解析**: `pnpm list --depth 0 | grep @deepseek-ai` 版本一致；扫描完整 lockfile，确认无旧 cohort、已删除 `dsh-client-runtime` 或偶然保留的旧 peer provider。
 2. **静态**: typecheck + build。注意静态全绿证明不了 wire 契约正确——描述符层的参数漂移在这一层是静默的（[DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)）。
 3. **卡片级单测**: 每个命中触点至少一条断言。Remote 调用点覆盖 `ok: false` 的已知业务码、未知码兜底，以及 gateway 层 catch 分支；测试替身编码同一套描述符表，多/缺 key 就 fail，让漂移变成测试失败事件。另防「静默吞错」：调用点把错误 catch 掉会让 UI 永远空白而所有冒烟照绿（实例见 [DSH-0.1.2-A1-30](v0.1.2-alpha.1.md) 实战批注）——契约形状必须由单测钉死，空 UI 在验证里视同失败。
-4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 用打印 token URL 换 Cookie，读取 boot entry、请求宿主公告资源，并验证 bundle 注册、真实挂载、remove 与 page error。无 API key 也能确定性执行这层的替代形态——**挂载冒烟**：`pnpm build && pnpm pack` 出 tarball → 钉版 CLI `dsh plugin --profile web add file:<tarball>` 装进全新 scratch profile → 启动 keyless `dsh web --port 0` → Playwright 无头渲染逐 tab 扫描（断言挂载标记、无 pageerror/console 错误、懒加载 chunk 正常下发）。参考实现：[dsh-better-sidebar e2e-mount.sh](https://github.com/omdsh-dev/DSH-better-sidebar/blob/main/scripts/e2e-mount.sh)。
+4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 用打印 token URL 换 Cookie，读取 boot entry、请求宿主公告资源，并验证 bundle 注册、真实挂载、remove 与 page error；注册 id 与包名对齐核对 [DSH-0.1.2-A1-26](v0.1.2-alpha.1.md)。无 API key 也能确定性执行这层的替代形态——**挂载冒烟**：`pnpm build && pnpm pack` 出 tarball → 钉版 CLI `dsh plugin --profile web add file:<tarball>` 装进全新 scratch profile → 启动 keyless `dsh web --port 0` → Playwright 无头渲染逐 tab 扫描（断言挂载标记、无 pageerror/console 错误、懒加载 chunk 正常下发）。参考实现：[dsh-better-sidebar e2e-mount.sh](https://github.com/omdsh-dev/DSH-better-sidebar/blob/main/scripts/e2e-mount.sh)。
 5. **跨 cohort**（若做了 R-02）: 旧宿主与新宿主各跑一次第 4 步。
 6. **headless**（若命中 #7）: 比对退出码及 stdout/stderr 内容分类（[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)）。
 

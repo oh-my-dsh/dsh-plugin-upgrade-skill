@@ -79,7 +79,7 @@ rg -n "@deepseek-ai/dsh-api-.+/client|/internal" .
 同时记录调用所在 face（Host、Web Client、普通 Cordis plugin）与包入口；内部架构迁移
 不能直接当成所有插件的公开 API 建议。
 
-**关联卡**: `DSH-0.1.2-A1-01`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A1-20`、`DSH-0.1.2-A1-21`、`DSH-0.1.2-A1-22`、`DSH-0.1.2-A1-30`、`DSH-0.1.2-A1-31`、`DSH-0.1.2-A2-02`、`DSH-0.1.2-A2-05`、`DSH-0.1.2-A2-06`、`DSH-0.1.2-A2-08`、`DSH-0.1.2-A2-10`
+**关联卡**: `DSH-0.1.2-A1-01`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A1-20`、`DSH-0.1.2-A1-21`、`DSH-0.1.2-A1-22`、`DSH-0.1.2-A1-25`、`DSH-0.1.2-A1-27`、`DSH-0.1.2-A1-30`、`DSH-0.1.2-A1-31`、`DSH-0.1.2-A2-02`、`DSH-0.1.2-A2-05`、`DSH-0.1.2-A2-06`、`DSH-0.1.2-A2-08`、`DSH-0.1.2-A2-10`
 
 ## #4 直接读写宿主目录
 
@@ -98,24 +98,26 @@ rg -n "readFile|writeFile|mkdir|openPath" .
 ```sh
 rg -n "registerCommand|registerView|contributes|ctx\.tools|commands\.execute" .
 rg -n "dsh-client-runtime|PropsRuntime|ctx\.slots|useSession|useChat|/internal" .
+rg -n "__ModuleLoader__|PLUGIN_ID" .
 ```
 
 将公开 seam 与内部路径分开；命中旧 client runtime、session/chat selector 或 slot augmentation
 时，继续检查 `dsh.client.inject`、直接类型依赖、keyed snapshot 形状和 type-only Context
 augmentation。机会型 capability 只建议、不自动采用。
 
-**关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A1-29`；详细接口映射见 [API-10](api-migration-0.1.2-alpha.2.md#api-10--web-client-runtime-拆包keyed-chat-snapshot-与命令附件参数)
+**关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`、`DSH-0.1.2-A1-26`、`DSH-0.1.2-A1-28`、`DSH-0.1.2-A1-29`；详细接口映射见 [API-10](api-migration-0.1.2-alpha.2.md#api-10--web-client-runtime-拆包keyed-chat-snapshot-与命令附件参数)
 
 ## #6 自建 HTTP / WS / RPC / DOM / CSS 通道
 
 ```sh
 rg -n "createServer\(|WebSocket|MutationObserver|insertRule" .
 rg -n "127\.0\.0\.1|localhost|router\.(get|post|put|delete)\(|/api/" .
+rg -n "contenteditable|setSelectionRange|data-input-scroll" .
 ```
 
 检查认证、Host/Origin、端口生命周期和 teardown；不能因“只监听 loopback”就跳过认证。
 
-**关联卡**: `DSH-0.1.2-A1-08`
+**关联卡**: `DSH-0.1.2-A1-08`、`DSH-0.1.2-A1-28`
 
 ## #7 子进程 / stdout / stderr 解析
 

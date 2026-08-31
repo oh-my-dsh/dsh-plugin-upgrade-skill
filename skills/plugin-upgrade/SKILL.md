@@ -91,6 +91,7 @@ Structure the report as:
 |---|---|
 | [references/README.md](references/README.md) | Version corridors, card schema, and maintenance rules |
 | [references/pre-flight.md](references/pre-flight.md) | Seven-class touchpoint self-check and summary template |
+| [references/troubleshooting.md](references/troubleshooting.md) | Post-migration symptom → root cause → card lookup |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated cards |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated cards |
 | [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | Exact rc.2→alpha.2 interface ledger; read when API, Remote, Settings, events, Headless, packaging, or composition surfaces are hit; includes the removed client runtime and keyed chat snapshots (API-10) |

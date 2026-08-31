@@ -120,6 +120,7 @@
 |---|---|
 | [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
+| [references/troubleshooting.md](references/troubleshooting.md) | 迁移后症状 → 根因 → 卡片 / 走廊配方速查 |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated 卡 |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated 卡 |
 | [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | rc.2→alpha.2 精确接口 ledger；命中 API、Remote、Settings、事件、Headless、打包或 composition 时读取；含 client runtime 移除与 keyed chat snapshot（API-10） |
