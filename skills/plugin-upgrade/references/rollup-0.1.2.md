@@ -160,7 +160,7 @@ return result.value
 ### R-05 · 迁移前盘点被删包的下游
 
 - **类型**: process
-- **症状**: 依赖被删 SDK 包才能构建的插件（承接 [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)），迁移中途才发现无法构建，只能随迁移退役。
+- **症状**: 依赖被删 SDK 包才能构建的插件（承接 [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md) 与 [DSH-0.1.2-A1-25](v0.1.2-alpha.1.md)），迁移中途才发现无法构建，只能随迁移退役。
 - **配方**: 迁移前先对全部插件跑一次「import 了哪些被删包」的盘点，把「必须退役」与「可迁移」分开排期，而不是边迁边发现。
 - **被删包清单**（按各 tag `packages/*/*/package.json` 的 `name` 比对，2026-08-31）: rc.2 → alpha.1 删除 5 个：`@deepseek-ai/dsh-acp-demo`、`dsh-acp-snapshot`、`dsh-client-runtime`、`dsh-host-apiproxy`、`dsh-sdk-jsonrpc-demo`；新增 25 个。alpha.1 → alpha.2 无删除，新增 `dsh-client-ui-schedule`、`dsh-deque`、`dsh-util-time`、`dsh-util-values`。盘点先 grep 这 5 个名字。
 - **验证**: 盘点清单与实际迁移结果一致，无中途新增退役项。

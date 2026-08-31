@@ -92,6 +92,7 @@ Structure the report as:
 | [references/pre-flight.md](references/pre-flight.md) | Seven-class touchpoint self-check and summary template |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated cards |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated cards |
+| [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | Exact rc.2→alpha.2 interface ledger; read when API, Remote, Settings, events, Headless, packaging, or composition surfaces are hit |
 | [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1 → 0.1.2 corridor (rollup): cross-cohort coexistence, unpublished-cohort installation, `RemoteResult` error flow, pre-migration baseline attribution, bounded retry for boot race, base-only preset precondition, type-surface export drift, host-self safety boundary, and the layered validation checklist; based on alpha.2 and subject to final-release review |
 | [scripts/README.md](scripts/README.md) | Read-only migration planner: scans the target repository, connects the card corridor, and outputs a candidate migration plan |
 | [examples/legacy-plugin/](examples/legacy-plugin/) | Static fixture for the seven touchpoint classes (never execute) |
