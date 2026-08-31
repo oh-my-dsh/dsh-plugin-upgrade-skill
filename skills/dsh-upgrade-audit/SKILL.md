@@ -1,6 +1,6 @@
 ---
 name: dsh-upgrade-audit
-description: Audit external compatibility between two DSH (DeepSeek Harness) versions (npm package API, CLI surface, wire protocol, session on-disk data, config, model-visible contracts) and explicitly detect reverts, producing an upgrade-report directory. Compares git tags with a source checkout, or published npm packages without one. Use whenever the user asks to check/compare/audit two DSH versions — e.g. "more changes or reverts in dsh-vX -> dsh-vY relative to X", "compare the breaking changes", "generate an upgrade report", "is it safe to upgrade" — even with only two version numbers and no source location. Read-only outside the report directory; npm mode installs in isolation with --ignore-scripts.
+description: Audit external compatibility between two DSH (DeepSeek Harness) versions and detect reverts, producing an upgrade-report directory; compares git tags with a source checkout, or published npm packages without one. Use whenever the user asks to check/compare/audit two DSH versions or whether upgrading is safe — e.g. "more changes or reverts in dsh-vX -> dsh-vY", "compare the breaking changes" — even with only two version numbers and no source location. Read-only outside the report directory; npm mode installs in isolation with --ignore-scripts.
 ---
 
 English | [简体中文](SKILL.zh-CN.md)
