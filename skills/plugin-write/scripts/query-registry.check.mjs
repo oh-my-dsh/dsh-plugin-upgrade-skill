@@ -4,7 +4,9 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { loadNamingPolicy } from './validate-names.mjs'
 import {
+  DEFAULT_REGISTRY_URL,
   REGISTRY_CONTRACT,
   RegistryQueryInputError,
   checkNamingAgainstIndex,
@@ -102,6 +104,11 @@ function runCli(args) {
 }
 
 export async function runRegistryQueryChecks() {
+  const policy = await loadNamingPolicy()
+  assert.equal(policy.centralRegistry?.repository, 'https://github.com/oh-my-dsh/dsh-plugin-registry')
+  assert.equal(policy.centralRegistry?.contract, REGISTRY_CONTRACT)
+  assert.equal(policy.centralRegistry?.defaultIndexUrl, DEFAULT_REGISTRY_URL)
+
   const alice = registration('alice')
   const candidate = namingManifest('bob')
   candidate.names.pluginNames = ['web-search']

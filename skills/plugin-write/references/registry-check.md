@@ -17,7 +17,7 @@ node <plugin-write-skill>/scripts/query-registry.mjs \
 The default index is:
 
 ```text
-https://raw.githubusercontent.com/zp-home/dsh-plugin-registry/main/registry/index.json
+https://raw.githubusercontent.com/oh-my-dsh/dsh-plugin-registry/main/registry/index.json
 ```
 
 Use `--format json` for automation, `--strict` to fail on contextual warnings, `--registry-url` for an
@@ -51,7 +51,7 @@ The local naming declaration does not reserve anything. To request a formal regi
 
 1. Commit the validated `dsh-plugin.naming.json` to the public plugin repository.
 2. Open the central registry example and v2 Schema from
-   `https://github.com/zp-home/dsh-plugin-registry`.
+   `https://github.com/oh-my-dsh/dsh-plugin-registry`.
 3. Pin `source.commit` to the 40-character plugin repository commit containing the naming declaration.
 4. Add Harness `min`/`maxExclusive`, per-surface scope, Loader layer/intent, Skill provider/rank, event
    role/schema, and route kind/path.

@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { loadNamingPolicy, validateNamingManifest } from './validate-names.mjs'
 
-export const DEFAULT_REGISTRY_URL = 'https://raw.githubusercontent.com/zp-home/dsh-plugin-registry/main/registry/index.json'
+export const DEFAULT_REGISTRY_URL = 'https://raw.githubusercontent.com/oh-my-dsh/dsh-plugin-registry/main/registry/index.json'
 export const REGISTRY_CONTRACT = 'dsh-plugin-registry/v2'
 
 const MAX_INDEX_BYTES = 5 * 1024 * 1024
