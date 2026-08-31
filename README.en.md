@@ -166,6 +166,7 @@ node scripts/validate-manifests.mjs
 - [@hikariming](https://github.com/hikariming) — repository maintenance and the dsh skill index site [dshfind.com](https://dshfind.com)
 - [@ccch1mneyyy](https://github.com/ccch1mneyyy) — issue #1 proposal and the alpha version cards
 - [@zhu1090093659](https://github.com/zhu1090093659) — [dsh-web](https://github.com/zhu1090093659/dsh-web) migration practice and detailed pain-point records
+- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 migration field notes (user-questions waterfall card, preset host-scope prerequisite, type-drift ledger)
 - [@tianyicui](https://github.com/tianyicui) — initiated discussion #5120 and the official call for contributions
 
 ## License

@@ -172,6 +172,7 @@ node scripts/validate-manifests.mjs
 - [@hikariming](https://github.com/hikariming) — 仓库维护与 dsh 技能检索站 [dshfind.com](https://dshfind.com)
 - [@ccch1mneyyy](https://github.com/ccch1mneyyy) — issue #1 提案和 alpha 版本卡片
 - [@zhu1090093659](https://github.com/zhu1090093659) — [dsh-web](https://github.com/zhu1090093659/dsh-web) 迁移实践与详细痛点记录
+- [@huiliyi37](https://github.com/huiliyi37) — [dsh-tui](https://github.com/huiliyi37/dsh-tianshu-tui) 0.1.2-alpha.2 迁移实测（userQuestions waterfall 卡、preset Host-scope 前置、类型漂移 ledger）
 - [@tianyicui](https://github.com/tianyicui) — discussion #5120 发起和官方征集
 
 ## License
