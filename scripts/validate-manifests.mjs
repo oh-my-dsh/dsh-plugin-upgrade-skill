@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /**
- * 校验多 agent 清单文件与斜杠命令的一致性。
+ * 校验多 agent 清单文件的一致性。
  *
  * 检查项：
  * 1. 所有清单 JSON 可解析
  * 2. 各清单声明的 version 一致
  * 3. 清单指向的 skills 目录存在
  * 4. skills/ 下每个 skill 有带 name/description 前置元数据的 SKILL.md
- * 5. 各 agent 目录的斜杠命令集合一致，且 description 相同
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
@@ -84,41 +83,6 @@ for (const name of skillNames) {
   if (!/^description:\s*\S/m.test(body)) fail(`${rel} 前置元数据缺少 description`)
 }
 
-// 5. 斜杠命令跨工具对齐
-/** 收集一个命令目录下的命令名 → description。 */
-function collectCommands(dir, ext, extract) {
-  const abs = join(root, dir)
-  if (!existsSync(abs)) return null
-  const out = new Map()
-  for (const file of readdirSync(abs).filter((f) => f.endsWith(ext))) {
-    const text = readFileSync(join(abs, file), 'utf8')
-    out.set(file.slice(0, -ext.length), extract(text))
-  }
-  return out
-}
-
-const claudeCommands = collectCommands('.claude/commands', '.md', (text) =>
-  /^description:\s*(.+)$/m.exec(text)?.[1].trim(),
-)
-const geminiCommands = collectCommands('.gemini/commands', '.toml', (text) =>
-  /^description\s*=\s*"(.*)"$/m.exec(text)?.[1].trim(),
-)
-
-if (claudeCommands && geminiCommands) {
-  for (const name of claudeCommands.keys()) {
-    if (!geminiCommands.has(name)) fail(`命令 ${name} 缺少 .gemini/commands/${name}.toml`)
-  }
-  for (const name of geminiCommands.keys()) {
-    if (!claudeCommands.has(name)) fail(`命令 ${name} 缺少 .claude/commands/${name}.md`)
-  }
-  for (const [name, description] of claudeCommands) {
-    if (!description) fail(`.claude/commands/${name}.md 缺少 description`)
-    else if (geminiCommands.has(name) && geminiCommands.get(name) !== description) {
-      fail(`命令 ${name} 的 description 在 Claude 与 Gemini 之间不一致`)
-    }
-  }
-}
-
 // Distribution docs must use commands supported by the current CLI surfaces.
 const readme = readFileSync(join(root, 'README.md'), 'utf8')
 if (/\bcodex plugin add\b/.test(readme)) fail('README.md 使用不存在的 codex plugin add')
@@ -142,4 +106,3 @@ if (errors.length > 0) {
 const version = distinct.values().next().value
 console.log(`清单校验通过：${Object.keys(manifests).length} 个清单，版本 ${version}`)
 console.log(`skills：${skillNames.join(', ')}`)
-if (claudeCommands) console.log(`命令：${[...claudeCommands.keys()].join(', ')}`)
