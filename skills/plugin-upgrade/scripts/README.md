@@ -64,4 +64,4 @@ Run the regression guard with:
 node skills/plugin-upgrade/scripts/plan-migration.check.mjs
 ```
 
-The guard proves read-only behavior with a before/after hash snapshot, checks #3/#6/#7 detection, resolves the rc.2→alpha.2 corridor, validates card selection/redaction, and verifies unsupported-gap handling.
+The guard proves read-only behavior with a before/after hash snapshot, checks #3/#5/#6/#7 detection (including removed `dsh-client-runtime` and `useSession`), resolves the rc.2→alpha.2 corridor, validates card selection/redaction, and verifies unsupported-gap handling.

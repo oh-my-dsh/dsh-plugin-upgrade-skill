@@ -28,7 +28,8 @@ export async function runMigrationPlannerChecks() {
   try {
     await mkdir(join(root, 'src'), { recursive: true })
     await mkdir(join(root, 'scripts'), { recursive: true })
-    await writeFile(join(root, 'src', 'plugin.ts'), "const proxy = ctx.get('apiProxy')\n")
+    await writeFile(join(root, 'cordis.patch.yml'), '- name: ordinary-composition\n  config: {}\n')
+    await writeFile(join(root, 'src', 'plugin.ts'), "import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'\nconst proxy = ctx.get('apiProxy')\nctx.useSession((session) => session?.nodes)\n")
     await writeFile(join(root, 'src', 'channel.ts'), "createServer(() => {}).listen(3000, '127.0.0.1') // /api/private\n")
     await writeFile(join(root, 'scripts', 'run.mjs'), "import { spawn } from 'node:child_process'\nspawn('dsh', ['--profile', 'headless'])\n")
     await writeFile(join(root, '.env'), 'APIProxy=secret-must-not-leak\n')
@@ -46,14 +47,16 @@ export async function runMigrationPlannerChecks() {
     assert.equal(plan.corridor.length, 2)
     assert.deepEqual(
       plan.scan.touchpoints.filter((entry) => entry.detected).map((entry) => entry.id),
-      [3, 6, 7],
+      [3, 5, 6, 7],
     )
+    assert.equal(plan.scan.touchpoints.find((entry) => entry.id === 1)?.detected, false, 'Ordinary cordis.patch.yml is composition, not a source patch')
     assert(!plan.scan.touchpoints.some((entry) => entry.hits.some((hit) => hit.file === '.env')))
 
     const applicable = new Set(plan.cards.applicable.map((card) => card.id))
     for (const id of ['DSH-0.1.2-A1-01', 'DSH-0.1.2-A1-05', 'DSH-0.1.2-A1-08', 'DSH-0.1.2-A2-02']) {
       assert(applicable.has(id), `Expected applicable card ${id}`)
     }
+    assert(applicable.has('DSH-0.1.2-A1-03'), 'Expected the removed client runtime to select A1-03')
     assert(plan.cards.review.some((card) => card.id === 'DSH-0.1.2-A1-12'))
 
     const markdown = renderMarkdown(plan)

@@ -10,7 +10,7 @@ README），七类都必须至少命中一次。
 
 | 触点 | 命中位置 |
 |---|---|
-| #1 源码 patch | [cordis.patch.yml](cordis.patch.yml) · [patch.yml](patch.yml) · [apply-patch.mjs](scripts/apply-patch.mjs) |
+| #1 源码 patch | [patch.yml](patch.yml) · [apply-patch.mjs](scripts/apply-patch.mjs)；`cordis.patch.yml` 自身是 composition negative control |
 | #2 内部/持久事件 | [src/index.ts](src/index.ts) · 外部 informational SessionEvent producer |
 | #3 内部服务/Remote | [src/index.ts](src/index.ts) · `ctx.get('apiProxy')` |
 | #4 宿主文件系统 | [src/index.ts](src/index.ts) · 固定 `~/.dsh/profiles/default` |

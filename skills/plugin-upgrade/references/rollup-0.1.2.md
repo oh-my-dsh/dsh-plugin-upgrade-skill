@@ -245,6 +245,9 @@ return result.value
   | 旧 | 新 |
   |---|---|
   | `CallId` from `@deepseek-ai/dsh-llm`（rc.2 → alpha.1，`src/brand.ts:31`） | `ToolCallId`（同包根导出，branded） |
+  | `ClientContext` / `SessionId` / `ConversationNode` / `CommandRowProps` from 已删除的 `dsh-client-runtime/client`（rc.2 → alpha.1） | 分别迁到 Cordis `Context`、`@deepseek-ai/dsh-session/types`、`dsh-client-ui-conversation/client`、`dsh-client-ui-chat/client`；按 owning 包做 type-only augmentation，见 [API-10](api-migration-0.1.2-alpha.2.md#api-10--web-client-runtime-拆包keyed-chat-snapshot-与命令附件参数) |
+  | `useSession` 读取 `ConversationSnapshot.nodes[]`（rc.2 → alpha.1） | alpha.2 用 `useChat`，按 `ChatSnapshot.order` 保序并 `nodes.get(id)`；alpha.2-only 代码不以 `legacy.nodes` 为主数据面 |
+  | Host `ctx.commands.execute(agent, line, signal)`（rc.2 → alpha.1） | `ctx.commands.execute(agent, line, images, signal)`；无图片显式传 `[]` |
   | `JsonValue`、`isJsonValue`、`snapshotJsonValue` from `@deepseek-ai/dsh-session`，以及 `dsh-tools` 对 `JsonValue` 的再导出（alpha.1 → alpha.2） | 新包 `@deepseek-ai/dsh-util-values`（补直接依赖，见 [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md)） |
   | `deepFreeze`、`assertNever` from `@deepseek-ai/dsh-llm`（alpha.1 → alpha.2） | `@deepseek-ai/dsh-util-values` |
   | `collectSessionTitleMessages` from `@deepseek-ai/dsh-session-title`（alpha.1 → alpha.2，`src/index.ts:167` 转私有） | 移出公开面——按 rc.2 同语义本地折叠（首条 `source.kind === 'user'` 的 `user/message` 文本）或走 `foldSessionTitle` |
@@ -298,10 +301,10 @@ return result.value
 0. **baseline（迁移动手前）**: 在仓库自身依赖状态跑机械套件，记录失败指纹与豁免
    清单（见 R-06）。第 2、3 层（静态与卡片级单测）的失败判定以「相对 baseline
    新增」为准；其余层没有对应基线，保持各自的绝对门槛。
-1. **依赖解析**: `pnpm list --depth 0 | grep @deepseek-ai` 版本一致；lockfile 无混合 cohort。
+1. **依赖解析**: `pnpm list --depth 0 | grep @deepseek-ai` 版本一致；扫描完整 lockfile，确认无旧 cohort、已删除 `dsh-client-runtime` 或偶然保留的旧 peer provider。
 2. **静态**: typecheck + build。注意静态全绿证明不了 wire 契约正确——描述符层的参数漂移在这一层是静默的（[DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)）。
 3. **卡片级单测**: 每个命中触点至少一条断言。Remote 调用点覆盖 `ok: false` 的已知业务码、未知码兜底，以及 gateway 层 catch 分支；测试替身编码同一套描述符表，多/缺 key 就 fail，让漂移变成测试失败事件。
-4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 验证宿主公告资源、bundle 注册、真实挂载与 page error。
+4. **真实冷启动**: 完整一轮对话（发消息 → 工具调用 → 回复）。观察日志无 `missed the module table`、无 `service-unavailable` 循环、无入口 `pending`。Web Client 插件另按 [DSH-0.1.2-A1-19](v0.1.2-alpha.1.md) 用打印 token URL 换 Cookie，读取 boot entry、请求宿主公告资源，并验证 bundle 注册、真实挂载、remove 与 page error。
 5. **跨 cohort**（若做了 R-02）: 旧宿主与新宿主各跑一次第 4 步。
 6. **headless**（若命中 #7）: 比对退出码及 stdout/stderr 内容分类（[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)）。
 

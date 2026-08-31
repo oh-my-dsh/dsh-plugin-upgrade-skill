@@ -52,6 +52,10 @@
 - API-09 · Plugin inventory 新增可选 `agentPresets`
   - Best practice
   - 验证
+- API-10 · Web Client runtime 拆包、keyed chat snapshot 与命令附件参数
+  - 精确映射
+  - 类型组合与依赖所有权
+  - 验证
 - CFG-01 · Code Mode 精确迁到 PTC mode
   - 精确 ledger
 - Skill 输出这类迁移报告时应使用的结构
@@ -74,6 +78,7 @@
 | `cordis.patch.yml` | 按文件名当源码 patch | 误报并生成错误迁移任务 | 先按官方 Profile composition overlay 处理；只有真实替换宿主源码时才归源码 patch |
 | Structured questions answerer | `userQuestions.registerProvider({ ask })` | attach 抛 `TypeError`；提问无人 answer（`NO_PROVIDER`） | `ctx.on('user-questions/request', (req, next) => answer)`；不带 agent 的 `ask()` 在服务自身 ctx 派发，同 fiber 树其他 entry 的监听者收不到（详见 [DSH-0.1.2-A1-20](v0.1.2-alpha.1.md)） |
 | Type export drift | `CallId` / `JsonValue` / `collectSessionTitleMessages` / `todo/write` 类型声明 | typecheck 批量 TS2305 / TS2614 | 按 ledger 迁移：`ToolCallId`（dsh-llm 根导出）、`@deepseek-ai/dsh-util-values`、本地同语义折叠、本地 event-map 合并（详见 [rollup R-07](rollup-0.1.2.md)） |
+| Web Client runtime | 从已删除的 `dsh-client-runtime/client` 导入类型并通过 `useSession` 读取平铺 `nodes[]` | 包不存在；selector 变 `any`；测试仍构造旧数组；Host 命令少一个参数 | 按 owning 包组合类型；用 `useChat` 读取 `order + nodes.get()`；Host `commands.execute` 无图片时显式传 `[]` |
 
 ## API-01 · APIProxy 迁到实际 `ctx.remote` projection
 
@@ -628,6 +633,75 @@ alpha.2 的 composition 优先级从低到高是：
 
 - **来源**：
   [alpha.2 PluginInventorySnapshot 类型](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/host/plugin-inventory/src/types.ts)
+
+## API-10 · Web Client runtime 拆包、keyed chat snapshot 与命令附件参数
+
+- **适用对象**：仍依赖 `@deepseek-ai/dsh-client-runtime/client`、消费会话 transcript、扩展
+  chat command row，或直接调用 Host `ctx.commands.execute` 的插件源码仓。
+- **会怎么炸**：alpha.1 起 `dsh-client-runtime` 已删除。只把 `ClientContext` 改成 Cordis
+  `Context` 仍不够：合并到 Context 的 client facets 由各 owning 包提供；缺直接类型依赖时，
+  `skipLibCheck: true` 可能把 `useChat` selector 或回调参数悄悄传播成 `any`。alpha.2
+  `ChatSnapshot.nodes` 是 keyed store，不是旧 `ConversationNode[]`；Host 命令执行又在
+  `line` 与 `signal` 之间增加了 image attachments。
+
+### 精确映射
+
+| rc / runtime 聚合面 | alpha.2 owning 面 |
+|---|---|
+| `ClientContext` | `Context` from `@deepseek-ai/cordis`，再按实际使用 import owning package 的 `type {}` augmentation |
+| `SessionId` | `@deepseek-ai/dsh-session/types` |
+| `ConversationNode` | `@deepseek-ai/dsh-client-ui-conversation/client` |
+| `CommandRowProps` | `@deepseek-ai/dsh-client-ui-chat/client` |
+| `useSession(session => session?.nodes)` | `useChat(chat => ...)` |
+| `ConversationSnapshot.nodes[]` | `ChatSnapshot.order` 保序遍历，逐 id 调 `snapshot.nodes.get(id)` |
+| `ctx.commands.execute(agent, line, signal)` | `ctx.commands.execute(agent, line, [], signal)`；有图时传真实 attachments |
+
+`snapshot.legacy.nodes` 只适合有明确双宿主需求的分阶段兼容，不应成为 alpha.2-only
+插件的新主数据面。alpha.2-only 的最小读取形态：
+
+```ts
+import type { Context } from '@deepseek-ai/cordis'
+import type { ChatSnapshot } from '@deepseek-ai/dsh-client-ui-chat/client'
+import type {} from '@deepseek-ai/dsh-api-session-controller/client'
+import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
+
+function orderedNodes(snapshot: ChatSnapshot) {
+  return snapshot.order.flatMap((id) => {
+    const node = snapshot.nodes.get(id)
+    return node ? [node] : []
+  })
+}
+
+export function useOrderedNodes(ctx: Context) {
+  return ctx.useChat((chat) => chat ? orderedNodes(chat) : [])
+}
+```
+
+读取 assistant step 最终节点时，按 discriminant 收窄到 `type === 'assistant-step'` 后读取
+`data.finalNode`；不要在测试里用 `as unknown as ChatSnapshot` 掩盖旧数组夹具。
+
+### 类型组合与依赖所有权
+
+1. `dsh.client.inject` 只写运行时真正需要宿主注入的 client services；删掉已不存在的
+   `dsh-client-runtime`。
+2. 源码直接 import/消费的声明所有者必须是插件自己的 direct dev/peer dependency。发布包的
+   `devDependencies` 不会传递安装给 consumer；例如 ui-chat 的声明会引用
+   `dsh-client-store`、ui primitives、session/commands/conversation 等类型。
+3. 用 type-only import 激活 Context augmentation，并只补实际命中的 owning 包；不要靠旧
+   runtime 聚合包或偶然 hoist。
+4. 首次迁移至少跑一次 `tsc --skipLibCheck false`（或等价临时配置）定位缺失声明链，再恢复
+   仓库既有策略。任何新增 implicit `any` 都是迁移失败，不是可忽略 warning。
+
+### 验证
+
+- lockfile 不含旧 cohort 或 `dsh-client-runtime`；所有 DSH packages 落在精确目标 cohort；
+- `skipLibCheck: false` 诊断无缺声明，正式 typecheck/build 通过且无新增 implicit `any`；
+- client tests 用真实 `ChatNodeStore` 形状（`order` + keyed `get`），覆盖缺失 id 和 assistant
+  final node；Host command test 断言第三参 images（无图为 `[]`）；
+- pack 后核对 tarball 名和 manifest 的插件自身版本，再在隔离 profile 做 Web token→Cookie、
+  boot entry、公告资源、注册/挂载、remove 全链路。
+
+**来源**：[rc.2 runtime 聚合导出](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.1-rc.2/packages/client/runtime/src/client/index.ts) · [alpha.2 ChatSnapshot / ChatNodeStore](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-chat/src/client/contract/snapshot.ts) · [alpha.2 `useChat` 与 `CommandRowProps`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-chat/src/client/contract/slots.ts) · [alpha.2 client slot 基础 Context augmentation](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-slots/src/index.ts) · [alpha.2 Host commands `execute`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/interaction/commands/src/index.ts) · [alpha.2 ui-chat package declarations](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/client/ui-chat/package.json)
 
 ## CFG-01 · Code Mode 精确迁到 PTC mode
 

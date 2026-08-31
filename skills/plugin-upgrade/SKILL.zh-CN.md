@@ -11,7 +11,7 @@
 |---|---|---|
 | A · inspect | 检查更新、判断是否受某版 DSH 影响 | 只读调查与报告；完成后停止 |
 | B · update | 把已安装插件升级到明确版本 | 先计划和确认，再改 composition/依赖 |
-| C · host-migrate | DSH 宿主升级后适配插件源码 | 先建版本走廊和触点清单，再计划和确认 |
+| C · author-migrate | 插件作者把自己源码仓适配到新版 DSH 宿主 | 先跑基线、建版本走廊和触点清单，再实施已授权迁移 |
 
 本 skill 不负责“只升级 DSH core 且不处理插件”；也不允许修改 DSH core 来掩盖插件兼容
 问题。
@@ -21,7 +21,9 @@
 1. 阅读目标仓库的 `AGENTS.md` / `CLAUDE.md` 等规则；检查 branch、HEAD、working tree、
    submodule。发现陌生修改或未跟踪文件就停止并报告，不自动 stash/reset/clean/checkout。
 2. 分开记录代码来源与安装身份：registry 包、Git checkout、workspace/junction 或复制安装；
-   记录来源仓库/URL、Git SHA、实际包名、declared/resolved 版本与当前 DSH/Node 版本。GitHub
+   记录来源仓库/URL、Git SHA、实际包名、插件自身版本、declared/resolved DSH 依赖 cohort
+   与当前 DSH/Node 版本。插件发版版本（如 `0.6.4 → 0.7.0-alpha.0`）不是 DSH 宿主走廊
+   （如 `0.1.0-rc.6 → 0.1.2-alpha.2`）。GitHub
    owner/repo 与 registry scope/package 是独立坐标，不能从前者推导或改写后者。
 3. 区分文件所有权：
    - `package.json` / lockfile：包与依赖；
@@ -52,7 +54,7 @@
    若存在则移除本次升级拥有的旧来源行，并确认运行时 entry active。
 6. 按“验证与报告”执行；失败时只恢复本次拥有的路径并报告残留副作用。
 
-## 模式 C · host-migrate（插件随 DSH 升级）
+## 模式 C · author-migrate（插件作者升级源码仓）
 
 0. 先跑 baseline：在仓库自身依赖状态（不 pin 目标、不设目标 env）运行机械套件
    （build / typecheck / tests；属运行包脚本，先按安全边界展示将执行的命令并取得
@@ -60,7 +62,8 @@
    [references/rollup-0.1.2.md](references/rollup-0.1.2.md) R-06，后续走廊同理）。
    迁移不得新增或恶化失败；pre-existing 失败按 baseline 豁免。
 1. 用精确 tag 确认 from/to；按 [references/README.md](references/README.md) 的
-   `from → to` 元数据连接版本走廊，禁止按文件名字典序。
+   `from → to` 元数据连接版本走廊，禁止按文件名字典序。起点早于最早卡片时，将缺失段标为
+   unsupported gap，改用精确 tag 源码、packed 声明和可复现测试取证，不能假装后续卡片覆盖它。
 2. 先读完整走廊并计算最终净状态。字段在中间版本删除、目标版又恢复时，不先删再加。
 3. 按 [pre-flight.md](references/pre-flight.md) 扫描七类触点：源码 patch、事件、服务/
    Remote、宿主文件系统、UI/命令/工具、自建通道、子进程/输出。可先运行只读
@@ -68,8 +71,15 @@
    启发式；零命中仍须检查依赖/导入并跑 build 与真实挂载。
 4. 只保留与命中触点和实际 face（Host/Web Client/普通 plugin）相交的卡片。卡片是 curated
    清单，不是完整 API diff；缺走廊边或 API 坐标时标 unsupported/待确认，不凭记忆改。
-5. 生成按 seam 分组的源码迁移计划，列命中文件、卡片、目标行为与测试；取得确认后再在
-   独立 branch/worktree 实施。`capability` 卡仅建议，不自动采用。
+5. 生成按 Host / Web Client seam 分组的源码迁移计划，列命中文件、卡片、目标行为与测试；
+   取得确认后再在独立 branch/worktree 实施。`package.json` 与 lockfile 必须保持精确且同一
+   DSH cohort；安装成功但旧新 peer 混装不算完成。selector 或 callback 意外变成 `any` 时，
+   临时用 `skipLibCheck: false` 做一次诊断，并把实际声明所有者补成直接依赖。`capability`
+   卡仅建议，不自动采用。
+6. 兼容修改通过后，单独确定并修改插件自身 SemVer；核对 packed 文件名和 packed manifest
+   都是该插件版本，不能误把宿主 DSH 版本当成插件发版版本。涉及删除
+   `dsh-client-runtime`、keyed chat snapshot 或命令执行签名时，使用
+   [alpha.2 API ledger](references/api-migration-0.1.2-alpha.2.md)。
 
 ## 安全边界
 
@@ -84,11 +94,13 @@
 
 至少按适用层级验证：
 
-1. 依赖解析：对应包管理器、lockfile 与依赖图只发生预期变化；
+1. 依赖解析：对应包管理器、lockfile 与依赖图只发生预期变化；扫描完整 lockfile 中的旧
+   DSH cohort 和已删除包，不能只看顶层依赖；
 2. 启用解析：目标 profile 的 composition 指向预期包身份，且无旧来源或重复 row；
 3. 静态：build、typecheck、插件测试；
 4. 运行时：真实 DSH profile 冷启动、entry activate、依赖/提供的 Cordis service 不停在
-   pending；
+   pending；Web Client 插件还要用打印出的 token URL 换 Cookie，读取宿主 boot manifest，
+   请求宿主公告的客户端产物并证明注册/挂载，不能把裸 HTTP 200 当完成；
 5. 行为：执行一条插件核心路径；宿主迁移至少完成一次消息→工具→回复，或等价专用流程；
 6. 包装器：核对退出码、stdout、stderr、取消与 teardown。
 
@@ -110,9 +122,11 @@
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated 卡 |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated 卡 |
+| [references/api-migration-0.1.2-alpha.2.md](references/api-migration-0.1.2-alpha.2.md) | 面向插件作者的 alpha.2 API ledger，含 client runtime 移除与 keyed chat snapshot |
 | [references/rollup-0.1.2.md](references/rollup-0.1.2.md) | 0.1.1 → 0.1.2 走廊（rollup）：跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、迁移前 baseline 归因、boot race 有界重试、base-only preset 前置、类型面导出漂移、宿主自身安全边界、分层验证清单；基于 alpha.2，正式版需复核 |
 | [scripts/README.md](scripts/README.md) | 只读 migration planner：扫描目标仓库、连接卡片走廊并输出候选迁移计划 |
 | [examples/legacy-plugin/](examples/legacy-plugin/) | 七类触点静态夹具（不得执行） |
+| [examples/07-real-web-client-alpha2-migration.md](examples/07-real-web-client-alpha2-migration.md) | 从更早 unsupported 走廊迁移 Host + Web Client 源码的真实样本 |
 
 规范背景：[dsh-community-standard](https://github.com/oh-my-dsh/dsh-community-standard)
 负责 manifest、契约坐标与协商；本 skill 处理现有插件的实际升级，引用其分类而不重定义

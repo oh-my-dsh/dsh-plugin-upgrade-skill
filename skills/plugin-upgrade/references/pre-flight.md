@@ -46,12 +46,14 @@
 ## #1 源码 patch / monkey patch
 
 ```sh
-rg -n "cordis\.patch\.yml|patch\.yml|patchedDependencies|patch-package" .
+rg -n "(^|[^.])patch\.yml|patchedDependencies|patch-package" .
 rg -n "DSH_HARNESS_SOURCE_ROOT|patch-surface|monkeypatch|monkey-patch" .
 ```
 
 命中后逐个记录宿主目标路径与替换意图；目标 tag 中找不到等价 owning 模块时标
-「待确认」，不猜路径。
+「待确认」，不猜路径。普通 `cordis.patch.yml` 是 profile composition，必须按
+[API-08](api-migration-0.1.2-alpha.2.md#api-08--cordispatchyml-是-composition不是源码-patch)
+归类，不能仅因文件名包含 `patch` 就命中本类。
 
 **关联卡**: `DSH-0.1.2-A1-03`
 
@@ -94,13 +96,15 @@ rg -n "readFile|writeFile|mkdir|openPath" .
 ## #5 内部 UI / 命令 / 工具注册
 
 ```sh
-rg -n "registerCommand|registerView|contributes|ctx\.tools" .
-rg -n "ctx\.effect\(|/internal" .
+rg -n "registerCommand|registerView|contributes|ctx\.tools|commands\.execute" .
+rg -n "dsh-client-runtime|PropsRuntime|ctx\.slots|useSession|useChat|/internal" .
 ```
 
-将公开 seam 与内部路径分开；机会型 capability 只建议、不自动采用。
+将公开 seam 与内部路径分开；命中旧 client runtime、session/chat selector 或 slot augmentation
+时，继续检查 `dsh.client.inject`、直接类型依赖、keyed snapshot 形状和 type-only Context
+augmentation。机会型 capability 只建议、不自动采用。
 
-**关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`
+**关联卡**: `DSH-0.1.2-A1-03`、`DSH-0.1.2-A1-06`、`DSH-0.1.2-A1-09`、`DSH-0.1.2-A1-10`、`DSH-0.1.2-A1-11`；详细接口映射见 [API-10](api-migration-0.1.2-alpha.2.md#api-10--web-client-runtime-拆包keyed-chat-snapshot-与命令附件参数)
 
 ## #6 自建 HTTP / WS / RPC / DOM / CSS 通道
 
