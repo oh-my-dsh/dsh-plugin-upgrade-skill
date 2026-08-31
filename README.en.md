@@ -12,7 +12,7 @@
 - **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
 - **5 skills** — check for upgrades, write new plugins, test plugins, release plugins, and diff two dsh versions. Each does one job.
 - **6 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded.
-- **One validation report** — we installed two real dsh versions in Docker and confirmed that following the cards really does fix plugins.
+- **Two validation reports** — we installed two real dsh versions in Docker and confirmed that following the cards really does fix plugins.
 
 ## Quick Start
 
@@ -116,7 +116,7 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 
 ## The exam (benchmark)
 
-The [benchmark/](benchmark/) folder has 6 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details; the validation report sits in the same folder: `validation-report-2026-08-30.md`.
+The [benchmark/](benchmark/) folder has 6 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details; two validation reports sit in the same folder: [validation-report-2026-08-30.md](benchmark/validation-report-2026-08-30.md) (the earlier migration/benchmark validation record) and [validation-report-2026-08-31.md](benchmark/validation-report-2026-08-31.md) (end-to-end validation after the Harbor format rework).
 
 ## References
 
