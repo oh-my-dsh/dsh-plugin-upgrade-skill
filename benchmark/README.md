@@ -1,4 +1,4 @@
-# dsh 插件迁移考题（benchmark v2 · Harbor 格式）
+# dsh 插件迁移考题（benchmark v2.1 · Harbor 格式）
 
 8 道"插件升级"考题，测一件事：**AI 装了我们的升级 skill 之后，到底会不会真的
 升级插件**。前 4 道是笔试（看代码写答案），后 4 道是实操（真的装 dsh、跑插件，
@@ -48,6 +48,9 @@ tasks/<题号>/
 └── README.md             # 本题说明
 ```
 
+仓库另有 [`docs/execution-contract.md`](docs/execution-contract.md) 定义无人值守授权契约，
+以及 `scripts/validate-execution-contract.mjs` 检查所有题面和元数据是否使用同一版本。
+
 **自包含**：不再需要外部容器。agent 直接在题目环境（容器）里做题——fixture 在
 `/app/fixture/`，静态题报告写到 `/app/agent-output/<题号>/`；verifier 与 agent
 共用同一容器，实操题 judge 会在容器内真实建隔离 profile、装插件、冷启动判活。
@@ -76,11 +79,29 @@ harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 
 ## 怎么给 agent 用（评测协议）
 
+### 无人值守授权
+
+全部 8 道题的 `instruction.md` 都包含 `BENCHMARK-AUTH-v1`：题面本身就是用户对限定范围
+内方案和执行的确认。agent 应完成必要的分析/计划，然后继续执行，不能因为 Harbor
+不会再发送第二轮“确认”而停止。授权不改变题目边界：S1/S2/S3 的 fixture 仍须零改动，
+H4 的 `src/` 仍须零改动且只允许清理 `lib/` 构建产物，M1/H1/H2/H3 只允许修改
+fixture、写指定报告和创建一次性本地验证资产；发布、推送、外部服务、
+skill/评测器/参考答案修改均不在授权范围内。完整语义和维护规则见
+[`docs/execution-contract.md`](docs/execution-contract.md)。
+
+先检查契约是否完整：
+
+```sh
+node benchmark/scripts/validate-execution-contract.mjs
+```
+
 1. **给 agent 的输入**：`instruction.md` 就是用户对 agent 说的话，按题面原样
    投喂即可；题面里已写明工作目录（容器内 `/app`）。
 2. **agent 的落点约定**（题面里也已写明）：
-   - 静态题（S1/S2）：agent 只读 fixture，把报告写到
+   - 静态扫描题（S1/S2/S3）：agent 只读 fixture，把报告写到
      `/app/agent-output/<题号>/` 下（文件名随意，.md/.txt/.json 均可）；
+   - 构建缓存诊断题（H4）：agent 保持 `src/` 零改动，只能清理 `lib/` 构建产物并把
+     报告写到 `/app/agent-output/H4-tsbuildinfo-trap/`；
    - 实操题（M1/H1/H2/H3）：agent 直接改 `/app/fixture/` 里的文件；
      H2 另需把迁移报告写到 `/app/agent-output/H2-baseline-trap/` 下。
 3. **判分**：harbor 在 agent 跑完后自动执行 `tests/test.sh`，
@@ -97,6 +118,8 @@ harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 
 两轮分差即 skill 的净效果。建议每轮跑 3 次取中位数（实操题有环境噪声）。
 每个 harbor trial 都是全新容器，两轮之间无需手工恢复 fixture。
+`BENCHMARK-AUTH-v1` 在两轮中完全相同，只消除无人值守环境缺少确认回合造成的假零分，
+不向任一轮泄露迁移答案。
 
 ## 判分设计要点
 
@@ -123,6 +146,8 @@ harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
   污染环境。
 - 新增题目用 `harbor task init` 起骨架，再对照现有 8 题的布局补齐
   judge / solve.sh，并用 `harbor run -p <题> -a oracle` 验证标准答案得 1.0。
+- 新增或修改题面后运行 `node benchmark/scripts/validate-execution-contract.mjs`，确保
+  授权标记、只读/实操边界和 `task.toml` 元数据一致。
 - 在 benchmark 的 Markdown 里引用升级卡时，要写完整编号（如
   `DSH-0.1.2-A1-01`，不能简写成"A1-01"）。仓库自检会查两件事：这个编号
   真实存在、链接点得开；写错的话 `node scripts/validate.mjs` 会直接报错。
