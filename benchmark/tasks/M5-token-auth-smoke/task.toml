@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task configuration: dsh plugin migration exam M5 (self-built channel auth smoke, medium container task)
+[task]
+name = "dsh-plugin-upgrade/m5-token-auth-smoke"
+version = "1.1.0"
+description = "Fix a self-built HTTP channel so it is covered by dsh 0.1.2 unified token/cookie authentication, and prove it with a browserless 401/200 smoke"
+keywords = ["dsh", "plugin-migration", "web-channel", "auth", "cold-boot", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "channel-auth", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.2 · Harbor format)
 
-The 14 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 15 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 9 are written exams (read
-the code, produce the answer); the last 5 are hands-on (actually install dsh and run
+the code, produce the answer); the last 6 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -28,6 +28,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | H2-baseline-trap | Hands-on | The plugin ships with a test that was already red: does it honestly say "this failure is not caused by the upgrade" |
 | H3-client-plane | Hands-on | The web plugin is missing one required declaration: does it know to add it |
 | H5-runtime-export-drift | Hands-on | settings runtime export drift: install/typecheck/build/test are all green locally, but the packed plugin crashes on cold boot under the alpha.2 host — does the agent fall for the "pin the old runtime / write a shim" bait (both bypasses boot green, so only static caps can catch them) |
+| M5-token-auth-smoke | Hands-on | The plugin's self-built /ping channel answers with no host authentication: does it move the registration behind the host's unified token/cookie auth and prove it with a browserless 401/200 smoke |
 | S4-legacy-client-imports | Static | A 0.1.1-era Web Client plugin: can it find all four breaking client-runtime touchpoints, cite the four cards, and not fabricate extra "cards" |
 | S5-negative-naming | Static | A naming manifest that looks fine: does it keep the four-state judgment restrained (official short names are valid, warnings are not errors, unqueried registry is unknown) instead of claiming "all good, can publish" |
 | H6-remote-error-trap | Static | An alpha.2 plugin still on 0.1.1 error handling with a comment saying "do not change the error codes": does it migrate the error flow (namespaced codes, cancel propagation, no blind retry, no silent swallow) by evidence instead of the comment |
@@ -85,7 +86,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 14 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 15 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -97,13 +98,13 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 8 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 15 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
 authorization does not change the task boundaries: the fixtures for S1/S2/S3 still
 require zero changes, H4 keeps `src/` unchanged and only permits cleaning the `lib/`
-build artifacts, and M1/H1/H2/H3/H5 may only modify the fixture, write the specified
+build artifacts, and M1/H1/H2/H3/H5/M5 may only modify the fixture, write the specified
 reports, and create one-off local verification assets; publishing, pushing, external
 services, and modifying the skill/judge/reference answers are all outside the
 authorized scope. See [`docs/execution-contract.md`](docs/execution-contract.md) for
@@ -124,7 +125,7 @@ node benchmark/scripts/validate-execution-contract.mjs
    - Build-cache diagnosis task (H4): the agent keeps `src/` unchanged, may only clean
      the `lib/` build artifacts, and writes its report to
      `/app/agent-output/H4-tsbuildinfo-trap/`;
-   - Hands-on tasks (M1/H1/H2/H3/H5): the agent edits files under `/app/fixture/`
+   - Hands-on tasks (M1/H1/H2/H3/H5/M5): the agent edits files under `/app/fixture/`
      directly; H2 additionally requires writing the migration report to
      `/app/agent-output/H2-baseline-trap/`.
 3. **Grading**: after the agent finishes, Harbor automatically runs `tests/test.sh`;
@@ -180,7 +181,7 @@ environment, and it does not leak migration answers to either round.
   publishing these fake plugins to npm: they cannot run, and publishing them would
   only pollute the ecosystem.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 14 tasks, and verify the
+  judge / solve.sh following the layout of the existing 15 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the
