@@ -17,9 +17,9 @@
 - 一页结论
 - API-01 · APIProxy 按运行平面迁到领域服务或 `ctx.remote` projection
   - Host / Web Client 最小正确写法
-  - 常用 consumer ledger
+  - Web Client consumer ledger
   - Best practice
-  - 验证
+  - 按 face 验证
 - API-02 · `RemoteResult` 版本边界与 alpha.2 `RemoteError`
   - 先把版本归属说清楚
   - Consumer 最新写法
@@ -62,7 +62,7 @@
 
 | 接口面 | 旧写法 | 旧写法在目标版本的症状 | alpha.2 best practice |
 |---|---|---|---|
-| Host APIProxy consumer | APIProxy / `executeRemote(...)` | `apiProxy` 消失；机械改成 `remote` 会永久 pending | 跳过 Client gateway，直接注入 owning domain service，例如 `llm` / `session` / `settings` |
+| Host APIProxy consumer | APIProxy / `executeRemote(...)` | `apiProxy` 消失；机械改成 `remote` 会永久 pending | 跳过 Client gateway，直接注入目标 tag 已确认的 owning domain service，例如 `llm` / `settings` |
 | Web Client APIProxy consumer | APIProxy / `executeRemote(...)` | 旧 package/service 消失；猜错 namespace 或方法会装配失败 | 使用生成的 `ctx.remote.<namespace>.<method>`，声明 `remote` 与具体 namespace 注入 |
 | Unary failure | 只写 `try/catch`；解析 message；`instanceof` | `ok: false` 被当成功；跨 bundle 漏判；错误码分支失效 | 先分支 `result.ok`，按 `result.error.code` 处理；只在 stream/显式抛出等 catch boundary 用 `isRemoteFailure` |
 | Failure classes | `TypertRemoteFailure` / `TypertLookupFailure` / `RemoteStreamError` | removed export 或 typecheck 失败；无域前缀 code 不再匹配 | owner 抛 `RemoteError('<domain>/<reason>', message, details)`；details 由 code 收窄 |
@@ -94,7 +94,13 @@ Host 侧直接使用 owning domain service；下例的 `llm` / `listProviders()`
 
 ```ts
 export const inject = ['llm']
-const providers = ctx.llm.listProviders()
+
+export function listHostProviders(ctx) {
+  if (!ctx?.llm || typeof ctx.llm.listProviders !== 'function') {
+    throw new TypeError('Host fixture requires the llm domain service')
+  }
+  return ctx.llm.listProviders()
+}
 ```
 
 Web Client 侧使用生成 projection：
@@ -120,7 +126,10 @@ export async function renameSession(
 `sessionTitle/rename` 是设计过程文本，不能凌驾于同一 tag 的实现、生成 projection 和
 consumer 测试。
 
-### 常用 consumer ledger
+### Web Client consumer ledger
+
+下表只适用于 Web Client 的生成 projection。Host 调用必须针对目标 tag 逐项确认 owning
+domain service，不得从本表反推 Host service key 或方法。
 
 | rc.2 / 历史 consumer 操作 | alpha.2 consumer projection | 迁移注意点 |
 |---|---|---|
@@ -162,10 +171,17 @@ consumer 测试。
    普通 UI 使用 `ctx.workspaces`，不要自行重写 generation baseline、mutation echo/race 或定时
    `list()`。
 
-### 验证
+### 按 face 验证
 
-- Host entry 注入真实领域服务后必须 active、不等待 `remote`，并执行一次对应领域方法；
-- Web Client typecheck 必须使用真实 `Context` 与生成 projection，不能用 `ctx: any` 掩盖错误路径；
+Host：
+
+- 在固定目标 tag 的真实 Host profile 中验证 entry active、不等待 `remote`，并执行一次对应
+  领域方法；
+- `examples/face-contracts` 只证明注入与控制流边界，不证明 Loader 激活或真实服务装配。
+
+Web Client：
+
+- typecheck 必须使用真实 `Context` 与生成 projection，不能用 `ctx: any` 掩盖错误路径；
 - 每个 unary 命中至少覆盖 `ok: true` 和一个领域错误码；支持 `AbortSignal` 的调用再覆盖取消；
 - 验证 Remote contribution 未挂载时会明确暴露装配错误，而不是永久 pending；
 - stream 覆盖 opening snapshot、增量、取消、carrier reconnect 与 teardown。
