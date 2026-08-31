@@ -78,9 +78,9 @@ git push --force-with-lease origin main
 ## 6. 真实验证（每个版本台阶都跑）
 
 1. 目标 tag 冷启动，`pluginInventory/list` 全部本插件 entry `active`、无 `pending`；
-2. 自建通道冒烟：无认证 401 / 消费 token 后 200（[A1-08](../references/v0.1.2-alpha.1.md)）；
+2. 自建通道冒烟：无认证 401 / 消费 token 后 200（[DSH-0.1.2-A1-08 · Web/API 通道认证](../references/v0.1.2-alpha.1.md)）；
 3. 一条真实行为：headless 任务让模型调用本插件工具（如 calculator 计算），核对 stdout 最终文本与
-   stderr reasoning 归属（[A1-05](../references/v0.1.2-alpha.1.md)）；
+   stderr reasoning 归属（[DSH-0.1.2-A1-05 · headless 输出语义](../references/v0.1.2-alpha.1.md)）；
 4. 结果归档：每个版本台阶留存「版本 → 各仓提交 → 验证结果」记录，作为下一个版本台阶的盘点基线。
 
 ## 与本仓库其他材料的关系

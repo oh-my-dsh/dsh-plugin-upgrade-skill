@@ -1,7 +1,7 @@
 # profile 依赖管理配方
 
 > 承接 [../SKILL.md](../SKILL.md) 的发布轨选择。本文覆盖把插件装进/更新进 `$DSH_HOME/profiles/*` 时的
-> 依赖解析事实与操作配方，取自 17 个插件仓库三个版本台阶的连续迁移（rc.2 → alpha.1 → alpha.2）。技术性迁移坑
+> 依赖解析事实与操作配方，取自 17 个插件仓库三个版本台阶的连续迁移（0.1.0-rc.8 → 0.1.1-rc.2 → 0.1.2-alpha.1 → 0.1.2-alpha.2）。技术性迁移坑
 > （tsbuildinfo、oxc 解析等）见 [migration-hygiene](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/references/migration-hygiene.md)，
 > 本文不重复。
 
@@ -64,7 +64,7 @@ grep 'codeload.*<pkg>' pnpm-lock.yaml   # 应为 tar.gz/<40位commit>
 ## 6. 自建通道的无浏览器认证冒烟
 
 0.1.2-alpha.1 起 dsh web 使用 bootstrap token + 签名 Cookie 认证（见
-[A1-08 认证模型](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/references/v0.1.2-alpha.1.md)）。
+[DSH-0.1.2-A1-08 · Web/API 通道认证](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/references/v0.1.2-alpha.1.md)）。
 插件自建了 HTTP/RPC 通道（如 `/tariff/status`）时，发布前用下面流程证明「通道确实挂在统一认证后面」，
 不依赖浏览器/Playwright。已知行为：token 在同一进程可重复兑换、重启才轮换；自建 route 必须经
 `connection` 注册才会自动继承认证，裸 `ctx.webServer.register()` 不继承。
