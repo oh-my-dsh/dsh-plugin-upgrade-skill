@@ -10,8 +10,8 @@ alpha.1 删除、alpha.2 恢复时，不应先删再加。
 
 | 顺序 | 卡片文件 | from | to | 卡数 | 状态 / 覆盖 |
 |---|---|---|---|---:|---|
-| 1 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 14 | reviewed / curated |
-| 2 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 6 | reviewed / curated |
+| 1 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 15 | reviewed / curated |
+| 2 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 8 | reviewed / curated |
 | — | [rollup-0.1.2.md](rollup-0.1.2.md) | `dsh-v0.1.1-rc.2` → `dsh-v0.1.2-alpha.2` 全走廊 | rollup | 非卡片文件：走廊层增量（跨 cohort 共存、未发布 cohort 安装、`RemoteResult` 错误流、分层验证清单）；**基于 alpha.2，正式版需复核** |
 
 `curated` 表示只收录已识别的插件相关变化，**不表示完整 API diff**。走廊缺边时停止
@@ -22,7 +22,8 @@ alpha.1 删除、alpha.2 恢复时，不应先删再加。
 
 - [pre-flight.md](pre-flight.md)：七类触点自查与迁移任务汇总；
 - [pre-flight-patterns.json](pre-flight-patterns.json)：可执行校验使用的正则真源；
-- [examples/legacy-plugin/](../examples/legacy-plugin/)：七类触点静态夹具。
+- [examples/legacy-plugin/](../examples/legacy-plugin/)：七类触点静态夹具；
+- [remote-namespaces-0.1.2-alpha.2.md](remote-namespaces-0.1.2-alpha.2.md)：`ctx.remote` 命名空间×方法实测清单（从发布产物提取，附再生方法）。
 
 ## 卡片文件元数据
 

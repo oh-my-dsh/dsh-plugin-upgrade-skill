@@ -19,10 +19,10 @@
 | #2 事件 / 持久事件 | [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md)，另见 [DSH-0.1.2-A1-06](v0.1.2-alpha.1.md) |
 | #3 服务 / Remote | [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-05](v0.1.2-alpha.2.md)、[DSH-0.1.2-A2-06](v0.1.2-alpha.2.md) |
 | #4 宿主目录读写 | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md) |
-| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md) |
+| #5 UI / 命令 / 工具 | [DSH-0.1.2-A1-03](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-09](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-10](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-11](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-15](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-07](v0.1.2-alpha.2.md) |
 | #6 自建 HTTP/WS/RPC/DOM/CSS | [DSH-0.1.2-A1-08](v0.1.2-alpha.1.md) |
 | #7 子进程 / stdout / stderr | [DSH-0.1.2-A1-04](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-05](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-06](v0.1.2-alpha.1.md)、[DSH-0.1.2-A1-13](v0.1.2-alpha.1.md)、[DSH-0.1.2-A2-04](v0.1.2-alpha.2.md) |
-| 特殊面 | 权限 [DSH-0.1.2-A1-07](v0.1.2-alpha.1.md)；隐私 [DSH-0.1.2-A1-12](v0.1.2-alpha.1.md) / [DSH-0.1.2-A1-14](v0.1.2-alpha.1.md)；打包 [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md) |
+| 特殊面 | 权限 [DSH-0.1.2-A1-07](v0.1.2-alpha.1.md)；隐私 [DSH-0.1.2-A1-12](v0.1.2-alpha.1.md) / [DSH-0.1.2-A1-14](v0.1.2-alpha.1.md)；打包 [DSH-0.1.2-A2-03](v0.1.2-alpha.2.md)；类型/导入面 [DSH-0.1.2-A2-08](v0.1.2-alpha.2.md) |
 
 > **跨版本回滚型变更先读完整走廊再动手**：字段或语义在中间版本删除、后续版本又恢复
 > （典型如 `ignorable` 的 [DSH-0.1.2-A1-02](v0.1.2-alpha.1.md) → [DSH-0.1.2-A2-01](v0.1.2-alpha.2.md) 一删一复）。
@@ -30,6 +30,9 @@
 > 若最终目标已恢复该语义，旧版适配里的防御代码应当删除而不是保留。
 
 ## Remote 调用的错误流
+
+命名空间与方法名以发布产物的生成声明为准，实测清单见
+[remote-namespaces-0.1.2-alpha.2.md](remote-namespaces-0.1.2-alpha.2.md)。
 
 承接 [DSH-0.1.2-A1-01](v0.1.2-alpha.1.md) 与
 [DSH-0.1.2-A2-02](v0.1.2-alpha.2.md)。alpha.2 的 unary Remote 返回
@@ -80,6 +83,7 @@ return result.value
 
   manifest 里 range 写 `^0.1.2-alpha.2`，将来正式发布删掉 overrides 段即回到 registry 解析。
 - **注意（待确认）**: 以下 pnpm 版本钉点来自**单一实战报告，尚未在其他仓库复现验证**——报告称 `11.9.0` 对 file: tarball 的传递依赖在有第三方 peer 时会绕过 overrides 去 registry 找不存在的版本，钉 `packageManager: pnpm@11.24.0` 才解析正确。落地前先在目标仓库做最小复现确认，验证通过后回填结果并把本条目转正（与本文件末尾「待确认」小节同步更新）。
+- **实测更新（2026-08-31）**: `0.1.2-alpha.2` 的完整 cohort 已发 npm——`npm view @deepseek-ai/dsh-tools dist-tags` 返回 `alpha: 0.1.2-alpha.2`，`dsh-web-app`/`dsh-base` 及其闭包均可解析，本配方的 source-built tarball 步骤对 alpha.2 不再必要（alpha.1 仍未发布）。新坑：**pnpm ≥ 11 默认 `minimumReleaseAge` 1440 分钟**，发布不满 24 小时的版本会被静默跳过、解析回旧线；对刚发布的 alpha/rc 需在 `pnpm-workspace.yaml` 设 `minimumReleaseAge: 0` 或用 `minimumReleaseAgeExclude` 逐包放行，装完 `grep version node_modules/@deepseek-ai/dsh-tools/package.json` 确认落在目标线（来源：pnpm 11.0 release blog；实测 pnpm 11.7.0 安装 alpha.2 复现）。
 - **验证**: `pnpm list --depth 0 | grep @deepseek-ai` 全部指向目标版本，无混合。
 - **来源**: [#5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 第 1 条。**未在官方 release notes 覆盖范围内**，属社区实践。
 
