@@ -1,0 +1,51 @@
+name: dsh-integration
+
+on:
+  pull_request:
+    paths:
+      - "skills/plugin-test/scripts/**"
+      - "benchmark/runtime/**"
+      - "benchmark/tasks/**/solution/plugin/**"
+      - "package.json"
+      - ".github/workflows/dsh-integration.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/plugin-test/scripts/**"
+      - "benchmark/runtime/**"
+      - "benchmark/tasks/**/solution/plugin/**"
+      - "package.json"
+      - ".github/workflows/dsh-integration.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dsh-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run fast validation first
+        run: npm test
+      - name: Run exact-version DSH integration cases
+        run: npm run test:dsh -- --report-dir .artifacts/dsh-integration
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsh-integration-reports
+          path: .artifacts/dsh-integration
+          if-no-files-found: ignore
+          retention-days: 7

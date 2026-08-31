@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "npm run validate",
+    "test": "npm run validate && npm run test:release && npm run test:audit && npm run test:dsh:cases",
     "validate": "node scripts/validate.mjs && node scripts/validate-manifests.mjs && node benchmark/scripts/validate-task-registry.mjs && node --test benchmark/scripts/validate-task-registry.test.mjs && node benchmark/scripts/validate-evaluation-snapshots.mjs && node --test benchmark/scripts/validate-evaluation-snapshots.test.mjs && node benchmark/scripts/validate-checkpoints.mjs && node --test benchmark/scripts/validate-checkpoints.test.mjs && node benchmark/scripts/validate-task-toml.mjs && node --test benchmark/scripts/validate-task-toml.test.mjs && node skills/plugin-upgrade/scripts/verify-runtime.check.mjs && npm run test:smoke",
     "validate:skills": "node scripts/validate.mjs",
     "validate:manifests": "node scripts/validate-manifests.mjs",
@@ -16,6 +16,10 @@
     "validate:registry": "node skills/plugin-write/scripts/query-registry.check.mjs",
     "verify:runtime": "node skills/plugin-upgrade/scripts/verify-runtime.check.mjs",
     "test:smoke": "node --test skills/plugin-test/scripts/docker-release-smoke.test.mjs",
-    "validate:workflow": "node skills/plugin-workflow/scripts/plan-workflow.check.mjs"
+    "validate:workflow": "node skills/plugin-workflow/scripts/plan-workflow.check.mjs",
+    "test:release": "node --test skills/plugin-release/scripts/verify-release.test.mjs",
+    "test:audit": "node skills/dsh-upgrade-audit/scripts/gen-artifacts.check.mjs",
+    "test:dsh:cases": "node benchmark/runtime/verify.mjs --check",
+    "test:dsh": "node benchmark/runtime/verify.mjs --all"
   }
 }

@@ -98,7 +98,10 @@ const validateScript = rootPackage?.scripts?.validate ?? ''
 if (!validateScript.includes('scripts/validate.mjs') || !validateScript.includes('scripts/validate-manifests.mjs')) {
   fail('package.json scripts.validate must chain both validators')
 }
-if (rootPackage?.scripts?.test !== 'npm run validate') fail('package.json scripts.test must delegate to npm run validate')
+const testScript = rootPackage?.scripts?.test ?? ''
+if (!/^npm run validate(?:\s*&&|\s*$)/.test(testScript)) {
+  fail('package.json scripts.test must delegate to npm run validate first')
+}
 
 if (errors.length > 0) {
   console.error('Manifest validation failed:')

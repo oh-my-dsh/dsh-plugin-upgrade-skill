@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { createReadStream } from 'node:fs'
-import { access, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile } from 'node:fs/promises'
+import { access, copyFile, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -12,6 +12,17 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url))
 const containerRunner = join(scriptDirectory, 'container-runner.mjs')
 const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const profileName = /^[A-Za-z0-9._-]+$/
+const volumeName = /^[A-Za-z0-9][A-Za-z0-9_.-]*$/
+const proxyEnvironmentNames = [
+  'HTTP_PROXY',
+  'HTTPS_PROXY',
+  'ALL_PROXY',
+  'NO_PROXY',
+  'http_proxy',
+  'https_proxy',
+  'all_proxy',
+  'no_proxy',
+]
 
 export function validateConfig(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('config must be a JSON object')
@@ -116,7 +127,9 @@ export function classifyFailure(containerResult, containerExitCode, infrastructu
   if (!containerResult) return containerExitCode === 0 ? 'result' : 'container'
   if (containerResult.status === 'passed' && containerExitCode === 0) return null
   const phase = containerResult.failure?.phase
-  if (['install-toolchain', 'verify-dsh-version'].includes(phase)) return 'host-setup'
+  if (['install-package-manager', 'install-dsh', 'install-toolchain', 'verify-pnpm-version', 'verify-dsh-version'].includes(phase)) {
+    return 'host-setup'
+  }
   if (phase === 'install-plugin') return 'plugin-install'
   if (phase === 'cold-start') return 'startup'
   if (phase === 'probe') return 'probe'
@@ -319,20 +332,32 @@ function bindMount(source, target, readOnly = false) {
   return `type=bind,source=${source},target=${target}${readOnly ? ',readonly' : ''}`
 }
 
-export async function runDockerSmoke({ config, pluginPath, reportDirectory }) {
+function inheritedDockerEnvironment(names) {
+  return names.flatMap((name) => (process.env[name] ? ['--env', name] : []))
+}
+
+export async function runDockerSmoke({ config, pluginPath, reportDirectory, cacheVolume, toolchainVolume }) {
   const validatedConfig = validateConfig(config)
   const artifactPath = await realpath(resolve(pluginPath))
   await access(artifactPath)
   const artifactStat = await stat(artifactPath)
   if (!artifactStat.isFile()) throw new Error('plugin path must point to a packaged artifact file')
+  if (cacheVolume && !volumeName.test(cacheVolume)) throw new Error('cache volume has an invalid name')
+  if (toolchainVolume && !volumeName.test(toolchainVolume)) throw new Error('toolchain volume has an invalid name')
 
-  const runDirectory = await mkdtemp(join(tmpdir(), 'dsh-plugin-smoke-run-'))
+  // Keep bind-mounted control files below the caller's working directory.
+  // Colima and some Docker Desktop setups do not share the host's system temp
+  // directory with their VM, while the checkout is already expected to be
+  // available to Docker.
+  const runDirectory = await mkdtemp(join(process.cwd(), '.dsh-plugin-smoke-run-'))
   const outputDirectory = join(runDirectory, 'output')
   const finalReportDirectory = reportDirectory
     ? resolve(reportDirectory)
     : await mkdtemp(join(tmpdir(), 'dsh-plugin-smoke-report-'))
   await mkdir(outputDirectory, { recursive: true })
   await mkdir(finalReportDirectory, { recursive: true })
+  const stagedArtifactPath = join(runDirectory, 'plugin.tgz')
+  await copyFile(artifactPath, stagedArtifactPath)
   const configPath = join(runDirectory, 'config.json')
   await writeFile(configPath, `${JSON.stringify(validatedConfig, null, 2)}\n`, 'utf8')
 
@@ -357,7 +382,7 @@ export async function runDockerSmoke({ config, pluginPath, reportDirectory }) {
     dockerServerVersion = (
       await checkedProcess('docker', ['version', '--format', '{{.Server.Version}}'])
     ).stdout.trim()
-    await checkedProcess('docker', [
+    const dockerArguments = [
       'create',
       '--name',
       containerName,
@@ -366,8 +391,25 @@ export async function runDockerSmoke({ config, pluginPath, reportDirectory }) {
       '/workspace',
       '--env',
       'HOME=/workspace/home',
+      ...inheritedDockerEnvironment(proxyEnvironmentNames),
+      ...(cacheVolume
+        ? [
+            '--env',
+            'NPM_CONFIG_CACHE=/workspace/package-cache/npm',
+            '--mount',
+            `type=volume,source=${cacheVolume},target=/workspace/package-cache`,
+          ]
+        : []),
+      ...(toolchainVolume
+        ? [
+            '--env',
+            'NPM_CONFIG_PREFIX=/workspace/toolchain',
+            '--mount',
+            `type=volume,source=${toolchainVolume},target=/workspace/toolchain`,
+          ]
+        : []),
       '--mount',
-      bindMount(artifactPath, '/workspace/plugin.tgz', true),
+      bindMount(stagedArtifactPath, '/workspace/plugin.tgz', true),
       '--mount',
       bindMount(configPath, '/workspace/config.json', true),
       '--mount',
@@ -383,7 +425,8 @@ export async function runDockerSmoke({ config, pluginPath, reportDirectory }) {
       '/workspace/plugin.tgz',
       '--output',
       '/workspace/output',
-    ])
+    ]
+    await checkedProcess('docker', dockerArguments)
     containerCreated = true
     const inspectImage = await checkedProcess('docker', ['inspect', '--format', '{{.Image}}', containerName])
     containerImageId = inspectImage.stdout.trim()

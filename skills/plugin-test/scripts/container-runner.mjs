@@ -3,9 +3,10 @@
 import { spawn } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 const MAX_LOG_BYTES = 2 * 1024 * 1024
-const SETUP_TIMEOUT_MS = 5 * 60 * 1000
+const SETUP_TIMEOUT_MS = 8 * 60 * 1000
 
 class SmokeFailure extends Error {
   constructor(phase, message, details = {}) {
@@ -204,7 +205,20 @@ async function run() {
   const pluginPath = resolve(options.plugin)
   const home = process.env.HOME || '/workspace/home'
   await mkdir(home, { recursive: true })
-  const environment = { ...process.env, HOME: home, CI: '1', NO_COLOR: '1' }
+  const environment = {
+    ...process.env,
+    HOME: home,
+    PATH: process.env.NPM_CONFIG_PREFIX
+      ? `${join(process.env.NPM_CONFIG_PREFIX, 'bin')}:${process.env.PATH ?? ''}`
+      : process.env.PATH,
+    NPM_CONFIG_MAXSOCKETS: process.env.NPM_CONFIG_MAXSOCKETS ?? '12',
+    NPM_CONFIG_FETCH_RETRIES: process.env.NPM_CONFIG_FETCH_RETRIES ?? '3',
+    NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: process.env.NPM_CONFIG_FETCH_RETRY_MINTIMEOUT ?? '1000',
+    NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: process.env.NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT ?? '10000',
+    NPM_CONFIG_FETCH_TIMEOUT: process.env.NPM_CONFIG_FETCH_TIMEOUT ?? '300000',
+    CI: '1',
+    NO_COLOR: '1',
+  }
   const logs = { stdout: new CappedLog(), stderr: new CappedLog() }
   const steps = []
   const runCommand = createCommandRunner(logs)
@@ -212,13 +226,39 @@ async function run() {
   let failure = null
 
   try {
-    const toolchain = await runCommand(
-      'install-toolchain',
-      'npm',
-      ['install', '--global', `pnpm@${config.pnpmVersion}`, `@deepseek-ai/dsh@${config.dshVersion}`],
-      { env: environment },
-    )
-    steps.push(stripOutput(toolchain))
+    const prefix = environment.NPM_CONFIG_PREFIX
+    const cachedPnpmVersion = prefix
+      ? await readPackageVersion(join(prefix, 'lib', 'node_modules', 'pnpm', 'package.json'))
+      : null
+    const cachedDshVersion = prefix
+      ? await readPackageVersion(join(prefix, 'lib', 'node_modules', '@deepseek-ai', 'dsh', 'package.json'))
+      : null
+    if (cachedPnpmVersion === config.pnpmVersion && cachedDshVersion === config.dshVersion) {
+      steps.push({
+        name: 'install-toolchain',
+        status: 'passed',
+        exitCode: 0,
+        durationMs: 0,
+        message: 'reused exact-version toolchain volume',
+      })
+    } else {
+      const toolchain = await runCommand(
+        'install-toolchain',
+        'npm',
+        ['install', '--global', `pnpm@${config.pnpmVersion}`, `@deepseek-ai/dsh@${config.dshVersion}`],
+        { env: environment },
+      )
+      steps.push(stripOutput(toolchain))
+    }
+
+    const pnpmVersion = await runCommand('verify-pnpm-version', 'pnpm', ['--version'], { env: environment })
+    if (pnpmVersion.stdout.trim() !== config.pnpmVersion) {
+      throw new SmokeFailure(
+        'verify-pnpm-version',
+        `resolved pnpm ${pnpmVersion.stdout.trim() || 'unknown'}, expected ${config.pnpmVersion}`,
+      )
+    }
+    steps.push(stripOutput(pnpmVersion))
 
     const npmRoot = await runCommand('verify-dsh-version', 'npm', ['root', '--global'], { env: environment })
     const packagePath = join(npmRoot.stdout.trim(), '@deepseek-ai', 'dsh', 'package.json')
@@ -296,12 +336,22 @@ function stripOutput(step) {
   return result
 }
 
-run().then(
-  (exitCode) => {
-    process.exitCode = exitCode
-  },
-  (error) => {
-    console.error(`container runner failed: ${error.message}`)
-    process.exitCode = 2
-  },
-)
+async function readPackageVersion(path) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8')).version ?? null
+  } catch {
+    return null
+  }
+}
+
+if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  run().then(
+    (exitCode) => {
+      process.exitCode = exitCode
+    },
+    (error) => {
+      console.error(`container runner failed: ${error.message}`)
+      process.exitCode = 2
+    },
+  )
+}

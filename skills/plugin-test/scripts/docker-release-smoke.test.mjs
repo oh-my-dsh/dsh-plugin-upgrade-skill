@@ -57,6 +57,9 @@ test('redactLogs removes common credential forms', () => {
 
 test('classifyFailure maps setup, install, startup, probe, and infrastructure failures', () => {
   assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'install-toolchain' } }, 1), 'host-setup')
+  assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'install-package-manager' } }, 1), 'host-setup')
+  assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'install-dsh' } }, 1), 'host-setup')
+  assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'verify-pnpm-version' } }, 1), 'host-setup')
   assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'install-plugin' } }, 1), 'plugin-install')
   assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'cold-start' } }, 1), 'startup')
   assert.equal(classifyFailure({ status: 'failed', failure: { phase: 'probe' } }, 1), 'probe')

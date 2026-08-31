@@ -66,12 +66,22 @@
 ## 本地验证
 
 ```sh
-node scripts/validate.mjs
-node scripts/validate-manifests.mjs
+npm test
 ```
 
-修改 Skill、命令、manifest、版本卡或示例时，两条都运行。示例有自己的 build/test 时，
-还要运行对应命令。没运行或受凭据/平台限制的检查必须在 PR 中注明。
+该入口包含原有的两个结构校验器：`node scripts/validate.mjs` 与
+`node scripts/validate-manifests.mjs`，并补跑 release、audit 和 DSH case 定义自检。
+
+修改 Skill、命令、manifest、版本卡或示例时运行快速校验。若改动
+`plugin-upgrade`、`plugin-test`、`dsh-upgrade-audit` 或 `benchmark/runtime/` 中的运行时迁移事实，
+还要在隔离 Docker 环境运行：
+
+```sh
+npm run test:dsh
+```
+
+该命令使用精确 DSH 版本和打包后的 fixture，不会修改本机 `~/.dsh`。示例有自己的
+build/test 时还要运行对应命令；没运行或受 Docker、凭据、平台限制的检查必须在 PR 中注明。
 
 ## PR 检查清单
 
