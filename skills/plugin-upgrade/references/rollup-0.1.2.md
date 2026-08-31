@@ -256,7 +256,43 @@ return result.value
 
 - **验证**: typecheck 全绿且不靠 `@ts-ignore`；本地合并的声明与官方结构逐字段一致；运行时事件流与 rc.2 相同。
 - **来源**: 各包 `0.1.2-alpha.2` tarball 导出比对 + [alpha.2 todo 工具 types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/todo/tool-todo/src/types.ts) · [alpha.2 `dsh-util-values`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/util/values/src/index.ts) · [alpha.2 settings `register` 签名](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/settings/settings/src/index.ts) · [alpha.2 agent-presets 错误码](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/preset/agent-presets/src/types.ts) · [alpha.2 system-prompt](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/core/system-prompt/src/index.ts) · [alpha.2 llm types](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.2-alpha.2/packages/llm/llm/src/types.ts) · [rc.2 `CallId`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.1.1-rc.2/packages/llm/llm/src/brand.ts) · dsh-tui 实测（2026-08-30）· [dsh-TUI #647](https://github.com/ccch1mneyyy/dsh-TUI/pull/647)（`settingsNamespace` 是 alpha.1 → alpha.2 唯一的编译中断）
+### R-XX · 升级对象可能就是当前运行宿主
 
+- **类型**: security
+- **症状**:
+  在 DSH 内部开发或升级插件时，被修改的插件、preset、runtime 组件或其依赖，可能同时就是当前正在运行的 Harness 的一部分。
+
+  因此，一些普通的升级操作可能直接影响正在执行升级任务本身的运行环境，例如停止或重启 DSH、修改当前使用的 preset、修改 Harness runtime，或卸载当前运行环境正在依赖的插件。
+
+- **配方**:
+  在执行可能影响运行宿主的操作前，先确认升级目标是否属于当前 session / profile / Harness host。
+
+  至少确认：
+  1. 目标插件是否正在当前 profile 中运行；
+  2. 目标 preset 是否就是当前 Agent 使用的 preset；
+  3. 被修改的 runtime / dependency 是否支撑当前 Harness；
+  4. 准备卸载的插件是否仍被当前运行环境依赖。
+
+  如果目标同时属于当前运行宿主，不应让 Agent 无条件执行可能导致宿主失效的操作。优先交回用户确认，或通过外部 / 人工路径完成恢复。
+
+  对 `stop → start` 一类操作，尽量把整个切换视为一个原子操作，并确保存在独立的恢复路径。
+
+- **验证**:
+  升级前能够识别当前 Harness 与升级目标之间的依赖关系。
+
+  对可能影响宿主的操作，应确认：
+  - 当前宿主不会在仍依赖目标时被直接卸载或破坏；
+  - 重启操作存在明确的恢复入口；
+  - 宿主失效后仍有独立方式完成恢复或回滚。
+
+  本条属于升级前的安全检查，不以“插件成功加载”作为充分验证条件。
+
+- **来源**:
+  来自 [DeepSeek Harness Discussion #5120](https://github.com/deepseek-ai/deepseek-harness/discussions/5120) 的社区升级讨论背景，以及此前在 DSH 内部进行插件开发和升级时的实际观察。
+
+- **实战批注**:
+  这不是某个特定版本的 API migration rule，而是 DSH 的运行方式带来的宿主边界问题：当 Agent 本身就在 Harness 内执行时，被修改的对象可能同时也是执行环境自身。
+  
 ## 分层验证清单
 
 按顺序跑（第 0 层仅采集基线，不设通过门槛）；此后前一层不过不进下一层：
