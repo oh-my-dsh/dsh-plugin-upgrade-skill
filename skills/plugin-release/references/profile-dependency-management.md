@@ -61,10 +61,43 @@ grep 'codeload.*<pkg>' pnpm-lock.yaml   # 应为 tar.gz/<40位commit>
 4. 真实冷启动：目标 tag 的 dsh 起来后，插件清单（pluginInventory）里本插件 entry `active`、
    无 `pending`。
 
-## 6. 验证清单
+## 6. 自建通道的无浏览器认证冒烟
+
+0.1.2-alpha.1 起 dsh web 使用 bootstrap token + 签名 Cookie 认证（见
+[A1-08 认证模型](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/references/v0.1.2-alpha.1.md)）。
+插件自建了 HTTP/RPC 通道（如 `/tariff/status`）时，发布前用下面流程证明「通道确实挂在统一认证后面」，
+不依赖浏览器/Playwright。已知行为：token 在同一进程可重复兑换、重启才轮换；自建 route 必须经
+`connection` 注册才会自动继承认证，裸 `ctx.webServer.register()` 不继承。
+
+PowerShell（自带 Cookie 容器）：
+
+```powershell
+# 1. 从启动输出抓认证 URL：dsh web: http://127.0.0.1:3190/?token=<T>
+# 2. 兑换 Cookie
+$sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+Invoke-WebRequest "http://127.0.0.1:3190/?token=$token" -WebSession $sess -UseBasicParsing
+# 3. 带会话调用自建通道 → 断言 200
+$body = @{ type = 'client-request'; rpcId = 'smoke'; method = 'status'; payload = $null } | ConvertTo-Json
+Invoke-WebRequest 'http://127.0.0.1:3190/tariff/status' -Method POST -ContentType 'application/json' -Body $body -WebSession $sess
+# 4. 无认证重发 → 断言 401（证明通道受保护）
+Invoke-WebRequest 'http://127.0.0.1:3190/tariff/status' -Method POST -ContentType 'application/json' -Body $body
+```
+
+curl 等价（`-c/-b` cookie jar）：
+
+```sh
+curl -s -c jar.txt "http://127.0.0.1:3190/?token=$TOKEN" >/dev/null      # 兑换 Cookie（303→/）
+curl -s -b jar.txt -X POST -H 'content-type: application/json' \
+  -d '{"type":"client-request","rpcId":"smoke","method":"status","payload":null}' \
+  http://127.0.0.1:3190/tariff/status        # 期望 200
+curl -s -o /dev/null -w '%{http_code}\n' -X POST \
+  http://127.0.0.1:3190/tariff/status        # 期望 401
+```
+
+## 7. 验证清单
 
 - [ ] 锁文件里每个 github 依赖的 commit 等于期望 HEAD；
 - [ ] 改名插件在锁文件、bundles 列表、cordis.patch.yml 三处同名，旧 junction 已清理；
 - [ ] `--dump-config` 行集符合预期；
-- [ ] 真实冷启动 entry active；自建通道按 [A1-08 认证模型](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/blob/main/skills/plugin-upgrade/references/v0.1.2-alpha.1.md) 冒烟
-      （有 token 200 / 无认证 401）。
+- [ ] 真实冷启动 entry active；
+- [ ] 自建通道认证冒烟：无认证 401、兑换 Cookie 后 200（第 6 节流程）。
