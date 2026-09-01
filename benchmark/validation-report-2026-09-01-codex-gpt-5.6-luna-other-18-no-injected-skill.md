@@ -111,14 +111,13 @@ Distribution:
 | 0.1 | 1 |
 | 0.0 | 2 |
 
-The primary raw result is in
-[`result.json`](/private/tmp/dsh-plugin-upgrade-closed-book-luna-20260901/codex-luna-no-skill-except-h8-20260901/result.json).
-The supplemental results are in the H7
-[`result.json`](/private/tmp/dsh-plugin-upgrade-closed-book-luna-supplement-20260901/h7-locale-trap-codex-luna-no-skill-20260901/result.json),
-M2
-[`result.json`](/private/tmp/dsh-plugin-upgrade-closed-book-luna-supplement-20260901/m2-optional-dep-trap-codex-luna-no-skill-20260901/result.json),
-and H6
-[`result.json`](/private/tmp/dsh-plugin-upgrade-closed-book-luna-supplement-20260901/h6-remote-error-trap-codex-luna-no-skill-20260901/result.json).
+The primary raw result remains in the uncommitted local artifact
+`/private/tmp/dsh-plugin-upgrade-closed-book-luna-20260901/codex-luna-no-skill-except-h8-20260901/result.json`.
+The supplemental local results are under
+`/private/tmp/dsh-plugin-upgrade-closed-book-luna-supplement-20260901/` for H7
+(`h7-locale-trap-codex-luna-no-skill-20260901/result.json`), M2
+(`m2-optional-dep-trap-codex-luna-no-skill-20260901/result.json`), and H6
+(`h6-remote-error-trap-codex-luna-no-skill-20260901/result.json`).
 
 The primary result's built-in mean (`0.6129`) is not the requested 18-task
 aggregate: it treats the two setup-failed tasks, M2 and H6, as zero and does

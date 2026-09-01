@@ -124,10 +124,10 @@ Distribution:
 | 0.25 | 2 |
 | 0.0 | 1 |
 
-The primary raw result is in
-[`result.json`](/private/tmp/dsh-plugin-upgrade-other18-luna-node24-20260901/codex-plugin-upgrade-other18-luna-node24-20260901/result.json).
-The H7 result is in
-[`result.json`](/private/tmp/dsh-plugin-upgrade-h7-luna-node24-20260901b/codex-plugin-upgrade-h7-luna-node24-20260901/result.json).
+The primary raw result remains in the uncommitted local artifact
+`/private/tmp/dsh-plugin-upgrade-other18-luna-node24-20260901/codex-plugin-upgrade-other18-luna-node24-20260901/result.json`.
+The H7 result remains in
+`/private/tmp/dsh-plugin-upgrade-h7-luna-node24-20260901b/codex-plugin-upgrade-h7-luna-node24-20260901/result.json`.
 
 The primary result's built-in mean (`0.7917`) is not the requested benchmark
 mean: it counts the stopped H8 trial as zero and does not include the separate

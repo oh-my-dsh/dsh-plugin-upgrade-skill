@@ -61,10 +61,10 @@ requested by the agent configuration.
 |---|---:|---:|---|
 | `H8-dsh-web-alpha2__DHvC9kK` | 0.67 | 67/100 | Settings and task-board migration checks passed, but static compatibility stayed below 80 and the agent timed out before the heavy runtime gate |
 
-The raw result is in
-[`result.json`](/private/tmp/dsh-plugin-upgrade-h8-luna-20260901/codex-plugin-upgrade-h8-alpha2-luna-noskill-20260901/result.json),
-and the verifier output is in
-[`test-stdout.txt`](/private/tmp/dsh-plugin-upgrade-h8-luna-20260901/codex-plugin-upgrade-h8-alpha2-luna-noskill-20260901/H8-dsh-web-alpha2__DHvC9kK/verifier/test-stdout.txt).
+The raw result remains in the uncommitted local artifact
+`/private/tmp/dsh-plugin-upgrade-h8-luna-20260901/codex-plugin-upgrade-h8-alpha2-luna-noskill-20260901/result.json`,
+and the verifier output remains in
+`/private/tmp/dsh-plugin-upgrade-h8-luna-20260901/codex-plugin-upgrade-h8-alpha2-luna-noskill-20260901/H8-dsh-web-alpha2__DHvC9kK/verifier/test-stdout.txt`.
 
 ## What the verifier confirmed
 

@@ -48,10 +48,10 @@ workspace was not used as the agent's write target.
 |---|---:|---:|---|
 | `H5-dsh-web-alpha2__XQeiPsT` | 0.8 | 80/100 | Most migration checks passed; alpha.2 install/cold-start gate failed on lockfile integrity and the agent hit its 2400-second timeout |
 
-The raw result is in
-[`result.json`](/private/tmp/dsh-plugin-upgrade-h5-luna-20260831/codex-plugin-upgrade-h5-alpha2-luna-allow-chatgpt-20260831/result.json),
-and the verifier output is in
-[`test-stdout.txt`](/private/tmp/dsh-plugin-upgrade-h5-luna-20260831/codex-plugin-upgrade-h5-alpha2-luna-allow-chatgpt-20260831/H5-dsh-web-alpha2__XQeiPsT/verifier/test-stdout.txt).
+The raw result remains in the uncommitted local artifact
+`/private/tmp/dsh-plugin-upgrade-h5-luna-20260831/codex-plugin-upgrade-h5-alpha2-luna-allow-chatgpt-20260831/result.json`,
+and the verifier output remains in
+`/private/tmp/dsh-plugin-upgrade-h5-luna-20260831/codex-plugin-upgrade-h5-alpha2-luna-allow-chatgpt-20260831/H5-dsh-web-alpha2__XQeiPsT/verifier/test-stdout.txt`.
 
 ## What the verifier confirmed
 
