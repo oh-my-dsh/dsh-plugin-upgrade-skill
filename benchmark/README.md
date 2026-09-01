@@ -101,7 +101,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 8 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 18 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
