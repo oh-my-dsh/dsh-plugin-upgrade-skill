@@ -22,7 +22,11 @@ jobs:
         node-version: [22, 24]
     runs-on: ubuntu-latest
     steps:
+      # Full history is required: the evaluation snapshot validator resolves
+      # snapshot-pinned benchmark/skill commits via local git objects.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
