@@ -8,7 +8,9 @@ import {
   CAPABILITY_IDS,
   SELECTION_SCHEMA_VERSION,
   WORKFLOW_IDS,
+  buildWorkflowMenu,
   buildWorkflowPlan,
+  renderMenuMarkdown,
   renderMarkdown,
   validateSelection,
 } from './plan-workflow.mjs'
@@ -46,6 +48,17 @@ export async function runWorkflowPlannerChecks() {
   const schema = JSON.parse(await readFile(schemaPath, 'utf8'))
   assert.deepEqual(WORKFLOW_IDS, schema.properties.workflow.enum)
   assert.deepEqual(CAPABILITY_IDS, schema.$defs.capability.enum)
+
+  const menu = buildWorkflowMenu()
+  assert.equal(menu.readOnly, true)
+  assert.equal(menu.requiresSelection, true)
+  assert.equal(menu.recommendedWorkflow, 'health-check')
+  assert.deepEqual(menu.workflows.map((workflow) => workflow.id), WORKFLOW_IDS)
+  assert.deepEqual(menu.capabilities.map((capability) => capability.id), CAPABILITY_IDS)
+  const menuMarkdown = renderMenuMarkdown(menu)
+  assert.match(menuMarkdown, /workflow menu \(read-only\)/)
+  assert.match(menuMarkdown, /recommended for first run/)
+  assert.match(menuMarkdown, /No discovery, install, test, repository write, or publication has started/)
 
   const health = buildWorkflowPlan(selection())
   assert.equal(health.readOnly, true)
@@ -107,6 +120,23 @@ export async function runWorkflowPlannerChecks() {
 
   const tempRoot = await mkdtemp(join(tmpdir(), 'dsh-workflow-plan-'))
   try {
+    const noArgs = await runCli([])
+    assert.equal(noArgs.code, 0, noArgs.stderr)
+    assert.match(noArgs.stdout, /workflow menu \(read-only\)/)
+    assert.doesNotMatch(noArgs.stdout, /Phase ledger/)
+
+    const menuJson = await runCli(['--menu', '--format', 'json'])
+    assert.equal(menuJson.code, 0, menuJson.stderr)
+    assert.equal(JSON.parse(menuJson.stdout).requiresSelection, true)
+
+    const explicitHealth = await runCli(['--workflow', 'health-check', '--format', 'json'])
+    assert.equal(explicitHealth.code, 0, explicitHealth.stderr)
+    assert.deepEqual(JSON.parse(explicitHealth.stdout).ledger.map((phase) => phase.capability), ['discovery', 'touchpoint-scan'])
+
+    const capabilityWithoutWorkflow = await runCli(['--include', 'docker-smoke'])
+    assert.equal(capabilityWithoutWorkflow.code, 1)
+    assert.match(capabilityWithoutWorkflow.stderr, /select a workflow with --workflow/)
+
     const inputPath = join(tempRoot, 'selection.json')
     const input = selection({ workflow: 'test-only', include: ['functional-probe'] })
     await writeFile(inputPath, `${JSON.stringify(input, null, 2)}\n`, 'utf8')
@@ -128,5 +158,5 @@ export async function runWorkflowPlannerChecks() {
 const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : undefined
 if (invokedPath === import.meta.url) {
   await runWorkflowPlannerChecks()
-  console.log('Workflow planner checks OK: schema sync, deterministic defaults, dependency gates, confirmations, read-only CLI')
+  console.log('Workflow planner checks OK: pre-run menu, schema sync, explicit selections, dependency gates, confirmations, read-only CLI')
 }

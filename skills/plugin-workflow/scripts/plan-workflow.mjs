@@ -15,44 +15,52 @@ export const PLUGIN_STATES = Object.freeze([...selectionSchema.properties.plugin
 
 const WORKFLOWS = {
   'health-check': {
+    outcome: 'Read-only plugin and upgrade-risk report',
     defaults: ['touchpoint-scan'],
   },
   'upgrade-target': {
+    outcome: 'Upgrade an installed plugin to an explicit version',
     defaults: ['static-tests', 'rollback'],
     core: { capability: 'upgrade-installed', owner: 'plugin-upgrade', confirmations: ['repository-writes', 'dependency-runtime'] },
   },
   'compatibility-migration': {
+    outcome: 'Adapt plugin source to an exact DSH target',
     defaults: ['dsh-audit', 'touchpoint-scan', 'static-tests', 'docker-smoke', 'functional-probe', 'rollback'],
     core: { capability: 'source-migration', owner: 'plugin-upgrade', confirmations: ['repository-writes'] },
   },
   'test-only': {
+    outcome: 'Validate an existing source tree or artifact',
     defaults: ['static-tests'],
   },
   'naming-registry': {
+    outcome: 'Validate identifiers and optionally check or register a cloud ID',
     defaults: ['naming-local'],
   },
   'package-release': {
+    outcome: 'Prepare and optionally publish a release',
     defaults: ['static-tests', 'docker-smoke', 'functional-probe', 'rollback', 'package-artifact'],
   },
   'full-lifecycle': {
+    outcome: 'Migrate, validate, name, package, and optionally publish',
     defaults: ['dsh-audit', 'touchpoint-scan', 'static-tests', 'docker-smoke', 'functional-probe', 'rollback', 'package-artifact'],
     core: { capability: 'source-migration', owner: 'plugin-upgrade', confirmations: ['repository-writes'] },
   },
 }
 
 const CAPABILITIES = {
-  'dsh-audit': { owner: 'dsh-upgrade-audit', confirmations: [] },
-  'touchpoint-scan': { owner: 'plugin-upgrade', confirmations: [] },
-  'naming-local': { owner: 'plugin-write', confirmations: [] },
-  'registry-query': { owner: 'plugin-write', confirmations: [], requires: ['naming-local'] },
-  'static-tests': { owner: 'plugin-test', confirmations: ['dependency-runtime'] },
-  'docker-smoke': { owner: 'plugin-test', confirmations: ['dependency-runtime'] },
-  'functional-probe': { owner: 'plugin-test', confirmations: ['dependency-runtime'] },
-  'browser-check': { owner: 'plugin-test', confirmations: ['dependency-runtime'] },
-  rollback: { owner: 'plugin-upgrade', confirmations: [] },
-  'package-artifact': { owner: 'plugin-release', confirmations: ['dependency-runtime'], requires: ['static-tests'] },
-  'registry-register': { owner: 'plugin-write', confirmations: ['external-publication'], requires: ['registry-query'] },
+  'dsh-audit': { description: 'DSH version compatibility audit', owner: 'dsh-upgrade-audit', confirmations: [] },
+  'touchpoint-scan': { description: 'Seven-touchpoint plugin scan', owner: 'plugin-upgrade', confirmations: [] },
+  'naming-local': { description: 'Offline naming declaration validation', owner: 'plugin-write', confirmations: [] },
+  'registry-query': { description: 'Central cloud registry lookup', owner: 'plugin-write', confirmations: [], requires: ['naming-local'] },
+  'static-tests': { description: 'Typecheck, unit tests, and build', owner: 'plugin-test', confirmations: ['dependency-runtime'] },
+  'docker-smoke': { description: 'Exact-version Docker cold start', owner: 'plugin-test', confirmations: ['dependency-runtime'] },
+  'functional-probe': { description: 'One real functional path', owner: 'plugin-test', confirmations: ['dependency-runtime'] },
+  'browser-check': { description: 'Browser validation for Web Client surfaces', owner: 'plugin-test', confirmations: ['dependency-runtime'] },
+  rollback: { description: 'Rollback rehearsal or recipe', owner: 'plugin-upgrade', confirmations: [] },
+  'package-artifact': { description: 'Build and inspect a package artifact', owner: 'plugin-release', confirmations: ['dependency-runtime'], requires: ['static-tests'] },
+  'registry-register': { description: 'Central cloud ID registration', owner: 'plugin-write', confirmations: ['external-publication'], requires: ['registry-query'] },
   release: {
+    description: 'Publish an artifact or release',
     owner: 'plugin-release',
     confirmations: ['external-publication'],
     requires: ['package-artifact', 'functional-probe', 'rollback'],
@@ -238,6 +246,73 @@ function escapeCell(value) {
   return String(value).replaceAll('|', '\\|')
 }
 
+export function buildWorkflowMenu() {
+  return {
+    schemaVersion: SELECTION_SCHEMA_VERSION,
+    readOnly: true,
+    requiresSelection: true,
+    recommendedWorkflow: 'health-check',
+    workflows: WORKFLOW_IDS.map((id, index) => ({
+      choice: index + 1,
+      id,
+      outcome: WORKFLOWS[id].outcome,
+      defaultCapabilities: [...WORKFLOWS[id].defaults],
+    })),
+    capabilities: CAPABILITY_IDS.map((id) => ({
+      id,
+      description: CAPABILITIES[id].description,
+      owner: CAPABILITIES[id].owner,
+      confirmations: [...CAPABILITIES[id].confirmations],
+      defaultFor: WORKFLOW_IDS.filter((workflow) => WORKFLOWS[workflow].defaults.includes(id)),
+    })),
+    replyExamples: [
+      'health-check',
+      '3 + docker-smoke + browser-check',
+      'compatibility-migration, exclude browser-check',
+    ],
+  }
+}
+
+export function renderMenuMarkdown(menu = buildWorkflowMenu()) {
+  const lines = [
+    '# DSH plugin workflow menu (read-only)',
+    '',
+    'No workflow has been selected. Choose one workflow and optionally add or remove capabilities.',
+    '',
+    '## Workflows',
+    '',
+    '| Choice | Workflow | Outcome | Default capabilities |',
+    '|---:|---|---|---|',
+  ]
+  for (const workflow of menu.workflows) {
+    const recommendation = workflow.id === menu.recommendedWorkflow ? ' (recommended for first run)' : ''
+    const defaults = workflow.defaultCapabilities.map((id) => `\`${id}\``).join(', ') || 'none'
+    lines.push(`| ${workflow.choice} | \`${escapeCell(workflow.id)}\`${recommendation} | ${escapeCell(workflow.outcome)} | ${defaults} |`)
+  }
+
+  lines.push(
+    '',
+    '## Optional capabilities',
+    '',
+    '| Capability | Purpose | Owner | Later confirmation |',
+    '|---|---|---|---|',
+  )
+  for (const capability of menu.capabilities) {
+    const confirmations = capability.confirmations.map((id) => BOUNDARY_LABELS[id]).join(', ') || 'none (read-only)'
+    lines.push(`| \`${escapeCell(capability.id)}\` | ${escapeCell(capability.description)} | \`$${escapeCell(capability.owner)}\` | ${escapeCell(confirmations)} |`)
+  }
+
+  lines.push(
+    '',
+    '## Reply with a selection',
+    '',
+    ...menu.replyExamples.map((example) => `- \`${example}\``),
+    '',
+    'Showing this menu is read-only. No discovery, install, test, repository write, or publication has started.',
+  )
+  return `${lines.join('\n')}\n`
+}
+
 export function renderMarkdown(plan) {
   const selected = plan.capabilities.filter((entry) => entry.selected)
   const excluded = plan.capabilities.filter((entry) => entry.source === 'user-exclude')
@@ -274,7 +349,7 @@ function splitList(value) {
 }
 
 function usage() {
-  return `Usage:\n  node skills/plugin-workflow/scripts/plan-workflow.mjs --workflow <id> [--include a,b] [--exclude a,b] [--surface a,b] [--plugin-state existing|new] [--format markdown|json]\n  node skills/plugin-workflow/scripts/plan-workflow.mjs --selection <selection.json> [--format markdown|json]\n\nThe command is read-only. It creates a plan but never executes a selected phase.\n`
+  return `Usage:\n  node skills/plugin-workflow/scripts/plan-workflow.mjs [--menu] [--format markdown|json]\n  node skills/plugin-workflow/scripts/plan-workflow.mjs --workflow <id> [--include a,b] [--exclude a,b] [--surface a,b] [--plugin-state existing|new] [--format markdown|json]\n  node skills/plugin-workflow/scripts/plan-workflow.mjs --selection <selection.json> [--format markdown|json]\n\nWith no selection, the command prints the pre-run menu. It is read-only and never executes a selected phase.\n`
 }
 
 function parseArgs(argv) {
@@ -282,6 +357,10 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
     if (arg === '--help' || arg === '-h') return { help: true }
+    if (arg === '--menu') {
+      options.menu = true
+      continue
+    }
     const value = argv[++index]
     if (value === undefined) throw new Error(`missing value for ${arg}`)
     if (arg === '--workflow') options.workflow = value
@@ -294,6 +373,10 @@ function parseArgs(argv) {
     else throw new Error(`unknown option: ${arg}`)
   }
   if (!['json', 'markdown'].includes(options.format)) throw new Error('--format must be markdown or json')
+  const hasInlineSelection = ['workflow', 'include', 'exclude', 'surfaces', 'pluginState'].some((key) => options[key] !== undefined)
+  if (options.menu && (options.selectionPath || hasInlineSelection)) {
+    throw new Error('--menu cannot be combined with a workflow selection')
+  }
   if (options.selectionPath && ['workflow', 'include', 'exclude', 'surfaces', 'pluginState'].some((key) => options[key] !== undefined)) {
     throw new Error('--selection cannot be combined with inline selection options')
   }
@@ -302,9 +385,10 @@ function parseArgs(argv) {
 
 async function loadInput(options) {
   if (options.selectionPath) return JSON.parse(await new Promise((accept, reject) => readFile(resolve(options.selectionPath), 'utf8', (error, data) => error ? reject(error) : accept(data))))
+  if (!options.workflow) throw new Error('select a workflow with --workflow before creating a plan')
   return {
     schemaVersion: SELECTION_SCHEMA_VERSION,
-    workflow: options.workflow ?? 'health-check',
+    workflow: options.workflow,
     include: options.include ?? [],
     exclude: options.exclude ?? [],
     surfaces: options.surfaces ?? ['ordinary-plugin'],
@@ -319,8 +403,18 @@ if (invokedPath === import.meta.url) {
     if (options.help) {
       process.stdout.write(usage())
     } else {
-      const plan = buildWorkflowPlan(await loadInput(options))
-      process.stdout.write(options.format === 'json' ? `${JSON.stringify(plan, null, 2)}\n` : renderMarkdown(plan))
+      const hasSelectionDetails = ['include', 'exclude', 'surfaces', 'pluginState'].some((key) => options[key] !== undefined)
+      if (!options.menu && !options.selectionPath && !options.workflow && hasSelectionDetails) {
+        throw new Error('select a workflow with --workflow before adding selection details')
+      }
+      const hasSelection = options.selectionPath || options.workflow
+      if (options.menu || !hasSelection) {
+        const menu = buildWorkflowMenu()
+        process.stdout.write(options.format === 'json' ? `${JSON.stringify(menu, null, 2)}\n` : renderMenuMarkdown(menu))
+      } else {
+        const plan = buildWorkflowPlan(await loadInput(options))
+        process.stdout.write(options.format === 'json' ? `${JSON.stringify(plan, null, 2)}\n` : renderMarkdown(plan))
+      }
     }
   } catch (error) {
     process.stderr.write(`plan-workflow: ${error.message}\n${usage()}`)

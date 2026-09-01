@@ -7,7 +7,30 @@ description: Coordinate the complete DeepSeek Harness plugin lifecycle across in
 
 Act as the workflow controller. Let the user choose outcomes and optional proof before execution, route each selected stage to its owning Skill, preserve one phase ledger, and return one evidence-backed report. Do not copy the detailed rules of an owning Skill into this Skill.
 
-## Start with read-only discovery
+## Show the pre-run menu first
+
+When the user has not explicitly selected a workflow, present the workflow and capability
+tables below before running any phase. Match the user's language, mark `health-check` as the
+recommended first-run choice, and wait for a selection. A recommendation is not a selection:
+do not silently default to `health-check`, start discovery, or execute a capability.
+
+Accept a workflow number, workflow ID, or unambiguous natural-language outcome. Let the user
+add or remove capabilities in the same reply, for example `3 + docker-smoke + browser-check`.
+Briefly identify which selected capabilities are read-only and which will later cross a
+confirmation boundary.
+
+The bundled planner renders the same deterministic menu and remains read-only:
+
+```sh
+node <plugin-workflow-skill>/scripts/plan-workflow.mjs
+# Equivalent explicit form:
+node <plugin-workflow-skill>/scripts/plan-workflow.mjs --menu
+```
+
+If the user already selected an outcome and supplied enough context, preserve that choice and
+continue without showing the menu again.
+
+## Continue with read-only discovery
 
 Inspect only enough context to make the choices concrete:
 
@@ -15,8 +38,6 @@ Inspect only enough context to make the choices concrete:
 2. Identify whether the target is the DSH monorepo, an external plugin source repository, an installed plugin, or a packed artifact.
 3. Record the plugin source identity, current DSH version, requested target version, package manager, available scripts, plugin surfaces, and existing naming declaration.
 4. Mark missing inputs as `unknown`. Do not install dependencies, run package scripts, start containers, edit files, or query a remote registry during discovery.
-
-If the user has already selected an outcome and supplied enough context, preserve that choice instead of asking again. Otherwise present the following compact menu and wait for selection. Default to `health-check` when the request is ambiguous.
 
 ## Choose one workflow
 
@@ -47,7 +68,7 @@ Then let the user include or exclude these capabilities. Recommend the smallest 
 | Build and inspect a package artifact | `package-artifact` | On for package/release and full lifecycle workflows |
 | Publish an artifact or release | `release` | Off unless external release intent is explicit |
 
-For a repeatable plan, normalize the selection with the bundled read-only planner. Read [`references/workflow-selection.schema.json`](references/workflow-selection.schema.json) when another tool needs to produce the input JSON.
+After the user chooses, normalize the selection with the bundled read-only planner. Read [`references/workflow-selection.schema.json`](references/workflow-selection.schema.json) when another tool needs to produce the input JSON.
 
 ```sh
 node <plugin-workflow-skill>/scripts/plan-workflow.mjs \
@@ -57,7 +78,7 @@ node <plugin-workflow-skill>/scripts/plan-workflow.mjs \
   --surface ordinary-plugin
 ```
 
-Use `--format json` for automation, or `--selection <selection.json>` for a persisted input that follows the schema. The planner validates conflicts and required dependencies, emits deterministic phase IDs and confirmation boundaries, and never executes the selected phases. Treat its output as the initial ledger, not as user approval.
+Use `--format json` for automation, or `--selection <selection.json>` for a persisted input that follows the schema. Calling the planner without a selection prints the menu instead of creating a default plan. The planner validates conflicts and required dependencies, emits deterministic phase IDs and confirmation boundaries, and never executes the selected phases. Treat its output as the initial ledger, not as user approval.
 
 Do not treat `registry-query` as a reservation. Do not treat `registry-register` as required for local plugin use. A local plugin and the central registry may share a display name; only concrete identifiers on the same runtime surface can conflict, and the naming owner must report those exact matches.
 

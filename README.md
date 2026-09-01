@@ -93,6 +93,14 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
+首次只调用统一入口、尚未说明目标流程时，它会先列出 7 个工作流程和 12 项可选能力，推荐只读
+`health-check` 但不会自动执行。回复流程编号或名称，并按需增减能力后，它才会生成阶段账本并开始：
+
+```text
+选择 1
+选择 compatibility-migration，加上 docker-smoke 和 browser-check
+```
+
 也可以直接在对话中提问（任意 agent），skill 按描述自动触发；只读检查直接给结果，升级或迁移会先出计划再等确认：
 
 ```

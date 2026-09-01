@@ -88,6 +88,16 @@ In Claude Code, invoke the skill by name (namespaced once the plugin is installe
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
+When the unified entry point is invoked without an explicit workflow, it first lists all 7
+workflows and 12 optional capabilities. It recommends the read-only `health-check` but does not
+start it automatically. Reply with a workflow number or ID and add or remove capabilities before
+the phase ledger is created:
+
+```text
+Choose 1
+Choose compatibility-migration, plus docker-smoke and browser-check
+```
+
 You can also ask directly in the conversation (any agent); the skill triggers on its description. Read-only checks return results directly, while upgrades or migrations produce a plan first and wait for confirmation:
 
 ```
