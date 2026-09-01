@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task configuration: dsh plugin migration exam H8 (one release three plugins, composite hard container task)
+[task]
+name = "dsh-plugin-upgrade/h8-fire-drill"
+version = "1.1.0"
+description = "Run a four-act upgrade fire drill over three plugins in one release: diagnose, fix, deploy with a browserless token smoke, and prepare the release gates without publishing"
+keywords = ["dsh", "plugin-migration", "fire-drill", "channel-auth", "cohort", "release-gate", "cold-boot", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "fire-drill", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096
