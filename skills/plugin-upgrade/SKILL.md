@@ -1,6 +1,6 @@
 ---
 name: plugin-upgrade
-description: Inspect or upgrade installed DSH (DeepSeek Harness) plugins, or adapt plugin source to a newer DSH host version. Inspection stays read-only; show a plan and obtain confirmation before any configuration, dependency, or source write.
+description: Use for DSH plugin compatibility, migration, upgrade, regression, or post-upgrade diagnosis, including read-only review of already-migrated plugin source and version-boundary, API, dependency, activation, or runtime compatibility problems. Inspection and diagnosis stay read-only; show a plan and obtain confirmation before any configuration, dependency, or source write.
 ---
 
 English | [简体中文](SKILL.zh-CN.md)
