@@ -44,7 +44,20 @@ Then let the user include or exclude these capabilities. Recommend the smallest 
 | Central cloud registry lookup | `registry-query` | Off until selected; read-only |
 | Central cloud ID registration | `registry-register` | Off; requires reviewed external publication |
 | Rollback rehearsal or recipe | `rollback` | Recipe on for every write workflow; rehearsal is opt-in |
-| Package and publish | `release` | Off unless release intent is explicit |
+| Build and inspect a package artifact | `package-artifact` | On for package/release and full lifecycle workflows |
+| Publish an artifact or release | `release` | Off unless external release intent is explicit |
+
+For a repeatable plan, normalize the selection with the bundled read-only planner. Read [`references/workflow-selection.schema.json`](references/workflow-selection.schema.json) when another tool needs to produce the input JSON.
+
+```sh
+node <plugin-workflow-skill>/scripts/plan-workflow.mjs \
+  --workflow compatibility-migration \
+  --include registry-query \
+  --exclude browser-check \
+  --surface ordinary-plugin
+```
+
+Use `--format json` for automation, or `--selection <selection.json>` for a persisted input that follows the schema. The planner validates conflicts and required dependencies, emits deterministic phase IDs and confirmation boundaries, and never executes the selected phases. Treat its output as the initial ledger, not as user approval.
 
 Do not treat `registry-query` as a reservation. Do not treat `registry-register` as required for local plugin use. A local plugin and the central registry may share a display name; only concrete identifiers on the same runtime surface can conflict, and the naming owner must report those exact matches.
 
