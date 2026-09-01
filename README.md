@@ -12,7 +12,7 @@
 - **12 条通用对策**：有些坑和版本无关（比如"先备份再动手""新旧版本怎么共存"），这些写成了一份对策清单。
 - **6 个 skill**：一个统一工作流负责选择和编排，另外五个分别负责查升级、写新插件、测插件、发插件和对比两个版本的差别。
 - **21 道考题（benchmark）**：用来测"AI 装了我们的 skill 之后到底会不会升级插件"，每道题都有自动判分；其中包含 dsh-web v0.3.8 → v0.3.9 的真实迁移。
-- **两份验证报告**：我们在 docker 里真的装了两个版本的 dsh，验证了"按卡片做就能修好插件"。
+- **多份验证报告**：我们在 docker 里真的装了两个版本的 dsh，验证了"按卡片做就能修好插件"；此后又用 Codex 等 agent 做了多轮 benchmark 实测。
 
 ## 快速开始
 
@@ -125,7 +125,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 
 ## 考题（benchmark）
 
-[benchmark/](benchmark/) 目录下有 19 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 dsh 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可出 0~1 分。同一只 AI 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。详见 [benchmark/README.md](benchmark/README.md)。同目录有两份验证报告：[validation-report-2026-08-30.md](benchmark/validation-report-2026-08-30.md)（此前的迁移/benchmark 验证记录）与 [validation-report-2026-08-31.md](benchmark/validation-report-2026-08-31.md)（Harbor 格式改造后的端到端验证记录）。
+[benchmark/](benchmark/) 目录下有 21 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 dsh 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可出 0~1 分。同一只 AI 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。详见 [benchmark/README.md](benchmark/README.md)。同目录还有多份验证报告：[validation-report-2026-08-30.md](benchmark/validation-report-2026-08-30.md)（此前的迁移/benchmark 验证记录）、[validation-report-2026-08-31.md](benchmark/validation-report-2026-08-31.md)（Harbor 格式改造后的端到端验证）、[validation-report-2026-08-31-auth-v1.md](benchmark/validation-report-2026-08-31-auth-v1.md)（BENCHMARK-AUTH-v1 无人值守授权验证），以及四份 2026-09-01 的 Codex + `gpt-5.6-luna` 实测报告（[带 skill 的其余 18 题](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md)、[不带 skill 的其余 18 题](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md)、[带 skill 的真实仓库题](benchmark/validation-report-2026-09-01.md)、[不带 skill 的真实仓库题](benchmark/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md)）。
 
 ## 参考资源
 

@@ -21,7 +21,7 @@ const OUTPUT_LIMIT = 80_000
  */
 export async function runRuntimeSmoke(fixture) {
   const facts = []
-  const scratch = mkdtempSync('/tmp/bench-h5-runtime-')
+  const scratch = mkdtempSync('/tmp/bench-h9-runtime-')
   const familyDir = join(scratch, 'family-tarballs')
   const rewriteDir = join(scratch, 'aggregate-rewrite')
   const rewriteTmp = join(scratch, 'rewrite-tmp')

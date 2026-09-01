@@ -1,4 +1,4 @@
-// H5 real-repository verifier. It grades the five compatibility surfaces documented by
+// H9 real-repository verifier. It grades the five compatibility surfaces documented by
 // dsh-web v0.3.9 without requiring byte-identical agent formatting. The Oracle remains an
 // exact upstream target and the target manifest constrains unrelated edits.
 import { execFile } from 'node:child_process'
