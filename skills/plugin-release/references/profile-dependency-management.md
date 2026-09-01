@@ -91,3 +91,49 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
 - [ ] The `--dump-config` row set matches expectations;
 - [ ] Real cold boot leaves the entry active;
 - [ ] Custom-channel authentication smoke: 401 without authentication, 200 after exchanging the Cookie (Section 6 flow).
+
+## 8. Plugin version must be routed by DSH version (a wrong pick crashes)
+
+Different versions of the same plugin target different DSH versions. The DSH client API is
+**forward-incompatible across rc.x → alpha.x**: a plugin built for the wrong DSH version does not
+degrade gracefully — it crashes at runtime with a symptom that looks unrelated to the plugin.
+
+**Symptom**: console `TypeError: useConversation is not a function` (or another missing slot seat);
+"restart, hot-reload, edit cordis.patch.yml" all fail to fix it.
+
+**Root cause**: a plugin built against the `0.1.2-alpha.1` client API was installed into
+`0.1.1-rc.2` (npm latest). The two client contracts differ, so the plugin reads a seat the host
+never provided.
+
+**Fix**: pick the plugin version matching the DSH version. Put a one-glance version matrix at the top
+of the plugin README:
+
+| Your DSH | Plugin version to install |
+|---|---|
+| `0.1.1-rc.2` (npm latest) | the old (rc.1/rc.2-compatible) version, using its pinned tag |
+| `0.1.2-alpha.1 / alpha.2` | the new version (the default command) |
+
+Give consumers a self-check clue in a README callout: *a wrong pick crashes; common symptom
+`useConversation is not a function`*. Do not expose only a "latest version" default command — that
+sends rc.x users to a forward-incompatible build.
+
+## 9. Every tag referenced by the docs must exist on every mirror
+
+**Symptom**: installing by the README's pinned tag fails with
+`Could not resolve vN.N.N to a commit of https://github.com/<org>/<repo>.git`.
+
+**Root cause**: the repo is distributed across mirrors (private primary + public mirrors), but the
+publish/sync script pushes branches only, never tags — historical tags never reached the public
+mirrors, so the version pinned in the docs cannot be resolved.
+
+**Fix** (both parts):
+
+1. The publish/sync script must append `git push <remote> --tags` (non-forced) after each branch
+   push, so every release tag is synced to all mirrors;
+2. Consumers can confirm a tag exists first with
+   `git ls-remote --tags https://github.com/<org>/<repo>`.
+
+**Maintainer self-check after a release**: verify across mirrors with the API — query
+`repos/<org>/<repo>/git/refs/tags/<tag>` per tag and re-push any that are missing. This is the same
+class of check as "lockfile commit equals expected HEAD" (Section 2): if the docs say it installs,
+it must actually install.
