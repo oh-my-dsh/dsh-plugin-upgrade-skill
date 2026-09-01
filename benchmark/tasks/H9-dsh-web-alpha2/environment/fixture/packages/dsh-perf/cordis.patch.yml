@@ -1,0 +1,27 @@
+# dsh-perf bundle patch.
+#
+# Layer 1 (insert): the plugin row itself. Layer 2 (bare id row): restates the
+# harness session-log persistence row with a calmer write-behind delay — the
+# jsonl backend appends a batch and fsyncs it at most every
+# writeBatchMaxDelayMs, so this alone cuts per-batch disk sync ~2.5x during
+# streaming (default 200ms -> 500ms). The row's whole config is replaced by a
+# patch (never merged), so every key the base row owns is restated here.
+
+- insert:
+    - id: dsh-perf
+      name: '@linxin666/dsh-perf'
+      config:
+        enabled: true
+        meterIntervalMs: 2000
+        statsWindowSeconds: 120
+        maxActiveSessions: 5
+        maxEventsPerSec: 300
+
+- id: session-persistence-jsonl
+  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  config:
+    root: !!js dshHomePath('sessions')
+    packChunks: true
+    compression: zstd
+    preparedSessionCacheSize: 5
+    writeBatchMaxDelayMs: 500

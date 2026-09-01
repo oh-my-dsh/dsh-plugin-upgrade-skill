@@ -1,0 +1,41 @@
+# 依赖与构建产物
+node_modules/
+
+# npm 认证配置（含令牌引用，禁止提交）
+.npmrc
+
+# 本地工具缓存
+*.log
+.DS_Store
+.codegraph/
+.zcode/
+
+# GUI 测试截图
+gui-test-screenshots/
+
+# 本地性能调试脚本
+.dsh/perf/
+
+# 本地调试探针脚本（不入库）
+.dsh/*.js
+.dsh/*.py
+
+# 评审提示草稿：本地资料，不上传
+REVIEW-PROMPT.md
+# 营销视频工程：本地生成，不上传
+/marketing/dsh-web-ui-promo-60s/
+
+# pnpm 11 项目内包存储（本地依赖缓存，不入库）
+.pnpm-store/
+
+# 挂载冒烟产物（scripts/e2e-mount.sh）
+*.tgz
+playwright-report/
+test-results/
+
+# Cloudflare Workers 本地状态（wrangler dev 缓存，不入库）
+.wrangler/
+
+# 构建产物（tsdown 输出）
+packages/dsh-perf/lib/
+packages/dsh-usage/lib/

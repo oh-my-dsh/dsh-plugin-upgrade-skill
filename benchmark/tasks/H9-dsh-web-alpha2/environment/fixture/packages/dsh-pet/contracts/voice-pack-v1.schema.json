@@ -1,0 +1,259 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.linxin666.org/dsh-pet/voice-pack-v1.schema.json",
+  "title": "DSH Pet Voice Pack v1",
+  "description": "Pet-center voice pack (issue #677). Optional voice.json inside a pet directory, or the global $DSH_HOME/pets/.voice.json override — pure JSON content layering status / tool / whisper copy over the built-in pools, plus hover-panel chrome. Structure is fail-closed per file (a non-object root drops the pack); content is warn-and-drop per slot.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "voicePackVersion": {
+      "const": 1,
+      "description": "Optional; absent reads as v1."
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Status copy pools keyed by the eleven StatusScene ids; each key replaces that scene's built-in pool.",
+      "properties": {
+        "prepare": {
+          "$ref": "#/definitions/pool"
+        },
+        "waiting": {
+          "$ref": "#/definitions/pool"
+        },
+        "thinking": {
+          "$ref": "#/definitions/pool"
+        },
+        "review": {
+          "$ref": "#/definitions/pool"
+        },
+        "toolResult": {
+          "$ref": "#/definitions/pool"
+        },
+        "done": {
+          "$ref": "#/definitions/pool"
+        },
+        "failed": {
+          "$ref": "#/definitions/pool"
+        },
+        "toolFailed": {
+          "$ref": "#/definitions/pool"
+        },
+        "maxTokens": {
+          "$ref": "#/definitions/pool"
+        },
+        "interrupted": {
+          "$ref": "#/definitions/pool"
+        },
+        "blocked": {
+          "$ref": "#/definitions/pool"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Tool copy pools keyed by the seventeen ToolCategory ids; {tool} and {hint} interpolate.",
+      "properties": {
+        "read": {
+          "$ref": "#/definitions/pool"
+        },
+        "write": {
+          "$ref": "#/definitions/pool"
+        },
+        "edit": {
+          "$ref": "#/definitions/pool"
+        },
+        "shell": {
+          "$ref": "#/definitions/pool"
+        },
+        "grep": {
+          "$ref": "#/definitions/pool"
+        },
+        "find": {
+          "$ref": "#/definitions/pool"
+        },
+        "ls": {
+          "$ref": "#/definitions/pool"
+        },
+        "webSearch": {
+          "$ref": "#/definitions/pool"
+        },
+        "webFetch": {
+          "$ref": "#/definitions/pool"
+        },
+        "mcp": {
+          "$ref": "#/definitions/pool"
+        },
+        "memory": {
+          "$ref": "#/definitions/pool"
+        },
+        "subagent": {
+          "$ref": "#/definitions/pool"
+        },
+        "todo": {
+          "$ref": "#/definitions/pool"
+        },
+        "browser": {
+          "$ref": "#/definitions/pool"
+        },
+        "git": {
+          "$ref": "#/definitions/pool"
+        },
+        "ask": {
+          "$ref": "#/definitions/pool"
+        },
+        "generic": {
+          "$ref": "#/definitions/pool"
+        }
+      }
+    },
+    "toolRemaining": {
+      "$ref": "#/definitions/pool",
+      "description": "The parallel-tools count line pool; {n} interpolates the count."
+    },
+    "whispers": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Murmur pools: category pools keyed by the ten WhisperCategory ids plus outcome pools keyed by pass / fail / done. A key replaces that key's built-in pool; an explicit empty array mutes that channel. Legacy generic / rules fields are ignored with a warning.",
+      "properties": {
+        "categories": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "thinking": { "$ref": "#/definitions/pool" },
+            "writing": { "$ref": "#/definitions/pool" },
+            "reading": { "$ref": "#/definitions/pool" },
+            "editing": { "$ref": "#/definitions/pool" },
+            "running": { "$ref": "#/definitions/pool" },
+            "searching": { "$ref": "#/definitions/pool" },
+            "git": { "$ref": "#/definitions/pool" },
+            "delegating": { "$ref": "#/definitions/pool" },
+            "browsing": { "$ref": "#/definitions/pool" },
+            "generic": { "$ref": "#/definitions/pool" }
+          }
+        },
+        "results": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pass": { "$ref": "#/definitions/pool" },
+            "fail": { "$ref": "#/definitions/pool" },
+            "done": { "$ref": "#/definitions/pool" }
+          }
+        }
+      }
+    },
+    "panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Hover-panel chrome; unset slots keep the client's i18n dictionary copy.",
+      "properties": {
+        "labels": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "feed": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "rename": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "hide": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "confirm": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "{rank} / {n} / {points} interpolate the live values.",
+          "properties": {
+            "rank": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "treats": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "points": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        },
+        "actions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "feed",
+              "rename",
+              "hide"
+            ]
+          },
+          "description": "Subset of actions to render in canonical order; absent = all three, [] = none."
+        }
+      }
+    },
+    "remarks": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Pat/feed interaction remark pools (issue #1226). Keyed by pet/petCooldown/feed/feedCooldown/noTreats.",
+      "properties": {
+        "pet": {
+          "$ref": "#/definitions/pool"
+        },
+        "petCooldown": {
+          "$ref": "#/definitions/pool"
+        },
+        "feed": {
+          "$ref": "#/definitions/pool"
+        },
+        "feedCooldown": {
+          "$ref": "#/definitions/pool"
+        },
+        "noTreats": {
+          "$ref": "#/definitions/pool"
+        }
+      }
+    },
+    "ranks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 80
+      },
+      "description": "Affinity rank name overrides (issue #1226), keyed by tier minimum points or original rank name."
+    }
+  },
+  "definitions": {
+    "pool": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 160
+        },
+        {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "maxLength": 160
+          }
+        }
+      ]
+    }
+  }
+}

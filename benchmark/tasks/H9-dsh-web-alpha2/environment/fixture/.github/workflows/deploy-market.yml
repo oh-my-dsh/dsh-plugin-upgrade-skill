@@ -1,0 +1,97 @@
+name: Deploy Market
+
+# Push 到 dev 且市场相关文件变化时，把已提交的 market/dist 产物部署到
+# Cloudflare Workers（Worker dsh-market，自定义域名 dsh-market.com），
+# 同时幂等应用 D1 migration。
+#
+# 以 dev 为唯一自动部署来源：新皮肤 / 宠物 / 社区插件合并进 dev 即上架
+# 创意工坊，不等发版集成；main 只通过维护者集成接收 dev 内容，不再触发
+# 部署（避免集成瞬间用较旧产物回滚商店）。workflow_dispatch 保留手动兜底。
+#
+# 只部署「已提交」的产物，不在 CI 里重建（market-build --check 校验一致性）：
+# 与本仓库产物部署纪律一致，避免构建机绝对路径/不确定性进入产物。
+#
+# 需要的仓库 secrets：
+#   CLOUDFLARE_API_TOKEN   — Workers Scripts / D1 / Zone · Edit
+#   CLOUDFLARE_ACCOUNT_ID  — Cloudflare 账号 ID
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'market/**'
+      - 'packages/skins/**'
+      - 'packages/dsh-pet/**'
+      - 'packages/dsh-community-plugins/**'
+      - 'scripts/market-build'
+      - 'scripts/deploy-market'
+      - 'scripts/market-layout.test.mjs'
+      - 'package.json'
+      - '.github/workflows/deploy-market.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-market-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy market to Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Step-level if cannot reference the secrets context (actionlint); gate on
+    # the job-level env mirror instead.
+    env:
+      TURNSTILE_SECRET: ${{ secrets.TURNSTILE_SECRET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # The lockfile resolves the preview cohort tarballs relative to the
+      # checkout root (file:../../.dsh-cohorts/...), so the store lives two
+      # levels above the workspace; restore or rebuild it for the frozen
+      # install. A cache hit makes the materialize step a no-op.
+      - name: Restore preview cohort store
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/../../.dsh-cohorts/0.1.2-alpha.1
+          key: dsh-cohorts-${{ hashFiles('pnpm-workspace.yaml') }}
+
+      - name: Materialize preview cohort store
+        run: node scripts/build-cohort-tarballs.mjs
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Market consistency
+        run: pnpm market:check && pnpm community:check && pnpm test:scripts
+
+      - name: Install wrangler
+        run: npm install -g wrangler@4
+
+      # The worker fails closed without TURNSTILE_SECRET (likes/installs reject
+      # every write), so deploying without the secret must fail loudly here
+      # instead of shipping a write-dead production API.
+      - name: Assert Turnstile secret is configured
+        run: test -n "$TURNSTILE_SECRET" || { echo "::error::TURNSTILE_SECRET repository secret is not configured; the market worker fails closed without it"; exit 1; }
+
+      - name: Deploy market
+        run: node scripts/deploy-market
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

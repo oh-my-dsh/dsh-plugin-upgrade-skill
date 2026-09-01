@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+/**
+ * Scaffold a new DSH web GUI plugin from scripts/plugin-template/.
+ *
+ * Usage:
+ *   node scripts/dsh-plugin-new <name>
+ *
+ * Copies the template into packages/<name>/, replacing the __NAME__ placeholder
+ * in file names and file contents. The scaffolded package is a standalone
+ * official-style bundle (dsh.bundle.patch + dsh.client declaration) ready for
+ * `dsh plugin --profile web add link:<repo>/packages/<name>`.
+ *
+ * Afterwards, register the new package in packages/dsh-web-all/aggregate.yml
+ * (both patchFrom and deps) and rerun `node scripts/aggregate.mjs` so the
+ * aggregate bundle picks it up.
+ */
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const REPO_ROOT = join(SCRIPT_DIR, '..')
+const TEMPLATE_DIR = join(SCRIPT_DIR, 'plugin-template')
+const NAME_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
+
+function usage() {
+  console.log('Usage: node scripts/dsh-plugin-new <name>')
+  console.log('  Scaffold a new DSH web GUI plugin into packages/<name>/ from scripts/plugin-template/.')
+  console.log('  <name> uses lowercase letters, digits and single hyphens (e.g. task-board).')
+}
+
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  usage()
+  process.exit(0)
+}
+const name = process.argv[2]
+if (!name) {
+  usage()
+  console.error('[dsh-plugin-new] missing plugin name')
+  process.exit(1)
+}
+if (!NAME_RE.test(name)) {
+  console.error(`[dsh-plugin-new] invalid plugin name "${name}": use lowercase letters, digits and single hyphens (e.g. task-board).`)
+  process.exit(1)
+}
+if (name.startsWith('ui-')) {
+  console.error(`[dsh-plugin-new] invalid plugin name "${name}": the generated plugin id is "ui-<name>", so the name must not start with "ui-".`)
+  process.exit(1)
+}
+
+const dest = join(REPO_ROOT, 'packages', name)
+if (existsSync(dest)) {
+  console.error(`[dsh-plugin-new] target already exists: ${dest}`)
+  process.exit(1)
+}
+
+/** Recursively copy the template, substituting __NAME__ in names and contents. */
+function copyTree(from, to) {
+  for (const entry of readdirSync(from)) {
+    const src = join(from, entry)
+    const dst = join(to, entry.replaceAll('__NAME__', name))
+    if (statSync(src).isDirectory()) {
+      mkdirSync(dst, { recursive: true })
+      copyTree(src, dst)
+    } else {
+      const content = readFileSync(src, 'utf8').replaceAll('__NAME__', name)
+      writeFileSync(dst, content, { mode: statSync(src).mode })
+      console.log(`[dsh-plugin-new] created packages/${name}/${entry.replaceAll('__NAME__', name)}`)
+    }
+  }
+}
+
+mkdirSync(dest, { recursive: true })
+copyTree(TEMPLATE_DIR, dest)
+console.log(`[dsh-plugin-new] scaffolded plugin "${name}" at packages/${name}/`)
+console.log('')
+console.log('Next steps:')
+console.log(`  1. Add "- ../${name}" to packages/dsh-web-all/aggregate.yml (both patchFrom and deps).`)
+console.log('  2. Rerun `node scripts/aggregate.mjs` to regenerate the aggregate patch and dependencies.')
+console.log('  3. Install locally with `dsh plugin --profile web add link:<this repo>/packages/' + name + '`.')
+console.log('  4. Replace the template placeholders in src/ and README.md with real behavior.')

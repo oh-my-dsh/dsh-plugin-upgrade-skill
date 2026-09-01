@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * deploy-market — deploy the dsh-market.com Worker static site and apply D1
+ * migrations.
+ *
+ * Pipeline of this script:
+ *   1. sanity: market-build --check (committed dist is up to date)
+ *   2. wrangler d1 migrations apply dsh-market --remote (idempotent)
+ *   3. wrangler deploy (worker + static assets + custom domain dsh-market.com)
+ *   4. ensure the worker actually has a TURNSTILE_SECRET binding (refreshing
+ *      it from the deploy environment when present) — likes/installs fail
+ *      closed without it, so a missing secret fails the deploy loudly
+ *
+ * Auth: wrangler uses its own login/CI env (CLOUDFLARE_API_TOKEN,
+ * CLOUDFLARE_ACCOUNT_ID).
+ *
+ * Usage:
+ *   node scripts/deploy-market --wrangler "npx wrangler@4"  # custom wrangler cmd
+ */
+
+const path = require('node:path')
+const { spawnSync } = require('node:child_process')
+
+const ROOT = path.resolve(__dirname, '..')
+const WORKER_DIR = path.join(ROOT, 'market', 'worker')
+const D1_NAME = 'dsh-market'
+
+function opt(name, fallback) {
+  const i = process.argv.indexOf(name)
+  return i >= 0 && process.argv[i + 1] !== undefined ? process.argv[i + 1] : fallback
+}
+const wranglerCmd = opt('--wrangler', 'wrangler')
+
+function fail(msg) {
+  console.error('deploy-market: ' + msg)
+  process.exit(1)
+}
+
+function sh(cmd, args, env, opts) {
+  const r = spawnSync(cmd, args, {
+    cwd: WORKER_DIR,
+    env: Object.assign({}, process.env, env || {}),
+    stdio: opts && opts.capture ? 'pipe' : 'inherit',
+    encoding: opts && opts.capture ? 'utf8' : undefined,
+    input: opts && opts.input !== undefined ? opts.input : undefined,
+  })
+  if (r.status !== 0) fail(cmd + ' ' + args.join(' ') + ' failed (exit ' + r.status + ')')
+  return r
+}
+
+const [cmdExec, ...cmdArgs] = wranglerCmd.split(' ')
+const wr = (args, env, opts) => sh(cmdExec, [...cmdArgs, ...args], env, opts)
+
+// Turnstile fail-closed contract: /api/like and /api/install reject every
+// write when the worker has no TURNSTILE_SECRET, so deploying without the
+// secret silently disables likes/installs. Refresh the binding when the
+// deploy environment carries it, then verify the worker actually has it —
+// a missing secret must fail the deploy loudly, not ship an ungated (old
+// code) or write-dead (new code) production API.
+function ensureTurnstileSecret() {
+  if (process.env.TURNSTILE_SECRET) {
+    console.log('deploy-market: refreshing TURNSTILE_SECRET binding')
+    wr(['secret', 'put', 'TURNSTILE_SECRET'], undefined, { input: process.env.TURNSTILE_SECRET })
+  }
+  const list = wr(['secret', 'list'], undefined, { capture: true })
+  const out = String(list.stdout || '') + String(list.stderr || '')
+  if (!out.includes('TURNSTILE_SECRET')) {
+    fail('worker has no TURNSTILE_SECRET binding — set it (wrangler secret put TURNSTILE_SECRET --config market/worker/wrangler.jsonc) or export TURNSTILE_SECRET before deploying; likes/installs fail closed without it')
+  }
+}
+
+
+async function main() {
+  // 1) 产物一致性（CI 只部署已提交产物）
+  const check = spawnSync('node', [path.join(ROOT, 'scripts', 'market-build'), '--check'], {
+    cwd: ROOT, stdio: 'inherit',
+  })
+  if (check.status !== 0) fail('market-build --check failed — rebuild and commit market/dist first')
+
+  // 2) D1 migration（幂等）
+  wr(['d1', 'migrations', 'apply', D1_NAME, '--remote'])
+
+  // 3) Worker 部署（含静态资产与自定义域名）
+  wr(['deploy'])
+
+  // 4) Turnstile 绑定核验（worker 缺绑定时点赞/安装全部 fail closed）
+  ensureTurnstileSecret()
+
+  console.log('deploy-market: done — https://dsh-market.com')
+}
+
+main().catch((err) => {
+  fail(err && err.message ? err.message : String(err))
+})

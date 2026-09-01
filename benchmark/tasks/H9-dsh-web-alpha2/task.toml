@@ -1,0 +1,40 @@
+schema_version = "1.4"
+artifacts = [
+  { source = "/app/fixture" },
+  { source = "/app/.git" },
+]
+# Harbor task: real-world dsh-web v0.3.8 -> dsh 0.1.2-alpha.2 compatibility migration.
+[task]
+name = "dsh-plugin-upgrade/h9-dsh-web-alpha2"
+version = "1.1.0"
+description = "Migrate the exact dsh-web v0.3.8 code/config/test surface to the multi-package 0.1.2-alpha.2 compatibility behavior shipped in v0.3.9"
+keywords = ["dsh", "plugin-migration", "dsh-web", "real-world", "settings-service", "peer-dependencies", "harbor"]
+
+[metadata]
+difficulty = "expert"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "real-repository", "alpha2", "chinese-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+upstream_repository = "https://github.com/zhu1090093659/dsh-web"
+source_tag = "v0.3.8"
+target_tag = "v0.3.9"
+source_commit = "fa6d2a47302a2979c79bbd52a6318c98bad0f564"
+target_commit = "8b0191fea221c692e71f88abc51ce8146b32aa0d"
+license = "Apache-2.0"
+
+[agent]
+timeout_sec = 1200.0
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "separate"
+# Only the sealed verifier may reach npm: it installs the candidate's pinned
+# third-party dependencies before packing every @linxin666 workspace locally.
+network_mode = "public"
+
+[environment]
+network_mode = "public"
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192

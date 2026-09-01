@@ -1,0 +1,246 @@
+name: Release
+
+# Tag-triggered release pipeline: pushing a vX.Y.Z tag is the single release
+# switch. The workflow verifies every package version equals the tag version
+# (the tag is the version source of truth) and runs the full gate. The npm
+# publish lane sits behind the NPM_PUBLISH_ENABLED switch (workflow env
+# below): while it is 'false', a tag push stops at the mount smoke plus the
+# GitHub Release and nothing reaches npm.
+#
+# The lane is paused because the family tracks an unstable @deepseek-ai/*
+# alpha cohort that is not published to npm, so publishing would ship
+# packages whose dependencies cannot resolve from the registry. Set
+# NPM_PUBLISH_ENABLED to 'true' to restore the npm publish steps in
+# dependency order and the post-publish strict-registry smoke assertion.
+#
+# Publishing requires the repository secret NPM_TOKEN (npm automation token
+# for the @linxin666 scope).
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  # Single switch for the npm publish lane. Decision record:
+  # .agents/notes/implemented/process/2026-08-28-pause-release-npm-publish-unstable-dsh-alpha.md
+  NPM_PUBLISH_ENABLED: 'false'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build, test, gated npm publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          # Full history so scripts/release-notes.mjs can walk back to the
+          # previous v* tag and build the release notes commit range.
+          fetch-depth: 0
+
+      - name: Lint GitHub Actions workflows
+        uses: docker://rhysd/actionlint:latest
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # --ignore-scripts: the consistency checks compare COMMITTED bundle
+      # artifacts against the committed sources; a fresh build embeds the
+      # checkout's absolute path into every bundle (CSS-module hashes and
+      # \0dsh-css region markers), so rebuilt bytes differ per machine. The
+      # explicit Build step still verifies everything builds.
+      # The lockfile resolves the preview cohort tarballs relative to the
+      # checkout root (file:../../.dsh-cohorts/...), so the store lives two
+      # levels above the workspace; restore or rebuild it for the frozen
+      # install. A cache hit makes the materialize step a no-op.
+      - name: Restore preview cohort store
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/../../.dsh-cohorts/0.1.2-alpha.1
+          key: dsh-cohorts-${{ hashFiles('pnpm-workspace.yaml') }}
+
+      - name: Materialize preview cohort store
+        run: node scripts/build-cohort-tarballs.mjs
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Skin center consistency
+        run: pnpm skin-center:check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Script tests
+        run: pnpm test:scripts
+
+      - name: Aggregate package consistency
+        run: pnpm aggregate:check
+
+      # Publish-safety gate (issue #70 class): no published lib bundle may
+      # import a devDependencies-only package. Runs in CI on every PR; the
+      # tag pipeline must enforce it too, before anything reaches npm.
+      - name: Runtime dependency guard
+        run: pnpm runtime-deps:check
+
+      - name: Extract tag version
+        id: tag
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify package versions match the tag
+        run: node scripts/verify-version.mjs "${{ steps.tag.outputs.version }}"
+
+      # Generated before publish: a notes failure must abort the run
+      # before anything reaches npm (a failed publish cannot be re-run
+      # for an already-published version).
+      #
+      # Bilingual convention (v0.2.6+): the maintainer commits the split-view
+      # notes at docs/release-notes/<tag>.md together with the release
+      # commit; the pipeline prefers that file. The notes show Chinese by
+      # default with the English version behind a <details> toggle. The
+      # scripts/release-notes.mjs draft (authored subjects in both views) is
+      # only a fallback when the committed file is missing.
+      - name: Generate release notes
+        run: |
+          NOTES_FILE="docs/release-notes/${GITHUB_REF_NAME}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            cp "$NOTES_FILE" "$RUNNER_TEMP/release-notes.md"
+          else
+            node scripts/release-notes.mjs "$GITHUB_REF_NAME" > "$RUNNER_TEMP/release-notes.md"
+          fi
+
+      # Hand the notes to the release job (job 2): they must exist before
+      # anything downstream runs (a notes failure aborts the run), and the
+      # release job consumes them after the mount smoke.
+      - name: Upload release notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: ${{ runner.temp }}/release-notes.md
+          if-no-files-found: error
+
+      # Publish with the explicit "latest" dist-tag so that installing the
+      # package without a version (or with @latest) always resolves to the
+      # newest release, never a stale earlier one. Skipped while the npm
+      # lane is paused (NPM_PUBLISH_ENABLED: 'false').
+      - name: Publish packages to npm
+        if: env.NPM_PUBLISH_ENABLED == 'true'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          pnpm -r publish --no-git-checks --access public --registry=https://registry.npmjs.org/ --tag latest
+
+      # Dual-publish the final legacy aggregate name for the transition
+      # window. The legacy tarball is derived from the fresh current package,
+      # carries the old browser loader id, and announces dsh.migrate so the
+      # plugin-manager and Doctor can migrate existing profiles automatically.
+      - name: Publish legacy aggregate package
+        if: env.NPM_PUBLISH_ENABLED == 'true'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          node scripts/publish-legacy-aggregate.mjs "${{ steps.tag.outputs.version }}"
+
+      # The GitHub Release is created by the verify-release job only after
+      # the mount smoke passes; a failed smoke leaves the tag without a
+      # release for inspection instead of shipping a bad consumer path
+      # silently.
+
+  verify-release:
+    name: Mount smoke + GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DSH_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Same store contract as the publish job above.
+      - name: Restore preview cohort store
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/../../.dsh-cohorts/0.1.2-alpha.1
+          key: dsh-cohorts-${{ hashFiles('pnpm-workspace.yaml') }}
+
+      - name: Materialize preview cohort store
+        run: node scripts/build-cohort-tarballs.mjs
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # Pin the DSH CLI the lane mounts into (same pin as ci.yml's
+      # plugin-mount lane).
+      - name: Install dsh CLI (pinned)
+        run: npm install -g @deepseek-ai/dsh@0.1.1-rc.2
+
+      # The aggregate tarball must be produced from a fresh build.
+      - name: Build
+        run: pnpm build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright Chromium
+        timeout-minutes: 10
+        run: pnpm exec playwright install chromium
+
+      # The auto rewrite in scripts/e2e-mount-rewrite keeps the consumer
+      # assertion honest in both states: with the npm lane enabled every
+      # family dependency is published, so the tarball stays on the registry
+      # path (npm-strict consumer install); with the lane paused every packed
+      # version is unpublished, so each family dependency is packed from the
+      # workspace and installed as a file: tarball — the smoke then validates
+      # this tag's own builds.
+      - name: Mount + headless-render smoke
+        run: bash scripts/e2e-mount.sh
+
+      - name: Download release notes artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+          path: ${{ runner.temp }}
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --title "dsh-web $GITHUB_REF_NAME"

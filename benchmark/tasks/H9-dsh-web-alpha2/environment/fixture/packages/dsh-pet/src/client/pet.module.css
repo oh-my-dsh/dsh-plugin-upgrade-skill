@@ -1,0 +1,710 @@
+.float {
+  position: fixed;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform;
+  contain: layout style;
+}
+
+.sprite {
+  image-rendering: auto;
+  touch-action: none;
+  contain: paint;
+}
+
+.spriteWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.bubble {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #f4f7ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  animation: pet-bubble-pop 2.6s ease-out forwards;
+  pointer-events: none;
+}
+
+/* 互动反馈气泡：同属蓝色家族 —— 抚摸是 DeepSeek 品牌蓝，
+   喂食是深海晴空蓝，与状态气泡的蓝黑玻璃保持和谐。 */
+.bubblePet {
+  background: rgba(77, 107, 254, 0.95);
+}
+
+.bubbleFeed {
+  background: rgba(3, 105, 161, 0.95);
+}
+
+/* 状态气泡：虎鲸蓝黑渐变玻璃 + DeepSeek 蓝描边微光 + 进场浮现。
+   碎碎念不再单独渲染第二只气泡，也不换色调，而是以 .bubbleWhisper
+   接管这同一只气泡的文案，气泡栈内所有气泡共用同一片玻璃。 */
+.bubbleStatus {
+  max-width: min(280px, calc(100vw - 24px));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px 12px;
+  background: linear-gradient(160deg, rgba(19, 28, 54, 0.9), rgba(7, 11, 26, 0.94));
+  border: 1px solid rgba(126, 152, 255, 0.45);
+  box-shadow:
+    0 4px 12px rgba(2, 6, 23, 0.35),
+    inset 0 1px 0 rgba(226, 232, 255, 0.1),
+    0 0 12px rgba(77, 107, 254, 0.18);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.02em;
+  animation: pet-bubble-in 240ms ease-out;
+}
+
+/* 碎碎念（与 .bubbleStatus 叠加使用）：同一只气泡、同一片蓝黑玻璃，
+   仅以「」引号、字距与入场动画表现内心独白 —— 弃用旧的深紫粉色调，
+   多会话气泡栈里状态气泡与碎碎念气泡颜色保持统一，不再出现色差。
+   规则顺序在 .bubbleStatus 之后，动画与字距声明方可胜出。 */
+.bubbleWhisper {
+  letter-spacing: 0.03em;
+  animation: pet-whisper-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bubbleWhisper::before {
+  content: '「';
+  margin-right: 2px;
+  opacity: 0.7;
+}
+
+.bubbleWhisper::after {
+  content: '」';
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+/* 多会话气泡栈：默认收起为「主会话一只气泡 + 右上角 +N 角标」，
+   悬停或点按角标才展开整栈。反向列布局让 DOM 首位的主气泡钉在栈底
+   （紧贴精灵），展开时其余气泡从它上方向上生长，主气泡与角标原地
+   不动，悬停目标不会抖动。气泡可点击：点击跳转到对应会话。 */
+.bubbleStack {
+  position: absolute;
+  bottom: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+/* 主气泡的定位锚：+N 角标相对它定位，展开整栈时随之固定不动。 */
+.bubbleAnchor {
+  position: relative;
+  display: inline-flex;
+}
+
+/* +N 角标：收起态提示其余在忙会话数，点击/轻触展开或收起整栈。 */
+.bubbleMore {
+  position: absolute;
+  top: -9px;
+  right: -10px;
+  z-index: 1;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid rgba(126, 152, 255, 0.55);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: #eef2ff;
+  background: linear-gradient(160deg, rgba(74, 104, 245, 0.95), rgba(47, 68, 184, 0.95));
+  box-shadow: 0 2px 6px rgba(2, 6, 23, 0.4);
+  cursor: pointer;
+  transition: filter 120ms ease;
+}
+
+.bubbleMore:hover {
+  filter: brightness(1.15);
+}
+
+.bubbleMore:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(126, 152, 255, 0.9);
+}
+
+.bubbleStack .bubble {
+  position: relative;
+  bottom: auto;
+  margin-bottom: 0;
+  pointer-events: auto;
+}
+
+.bubbleClickable {
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  appearance: none;
+  transition: filter 120ms ease, box-shadow 120ms ease;
+}
+
+.bubbleClickable:hover {
+  filter: brightness(1.12);
+}
+
+.bubbleClickable:focus-visible {
+  outline: none;
+  /* 2px DeepSeek-blue ring on the pet's own palette, theme-agnostic. */
+  box-shadow: 0 0 0 2px rgba(126, 152, 255, 0.9);
+}
+
+@keyframes pet-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pet-whisper-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  60% {
+    transform: translateY(-1px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pet-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pet-bubble-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.85);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05);
+  }
+  25% {
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+
+/* 悬浮面板默认位于精灵脚下，不再占据精灵上方的空间：
+   会话气泡栈独占精灵头顶区域，两者互不遮挡 —— 气泡因此可以始终
+   显示并保持可点击，不必在 hover 时让位给面板。仅当视口底部空间
+   不足时，面板才回退到精灵上方。 */
+.panel {
+  position: absolute;
+  top: 100%;
+  margin-top: 8px;
+  background: linear-gradient(165deg, rgba(19, 28, 54, 0.95), rgba(7, 11, 26, 0.97));
+  border: 1px solid rgba(126, 152, 255, 0.3);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #e6ebf8;
+  font-size: 12px;
+  box-shadow:
+    0 8px 24px rgba(2, 6, 23, 0.45),
+    0 0 0 1px rgba(77, 107, 254, 0.1),
+    inset 0 1px 0 rgba(226, 232, 255, 0.08);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 148px;
+  animation: pet-panel-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: 50% 0;
+}
+
+/* 面板顶边与精灵底边之间的 hover 桥接（issue #49）：
+   面板在精灵下方留有 8px 间隙，透明伪元素向上覆盖间隙，
+   使指针在精灵与按钮之间始终停留在 hover 区域。 */
+.panel::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+.panelAbove {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 8px;
+  transform-origin: 50% 100%;
+}
+
+.panelAbove::after {
+  top: 100%;
+  bottom: auto;
+}
+
+.rankRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.nameCell {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #a9c1ff, #6c8bff 60%, #4d6bfe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 面板数值的专属配色：称号浅品牌蓝、小鱼干清蓝、亲密度暖金 ——
+   与 DeepSeek 蓝同族，仅留一枚金色点缀，两行数据扫一眼就能分辨。 */
+.statRank {
+  color: #9db4ff;
+  font-weight: 600;
+}
+
+.statTreats {
+  color: #7dd3fc;
+  font-weight: 600;
+}
+
+.statPoints {
+  color: #fcd34d;
+  font-weight: 600;
+}
+
+.renameRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.nameInput {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(126, 152, 255, 0.5);
+  border-radius: 6px;
+  background: rgba(19, 28, 54, 0.9);
+  color: #e6ebf8;
+  font-size: 12px;
+  padding: 3px 6px;
+  outline: none;
+}
+
+.nameInput:focus {
+  border-color: #4d6bfe;
+  /* 2px DeepSeek-blue ring (theme-agnostic) replacing the removed default outline. */
+  box-shadow: 0 0 0 2px rgba(77, 107, 254, 0.45);
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.action {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(180deg, #4a68f5, #3a55e0);
+  box-shadow: 0 2px 6px rgba(77, 107, 254, 0.3);
+  transition: filter 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.action:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(77, 107, 254, 0.4);
+}
+
+.action:active {
+  filter: brightness(0.94);
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(77, 107, 254, 0.3);
+}
+
+.action:focus-visible {
+  outline: none;
+  /* 2px DeepSeek-blue ring on the pet's own palette; stays visible on the
+     dark glass panel regardless of the GUI theme (theme-agnostic). */
+  box-shadow: 0 0 0 2px rgba(126, 152, 255, 0.9);
+}
+
+.summon {
+  border: 1px dashed rgba(126, 152, 255, 0.6);
+  background: rgba(7, 11, 26, 0.75);
+  color: #8ea6ff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease,
+    background 120ms ease, box-shadow 120ms ease;
+}
+
+.summon:hover {
+  border-color: rgba(126, 152, 255, 0.95);
+  color: #c3d3ff;
+  background: rgba(7, 11, 26, 0.9);
+}
+
+.summon:active {
+  color: #8ea6ff;
+  border-color: rgba(126, 152, 255, 0.8);
+}
+
+.summon:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(126, 152, 255, 0.9);
+}
+
+/* Reduced motion: freeze the reaction bubble and kill the overlay transitions
+   so the pet's motion is static or minimal without hiding interaction. */
+@media (prefers-reduced-motion: reduce) {
+  .bubble,
+  .bubbleStatus,
+  .bubbleWhisper,
+  .panel {
+    animation: none;
+    opacity: 1;
+  }
+
+  .action,
+  .summon,
+  .bubbleMore {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Gameplay HUD (miku-pet generalization): toggle, card, bars, shop.   */
+/* ------------------------------------------------------------------ */
+
+.gameplayHud {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+}
+
+.gameplayModeChip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(-100%) translateY(-4px);
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(126, 152, 255, 0.18);
+  color: #cdd7ff;
+  font-size: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.gameplayCard {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  /* The card opens BESIDE the sprite (right side when the space allows,
+     otherwise left), vertically centered and clamped to the sprite's height,
+     so it never enters the bubble band above or the hover-panel band below.
+     The transform and max-height are set inline from measured space by the
+     GameplayHud placement effect; these are pre-measure fallbacks. */
+  transform: none;
+  max-height: 340px;
+  overflow-y: auto;
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid rgba(126, 152, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(7, 11, 26, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: #dfe6ff;
+  font-size: 12px;
+}
+
+.gameplayBars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.gameplayBarRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gameplayBarLabel {
+  width: 34px;
+  flex-shrink: 0;
+  color: #9aa8d8;
+}
+
+.gameplayBarTrack {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(126, 152, 255, 0.15);
+  overflow: hidden;
+}
+
+.gameplayBarFill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #7e98ff, #9db4ff);
+  transition: width 300ms ease;
+}
+
+.gameplayActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gameplayShopItems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.gameplayShopItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px;
+  border: 1px solid rgba(126, 152, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(126, 152, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+}
+
+.gameplayShopItem:hover {
+  border-color: rgba(126, 152, 255, 0.7);
+  background: rgba(126, 152, 255, 0.16);
+}
+
+.gameplayShopItemImage {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.gameplayShopItemLabel {
+  font-size: 11px;
+  text-align: center;
+}
+
+.gameplayShopItemPrice {
+  font-size: 10px;
+  color: #ffd27e;
+}
+
+.gameplayClose {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  border: none;
+  background: none;
+  color: #9aa8d8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.gameplayClose:hover {
+  color: #ffffff;
+}
+
+.gameplayFloat {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(255, 210, 126, 0.92);
+  color: #3a2a00;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: pet-gameplay-float 1100ms ease-out forwards;
+}
+
+@keyframes pet-gameplay-float {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gameplayFloat {
+    animation: none;
+    opacity: 1;
+  }
+
+  .gameplayBarFill {
+    transition: none;
+  }
+}
+
+
+/* 公告气泡（dsh-usage 联动）：兄弟插件推送的结构化事实（余额 / 套餐用量）。
+   与状态气泡同一片蓝黑玻璃家族，但自有版式：标题 + 数值两端对齐，
+   套餐窗口带微型计量条，色调按 ok/warn/low 染描边与计量条。
+   自带长驻动画（进场后保持），不走 2.6s 反馈气泡的淡出轨道。 */
+.bubbleUsage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  min-width: 128px;
+  max-width: min(280px, calc(100vw - 24px));
+  padding: 6px 12px;
+  white-space: nowrap;
+  background: linear-gradient(160deg, rgba(19, 28, 54, 0.92), rgba(7, 11, 26, 0.95));
+  border: 1px solid rgba(126, 152, 255, 0.45);
+  box-shadow:
+    0 4px 12px rgba(2, 6, 23, 0.35),
+    inset 0 1px 0 rgba(226, 232, 255, 0.1),
+    0 0 12px rgba(77, 107, 254, 0.18);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.02em;
+  animation: pet-usage-in 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bubbleUsageHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bubbleUsageTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+
+.bubbleUsageValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.bubbleUsageNote {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+.bubbleUsageMeter {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(226, 232, 255, 0.14);
+  overflow: hidden;
+}
+
+.bubbleUsageMeterFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #6ee7b7;
+  transition: width 300ms ease;
+}
+
+/* 色调：ok 沿用品牌蓝描边；warn 琥珀、low 珊瑚红，染描边与计量条。 */
+.bubbleUsageOk {
+  border-color: rgba(126, 152, 255, 0.45);
+}
+
+.bubbleUsageWarn {
+  border-color: rgba(251, 191, 36, 0.55);
+}
+
+.bubbleUsageWarn .bubbleUsageMeterFill {
+  background: #fbbf24;
+}
+
+.bubbleUsageLow {
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+.bubbleUsageLow .bubbleUsageMeterFill {
+  background: #f87171;
+}
+
+@keyframes pet-usage-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubbleUsage {
+    animation: none;
+  }
+}

@@ -1,0 +1,162 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * capture-previews — regenerate every skin's light/dark preview screenshots.
+ *
+ * Opens market/dist/preview.html (the v2 static renderer: the simulator
+ * injects the skin's stylesheets into the official-facade snapshot and
+ * paints declarative backgroundMedia; skin hooks JS is never executed) in headless Chromium and
+ * screenshots each skin × {light, dark} into
+ * packages/skins/skin-center/skins/<id>/preview/{light,dark}.png.
+ *
+ * Requires playwright + its chromium browser:
+ *   npm i -D playwright && npx playwright install chromium
+ * or run via npx:  npx playwright@latest install chromium
+ *
+ * Usage:
+ *   node scripts/capture-previews              # all skins, light + dark
+ *   node scripts/capture-previews xp miku      # only named skins
+ *   node scripts/capture-previews --serve      # serve via http instead of file://
+ *
+ * Outputs 1440×900 JPEGs (quality 85) at device scale 1; the market cards
+ * downscale them, so they stay crisp while the published package stays
+ * small (the old 2880×1800 PNGs made dsh-client-ui-skin-center ~78MB).
+ * Re-run after any skin change and commit the JPEGs with the skin source.
+ */
+
+const { execSync } = require('node:child_process')
+const fs = require('node:fs')
+const http = require('node:http')
+const path = require('node:path')
+
+const ROOT = path.resolve(__dirname, '..')
+const MARKET_DIST = path.join(ROOT, 'market', 'dist')
+
+// --- tiny static server (fallback for environments where file:// screenshots
+// --- misbehave) -------------------------------------------------------------
+let server = null
+
+/** True when `file` is strictly inside `root` (matched at a path boundary). */
+function isInside(root, file) {
+  const rel = path.relative(root, file)
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel))
+}
+
+function serve() {
+  const types = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' }
+  server = http.createServer((req, res) => {
+    const url = decodeURIComponent((req.url || '/').split('?')[0])
+    const file = path.normalize(path.join(MARKET_DIST, url === '/' ? 'preview.html' : url))
+    if (!isInside(MARKET_DIST, file)) { res.writeHead(403); return res.end('forbidden') }
+    fs.readFile(file, (err, buf) => {
+      if (err) { res.writeHead(404); return res.end('not found') }
+      res.writeHead(200, { 'content-type': types[path.extname(file)] || 'application/octet-stream' })
+      res.end(buf)
+    })
+  })
+  return new Promise((resolve) => server.listen(0, '127.0.0.1', () => {
+    resolve(`http://127.0.0.1:${server.address().port}`)
+  }))
+}
+
+function loadPlaywright() {
+  try { return require('playwright') } catch (e) { /* fall through */ }
+  try {
+    const local = path.join(ROOT, 'node_modules', 'playwright')
+    return require(local)
+  } catch (e) {
+    console.error('playwright not found. Install it:\n  npm i -D playwright && npx playwright install chromium')
+    process.exit(1)
+  }
+}
+
+async function main() {
+  const args = process.argv.slice(2)
+  const want = args.filter((a) => !a.startsWith('--'))
+  const useServer = args.includes('--serve')
+
+  const manifest = JSON.parse(fs.readFileSync(path.join(MARKET_DIST, 'manifest.js'), 'utf8')
+    .replace(/^\/\*[\s\S]*?\*\/\s*/, '')   // 头部生成注释
+    .replace(/^window\.SKIN_MANIFEST = /, '')
+    .replace(/;\s*$/, ''))
+  let skins = manifest.skins
+  if (want.length) {
+    const set = new Set(want)
+    skins = skins.filter((s) => set.has(s.id))
+  }
+
+  const base = useServer ? await serve() : 'file://' + MARKET_DIST
+  console.log(`capture-previews: ${skins.length} skins × {light,dark} @ ${base}`)
+
+  // hooks 动态场景皮肤清单（作用于 capture 渲染，不影响模拟器默认行为）
+  const HOOK_SCENE_SKINS = ['maid-atelier', 'orca-link']
+
+  const { chromium } = loadPlaywright()
+  const browser = await chromium.launch()
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 })
+
+  for (const skin of skins) {
+    for (const theme of ['light', 'dark']) {
+      const dir = path.join(ROOT, 'packages', 'skins', 'skin-center', 'skins', skin.id, 'preview')
+      fs.mkdirSync(dir, { recursive: true })
+      const url = `${base}/preview.html?skin=${skin.id}&theme=${theme}&chrome=0`
+      await page.goto(url, { waitUntil: 'networkidle' })
+      // 等皮肤样式注入完成：模拟器在 <html> 上写 data-dsh-skin（与真实加载器
+      // 的作用域属性一致），或渲染错误横幅。
+      await page.waitForFunction(() => {
+        const err = document.getElementById('skinErr')
+        if (err && err.style.display === 'block') return true
+        return document.documentElement.dataset.dshSkin !== undefined
+      }, undefined, { timeout: 10000 })
+      const errText = await page.evaluate(() => {
+        const el = document.getElementById('skinErr')
+        return el && el.style.display === 'block' ? el.textContent : null
+      })
+      if (errText) throw new Error(`${skin.id}/${theme}: ${errText}`)
+      // 等声明式背景画真正解码完成（冷启动首次加载 1600x900 WebP 可能慢于
+      // 固定等待，只等 data-dsh-skin 会先于 renderSkinBackdrop 命中）
+      await page.waitForFunction(() => {
+        const layer = document.getElementById('skin-backdrop')
+        if (!layer) return true
+        const img = layer.querySelector('img')
+        if (img) return img.complete && img.naturalWidth > 0
+        const video = layer.querySelector('video')
+        if (video) return video.readyState >= 2
+        return true
+      }, undefined, { timeout: 15000 })
+      await page.waitForTimeout(300) // 让 scrim/过渡稳定
+      // 部分皮肤的角色场景由 hooks.mjs 动态绘制（如 maid-atelier 的宫殿+双女仆），
+      // 模拟器默认不执行皮肤 JS；capture 时对这类皮肤用最小 ctx shim 运行 apply()，
+      // 让预览与真实观感一致（需 --serve：模块加载走 http）。
+      if (useServer && HOOK_SCENE_SKINS.indexOf(skin.id) !== -1) {
+        await page.evaluate(async (id) => {
+          const mod = await import('/packages/skins/skin-center/skins/' + id + '/hooks.mjs?t=' + Date.now())
+          const factory = mod && mod.default
+          if (typeof factory !== 'function') return
+          const hooks = factory()
+          if (!hooks || typeof hooks.apply !== 'function') return
+          hooks.apply({
+            assetBase: '/packages/skins/skin-center/skins/' + id,
+            scopeAttr: id,
+            theme: { get: () => (document.body.dataset.dsDarkTheme !== undefined ? 'dark' : 'light') },
+            onCleanup: function () {},
+          })
+        }, skin.id)
+        await page.waitForTimeout(700)
+      }
+      const out = path.join(dir, `${theme}.jpg`)
+      await page.screenshot({ path: out, type: 'jpeg', quality: 85 })
+      console.log(`  ok ${skin.id}/${theme} → ${path.relative(ROOT, out)}`)
+    }
+  }
+
+  await browser.close()
+  if (server) server.close()
+  console.log('done.')
+}
+
+main().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

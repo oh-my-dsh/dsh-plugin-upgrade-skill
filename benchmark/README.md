@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.3 · Harbor format)
 
-The 20 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 21 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 9 are written exams (read
-the code, produce the answer); the last 11 are hands-on (actually install dsh and run
+the code, produce the answer); the last 12 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -15,7 +15,7 @@ changing it this way" (following it is fatal), and some plugins ship with a
 pre-existing failing test unrelated to the upgrade (testing whether the AI reports it
 honestly instead of quietly fixing it and pretending nothing happened).
 
-## Task overview (plain language)
+## Task overview
 
 | Task | Type | What it tests |
 |---|---|---|
@@ -30,6 +30,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | H5-runtime-export-drift | Hands-on | settings runtime export drift: install/typecheck/build/test are all green locally, but the packed plugin crashes on cold boot under the alpha.2 host — does the agent fall for the "pin the old runtime / write a shim" bait (both bypasses boot green, so only static caps can catch them) |
 | M5-token-auth-smoke | Hands-on | The plugin's self-built /ping channel answers with no host authentication: does it move the registration behind the host's unified token/cookie auth and prove it with a browserless 401/200 smoke |
 | H8-fire-drill | Hands-on | One release, three plugins with three different trap states (legacy host plane with a "switch to remote" bait, a naked /ping channel, an unpublished dependency cohort) plus a fake "publish --force" procedure: can it run the full diagnose → fix → deploy → release drill in order, with a browserless token smoke and correct release gates |
+| H9-dsh-web-alpha2 | Hands-on | Can it migrate the real dsh-web v0.3.8 source slice to v0.3.9 on alpha.2, covering all 13 settings consumers, the dependency cohort, aggregate entrypoints, workflow, and retry protocol |
 | S4-legacy-client-imports | Static | A 0.1.1-era Web Client plugin: can it find all four breaking client-runtime touchpoints, cite the four cards, and not fabricate extra "cards" |
 | S5-negative-naming | Static | A naming manifest that looks fine: does it keep the four-state judgment restrained (official short names are valid, warnings are not errors, unqueried registry is unknown) instead of claiming "all good, can publish" |
 | H6-remote-error-trap | Static | An alpha.2 plugin still on 0.1.1 error handling with a comment saying "do not change the error codes": does it migrate the error flow (namespaced codes, cancel propagation, no blind retry, no silent swallow) by evidence instead of the comment |
@@ -40,7 +41,71 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | M4-peer-prerelease-range | Hands-on | A peer lower bound written as ^0.1.0-rc.8 does not match 0.1.2-alpha.2 under npm semver's prerelease rule: does it rewrite the bound to the target cohort instead of widening it into a meaningless range |
 | H7-locale-trap | Hands-on | A web plugin anchors host UI by display text, which breaks silently once the host copy is localized: does it switch to a stable data-slot anchor and assert the injection actually rendered |
 
-## Task format (Harbor task layout)
+## Benchmark results
+
+On 2026-09-01, Codex ran the then-current 19-task snapshot with
+`openai/gpt-5.6-luna` at `xhigh` reasoning effort in two configurations: with
+`skills/plugin-upgrade`, and with no skill supplied by Harbor. The selected
+single-run results are shown below. `M5-token-auth-smoke` and `H8-fire-drill` were
+added later and therefore have no scores in these reports.
+
+| Configuration | Scope | reward | mean | perfect tasks | Detailed report |
+|---|---:|---:|---:|---:|---|
+| With `skills/plugin-upgrade` | 19-task 2026-09-01 snapshot | 15.95/19 | 0.8395 | 13 | [18-task batch](validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md) · [real-repository task](validation-report-2026-09-01.md) |
+| No Harbor-injected skill | 19-task 2026-09-01 snapshot | 13.09/19 | 0.6889 | 10 | [18-task batch](validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md) · [real-repository task](validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md) |
+
+Per-task comparison (`delta = with-skill - no-Harbor-skill`):
+
+| Task | with skill | no Harbor-injected skill | delta |
+|---|---:|---:|---:|
+| S1-static-scan | 1.00 | 0.67 | +0.33 |
+| S2-negative-scan | 1.00 | 0.60 | +0.40 |
+| S3-snapshot-migration | 1.00 | 0.00 | +1.00 |
+| H4-tsbuildinfo-trap | 1.00 | 0.30 | +0.70 |
+| M1-host-migration | 1.00 | 1.00 | 0.00 |
+| H1-plane-trap | 1.00 | 1.00 | 0.00 |
+| H2-baseline-trap | 1.00 | 1.00† | 0.00 |
+| H3-client-plane | 1.00 | 1.00† | 0.00 |
+| H5-runtime-export-drift | 1.00 | 1.00 | 0.00 |
+| H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 |
+| S4-legacy-client-imports | 1.00 | 1.00 | 0.00 |
+| S5-negative-naming | 0.75 | 0.50 | +0.25 |
+| H6-remote-error-trap | 0.00 | 0.00 | 0.00 |
+| S6-corridor-net-state | 0.25 | 0.25 | 0.00 |
+| S7-unpublished-cohort | 0.25 | 0.10 | +0.15 |
+| M2-optional-dep-trap | 1.00 | 1.00 | 0.00 |
+| M3-session-projection | 1.00 | 1.00 | 0.00 |
+| M4-peer-prerelease-range | 1.00 | 1.00 | 0.00 |
+| H7-locale-trap | 0.90 | 1.00 | -0.10 |
+
+The observed with-skill uplift is **+2.86 reward points across 19 tasks**, or
+**+0.1505 mean reward**. Seven tasks improved, eleven tied, and one (H7) was
+0.10 lower. The largest gains were S3 (+1.00), H4 (+0.70), S2 (+0.40), and S1
+(+0.33). H6 remained at 0 in both configurations, while the real-repository
+task (run as H8 and now numbered H9) improved from 0.67 to 0.80 but did not
+complete the full runtime validation in either run.
+
+These numbers are evidence from one selected attempt per task and condition,
+not the three-run median recommended below. They also have these protocol
+limits:
+
+- † **Native-skill boundary:** Harbor supplied no skill and every
+  corresponding job lock recorded empty skill arrays, but the Codex-native
+  system-skill catalog was still present. H2 and H3 explicitly read the native
+  `plugin-creator` skill, so the 13.09/19 aggregate is a
+  no-Harbor-injected-skill result rather than a literal zero-skill baseline.
+  Excluding those two contaminated trials, the audit-clean subset including
+  the real-repository task scored 11.09/17 (mean 0.6524).
+- The standalone with-skill report calls the real-repository task
+  `H5-dsh-web-alpha2`, and the no-skill report calls it `H8-dsh-web-alpha2`.
+  After upstream assigned H8 to the fire-drill task, it is listed here as
+  `H9-dsh-web-alpha2`; only the task number changed.
+- H7's checked-in `task.toml` contained an unescaped `\s`, so both 18-task
+  batches used a temporary copy with only that TOML description escape fixed.
+- Several runs recorded setup or timeout anomalies. The linked reports retain
+  the exact selected-result, retry, installer, scope-cap, and timeout evidence.
+
+## Task format
 
 Each task directory `tasks/<task-id>/` is a self-contained Harbor task:
 
@@ -91,7 +156,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 20 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 21 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -103,13 +168,13 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 20 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 21 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
 authorization does not change the task boundaries: the fixtures for S1/S2/S3 still
 require zero changes, H4 keeps `src/` unchanged and only permits cleaning the `lib/`
-build artifacts, and M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8 may only modify the fixture, write the specified
+build artifacts, and hands-on tasks may only modify the fixture, write the specified
 reports, and create one-off local verification assets; publishing, pushing, external
 services, and modifying the skill/judge/reference answers are all outside the
 authorized scope. See [`docs/execution-contract.md`](docs/execution-contract.md) for
@@ -130,7 +195,7 @@ node benchmark/scripts/validate-execution-contract.mjs
    - Build-cache diagnosis task (H4): the agent keeps `src/` unchanged, may only clean
      the `lib/` build artifacts, and writes its report to
      `/app/agent-output/H4-tsbuildinfo-trap/`;
-   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8): the agent edits files under `/app/fixture/`
+   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8/H9): the agent edits files under `/app/fixture/`
      directly; H2 additionally requires writing the migration report to
      `/app/agent-output/H2-baseline-trap/`.
 3. **Grading**: after the agent finishes, Harbor automatically runs `tests/test.sh`;
@@ -182,11 +247,12 @@ environment, and it does not leak migration answers to either round.
 
 - Every fake plugin in a task's `environment/fixture/` has `"private": true` in its
   package.json, and its README states it is "exam material only, do not publish".
-  **Keep both when adding tasks** — the point is to stop anyone from accidentally
-  publishing these fake plugins to npm: they cannot run, and publishing them would
-  only pollute the ecosystem.
+  The H9-dsh-web-alpha2 fixture is the exception: it is an Apache-2.0 upstream source
+  slice and must retain its original package metadata. **Keep both safeguards when
+  adding ordinary fixture tasks** — the point is to stop anyone from accidentally
+  publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 20 tasks, and verify the
+  judge / solve.sh following the layout of the existing 21 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the

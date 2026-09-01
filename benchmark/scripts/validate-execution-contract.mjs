@@ -18,6 +18,7 @@ const expectedModes = new Map([
   ['H5-runtime-export-drift', 'mutable'],
   ['M5-token-auth-smoke', 'mutable'],
   ['H8-fire-drill', 'mutable'],
+  ['H9-dsh-web-alpha2', 'mutable'],
   ['H6-remote-error-trap', 'readonly'],
   ['S4-legacy-client-imports', 'readonly'],
   ['S5-negative-naming', 'readonly'],
@@ -110,6 +111,63 @@ for (const [taskId, mode] of expectedModes) {
   }
   if (!/^version = "1\.1\.0"$/m.test(taskToml)) {
     fail(taskFile, 'task version must be 1.1.0 for BENCHMARK-AUTH-v1')
+  }
+
+  if (taskId === 'H9-dsh-web-alpha2') {
+    const agentBlock = taskToml.match(/\[agent\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? ''
+    const verifierBlock = taskToml.match(/\[verifier\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? ''
+    for (const [pattern, label] of [
+      [/\{ source = "\/app\/fixture" \}/, 'fixture artifact handoff'],
+      [/\{ source = "\/app\/\.git" \}/, 'fixture baseline artifact handoff'],
+    ]) {
+      if (!pattern.test(taskToml)) fail(taskFile, `H9 missing closed-book control: ${label}`)
+    }
+    if (!/^network_mode = "no-network"$/m.test(agentBlock)) {
+      fail(taskFile, 'H9 missing closed-book control: agent no-network policy')
+    }
+    if (!/^environment_mode = "separate"$/m.test(verifierBlock)) {
+      fail(taskFile, 'H9 missing closed-book control: separate verifier mode')
+    }
+    if (!/^network_mode = "public"$/m.test(verifierBlock)) {
+      fail(taskFile, 'H9 separate verifier must own the public network phase')
+    }
+    if (!/不得使用服务端网页搜索/.test(normalized)) {
+      fail(instructionFile, 'H9 must explicitly prohibit provider-side web search')
+    }
+    for (const [pattern, label] of [
+      [/已发布到\s*npm\s*的\s*v0\.3\.9/i, 'published target answer'],
+      [/dsh-web-all[^\n]{0,80}17\s*个/i, 'exact aggregate verifier topology'],
+    ]) {
+      if (pattern.test(instruction)) fail(instructionFile, `H9 prompt leaks ${label}`)
+    }
+
+    const agentDockerfile = join(taskRoot, 'environment', 'Dockerfile')
+    const verifierDockerfile = join(taskRoot, 'tests', 'Dockerfile')
+    const closedBookRunner = join(taskRoot, 'run-codex-closed-book.sh')
+    try {
+      const [agentImage, verifierImage, runner] = await Promise.all([
+        readFile(agentDockerfile, 'utf8'),
+        readFile(verifierDockerfile, 'utf8'),
+        readFile(closedBookRunner, 'utf8'),
+      ])
+      if (!/^COPY fixture \/app\/fixture$/m.test(agentImage)) {
+        fail(agentDockerfile, 'agent image must copy only the source fixture')
+      }
+      if (/^COPY (?:\. |.*(?:solution|tests))/m.test(agentImage)) {
+        fail(agentDockerfile, 'agent image must not embed the task, solution, or tests')
+      }
+      if (!/npm cache clean --force/.test(agentImage)) {
+        fail(agentDockerfile, 'agent image must clear npm download cache')
+      }
+      if (!/COPY \. \/tests/.test(verifierImage)) {
+        fail(verifierDockerfile, 'separate verifier image must embed sealed tests')
+      }
+      if (!/--ak web_search=disabled/.test(runner)) {
+        fail(closedBookRunner, 'Codex runner must disable provider-side web search')
+      }
+    } catch (error) {
+      fail(taskRoot, `cannot read H9 closed-book controls: ${error.message}`)
+    }
   }
 }
 

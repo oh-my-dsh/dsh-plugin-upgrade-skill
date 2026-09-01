@@ -1,0 +1,429 @@
+.entry {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.entry:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+.entryIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+.entryIcon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.entryLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Collapsed rail: icon-only, centered, matching the shell's 56px rail. */
+:global([data-dsh-frame][data-sidebar-collapsed]) .entry,
+:global([data-sidebar-collapsed]) .entry {
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+}
+
+:global([data-dsh-frame][data-sidebar-collapsed]) .entryLabel,
+:global([data-sidebar-collapsed]) .entryLabel {
+  display: none;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--dsw-alias-bg-mask-2, rgba(8, 10, 16, 0.45));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.card {
+  width: min(780px, 92vw);
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  /* Floating modal surface: bg-overlay stays opaque on translucent skins
+     (issue #659); bg-base is intentionally transparent there. */
+  background: var(--dsw-alias-bg-overlay, #fdfdfd);
+  color: var(--dsw-alias-label-primary, #1c1e26);
+  border-radius: 12px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  /* No divider: the header blends with the modal surface. */
+  background: var(--dsw-alias-bg-base, #fff);
+}
+
+.headTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.headButton {
+  /* Background-based distinction (no border), consistent with the
+     inputs and the dark treatment. */
+  border: none;
+  background: #f2f3f5;
+  color: var(--dsw-alias-label-primary, #3a3f4b);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.headButton:hover {
+  background: #e7e8ea;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px 0;
+  background: var(--dsw-alias-bg-layer-1, #f7f8fa);
+}
+
+.tab {
+  border: 1px solid var(--dsw-alias-border-l1, #d7dae0);
+  border-bottom: none;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary, #8a8f9c);
+  border-radius: 8px 8px 0 0;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--dsw-alias-bg-base, #fdfdfd);
+  color: var(--dsw-alias-label-primary, #1c1e26);
+  font-weight: 600;
+}
+
+.body {
+  padding: 12px 16px;
+  overflow: auto;
+}
+
+.status {
+  padding: 18px;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+  font-size: 13px;
+  text-align: center;
+}
+
+.group {
+  margin-bottom: 18px;
+}
+
+.groupTitle {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary, #2f3542);
+}
+
+.groupHint {
+  font-size: 11px;
+  color: var(--dsw-alias-label-secondary, #8a8f9c);
+  margin: 0 0 8px;
+}
+
+.count {
+  font-weight: 400;
+  color: var(--dsw-alias-label-secondary, #8a8f9c);
+  margin-left: 6px;
+}
+
+.skill {
+  border: 1px solid var(--dsw-alias-border-l1, #e5e7eb);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--dsw-alias-bg-base, #fff);
+}
+
+.skillHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.skillName {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--dsw-alias-label-primary, #111827);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--dsw-alias-state-business-secondary, #eef2ff);
+  color: var(--dsw-alias-state-business-primary, #4353a3);
+  border: 1px solid var(--dsw-alias-state-business-tertiary, #dde3f8);
+}
+
+.badgeInvokable {
+  background: var(--dsw-alias-state-success-secondary, #ecfdf5);
+  color: var(--dsw-alias-state-success-primary, #0f7a50);
+  border-color: var(--dsw-alias-state-success-tertiary, #c9f0dd);
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 2px;
+  margin-left: auto;
+  cursor: pointer;
+  border-radius: 99px;
+}
+
+.switchTrack {
+  width: 30px;
+  height: 16px;
+  border-radius: 99px;
+  background: var(--dsw-alias-border-l2, #d1d5db);
+  position: relative;
+  transition: background 0.18s ease;
+  flex: none;
+}
+
+.switchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dsw-alias-bg-base, #fff);
+  transition: left 0.18s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.switch[aria-checked='true'] .switchTrack {
+  background: var(--dsw-alias-state-success-primary, #10b981);
+}
+
+.switch[aria-checked='true'] .switchThumb {
+  left: 16px;
+}
+
+.deleteButton {
+  border: none;
+  background: #feeceb;
+  color: #d92d20;
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background: #fbdcd9;
+}
+
+.skillDesc {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--dsw-alias-label-primary, #3a3f4b);
+  line-height: 1.5;
+}
+
+.skillWhen {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--dsw-alias-label-secondary, #8a8f9c);
+}
+
+.skillPath {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: var(--dsw-alias-label-tertiary, #a2a7b3);
+  font-family: ui-monospace, Consolas, monospace;
+  word-break: break-all;
+}
+
+.feedback {
+  font-size: 11px;
+  color: var(--dsw-alias-state-error-primary, #b42318);
+}
+
+.feedbackOk {
+  color: var(--dsw-alias-state-success-primary, #0f9d6e);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+
+.formLabel {
+  /* Stack label above the control so long labels and full-width inputs
+     align cleanly (was inline: label and control shared one row). */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #5f6672);
+}
+
+.formInput {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--dsw-alias-bg-layer-1, #f7f8fa);
+  color: var(--dsw-alias-label-primary, #1c1e26);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+select.formInput {
+  /* Match the input controls exactly: the native select renders shorter
+     than the padded inputs, breaking the form's vertical rhythm. */
+  height: 30px;
+  padding: 0 8px;
+}
+
+.formTextarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: ui-monospace, monospace;
+}
+
+.formButton {
+  /* Primary action: inverted surface in both themes (black on light,
+     white on dark) so the submit action reads at a glance. */
+  border: 1px solid transparent;
+  background: #111;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.formButton:hover {
+  background: #2a2a2c;
+}
+body[data-ds-dark-theme] .formButton {
+  background: #e5e5ea;
+  color: #111827;
+}
+body[data-ds-dark-theme] .formButton:hover {
+  background: #d1d5db;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--dsw-alias-label-tertiary, #a0a5b1);
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+/* ---- Dark theme overrides ----
+ * Use semantic --dsw-alias-* tokens when skins are applied (html[data-dsh-skin]).
+ * When un-skinned under stock dark theme, apply the dark fallbacks. */
+body[data-ds-dark-theme]:not([data-dsh-skin]) .card {
+  background: #2c2c2e;
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .head {
+  background: #2c2c2e;
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .tabs {
+  background: #1e1e1e;
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .skill {
+  background: #48484a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .badge {
+  background: rgba(99, 120, 220, 0.22);
+  color: #a5b4fc;
+  border-color: rgba(99, 120, 220, 0.4);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .badgeInvokable {
+  background: rgba(48, 209, 88, 0.15);
+  color: #30d158;
+  border-color: rgba(48, 209, 88, 0.3);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .switchThumb {
+  background: #fff;
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .tab {
+  color: rgba(255, 255, 255, 0.5);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .tabActive {
+  background: #3a3a3c;
+  color: #fff;
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .formInput {
+  background: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+body[data-ds-dark-theme]:not([data-dsh-skin]) .headButton {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  color: rgba(255, 255, 255, 0.85);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .headButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .headButton:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .deleteButton {
+  background: rgba(255, 59, 48, 0.16);
+  border-color: transparent;
+  color: #ff6b61;
+}
+body[data-ds-dark-theme]:not([data-dsh-skin]) .deleteButton:hover {
+  background: rgba(255, 59, 48, 0.26);
+}

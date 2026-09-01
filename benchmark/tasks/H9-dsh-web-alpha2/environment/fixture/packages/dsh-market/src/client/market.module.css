@@ -1,0 +1,250 @@
+/** market card layout */
+/* The Store card follows the community-plugin index visual recipe: the same
+ * --dsw-alias-* semantic tokens, pill tabs, card chrome and button states,
+ * so the market reads as one family with the other settings sections and
+ * every label stays legible in both the light and the dark GUI theme. */
+.market { display: flex; flex-direction: column; gap: 10px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+/* Scoped under the tab container so the pill chrome beats each skin's
+ * patches.css reset that strips button[role="tab"] styling (html[data-dsh-skin]
+ * prefix, higher specificity than a bare class). */
+.market .tabs > button.tab {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  padding: 2px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.market .tabs > button.tab:hover:enabled {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-dimmed);
+}
+.market .tabs > button.tab.tabActive {
+  color: var(--dsw-alias-bg-layer-3);
+  background: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-primary);
+  font-weight: 600;
+}
+.market .tabs > button.tab.tabActive:hover:enabled {
+  color: var(--dsw-alias-bg-layer-3);
+  border-color: var(--dsw-alias-label-primary);
+}
+/* The skin patches reset also styles the pressed (:active) state; keep the
+ * pill chrome during the press so the pill does not flash to a bare text
+ * button between mousedown and mouseup. */
+.market .tabs > button.tab:active:enabled {
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+.market .tabs > button.tab.tabActive:active:enabled {
+  color: var(--dsw-alias-bg-layer-3);
+  background: var(--dsw-alias-label-primary);
+  border: 1px solid var(--dsw-alias-label-primary);
+}
+.tabCount { margin-left: 6px; font-size: 12px; opacity: .72; }
+.search {
+  width: 100%;
+  max-width: 460px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+.search::placeholder { color: var(--dsw-alias-label-tertiary); }
+.search:focus { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 1px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+  gap: 10px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.card {
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+.card:hover { border-color: var(--dsw-alias-label-dimmed); }
+.thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-2);
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+.cardBody { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.cardName { font-weight: 600; color: var(--dsw-alias-label-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardVersion { margin-left: 6px; font-size: 11px; font-weight: 400; color: var(--dsw-alias-label-tertiary); }
+.cardMeta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--dsw-alias-label-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.badge {
+  flex: none;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-module-platform);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.badgeInstalled {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-dimmed);
+  background: var(--dsw-alias-bg-layer-2);
+}
+.metrics { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; line-height: 1.5; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums; }
+.cardDesc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--dsw-alias-label-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+/* The footer splits into two rows: a quiet pill row for the lightweight
+ * actions (like / preview / repository) and an install row whose buttons
+ * share one height, the primary action taking the wider share.
+ * margin-top: auto pins the footer to the card bottom so the buttons of
+ * every card in a grid row line up. Rules are scoped under .market so
+ * they beat each skin's html[data-dsh-skin] element-level overrides
+ * (whale-song tints bare anchors brand blue, which broke the repo link). */
+.cardFooter { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 8px; }
+.actionRow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.market .actionRow > .like, .market .actionRow > .previewLink {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-module-platform);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  padding: 1px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+.market .actionRow > .like { font-variant-numeric: tabular-nums; }
+.market .actionRow > .like:hover:enabled, .market .actionRow > .previewLink:hover {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-dimmed);
+}
+.actionRowPrimary { display: flex; align-items: stretch; gap: 8px; }
+.market .actionRowPrimary > .install {
+  flex: 1 1 0;
+  min-width: 0;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+  background: transparent;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 6px;
+  min-height: 30px;
+  padding: 4px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.market .actionRowPrimary > .install:hover:enabled { border-color: var(--dsw-alias-label-dimmed); }
+/* Filled primary: the shell's own CTA recipe (button-primary-fill /
+ * label-primary-foreground / button-primary-hover) — the token set the
+ * official theme pairs for filled primary buttons and every skin remaps
+ * together with its palette. The brand-primary / brand-primary-invert pair
+ * was rejected: in the current official theme it resolves both sides to the
+ * same theme-neutral (#0f1115 light, #f9fafb dark), so the button went
+ * black-on-black in light mode and white-on-white in dark mode; skins also
+ * re-scope brand-primary per surface (deep-current patches.css) while the
+ * button-primary set stays matched globally. info-fill was rejected too: it
+ * is a light tint under deep-current light where a white label would
+ * vanish, and bg-layer-3 is translucent under the glass skins, rendering
+ * the label washed out. */
+.market .actionRowPrimary > .installPrimary {
+  flex-grow: 2;
+  color: var(--dsw-alias-label-primary-foreground);
+  background: var(--dsw-alias-button-primary-fill);
+  border-color: var(--dsw-alias-button-primary-fill);
+}
+.market .actionRowPrimary > .installPrimary:hover:enabled {
+  background: var(--dsw-alias-button-primary-hover);
+  border-color: var(--dsw-alias-button-primary-hover);
+}
+.market .actionRowPrimary > .installPrimary:disabled { opacity: 0.55; cursor: default; }
+.error { margin: 0; font-size: 12px; line-height: 1.4; color: var(--dsw-alias-label-error, #c53030); }
+.callout { margin: 0; font-size: 12px; line-height: 1.4; color: var(--dsw-alias-state-success-primary); }
+/* Two-level plugin filter: a category pill row plus a subcategory pill row
+ * (dashed border, one size smaller) shown once a category is selected. Scoped
+ * under .market so skins' html[data-dsh-skin] resets cannot strip the chrome. */
+.filterRows { display: flex; flex-direction: column; gap: 6px; }
+.filterRow { display: flex; flex-wrap: wrap; gap: 6px; }
+.market .filterRow > button.filterChip {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-layer-1);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  padding: 2px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.market .filterRow > button.filterChip:hover:enabled {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-dimmed);
+}
+.market .filterRow > button.filterChip.filterChipSub {
+  font-size: 11px;
+  color: var(--dsw-alias-label-tertiary);
+  border-style: dashed;
+}
+.market .filterRow > button.filterChip.filterChipOn {
+  color: var(--dsw-alias-bg-layer-3);
+  background: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-primary);
+  border-style: solid;
+  font-weight: 600;
+}
+.market .filterRow > button.filterChip.filterChipOn:hover:enabled {
+  color: var(--dsw-alias-bg-layer-3);
+  border-color: var(--dsw-alias-label-primary);
+}
+.filterCount { margin-left: 6px; font-size: 11px; opacity: .72; }
+.empty { color: var(--dsw-alias-label-tertiary); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.retry { font-size: 12px; padding: 3px 10px; }
+.remoteNote { margin: 6px 0 0; font-size: 12px; line-height: 1.4; color: var(--dsw-alias-label-tertiary); }
+.modalActions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 400px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: -apple-system, "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+    background:
+      linear-gradient(100deg, rgba(58, 68, 138, .82) 0%, rgba(96, 108, 178, .68) 42%, rgba(128, 140, 198, .55) 100%),
+      url("../../packages/skins/skin-center/skins/blue-fantasy/assets/whale-art.jpg") 62% 58% / cover no-repeat;
+    color: #fff;
+  }
+  /* soft focus: keep the girl readable, wash out the speech bubble corner */
+  .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(120,130,195,.35), transparent 30%, transparent 70%, rgba(96,106,175,.28)); pointer-events: none; }
+
+  .brand { position: absolute; left: 68px; top: 66px; width: 640px; }
+  .eyebrow {
+    font-size: 14px; font-weight: 600; letter-spacing: .34em;
+    color: rgba(235, 236, 252, .85); text-transform: uppercase;
+  }
+  h1 {
+    margin-top: 16px; font-size: 74px; line-height: 1.04; font-weight: 800; letter-spacing: .01em;
+    color: #ffffff; text-shadow: 0 4px 26px rgba(40, 48, 110, .45);
+  }
+  .tag { margin-top: 14px; font-size: 21px; font-weight: 500; letter-spacing: .06em; color: rgba(240, 241, 255, .92); text-shadow: 0 2px 12px rgba(40, 48, 110, .4); }
+  .chips { margin-top: 28px; display: flex; flex-wrap: nowrap; gap: 9px; }
+  .chip {
+    font-size: 13px; font-weight: 500; color: rgba(246, 247, 255, .95);
+    padding: 6px 13px; white-space: nowrap; border-radius: 999px;
+    background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .38);
+    backdrop-filter: blur(4px);
+  }
+  
+
+  /* chibi whale-girl pet sticker, one idle cell from the dsh-pet atlas */
+  .pet {
+    position: absolute; right: 64px; bottom: 6px; width: 134px; height: 146px; overflow: visible;
+    filter:
+      drop-shadow(1px 0 0 #ff57c8) drop-shadow(-1px 0 0 #ff57c8)
+      drop-shadow(0 1px 0 #ff57c8) drop-shadow(0 -1px 0 #ff57c8)
+      drop-shadow(0.8px 0.8px 0 #ff57c8) drop-shadow(-0.8px 0.8px 0 #ff57c8)
+      drop-shadow(0.8px -0.8px 0 #ff57c8) drop-shadow(-0.8px -0.8px 0 #ff57c8)
+      drop-shadow(0 8px 18px rgba(190, 40, 140, .5));
+  }
+  .pet .frame {
+    width: 192px; height: 208px;
+    background-image: url("../../packages/dsh-pet/assets/whale/spritesheet.webp");
+    background-position: 0 0;
+    transform: scale(0.7); transform-origin: top left;
+  }
+</style>
+</head>
+<body>
+  <div class="veil"></div>
+  <div class="brand">
+    <div class="eyebrow">The Plugin Ecosystem for DeepSeek Harness</div>
+    <h1>dsh-web</h1>
+    <div class="tag">DSH Web 插件聚合生态包</div>
+    <div class="chips">
+      <span class="chip">任务看板</span>
+      <span class="chip">Git 图谱</span>
+      <span class="chip">右侧面板</span>
+      <span class="chip">移动端远程</span>
+      <span class="chip">鲸鱼娘宠物</span>
+      <span class="chip">皮肤</span>
+      <span class="chip">创意工坊</span>
+    </div>
+  </div>
+  <div class="pet"><div class="frame"></div></div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * dsh-skin-new — scaffold a new skin for the dsh-web skin collection
+ * (v2 pure asset directories, issue #506).
+ *
+ * Generates packages/skins/skin-center/skins/<name>/: a v2 skin.json
+ * (contracts/skin-manifest-v2.schema.json), a skin.css template with both
+ * token suites (:root light values + body[data-ds-dark-theme] dark values,
+ * --dsw-alias-* placeholders), a preview/ placeholder note, and bilingual
+ * README stubs. A skin is pure assets — no package.json, no tsdown, no
+ * tsconfig, no build step; the skin-center package is the only loader.
+ *
+ * Usage:
+ *   node scripts/dsh-skin-new <kebab-case-name>
+ *
+ * See .dsh/skills/dsh-web-skin-developer/SKILL.md for the full workflow.
+ */
+
+const fs = require('node:fs')
+const path = require('node:path')
+
+/** Markdown inline-code backtick, so templates below stay plain strings. */
+const BT = String.fromCharCode(96)
+
+const ROOT = path.resolve(__dirname, '..')
+const SKINS_DIR = path.join(ROOT, 'packages', 'skins', 'skin-center', 'skins')
+
+/** kebab-case per the DSH skill/package naming rule. */
+const NAME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/** 'blue-fantasy' -> 'Blue Fantasy' (display name). */
+function displayName(name) {
+  return name.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
+}
+
+function skinJson(name, order) {
+  return {
+    $schema: 'https://schemas.linxin666.org/dsh-skin/v2.json',
+    skinManifestVersion: 2,
+    id: name,
+    name: '<编辑：中文名>',
+    nameEn: displayName(name),
+    version: '0.1.0',
+    author: 'dsh-web',
+    tagline: '<编辑：一句话卖点>',
+    description: '<编辑：长一点的介绍>',
+    tags: [name, 'new'],
+    accent: '#6c5ce7',
+    order,
+    preview: {
+      light: 'preview/light.jpg',
+      dark: 'preview/dark.jpg',
+    },
+    contributes: {
+      stylesheet: 'skin.css',
+    },
+  }
+}
+
+function skinCss(name) {
+  const display = displayName(name)
+  return [
+    '/**',
+    ' * ' + display + ' — v2 skin stylesheet (issue #506 contract).',
+    ' *',
+    ' * L1 only: remap the official --dsw-alias-* semantic tokens. Light values on',
+    ' * :root, dark values under body[data-ds-dark-theme] (the official dark-theme',
+    ' * attribute lives on document.body). The loader force-scopes every selector',
+    ' * under html[data-dsh-skin=' + JSON.stringify(name) + ']; write :root / body heads exactly as',
+    ' * you would for the official shell.',
+    ' *',
+    ' * Replace every placeholder value with your palette. The token list below is',
+    ' * a starter subset of packages/skins/skin-center/skins/mint/skin.css — copy',
+    ' * more groups (state colors, buttons, shadows, scrollbars) from mint as',
+    ' * needed. Need free selectors? Add patches.css and declare it as',
+    ' * contributes.patches in skin.json (high sensitivity, disclosed in the UI).',
+    ' */',
+    '',
+    ':root {',
+    '  /* surfaces */',
+    '  --dsw-alias-bg-base: #f5f5fa; /* TODO: base canvas */',
+    '  --dsw-alias-bg-layer-1: #ffffff; /* TODO: primary panel */',
+    '  --dsw-alias-bg-layer-2: #eeeef5; /* TODO: recessed panel */',
+    '  --dsw-alias-bg-layer-3: #e4e4ef; /* TODO: deepest layer */',
+    '',
+    '  /* borders */',
+    '  --dsw-alias-border-l1: #1a1a4d14;',
+    '  --dsw-alias-border-l2: #1a1a4d24;',
+    '  --dsw-alias-border-l3: #1a1a4d38;',
+    '',
+    '  /* labels */',
+    '  --dsw-alias-label-primary: #1c1c33; /* TODO: main text */',
+    '  --dsw-alias-label-secondary: #4d4d66;',
+    '  --dsw-alias-label-tertiary: #75758a;',
+    '',
+    '  /* brand + interactive */',
+    '  --dsw-alias-brand-primary: #6c5ce7; /* TODO: match skin.json accent */',
+    '  --dsw-alias-interactive-bg-hover: #6c5ce714;',
+    '  --dsw-alias-interactive-bg-active: #6c5ce724;',
+    '}',
+    '',
+    'body[data-ds-dark-theme] {',
+    '  /* surfaces */',
+    '  --dsw-alias-bg-base: #14141f; /* TODO: dark base canvas */',
+    '  --dsw-alias-bg-layer-1: #1c1c2b;',
+    '  --dsw-alias-bg-layer-2: #232333;',
+    '  --dsw-alias-bg-layer-3: #2b2b3d;',
+    '',
+    '  /* borders */',
+    '  --dsw-alias-border-l1: #b3b3ff14;',
+    '  --dsw-alias-border-l2: #b3b3ff24;',
+    '  --dsw-alias-border-l3: #b3b3ff38;',
+    '',
+    '  /* labels */',
+    '  --dsw-alias-label-primary: #e6e6f2; /* TODO: dark main text */',
+    '  --dsw-alias-label-secondary: #b3b3c6;',
+    '  --dsw-alias-label-tertiary: #85859a;',
+    '',
+    '  /* brand + interactive */',
+    '  --dsw-alias-brand-primary: #8b7cf0; /* TODO: dark brand */',
+    '  --dsw-alias-interactive-bg-hover: #8b7cf018;',
+    '  --dsw-alias-interactive-bg-active: #8b7cf02b;',
+    '}',
+    '',
+  ].join('\n')
+}
+
+function previewReadme() {
+  return [
+    '# preview/ — 预览图占位',
+    '',
+    '本目录需要两张真实截图，市场门禁（scripts/market-build）会校验它们存在：',
+    '',
+    '- ' + BT + 'light.jpg' + BT + ' — 亮色主题预览',
+    '- ' + BT + 'dark.jpg' + BT + ' — 暗色主题预览',
+    '',
+    '拍完照后删除本 README。截图流程（需要 playwright + chromium）：',
+    '',
+    BT + BT + BT + 'sh',
+    'pnpm market:build                  # 先把皮肤注册进市场产物（market/dist）',
+    'node scripts/capture-previews <id>  # 静态渲染皮肤样式表并重拍本目录的两张图',
+    BT + BT + BT,
+    '',
+    '预览图沿用「官方 facade 快照 + 静态注入 skin.css」的渲染结果；皮肤 JS',
+    '（hooks.mjs）不参与画廊预览。',
+    '',
+  ].join('\n')
+}
+
+function readmeEn(name) {
+  const display = displayName(name)
+  return [
+    '# ' + display,
+    '',
+    'English | [中文](README.zh.md)',
+    '',
+    '<edit me: one-line pitch> — a skin for the dsh web GUI, shipped as a pure',
+    'asset directory inside the skin-center package.',
+    '',
+    '## What it is',
+    '',
+    '- **Pure assets**: ' + BT + 'skin.json' + BT + ' (v2 manifest) + ' + BT + 'skin.css' + BT + ' (token remap).',
+    '  No package.json, no build step; the skin-center package is the only loader.',
+    '- **Token-first**: light values on ' + BT + ':root' + BT + ', dark values under',
+    '  ' + BT + 'body[data-ds-dark-theme]' + BT + '; the loader scopes every selector under',
+    '  ' + BT + 'html[data-dsh-skin="' + name + '"]' + BT + '.',
+    '',
+    '## Preview',
+    '',
+    BT + BT + BT + 'sh',
+    'pnpm market:build                            # refresh market/dist',
+    'open market/dist/preview.html?skin=' + name + '&theme=light',
+    'node scripts/capture-previews ' + name + '       # re-shoot preview/{light,dark}.jpg',
+    BT + BT + BT,
+    '',
+    '## Known limitations',
+    '',
+    '- Presentation-only: the skin mutates browser styles and never touches a',
+    '  model request.',
+    '',
+  ].join('\n')
+}
+
+function readmeZh(name) {
+  const display = displayName(name)
+  return [
+    '# ' + display,
+    '',
+    '[English](README.md) | 中文',
+    '',
+    '<编辑：一句话卖点> —— dsh web GUI 皮肤，以纯资产目录形态内置在皮肤中心包内。',
+    '',
+    '## 是什么',
+    '',
+    '- **纯资产**：' + BT + 'skin.json' + BT + '（v2 清单）+ ' + BT + 'skin.css' + BT + '（token 重映射）。',
+    '  无 package.json、无构建步骤；皮肤中心包是唯一加载器。',
+    '- **token 优先**：亮色值挂在 ' + BT + ':root' + BT + '，暗色值挂在',
+    '  ' + BT + 'body[data-ds-dark-theme]' + BT + '；加载器把每条选择器作用域到',
+    '  ' + BT + 'html[data-dsh-skin="' + name + '"]' + BT + '。',
+    '',
+    '## 预览',
+    '',
+    BT + BT + BT + 'sh',
+    'pnpm market:build                            # 刷新市场产物（market/dist）',
+    'open market/dist/preview.html?skin=' + name + '&theme=light',
+    'node scripts/capture-previews ' + name + '       # 重拍 preview/{light,dark}.jpg',
+    BT + BT + BT,
+    '',
+    '## 已知限制',
+    '',
+    '- 纯呈现层：只改浏览器样式，不触及模型请求。',
+    '',
+  ].join('\n')
+}
+
+function main() {
+  const name = process.argv[2]
+  if (!name || !NAME_RE.test(name)) {
+    console.error('usage: node scripts/dsh-skin-new <kebab-case-name>  (e.g. dsh-skin-new matrix)')
+    process.exit(1)
+  }
+  const dir = path.join(SKINS_DIR, name)
+  if (fs.existsSync(dir)) {
+    console.error('packages/skins/skin-center/skins/' + name + ' already exists — refusing to overwrite')
+    process.exit(1)
+  }
+
+  // order: max existing + 1
+  let order = 1
+  for (const entry of fs.readdirSync(SKINS_DIR)) {
+    const skinJsonPath = path.join(SKINS_DIR, entry, 'skin.json')
+    if (!fs.statSync(skinJsonPath, { throwIfNoEntry: false })) continue
+    const meta = JSON.parse(fs.readFileSync(skinJsonPath, 'utf8'))
+    if (typeof meta.order === 'number' && meta.order >= order) order = meta.order + 1
+  }
+
+  fs.mkdirSync(path.join(dir, 'preview'), { recursive: true })
+
+  const files = {
+    'skin.json': JSON.stringify(skinJson(name, order), null, 2) + '\n',
+    'skin.css': skinCss(name),
+    'README.md': readmeEn(name),
+    'README.zh.md': readmeZh(name),
+    'preview/README.md': previewReadme(),
+  }
+  for (const [rel, text] of Object.entries(files)) {
+    fs.writeFileSync(path.join(dir, rel), text)
+  }
+
+  console.log('scaffolded packages/skins/skin-center/skins/' + name + '/')
+  console.log('')
+  console.log('next steps:')
+  console.log('  1. edit packages/skins/skin-center/skins/' + name + '/skin.json  — 名称 / tagline / 描述 / tags / accent')
+  console.log('  2. edit packages/skins/skin-center/skins/' + name + '/skin.css   — 你的调色板（:root 亮色 + body[data-ds-dark-theme] 暗色）')
+  console.log('  3. node scripts/dsh-skin validate packages/skins/skin-center/skins/' + name + '  — v2 契约校验')
+  console.log('  4. pnpm market:build && open market/dist/preview.html?skin=' + name + '&theme=light  — 市场试穿（静态样式渲染）')
+  console.log('  5. node scripts/capture-previews ' + name + '  — 重拍 preview/{light,dark}.png 并删除 preview/README.md')
+  console.log('  6. pnpm skin-center:check && pnpm market:check  — 门禁')
+  console.log('  7. 提交（含 preview/ 与重新生成的 market/dist 产物）并发 PR')
+  console.log('')
+  console.log('完整流程见 .dsh/skills/dsh-web-skin-developer/SKILL.md')
+}
+
+main()

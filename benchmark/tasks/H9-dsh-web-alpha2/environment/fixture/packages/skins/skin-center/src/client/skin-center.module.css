@@ -1,0 +1,725 @@
+/* In-GUI skin center styles. Scoped under the skin-center body attribute
+   (set by apply(), removed on dispose) so the card keeps its chrome while
+   any skin is live — including during try-on, when the active skin's own
+   attribute is temporarily retracted. All colors ride the GUI's --dsw-alias-*
+   semantic tokens (label/bg/border/brand/state), which the shell redefines
+   under body[data-ds-dark-theme] — so the card adapts to the dark theme and
+   is themed by the active (or tried-on) skin automatically. Never use bare
+   hex here: a token-less rule is a light-theme-only bug. */
+
+/* The section wrapper: one list that stacks the skin-center card rows. */
+body[data-dsh-skin-center] .sectionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The plugin card itself: one disclosure card in the Web UI plugin group. */
+body[data-dsh-skin-center] .pluginCard {
+  list-style: none;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background: var(--dsw-alias-bg-layer-3);
+  transition: border-color 0.16s, background 0.16s;
+}
+
+body[data-dsh-skin-center] .pluginCard:hover {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+
+body[data-dsh-skin-center] .cardHeaderStatic {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+}
+
+body[data-dsh-skin-center] .headText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+body[data-dsh-skin-center] .pluginName {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-skin-center] .cardDescription {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+body[data-dsh-skin-center] .cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 0 8px;
+  margin: 0 16px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+
+body[data-dsh-skin-center] .head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body[data-dsh-skin-center] .titleBadge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+}
+
+body[data-dsh-skin-center] .intro {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-skin-center] .themeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+body[data-dsh-skin-center] .themeLabel {
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+  margin-right: 2px;
+}
+
+body[data-dsh-skin-center] .themeButton {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+body[data-dsh-skin-center] .themeButton:hover {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+
+body[data-dsh-skin-center] .themeButton:active {
+  border-color: var(--dsw-alias-brand-primary, #2b7cd9);
+  background: var(--dsw-alias-button-primary-dimmed, #e8f1fc);
+  color: var(--dsw-alias-brand-primary, #1e63b8);
+}
+
+body[data-dsh-skin-center] .themeButton:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary, #2b7cd9);
+  outline-offset: 2px;
+}
+
+body[data-dsh-skin-center] .themeButtonActive {
+  border-color: var(--dsw-alias-brand-primary, #2b7cd9);
+  background: var(--dsw-alias-button-primary-dimmed, #e8f1fc);
+  color: var(--dsw-alias-brand-primary, #1e63b8);
+}
+
+body[data-dsh-skin-center] .list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-dsh-skin-center] .card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-1);
+  transition: border-color 0.16s;
+}
+
+body[data-dsh-skin-center] .card:hover {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+
+body[data-dsh-skin-center] .cardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+body[data-dsh-skin-center] .swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--dsw-alias-border-l4, rgb(15 23 42 / 0.12));
+}
+
+body[data-dsh-skin-center] .cardName {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-dsh-skin-center] .cardTagline {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-skin-center] .badge {
+  flex: none;
+  min-width: 0;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+body[data-dsh-skin-center] .badgeActive {
+  color: var(--dsw-alias-state-success-primary, #0f6b3a);
+  background: var(--dsw-alias-state-success-tertiary, #dcf3e5);
+}
+
+body[data-dsh-skin-center] .badgeTrying {
+  color: var(--dsw-alias-brand-primary, #1e63b8);
+  background: var(--dsw-alias-button-primary-dimmed, #e2edfc);
+}
+
+body[data-dsh-skin-center] .actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body[data-dsh-skin-center] .button {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+body[data-dsh-skin-center] .button:hover:not(:disabled) {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+
+body[data-dsh-skin-center] .button:active:not(:disabled) {
+  border-color: var(--dsw-alias-button-primary-hover, #1e63b8);
+  background: var(--dsw-alias-button-primary-dimmed, #e8f1fc);
+  color: var(--dsw-alias-brand-primary, #1e63b8);
+}
+
+body[data-dsh-skin-center] .button:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary, #2b7cd9);
+  outline-offset: 2px;
+}
+
+body[data-dsh-skin-center] .buttonPrimary {
+  border-color: var(--dsw-alias-button-info-fill);
+  background: var(--dsw-alias-button-info-fill);
+  color: var(--dsw-alias-bg-layer-3);
+}
+
+body[data-dsh-skin-center] .buttonPrimary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+body[data-dsh-skin-center] .buttonPrimary:active:not(:disabled) {
+  opacity: 0.88;
+}
+
+body[data-dsh-skin-center] .buttonDanger {
+  border-color: var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-state-danger-primary, #d93025);
+}
+
+body[data-dsh-skin-center] .buttonDanger:hover:not(:disabled) {
+  border-color: var(--dsw-alias-state-danger-primary, #d93025);
+  background: var(--dsw-alias-state-danger-tertiary, rgba(217, 48, 37, 0.08));
+}
+
+body[data-dsh-skin-center] .buttonDangerConfirm {
+  border-color: var(--dsw-alias-state-danger-primary, #d93025);
+  background: var(--dsw-alias-state-danger-primary, #d93025);
+  color: #ffffff;
+}
+
+body[data-dsh-skin-center] .toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px;
+}
+
+body[data-dsh-skin-center] .verifySummary {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-2);
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+
+body[data-dsh-skin-center] .verifySummarySuccess {
+  color: var(--dsw-alias-state-success-primary, #0f6b3a);
+  border-color: var(--dsw-alias-state-success-tertiary, #dcf3e5);
+}
+
+body[data-dsh-skin-center] .verifySummaryWarning {
+  color: var(--dsw-alias-state-warning-primary, #b06000);
+  border-color: var(--dsw-alias-state-warning-tertiary, #feebd3);
+}
+
+body[data-dsh-skin-center] .badgeSuccess {
+  color: var(--dsw-alias-state-success-primary, #0f6b3a);
+  background: var(--dsw-alias-state-success-tertiary, #dcf3e5);
+}
+
+body[data-dsh-skin-center] .badgeWarning {
+  color: var(--dsw-alias-state-warning-primary, #b06000);
+  background: var(--dsw-alias-state-warning-tertiary, #feebd3);
+}
+
+body[data-dsh-skin-center] .badgeDanger {
+  color: var(--dsw-alias-state-danger-primary, #d93025);
+  background: var(--dsw-alias-state-danger-tertiary, rgba(217, 48, 37, 0.12));
+}
+
+body[data-dsh-skin-center] .integrityNote {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--dsw-alias-state-warning-primary, #b06000);
+}
+
+body[data-dsh-skin-center] .buttonGhost {
+  border-color: transparent;
+  background: transparent;
+  opacity: 0.5;
+}
+
+body[data-dsh-skin-center] .button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+body[data-dsh-skin-center] .error {
+  font-size: 12px;
+  color: var(--dsw-alias-state-error-primary, #b42318);
+}
+
+body[data-dsh-skin-center] .enableRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+body[data-dsh-skin-center] .enableLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-skin-center] .enableHint {
+  flex: 1;
+  min-width: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+}
+
+body[data-dsh-skin-center] .switch {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  padding: 2px;
+  border: 1px solid var(--dsw-alias-border-l3, #cbd5e1);
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-layer-3, #e2e8f0);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+body[data-dsh-skin-center] .switchOn {
+  border-color: var(--dsw-alias-brand-primary, #2b7cd9);
+  background: var(--dsw-alias-brand-primary, #2b7cd9);
+}
+
+body[data-dsh-skin-center] .switch:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary, #2b7cd9);
+  outline-offset: 2px;
+}
+
+body[data-dsh-skin-center] .switchThumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--dsw-alias-label-primary-foreground, #ffffff);
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l4, rgb(15 23 42 / 0.12));
+  transform: translateX(0);
+  transition: transform 120ms ease;
+}
+
+body[data-dsh-skin-center] .switchOn .switchThumb {
+  transform: translateX(18px);
+}
+
+body[data-dsh-skin-center] .offNote {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+}
+
+body[data-dsh-skin-center] .backgroundRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+body[data-dsh-skin-center] .backgroundHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-dsh-skin-center] .backgroundLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-skin-center] .backgroundValue {
+  flex: none;
+  margin-left: auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-brand-primary, #2b7cd9);
+}
+
+body[data-dsh-skin-center] .backgroundRange {
+  width: 100%;
+  height: 4px;
+  margin: 0;
+  border-radius: 999px;
+  /* The official default theme collapses every --dsw-alias-bg-layer-* token to
+     the panel background, so a layer-token track is invisible there. Paint the
+     track with the muted foreground token at partial alpha (soft groove on
+     light panels, lighter strip on dark panels, following the active skin's
+     token definitions), and keep the border-token outline so the groove stays
+     visible even when the foreground token drifts close to the panel
+     background (both fixes for issue #309 are kept together). */
+  background: var(--dsw-alias-label-tertiary, #9aa4b5);
+  background: color-mix(in srgb, var(--dsw-alias-label-tertiary, #9aa4b5) 45%, transparent);
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l3, #cbd5e1);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+body[data-dsh-skin-center] .backgroundRange::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-layer-3, #e2e8f0);
+}
+
+body[data-dsh-skin-center] .backgroundRange::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-layer-3, #e2e8f0);
+}
+
+body[data-dsh-skin-center] .backgroundRange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  /* WebKit aligns the thumb top to the 4px track top; lift it by half the
+     difference so the thumb center rides the track center (#725). */
+  margin-top: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--dsw-alias-label-primary-foreground, #ffffff);
+  background: var(--dsw-alias-brand-primary, #2b7cd9);
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l4, rgb(15 23 42 / 0.12));
+  cursor: pointer;
+}
+
+body[data-dsh-skin-center] .backgroundRange::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--dsw-alias-label-primary-foreground, #ffffff);
+  border-radius: 50%;
+  background: var(--dsw-alias-brand-primary, #2b7cd9);
+  box-shadow: 0 0 0 1px var(--dsw-alias-border-l4, rgb(15 23 42 / 0.12));
+  cursor: pointer;
+}
+
+body[data-dsh-skin-center] .backgroundRange:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary, #2b7cd9);
+  outline-offset: 2px;
+}
+
+body[data-dsh-skin-center] .backgroundHint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+}
+
+body[data-dsh-skin-center] .backgroundHintMuted {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-tertiary, #9aa4b5);
+}
+
+/* Respect users who disable motion: no transitioned state changes. */
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-skin-center] .pluginCard,
+  body[data-dsh-skin-center] .card,
+  body[data-dsh-skin-center] .themeButton,
+  body[data-dsh-skin-center] .button,
+  body[data-dsh-skin-center] .switch,
+  body[data-dsh-skin-center] .switchThumb {
+    transition: none;
+  }
+}
+
+
+/* --- Wallpaper Engine panel ------------------------------------------------ */
+
+body[data-dsh-skin-center] .wallpaperSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dsw-alias-border-l2);
+}
+
+body[data-dsh-skin-center] .wallpaperStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary, #6b7280);
+}
+
+body[data-dsh-skin-center] .wallpaperStatusError {
+  color: var(--dsw-alias-state-danger, #c53030);
+}
+
+body[data-dsh-skin-center] .wallpaperControls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-dsh-skin-center] .wallpaperGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+body[data-dsh-skin-center] .wallpaperCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+  transition: border-color 0.16s;
+}
+
+body[data-dsh-skin-center] .wallpaperCard:hover {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+
+body[data-dsh-skin-center] .wallpaperThumbWrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--dsw-alias-bg-layer-1, #f1f5f9);
+}
+
+body[data-dsh-skin-center] .wallpaperThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+body[data-dsh-skin-center] .wallpaperThumbEmpty {
+  width: 100%;
+  height: 100%;
+}
+
+body[data-dsh-skin-center] .wallpaperType {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  font-size: 10.5px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: var(--dsw-alias-label-primary, #172a45);
+  background: var(--dsw-alias-bg-layer-2, rgba(255, 255, 255, 0.85));
+}
+
+body[data-dsh-skin-center] .wallpaperThumbWrap .badge {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+
+body[data-dsh-skin-center] .wallpaperName {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--dsw-alias-label-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-dsh-skin-center] .wallpaperActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+body[data-dsh-skin-center] .customThemeCard {
+  overflow: hidden;
+}
+
+body[data-dsh-skin-center] .customThemeEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 2px -2px -2px;
+  padding: 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 9px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+body[data-dsh-skin-center] .customThemeScheme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body[data-dsh-skin-center] .customThemeFields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-dsh-skin-center] .customThemeField,
+body[data-dsh-skin-center] .customThemeContrast {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+body[data-dsh-skin-center] .customThemeFieldLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-skin-center] .customThemeInputRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+body[data-dsh-skin-center] .customThemeColor {
+  flex: none;
+  width: 34px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 7px;
+  background: var(--dsw-alias-bg-layer-2);
+  cursor: pointer;
+}
+
+body[data-dsh-skin-center] .customThemeHex {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 7px;
+  background: var(--dsw-specific-input-major);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+body[data-dsh-skin-center] .customThemeHex:focus,
+body[data-dsh-skin-center] .customThemeColor:focus-visible {
+  border-color: var(--dsw-alias-brand-primary);
+  box-shadow: 0 0 0 2px var(--dsw-alias-button-primary-dimmed);
+}
+
+body[data-dsh-skin-center] .customThemeFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+@media (max-width: 680px) {
+  body[data-dsh-skin-center] .customThemeFields {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-dsh-skin-center] .customThemeFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,6 @@
 # Scoring rules and checkpoint mapping
 
-Total 2000 (20 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
+Total 2100 (21 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
 Every judge: exit 0, with the last stdout line
 `{"score": 0-100, "max": 100, "reasons": [...]}`; `tests/test.sh` parses that last
 line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
@@ -20,6 +20,7 @@ line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
 | H5-runtime-export-drift | DSH-0.1.2-A2-10 `dsh-settings` removes the runtime `settingsNamespace` export; rollup R-11 type-surface export drift; API-03 provider-owned lifecycle | The judge installs via **pack → tarball → add** only (a link install masks the drift, so it is disabled): pack/add/boot all green with no static issues → 100; add succeeded but the real boot failed (named export / plugin tree failed / pending) → 40; pack or add failed → 30; fixture untouched → 0; old-runtime pin (an old `@deepseek-ai/dsh-settings` pulled into runtime through any of dependencies/optionalDependencies/peerDependencies/overrides/pnpm.overrides) or a hand-rolled settingsNamespace shim → **capped at 20 even when the boot is green**; boot green but the migration is incomplete (still imports settingsNamespace, or the devDeps cohort is not aligned to alpha.2) → **capped at 60**; host downgraded/tampered (dsh version, global dsh-settings export surface) → 0 |
 | M5-token-auth-smoke | DSH-0.1.2-A1-08 · Web/API channels use process-scoped bootstrap tokens and signed cookies; connection-registered channels are covered, raw `webServer.register` routes are not | Browserless HTTP smoke on a clean web profile: no-auth 401 + token-exchanged 200 ⇒ 100; no-auth 401 but the authed request is not 200 ⇒ 60 (the fix broke the channel); no-auth request still answered ⇒ 40 (channel still naked); raw `webServer.register` still present with an otherwise green smoke ⇒ capped at 60 (hand-rolled auth bypasses the host's unified auth); `dsh plugin add` failed ⇒ 30; fixture untouched or dsh unavailable ⇒ 0 |
 | H8-fire-drill | DSH-0.1.2-A1-01 · APIProxy removed, Host/Web Client calls moved to `@Remote`; DSH-0.1.2-A1-08 · Web/API channels use process-scoped bootstrap tokens and signed cookies; R-01 · Target cohort dependency packages not fully published to npm; plugin-release publish gates (verify-release.mjs, prerelease dist-tag routing) | Four acts, 20/30/30/20: diagnosis names all three plugins (15) and cites the cards (5); static fixes per plugin (10 each — host: apiproxy dep removed / inject llm / no remote; web: raw route removed / inject connection / `rpc.handle('/ping')`; tools: unpublished cohort gone / published cohort pinned); deploy: all three added (10) + web cold boot green (10) + token smoke 401/200 (10; 401-only 5); release: all versions bumped vs the git baseline (9) + checklist carries verify-release and prerelease dist-tag routing with no forced/skipped publish (11). remote bait → capped at 20 (H1 precedent); smoke green with raw `webServer.register` still present → capped at 60 (M5 precedent); fixture untouched or dsh unavailable → 0 |
+| H9-dsh-web-alpha2 | dsh-web [v0.3.8](https://github.com/zhu1090093659/dsh-web/tree/v0.3.8) → [v0.3.9](https://github.com/zhu1090093659/dsh-web/tree/v0.3.9); DSH-0.1.2-A2-02 / A2-03 / A2-10 | Static 100: migrate 13 settings consumers (39) + web-settings bridge (6) + peer/direct dependencies and git-graph session edge (15) + npm cohort/lockfile/workflows (10) + aggregate exclusions (15) + task-board qualified error code (10) + upstream script regressions (5). At 80+, the judge performs a full workspace install/build, installs the 17-family local tarballs through the official CLI, cold-boots dsh 0.1.2-alpha.2 Web, and checks the boot manifest; runtime failure caps at 80 and non-target edits cap at 90 |
 | S4-legacy-client-imports | DSH-0.1.2-A1-25 client-runtime package removal; DSH-0.1.2-A1-26 register-id-must-equal-package-name; DSH-0.1.2-A1-27 session content reads; DSH-0.1.2-A1-30 `ctx.connection.api` removal | Expected card set {A1-25, A1-26, A1-27, A1-30}: 25 per card; claiming A1-25 is "type-only and therefore harmless" treats it as missed; fabricated deterministic "cards" (apply-lifecycle replacement, inject-moved-to-manifest) cap at 70; fixture modified → flat 0 |
 | S5-negative-naming | plugin-write naming profile (official short names valid, warnings ≠ errors); registry-check four states | Four verdicts, 25 each: `greet` is a valid official short name (no compatibility error), unprefixed service `search` is a recommendation/warning, events are shared channels (informational), unqueried registry = unknown; asserting "reserved/globally available" scores 0 for that item; claiming "everything passes" caps at 30; fixture modified → flat 0 |
 | H6-remote-error-trap | DSH-0.1.2-A2-02 error-flow vocabulary; DSH-0.1.2-A1-30 field note (silent swallow) | Four points, 25 each: namespaced codes `gateway/cancelled` + `gateway/internal` (half credit 12 for "namespaced but exact spelling unconfirmed"), cancel terminates/propagates without retry, internal/unknown reported without blind retry, silent swallow removed; following the comment (keep old codes) caps at 25; recommending cross-realm `instanceof RemoteError` caps at 50; fixture modified → flat 0 |
@@ -49,9 +50,9 @@ code" checkpoint (the attribution principle from the validation report).
   runtime; "browser plane pass" means the host-advertised `__DSH_BOOT__` boot manifest
   contains this plugin's entry. The runtime behavior of the `RemoteResult`
   error-flow branch is not covered.
-- M1/H1/H2/H5: only "activation + service call reachable" is verified; no full round of
+- M1/H1/H2/H3/H5-runtime-export-drift/H9-dsh-web-alpha2: only "activation + service call reachable" is verified; no full round of
   real conversation is run (no API key); a route count of 0 is expected and not a
-  failure. H5 additionally installs only via the pack → tarball → add path (a link
+  failure. H5-runtime-export-drift additionally installs only via the pack → tarball → add path (a link
   install carries the fixture's own node_modules along and masks the runtime drift);
   settings namespace registration reads/writes do not do a settings-panel round trip.
 - M5: no browser inside the container, so the verdict is HTTP-status-level only — 401
@@ -62,15 +63,21 @@ code" checkpoint (the attribution principle from the validation report).
   the token exchange); no browser is involved, so DOM/page behavior is not covered.
   The release act is judged on version bumps and checklist content only — nothing is
   actually published inside the container.
+- H9-dsh-web-alpha2 preserves the v0.3.8 source slice, including relevant code,
+  configuration, and test text; only byte-identical binary assets and unrelated Markdown
+  are excluded. Its verifier checks 66 v0.3.9 target files, runs the upstream script
+  regressions, and forces all 17 `@linxin666/*` family dependencies to candidate local
+  tarballs rather than substituting npm's published v0.3.9.
 - Container-task judges only create the `bench-*` profile and the `/tmp/bench-*`
   directories and clean them up when the run ends; nothing else in the environment is
   touched.
 
 ## Known noise
 
-- pnpm link installs occasionally take 10s or more, so the judge timeouts are
-  generous (add 180s, boot 60s, web 150s), and the verifier timeout in task.toml is
-  uniformly 600s.
+- pnpm link installs occasionally take 10s or more, so ordinary hands-on judge timeouts
+  are generous (add 180s, boot 60s, web 150s). H9-dsh-web-alpha2 also performs a cold
+  install, build, and pack of the real workspace, so its verifier timeout is 900s rather
+  than the ordinary 600s.
 - Every Harbor trial is a fresh container, so tasks are naturally isolated and no
   manual fixture restoration is needed; repeated runs of the same task do not affect
   each other's profiles.

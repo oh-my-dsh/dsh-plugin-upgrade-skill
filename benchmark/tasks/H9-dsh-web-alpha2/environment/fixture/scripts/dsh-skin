@@ -1,0 +1,240 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * dsh-skin — skin tooling for the DSH Web GUI (v2, issue #506).
+ *
+ * Skins are pure asset directories (skin.json + skin.css + optional
+ * patches.css / hooks.mjs / assets/). The skin-center package is the only
+ * loader; this CLI validates, installs and selects skins. It never touches
+ * cordis.patch.yml — switching is a client-side atomic swap, and the next
+ * page load picks the selection up through the tapIndex adapter.
+ *
+ * Commands:
+ *   dsh-skin validate <dir>     validate a skin directory against the v2 contract
+ *   dsh-skin install <dir>      validate, then copy into $DSH_HOME/skins/<id>/
+ *                               [--force overwrites; hooks-bearing skins need --allow-hooks
+ *                                and still only run their declarative parts (hooks require
+ *                                in-repo review)]
+ *   dsh-skin uninstall <id>     remove a user-installed skin (built-ins refuse)
+ *   dsh-skin use <id>           select a skin (the GUI picks it up on next load)
+ *   dsh-skin use official       restore the official stock look
+ *   dsh-skin list               show the catalog (origin, warnings, diagnostics)
+ *   dsh-skin current            print the selected skin id (or "none")
+ *
+ * The validator/transformer are imported from the skin-center package's
+ * built lib — never re-implemented here.
+ */
+
+const fs = require('node:fs')
+const path = require('node:path')
+const { pathToFileURL } = require('node:url')
+
+const LIB_PATH = path.join(__dirname, '..', 'packages', 'skins', 'skin-center', 'lib', 'index.js')
+
+/** Load the skin-center contract surface (ESM lib from this CJS CLI). */
+async function loadLib() {
+  try {
+    return await import(pathToFileURL(LIB_PATH).href)
+  } catch (error) {
+    console.error('dsh-skin: cannot load the skin-center lib — run "pnpm --filter @linxin666/dsh-client-ui-skin-center build" first.')
+    console.error(String(error && error.message ? error.message : error))
+    process.exit(2)
+  }
+}
+
+/** Validate one skin directory; returns a report object. */
+async function validateDir(lib, dir) {
+  const report = { ok: true, errors: [], warnings: [], manifest: null }
+  const manifestPath = path.join(dir, 'skin.json')
+  if (!fs.existsSync(manifestPath)) {
+    report.ok = false
+    report.errors.push('skin.json not found')
+    return report
+  }
+  let raw
+  try {
+    raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
+  } catch (error) {
+    report.ok = false
+    report.errors.push(`skin.json is not valid JSON: ${error.message}`)
+    return report
+  }
+  const result = lib.validateSkinManifestV2(raw)
+  report.warnings.push(...result.warnings)
+  if (!result.ok || !result.manifest) {
+    report.ok = false
+    report.errors.push(...result.errors)
+    return report
+  }
+  report.manifest = result.manifest
+  const dirName = path.basename(path.resolve(dir))
+  if (result.manifest.id !== dirName) {
+    report.warnings.push(`manifest id "${result.manifest.id}" differs from the directory name "${dirName}"`)
+  }
+  const stylesheets = [
+    ['stylesheet', result.manifest.contributes.stylesheet],
+    ['patches', result.manifest.contributes.patches],
+  ]
+  const auditEntries = []
+  for (const [label, rel] of stylesheets) {
+    if (!rel) continue
+    const abs = path.join(dir, rel)
+    if (!fs.existsSync(abs)) {
+      report.ok = false
+      report.errors.push(`${label}: ${rel} not found`)
+      continue
+    }
+    const css = fs.readFileSync(abs, 'utf8')
+    auditEntries.push({ filename: rel, css })
+    try {
+      const { warnings } = lib.transformSkinCss(css, {
+        skinId: result.manifest.id,
+        filename: rel,
+      })
+      report.warnings.push(...warnings)
+    } catch (error) {
+      report.ok = false
+      if (error && Array.isArray(error.violations)) report.errors.push(...error.violations)
+      else report.errors.push(`${label}: ${error.message}`)
+    }
+  }
+  // Primary-action token contract audit (warning-only; the loader completes
+  // partial sets, so gaps never block an install).
+  if (auditEntries.length > 0) {
+    report.warnings.push(...lib.auditTokenContract(auditEntries).warnings)
+  }
+  return report
+}
+
+function printReport(dir, report) {
+  console.log(`dsh-skin validate: ${dir}`)
+  if (report.manifest) console.log(`  id: ${report.manifest.id}  version: ${report.manifest.version}`)
+  for (const warning of report.warnings) console.log(`  warning: ${warning}`)
+  for (const error of report.errors) console.log(`  error: ${error}`)
+  console.log(`  result: ${report.ok ? 'PASS' : 'FAIL'}`)
+}
+
+async function cmdValidate(dir) {
+  if (!dir) return usage(1)
+  const lib = await loadLib()
+  const report = await validateDir(lib, dir)
+  printReport(dir, report)
+  process.exit(report.ok ? 0 : 1)
+}
+
+async function cmdInstall(dir, flags) {
+  if (!dir) return usage(1)
+  const lib = await loadLib()
+  const report = await validateDir(lib, dir)
+  printReport(dir, report)
+  if (!report.ok) process.exit(1)
+  if (report.manifest.facets && report.manifest.facets.client && !flags.has('--allow-hooks')) {
+    console.error('dsh-skin: this skin declares hooks.mjs (trusted escape-hatch code).')
+    console.error('  Hooks only execute for in-repo, same-review built-in skins; an installed copy')
+    console.error('  will load its declarative parts only. Re-run with --allow-hooks to install anyway.')
+    process.exit(1)
+  }
+  const target = path.join(lib.userSkinsDir(), report.manifest.id)
+  if (fs.existsSync(target)) {
+    if (!flags.has('--force')) {
+      console.error(`dsh-skin: ${target} already exists (use --force to overwrite)`)
+      process.exit(1)
+    }
+    fs.rmSync(target, { recursive: true, force: true })
+  }
+  fs.mkdirSync(path.dirname(target), { recursive: true })
+  fs.cpSync(path.resolve(dir), target, { recursive: true })
+  console.log(`dsh-skin: installed ${report.manifest.id} -> ${target}`)
+  console.log('dsh-skin: reopen the Skin Center card (or reload the GUI) to see it')
+}
+
+async function cmdUninstall(id) {
+  if (!id) return usage(1)
+  const lib = await loadLib()
+  const target = path.join(lib.userSkinsDir(), id)
+  if (!fs.existsSync(target)) {
+    console.error(`dsh-skin: no user-installed skin "${id}" at ${target}`)
+    process.exit(1)
+  }
+  fs.rmSync(target, { recursive: true, force: true })
+  console.log(`dsh-skin: removed ${target}`)
+}
+
+async function cmdUse(id) {
+  if (!id) return usage(1)
+  const lib = await loadLib()
+  const statePath = lib.defaultActiveStatePath()
+  if (id === 'official') {
+    lib.writeActiveSelection(statePath, null)
+    console.log('dsh-skin: selection cleared (official stock look); reload the GUI to apply')
+    return
+  }
+  const catalog = lib.loadSkinCatalog()
+  const entry = lib.findSkin(catalog, id)
+  if (!entry) {
+    console.error(`dsh-skin: unknown skin "${id}". Known: ${catalog.skins.map((s) => s.manifest.id).join(', ') || '(none)'}`)
+    process.exit(1)
+  }
+  lib.writeActiveSelection(statePath, id)
+  console.log(`dsh-skin: selected "${id}"; reload the GUI to apply`)
+}
+
+async function cmdList() {
+  const lib = await loadLib()
+  const catalog = lib.loadSkinCatalog()
+  const active = lib.readActiveSelection(lib.defaultActiveStatePath())
+  console.log('dsh-skin list')
+  for (const skin of catalog.skins) {
+    const marker = skin.manifest.id === active ? ' (active)' : ''
+    console.log(`  ${skin.manifest.id} [${skin.origin}] v${skin.manifest.version}${marker}`)
+    for (const warning of skin.warnings) console.log(`    warning: ${warning}`)
+  }
+  for (const diag of catalog.diagnostics) {
+    console.log(`  ! ${diag.subject} [${diag.origin}] excluded: ${diag.errors.join('; ')}`)
+  }
+  console.log(`active: ${active === null ? 'none (official)' : active}`)
+}
+
+async function cmdCurrent() {
+  const lib = await loadLib()
+  const active = lib.readActiveSelection(lib.defaultActiveStatePath())
+  console.log(active === null ? 'none' : active)
+}
+
+function usage(exitCode) {
+  console.log('dsh-skin — skin tooling for the DSH web GUI (v2)')
+  console.log('')
+  console.log('usage:')
+  console.log('  dsh-skin validate <dir>          validate a skin directory against the v2 contract')
+  console.log('  dsh-skin install <dir>           install into $DSH_HOME/skins/<id>/ [--force] [--allow-hooks]')
+  console.log('  dsh-skin uninstall <id>          remove a user-installed skin')
+  console.log('  dsh-skin use <id> | official     select a skin / restore the stock look (GUI applies on next load)')
+  console.log('  dsh-skin list                    show the catalog with origins and diagnostics')
+  console.log('  dsh-skin current                 print the selected skin id (or "none")')
+  process.exit(exitCode)
+}
+
+async function main() {
+  const [, , cmd, arg, ...rest] = process.argv
+  const flags = new Set([arg, ...rest].filter((v) => typeof v === 'string' && v.startsWith('--')))
+  const positional = arg !== undefined && arg.startsWith('--') ? undefined : arg
+  switch (cmd) {
+    case 'validate': return cmdValidate(positional)
+    case 'install': return cmdInstall(positional, flags)
+    case 'uninstall': return cmdUninstall(positional)
+    case 'use': return cmdUse(positional)
+    case 'list': return cmdList()
+    case 'current': return cmdCurrent()
+    default: return usage(cmd === undefined ? 0 : 1)
+  }
+}
+
+module.exports = { validateDir, loadLib }
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`dsh-skin: ${error && error.message ? error.message : error}`)
+    process.exit(2)
+  })
+}

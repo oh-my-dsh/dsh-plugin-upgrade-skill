@@ -1,0 +1,179 @@
+#!/usr/bin/env node
+'use strict'
+
+/**
+ * export-official-facade — 从「正在运行的官方 dsh web GUI」导出官方界面骨架，
+ * 供市场站皮肤试穿模拟器使用（基于官方 UI，而非手写示意）。
+ *
+ * 产物 market/src/official-facade.js：
+ *   window.OFFICIAL_FACADE = {
+ *     meta:    导出时间 / 来源 URL / 标题 / 体积
+ *     css:     官方全部样式（去重，排除皮肤样式；暗色经 body[data-ds-dark-theme] 生效）
+ *     skeleton:官方 #root DOM 的脱敏结构（保留 class / data-* / role / aria 状态 /
+ *              内联布局样式 / svg；剥离全部文本与敏感属性）
+ *   }
+ *
+ * 前置：本机 dsh web 正在运行（默认 http://127.0.0.1:3080），页面处于主界面。
+ *
+ * 用法：
+ *   node scripts/export-official-facade                  # 默认 3080
+ *   node scripts/export-official-facade --url http://127.0.0.1:3080
+ *   node scripts/export-official-facade --check          # 校验产物与当前 GUI 一致
+ *
+ * 版本漂移：升级/更换 checkout 后重新运行本脚本并提交新的 facade（模拟器即
+ * 与官方界面同步）。皮肤样式与皮肤注入的 DOM 一律不进入产物。
+ */
+
+const fs = require('node:fs')
+const path = require('node:path')
+
+const ROOT = path.resolve(__dirname, '..')
+const OUT = path.join(ROOT, 'market', 'src', 'official-facade.js')
+const DEFAULT_URL = 'http://127.0.0.1:3080/'
+
+const args = process.argv.slice(2)
+const check = args.includes('--check')
+// Support both `--url <value>` (the documented form) and `--url=<value>`.
+let url = DEFAULT_URL
+const equals = args.find((a) => a.startsWith('--url='))
+if (equals !== undefined) {
+  url = equals.slice('--url='.length) || DEFAULT_URL
+} else {
+  const index = args.indexOf('--url')
+  if (index !== -1 && args[index + 1] !== undefined) url = args[index + 1]
+}
+
+async function collect() {
+  const { chromium } = require('playwright')
+  const browser = await chromium.launch()
+  try {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 25000 })
+    await page.waitForTimeout(2500)
+    // 折叠 aionui 右侧面板：试穿模拟器聚焦 conversation 主体，把 explorer 与
+    // preview 两列都折叠（track=0px、visibility:hidden），不展示右侧面板。
+    // 绝不强制展开：否则无内容的面板列会占掉大块宽度并压缩 conversation。
+    // grid 为「sidebar center details preview explorer」五轨，把末尾两轨
+    // （preview、explorer）归零、隐藏列，其余轨（sidebar/center/details）原样保留。
+    await page.evaluate(() => {
+      const frame = document.querySelector('[data-dsh-frame]')
+      const previewCol = document.querySelector('[data-aionui-preview-col]')
+      const explorerCol = document.querySelector('[data-aionui-explorer-col]')
+      if (frame && previewCol && explorerCol) {
+        const inline = frame.style.gridTemplateColumns
+        if (inline) frame.style.gridTemplateColumns = inline.replace(/(\s)\d+(?:\.\d+)?px(\s+\d+(?:\.\d+)?px)$/, '$10px 0px')
+        previewCol.style.visibility = 'hidden'
+        explorerCol.style.visibility = 'hidden'
+      }
+      // 折叠后隐藏 drag handle：真实 GUI 折叠时 aionui 的 applyGrid 会把 handle
+      // 设为 display:none；这里直接改 grid 不触发 applyGrid，必须显式隐藏，
+      // 否则骨架里会残留一条 12px 竖线。
+      const explorerHandle = document.querySelector('.aionui-explorer-handle')
+      const previewHandle = document.querySelector('.aionui-preview-handle')
+      if (explorerHandle) explorerHandle.style.display = 'none'
+      if (previewHandle) previewHandle.style.display = 'none'
+    })
+    await page.waitForTimeout(500)
+    return await page.evaluate(() => {
+      // --- 官方 CSS（跳过皮肤样式标签，按规则文本去重） ---
+      const isSkin = (el) => !!(el && (el.getAttribute('data-plugin') || '').includes('ui-skin'))
+      const seen = new Set()
+      let css = ''
+      const addRule = (t) => { if (!seen.has(t)) { seen.add(t); css += t + '\n' } }
+      for (const s of document.styleSheets) {
+        try {
+          if (isSkin(s.ownerNode)) continue
+          for (const r of s.cssRules) addRule(r.cssText)
+        } catch { /* 跨域/不可读，跳过 */ }
+      }
+
+      // --- 骨架：脱敏 #root（结构/类名/布局内联样式保留；文本与敏感属性剥离） ---
+      const root = document.getElementById('root')
+      if (!root) throw new Error('no #root — 页面不在主界面（需要登录/会话）')
+      const KEEP_ATTR = new Set([
+        'class', 'style', 'type', 'disabled', 'tabindex', 'role', 'id',
+        'placeholder', 'rows', 'cols', 'wrap', 'spellcheck', 'autocomplete',
+        'aria-selected', 'aria-expanded', 'aria-checked', 'aria-current',
+        'aria-haspopup', 'aria-hidden', 'aria-disabled', 'aria-live', 'aria-atomic',
+      ])
+      const clone = root.cloneNode(true)
+      const walk = (el) => {
+        // SVG 子树：保留全部呈现属性（viewBox/d/fill/stroke/href…），否则图标会变空壳
+        const inSvg = el.closest && el.closest('svg')
+        if (!inSvg) {
+          for (const a of [...el.attributes]) {
+            if (!(KEEP_ATTR.has(a.name) || a.name.startsWith('data-'))) el.removeAttribute(a.name)
+          }
+        }
+        for (const t of [...el.childNodes]) {
+          if (t.nodeType === 3) t.textContent = ''
+          if (t.nodeType === 8) t.remove()
+        }
+        for (const c of [...el.children]) walk(c)
+      }
+      walk(clone)
+      return { css, skeleton: clone.outerHTML, title: document.title }
+    })
+  } finally {
+    await browser.close()
+  }
+}
+
+async function main() {
+  let data
+  try {
+    data = await collect()
+  } catch (err) {
+    console.error(`export-official-facade: 无法从 ${url} 导出（dsh web 在跑、页面在主界面吗？）`)
+    console.error(err && err.message)
+    process.exit(1)
+  }
+
+  const content = [
+    '/* Generated by scripts/export-official-facade — do not edit by hand. */',
+    '/* 官方 dsh web GUI 的样式 + 脱敏 DOM 快照；试穿模拟器基于它渲染默认外观。 */',
+    'window.OFFICIAL_FACADE = ' + JSON.stringify({
+      meta: {
+        generated: new Date().toISOString().slice(0, 10),
+        source: url,
+        title: data.title,
+        cssBytes: Buffer.byteLength(data.css),
+        skeletonBytes: Buffer.byteLength(data.skeleton),
+      },
+      css: data.css,
+      skeleton: data.skeleton,
+    }, null, 1) + ';',
+    '',
+  ].join('\n')
+
+  if (check) {
+    const prev = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : null
+    if (!prev) {
+      console.error('market/src/official-facade.js 不存在（先运行 export-official-facade）')
+      process.exit(1)
+    }
+    const prevFacade = JSON.parse(prev
+      .replace(/^[\s\S]*?window\.OFFICIAL_FACADE = /, '')
+      .replace(/;\s*$/, ''))
+    // 活 GUI 的 DOM 会随使用状态抖动（浮层/portal 挂载卸载），骨架差异只警告不阻断；
+    // CSS 规则集合变了才说明 checkout 升级过（HMR 可能改变注入顺序，故按集合比对）。
+    const ruleSet = (css) => css.split('\n').filter(Boolean).sort().join('\n')
+    if (ruleSet(prevFacade.css) !== ruleSet(data.css)) {
+      console.error('market/src/official-facade.js 的 CSS 与当前 GUI 不一致（checkout 升级了？重新运行 export-official-facade）')
+      process.exit(1)
+    }
+    const drift = Math.abs(prevFacade.skeleton.length - data.skeleton.length)
+    if (drift > 64) {
+      console.warn(`骨架与当前 GUI 状态差异较大（±${drift}B，通常因导出时的界面状态不同；如需同步可重新导出）`)
+    }
+    console.log('official facade up to date')
+    process.exit(0)
+  }
+
+  fs.mkdirSync(path.dirname(OUT), { recursive: true })
+  fs.writeFileSync(OUT, content)
+  const kb = (n) => (n / 1024).toFixed(0) + 'KB'
+  console.log(`export-official-facade: css ${kb(Buffer.byteLength(data.css))} + skeleton ${kb(Buffer.byteLength(data.skeleton))} → ${path.relative(ROOT, OUT)}`)
+}
+
+main().catch((err) => { console.error(err); process.exit(1) })

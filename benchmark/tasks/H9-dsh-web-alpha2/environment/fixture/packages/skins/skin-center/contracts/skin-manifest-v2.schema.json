@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.linxin666.org/dsh-skin/v2.json",
+  "title": "DSH Skin Manifest v2",
+  "description": "Declarative manifest for a dsh-web skin asset directory. Skins are pure assets; the skin-center package is the only loader/renderer. Validators must use this local schema copy and never fetch the $id URL.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skinManifestVersion",
+    "id",
+    "name",
+    "nameEn",
+    "version",
+    "author",
+    "contributes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "skinManifestVersion": {
+      "const": 2,
+      "description": "Manifest file-structure version only; NOT a compatibility negotiation axis (hooks runtime compatibility uses facets.client.apiVersion)."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "description": "Globally unique lowercase short id. The skin-center owns scoping under html[data-dsh-skin=\"<id>\"]."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Chinese display name."
+    },
+    "nameEn": {
+      "type": "string",
+      "minLength": 1,
+      "description": "English display name."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "accent": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "license": {
+      "type": "string",
+      "description": "Optional SPDX / license name for third-party artwork."
+    },
+    "licenseUrl": {
+      "type": "string"
+    },
+    "noticeUrl": {
+      "type": "string"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "attribution": {
+      "type": "string",
+      "description": "Optional attribution line shown in the shop."
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "light",
+        "dark"
+      ],
+      "properties": {
+        "light": {
+          "$ref": "#/$defs/relPath"
+        },
+        "dark": {
+          "$ref": "#/$defs/relPath"
+        }
+      }
+    },
+    "requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "apiVersion",
+              "kind"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": "string",
+                "pattern": "^x-org\\.linxin666\\.skin-center/[a-z0-9]+$"
+              },
+              "kind": {
+                "enum": [
+                  "SkinRuntime",
+                  "SkinHooks"
+                ]
+              },
+              "optional": {
+                "type": "boolean",
+                "description": "When true, a missing contract follows the declared degradation path (e.g. run without hooks) instead of failing activation."
+              }
+            }
+          }
+        }
+      }
+    },
+    "contributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stylesheet"
+      ],
+      "properties": {
+        "stylesheet": {
+          "$ref": "#/$defs/relPath",
+          "description": "L1 token + L2 semantic styles; scoped under html[data-dsh-skin] by the loader."
+        },
+        "patches": {
+          "$ref": "#/$defs/relPath",
+          "description": "Optional L3 free-selector patches. High sensitivity; disclosed in the Skin Center UI and the shop."
+        },
+        "backgroundMedia": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "light": {
+              "$ref": "#/$defs/backgroundLayer"
+            },
+            "dark": {
+              "$ref": "#/$defs/backgroundLayer"
+            }
+          },
+          "description": "Fills the fixed decoration layer 'background'. Wallpaper-Engine wallpaper always wins over this; user manual background wins over it too."
+        }
+      }
+    },
+    "facets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "client": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "apiVersion"
+          ],
+          "properties": {
+            "entry": {
+              "$ref": "#/$defs/relPath",
+              "description": "hooks.mjs escape-hatch entry. Trusted code, same-review same-release; high sensitivity; NOT the default entry for future out-of-repo extensions."
+            },
+            "apiVersion": {
+              "type": "string",
+              "pattern": "^x-org\\.linxin666\\.skin-center/[a-z0-9]+$",
+              "description": "Hooks runtime contract version, independent of skinManifestVersion."
+            }
+          }
+        }
+      }
+    },
+    "package": {
+      "type": "string",
+      "description": "DEPRECATED v1 field (npm package name). Ignored with a migration warning; never triggers fail-closed."
+    },
+    "wiring": {
+      "type": "object",
+      "description": "DEPRECATED v1 field (cordis wiring). Ignored with a migration warning; never triggers fail-closed."
+    },
+    "bodyAttr": {
+      "type": "string",
+      "description": "DEPRECATED v1 field (skin-managed body attribute). Scoping is skin-center owned via html[data-dsh-skin]; ignored with a migration warning."
+    }
+  },
+  "$defs": {
+    "relPath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*://)[A-Za-z0-9._\\-/]+$",
+      "description": "Relative path inside the skin directory: no leading slash, no '..', no protocol URLs."
+    },
+    "backgroundLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "src"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "image",
+            "video"
+          ]
+        },
+        "src": {
+          "$ref": "#/$defs/relPath"
+        },
+        "scrim": {
+          "type": "string",
+          "description": "CSS background shorthand layered over the media for readability."
+        }
+      }
+    }
+  }
+}

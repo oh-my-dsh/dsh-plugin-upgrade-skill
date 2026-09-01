@@ -1,0 +1,351 @@
+{
+  "petManifestVersion": 2,
+  "id": "miku",
+  "displayName": "Miku",
+  "description": "初音未来桌宠:帧序列渲染 + 完整玩法(打工 / 睡觉 / 触摸 / 商店 / 抽奖)。",
+  "author": "stushansusu (涂山苏苏)",
+  "license": "MIT",
+  "renderer": "frames2d",
+  "frames2d": {
+    "dir": "thumb",
+    "defaultFrameMs": 200,
+    "tracks": {
+      "idle": {},
+      "drag": {},
+      "standup": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "sleep-intro": {
+        "loop": false,
+        "fallback": "sleep"
+      },
+      "sleep": {},
+      "work": {},
+      "success": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "fail": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "happy": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "shy": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "flirty": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "angry": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "scratch": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "blink1": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "blink2": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "eat": {
+        "loop": false,
+        "fallback": "idle"
+      },
+      "shop": {
+        "loop": false,
+        "fallback": "idle"
+      }
+    },
+    "phases": {
+      "idle": "idle",
+      "done": "success",
+      "failed": "fail"
+    }
+  },
+  "gameplay": {
+    "idleDirector": {
+      "intervalMs": 5000,
+      "maxMiss": 2,
+      "idleWeight": 40,
+      "acts": [
+        {
+          "track": "scratch",
+          "weight": 12,
+          "phrases": [
+            "头有点痒~",
+            "在想事情呢…",
+            "肚肚也有点饿了..."
+          ]
+        },
+        {
+          "track": "blink1",
+          "weight": 12,
+          "phrases": [
+            "眼睛进沙子啦~",
+            "眨眨眼~",
+            "灯光有点刺眼~"
+          ]
+        },
+        {
+          "track": "blink2",
+          "weight": 12,
+          "phrases": [
+            "好困…",
+            "先眯一会儿~",
+            "打个哈欠再说~"
+          ]
+        },
+        {
+          "track": "eat",
+          "weight": 24,
+          "phrases": [
+            "好吃!再来一碗~",
+            "这块蛋糕真不错~",
+            "吃饱啦~",
+            "零食储备+1~"
+          ]
+        }
+      ]
+    },
+    "stats": {
+      "hunger": {
+        "max": 100,
+        "initial": 100,
+        "decayPerMinute": 1,
+        "workingDecayPerMinute": 5
+      },
+      "mood": {
+        "max": 100,
+        "initial": 100,
+        "decayPerMinute": 0.5
+      },
+      "energy": {
+        "max": 100,
+        "initial": 100,
+        "decayPerMinute": 0.25
+      },
+      "affection": {
+        "max": 500,
+        "initial": 100,
+        "idleDecayPerMinute": 0.2
+      }
+    },
+    "hitBox": {
+      "x0": 0.328,
+      "y0": 0.0625,
+      "x1": 0.672,
+      "y1": 0.898
+    },
+    "touch": {
+      "zones": [
+        {
+          "name": "head",
+          "y0": 0,
+          "y1": 0.55,
+          "branches": [
+            {
+              "probability": 0.05,
+              "effects": [
+                {
+                  "stat": "affection",
+                  "amount": 5
+                }
+              ],
+              "state": "happy",
+              "stateMs": 3000,
+              "phrases": [
+                "*我好开心!*"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "body",
+          "y0": 0.55,
+          "y1": 0.75,
+          "branches": [
+            {
+              "probability": 0.1,
+              "effects": [
+                {
+                  "stat": "affection",
+                  "amount": 10
+                }
+              ],
+              "state": "shy",
+              "stateMs": 3000,
+              "phrases": [
+                "**色狼**你干嘛!**"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "legs",
+          "y0": 0.75,
+          "y1": 1,
+          "branches": [
+            {
+              "probability": 0.1,
+              "effects": [
+                {
+                  "stat": "affection",
+                  "amount": 30
+                }
+              ],
+              "state": "flirty",
+              "stateMs": 3000,
+              "phrases": [
+                "***是你想要我主动一点吗?***"
+              ]
+            },
+            {
+              "probability": 0.9,
+              "effects": [
+                {
+                  "stat": "affection",
+                  "amount": -5
+                }
+              ],
+              "state": "angry",
+              "stateMs": 3000,
+              "phrases": [
+                "哼!"
+              ]
+            }
+          ]
+        }
+      ],
+      "clickBoost": {
+        "stat": "mood",
+        "min": 0,
+        "max": 3
+      }
+    },
+    "work": {
+      "state": "work",
+      "successState": "success",
+      "failState": "fail",
+      "tickMs": 10000,
+      "resultMs": {
+        "success": 1300,
+        "fail": 1900
+      },
+      "successProbability": 0.5,
+      "success": {
+        "effects": [
+          {
+            "currency": "treats",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "sleep": {
+      "state": "sleep-intro",
+      "restore": {
+        "stat": "energy",
+        "amount": 4,
+        "intervalMs": 30000
+      }
+    },
+    "passiveIncome": {
+      "currency": "treats",
+      "amount": 1,
+      "intervalMs": 1800000
+    },
+    "shop": {
+      "items": [
+        {
+          "id": "food1",
+          "label": "香浓可口的超级无敌黄油面包",
+          "image": "thumb/shop/miku-pet-shop1.webp",
+          "price": 2,
+          "currency": "treats",
+          "effects": [
+            {
+              "stat": "hunger",
+              "amount": 40
+            }
+          ]
+        },
+        {
+          "id": "food2",
+          "label": "闪闪发亮新鲜出炉的红豆沙包",
+          "image": "thumb/shop/miku-pet-shop2.webp",
+          "price": 4,
+          "currency": "treats",
+          "effects": [
+            {
+              "stat": "hunger",
+              "amount": 80
+            }
+          ]
+        },
+        {
+          "id": "lottery",
+          "label": "幸运彩票",
+          "image": "thumb/shop/miku-pet-shop6.webp",
+          "price": 3,
+          "currency": "treats",
+          "lottery": {
+            "currency": "treats",
+            "effects": [
+              {
+                "stat": "hunger",
+                "amount": 10
+              },
+              {
+                "stat": "mood",
+                "amount": 10
+              },
+              {
+                "stat": "energy",
+                "amount": 10
+              },
+              {
+                "stat": "affection",
+                "amount": 10
+              }
+            ],
+            "tiers": [
+              {
+                "probability": 0.0001,
+                "prize": 100
+              },
+              {
+                "probability": 0.0008,
+                "prize": 50
+              },
+              {
+                "probability": 0.0035,
+                "prize": 20
+              },
+              {
+                "probability": 0.012,
+                "prize": 10
+              },
+              {
+                "probability": 0.9836,
+                "prize": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "dragState": "drag",
+    "dragEndState": "standup"
+  }
+}
