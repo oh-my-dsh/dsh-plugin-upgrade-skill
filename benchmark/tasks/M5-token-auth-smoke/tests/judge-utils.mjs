@@ -19,10 +19,74 @@ export const PROFILE = (taskId) => `bench-${taskId.toLowerCase()}`
 
 // ── result output ──────────────────────────────────────────────
 
-export function emit(score, reasons) {
-  const result = { score: Math.max(0, Math.min(100, Math.round(score))), max: 100, reasons }
+export function emit(score, reasons, extra = {}) {
+  const result = { score: Math.max(0, Math.min(100, Math.round(score))), max: 100, reasons, ...extra }
   process.stdout.write(JSON.stringify(result) + '\n')
   process.exit(0)
+}
+
+/**
+ * Evaluate declared checkpoints against recorded outcomes.
+ * `patched` and `baseline` map checkpoint id -> 'pass' | 'fail' | 'unavailable'.
+ *   fail-to-pass: patched must pass while the baseline must not pass;
+ *   pass-to-pass: patched must keep passing (baseline fail blocks the credit);
+ *   pass / report: patched-only requirement.
+ * Caps apply after the sum: `cap.when` lists checkpoint ids that must all have
+ * passed (used for cross-checkpoint traps), otherwise a failed checkpoint's own cap
+ * applies when it was not passed.
+ * @returns { score, reasons, checkpoints } — the structured per-checkpoint ledger.
+ */
+export function evaluateCheckpoints(checkpoints, patched, baseline) {
+  const reasons = []
+  const results = []
+  const passedIds = new Set()
+  let score = 0
+  for (const cp of checkpoints) {
+    const p = patched[cp.id] ?? 'unavailable'
+    const b = baseline[cp.id] ?? 'unavailable'
+    let ok = false
+    if (cp.type === 'fail-to-pass') ok = p === 'pass' && b !== 'pass'
+    else if (cp.type === 'pass-to-pass') ok = p === 'pass' && b !== 'fail'
+    else ok = p === 'pass'
+    const missing = (cp.requires ?? []).filter((id) => !passedIds.has(id))
+    if (ok && missing.length > 0) {
+      ok = false
+      reasons.push(`checkpoint ${cp.id}: blocked — requires ${missing.join(', ')}`)
+    }
+    if (ok) {
+      score += cp.points
+      passedIds.add(cp.id)
+    }
+    if (!ok && missing.length === 0) {
+      reasons.push(`checkpoint ${cp.id} (${cp.type}): 0/${cp.points} — patched ${p}, pristine ${b}`)
+    } else if (ok) {
+      reasons.push(`checkpoint ${cp.id} (${cp.type}): ${cp.points}/${cp.points} — patched ${p}, pristine ${b}`)
+    }
+    results.push({ id: cp.id, label: cp.label, type: cp.type, points: cp.points, awarded: ok ? cp.points : 0, patched: p, pristine: b })
+  }
+  for (const cp of checkpoints) {
+    if (!cp.cap) continue
+    const applies = cp.cap.when
+      ? cp.cap.when.every((id) => passedIds.has(id)) && !passedIds.has(cp.id)
+      : !passedIds.has(cp.id)
+    if (applies && score > cp.cap.total) {
+      reasons.push(`cap applied: total capped at ${cp.cap.total} — ${cp.cap.reason}`)
+      score = cp.cap.total
+    }
+  }
+  return { score, reasons, checkpoints: results }
+}
+
+/**
+ * Restore the committed baseline fixture into a scratch directory
+ * (`/tmp/pristine-<task-id>/fixture`). The verifier container's /app git repository
+ * holds the baseline commit made by the task Dockerfile.
+ */
+export async function restorePristine(taskId) {
+  const dir = `/tmp/pristine-${taskId.toLowerCase()}`
+  const result = await localExec(`rm -rf '${dir}' && mkdir -p '${dir}' && git -C /app archive HEAD fixture | tar -x -C '${dir}'`)
+  if (result.code !== 0) return { ok: false, detail: (result.stdout + result.stderr).trim().slice(-200) }
+  return { ok: true, dir: `${dir}/fixture` }
 }
 
 // ── agent output collection (static tasks) ─────────────────────

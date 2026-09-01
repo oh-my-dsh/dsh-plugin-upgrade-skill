@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "task": "M5-token-auth-smoke",
+  "dshTarget": "0.1.2-alpha.2",
+  "cards": ["DSH-0.1.2-A1-08"],
+  "checkpoints": [
+    {
+      "id": "authed-200",
+      "label": "token-exchanged POST /ping/ping answers 200",
+      "type": "pass-to-pass",
+      "points": 40,
+      "measure": "runtime",
+      "detail": "Exchange the bootstrap token for the Cookie, then POST the client-request envelope to /ping/ping."
+    },
+    {
+      "id": "no-auth-401",
+      "label": "no-auth POST /ping/ping is rejected with 401",
+      "type": "fail-to-pass",
+      "points": 40,
+      "measure": "runtime",
+      "detail": "Without the Cookie the channel must sit behind the host's unified authentication."
+    },
+    {
+      "id": "raw-route-removed",
+      "label": "raw webServer.register registration removed",
+      "type": "fail-to-pass",
+      "points": 20,
+      "measure": "static",
+      "detail": "A hand-rolled check inside the raw route bypasses the host's unified auth, so keeping the raw registration is penalized.",
+      "cap": { "total": 60, "reason": "a hand-rolled check inside the raw route bypasses the host's unified auth" }
+    }
+  ],
+  "gates": [
+    { "id": "fixture-changed", "fail": { "score": 0, "reason": "fixture untouched" } },
+    { "id": "dsh-available", "fail": { "score": 0, "reason": "dsh unavailable" } },
+    { "id": "add-succeeded", "fail": { "score": 30, "reason": "dsh plugin add failed" } },
+    { "id": "boot-measurable", "fail": { "score": 40, "reason": "web cold boot negative signal or no boot URL" } },
+    { "id": "smoke-measurable", "fail": { "score": 40, "reason": "smoke requests could not be measured" } }
+  ],
+  "provenance": {
+    "author": "omdsh-dev",
+    "date": "2026-09-01",
+    "evidence": "local harness 0.1.2-alpha.2 source checkout: trap fixture measured no-auth 200 / authed 200, fixed state measured 401 / 200 (oracle-equivalent local runs, 2026-09-01)",
+    "design": "benchmark/docs/checkpoint-grading.md"
+  }
+}

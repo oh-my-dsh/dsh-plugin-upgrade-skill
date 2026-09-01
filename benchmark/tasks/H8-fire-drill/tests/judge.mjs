@@ -1,26 +1,17 @@
-// H8-fire-drill grading: one release, three plugins — four acts scored 20/30/30/20.
-//   Act 1 diagnose (20): the reports name all three plugins (15) and cite the right
-//        cards — DSH-0.1.2-A1-01 + DSH-0.1.2-A1-08 + R-01 (5);
-//   Act 2 fix (30): static per-plugin checks, 10 each —
-//        drill-host:  apiproxy dependency removed (4) + inject llm (3) + no remote (3);
-//        drill-web:   raw webServer.register removed (4) + inject connection (3) +
-//                     rpc.handle('/ping') (3);
-//        drill-tools: unpublished 0.1.2-alpha.1 cohort gone (5) + published
-//                     0.1.2-alpha cohort pinned (5);
-//   Act 3 deploy (30): all three installed into a clean web profile (10), cold boot
-//        reaches the app layer with a boot URL (10), token smoke 401 + 200 (10;
-//        401-only 5);
-//   Act 4 release (20): every plugin version bumped vs the git baseline (9) and the
-//        checklist carries the semantic gate (verify-release) + prerelease dist-tag
-//        routing with no forced/skipped publish markers (11).
-// Caps (single-task precedents): drill-host injects remote (the bait comment) → the
-// whole task is capped at 20 (H1-plane-trap); the smoke is green but the raw
-// webServer.register remains → capped at 60 (M5-token-auth-smoke).
-// 0 — fixture untouched or dsh unavailable.
-// Boundary: there is no browser in this container, so the deploy verdict is
-// HTTP-status-level only (401 without the Cookie, 200 after the token exchange).
-// The agent's own evidence files are read as reasons, never scored. Results are
-// emitted after try/finally — process.exit() inside emit() would skip the cleanup.
+// H8-fire-drill grading — declarative checkpoints (tests/checkpoints.json), four acts.
+// Gate layer (environment health, scored before any checkpoint):
+//   fixture unchanged -> 0; dsh unavailable -> 0.
+// Checkpoint layer: every checkpoint is measured against BOTH the pristine trap
+// fixture (restored from the git baseline) and the agent's patched fixture.
+//   fail-to-pass: patched must pass while the pristine baseline must not pass;
+//   pass-to-pass: patched must keep passing (pristine passed or was unmeasurable);
+//   report: agent-written artifacts only (diagnosis/release checklists);
+//   pass: patched-only runtime/static requirement;
+//   requires: dependency chain (smoke-200 only counts after smoke-401);
+//   cap: declared ceilings — remote bait caps at 20, a raw route surviving a green
+//        smoke caps at 60 (single-task precedents).
+// A fail-to-pass checkpoint whose pristine baseline already passes means the trap
+// fixture has drifted — the judge stops with a baseline-mismatch verdict.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
@@ -30,31 +21,23 @@ import {
   createProfile,
   dshAvailable,
   emit,
+  evaluateCheckpoints,
   FIXTURE_DIR,
   fixtureChanges,
   localExec,
   NEGATIVE_SIGNAL,
   readAgentText,
+  restorePristine,
 } from './judge-utils.mjs'
 
 const TASK = 'H8-fire-drill'
-const PROFILE = 'bench-h8-fire-drill'
-const TMP = '/tmp/bench-h8-fire-drill'
 const CHANNEL = '/ping'
 const ENDPOINT = 'ping'
 const PLUGIN_NAMES = ['drill-host', 'drill-web', 'drill-tools']
-const ENVELOPE = JSON.stringify({
-  type: 'client-request',
-  rpcId: 'bench-h8-smoke',
-  method: ENDPOINT,
-  payload: null,
-})
-
-// Statement-anchored so the fixture comments cannot false-hit.
+const ENVELOPE = JSON.stringify({ type: 'client-request', rpcId: 'bench-h8-smoke', method: ENDPOINT, payload: null })
 const RAW_ROUTE_RE = /^\s*(?:ctx\.)?webServer\.register\s*\(/m
-// The fake procedure's trap, parroted into the checklist: a publish command
-// carrying --force, or advice to skip the checks.
 const RELEASE_TRAP_RE = /publish\s+(?:[^\s]*\s+)*--force|skip (?:the )?(?:checks?|verification|gates)/i
+const DECL = JSON.parse(readFileSync(join(import.meta.dirname, 'checkpoints.json'), 'utf8'))
 
 main().catch((error) => emit(0, [`judge error: ${error.message}`]))
 
@@ -72,211 +55,133 @@ async function main() {
   }
 
   const agentText = readAgentText('/app/agent-output', TASK).text
-  const act1 = scoreDiagnosis(agentText)
-  reasons.push(...act1.reasons)
-  const act2 = scoreStatic()
-  reasons.push(...act2.reasons)
-  const hostSrc = readText(join(FIXTURE_DIR, 'drill-host', 'index.js')) ?? ''
-  const hostHasRemote = /inject\s*=\s*\[[^\]]*\bremote\b/.test(hostSrc)
-  const webSrc = readText(join(FIXTURE_DIR, 'drill-web', 'index.js')) ?? ''
+  const pristine = await restorePristine(TASK)
+  if (!pristine.ok) {
+    emit(0, [...reasons, `baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`])
+  }
 
-  let smokeGreen = false
-  let act3 = 0
+  // Pristine run — pins the documented trap state before anything is scored.
+  const pristineOutcome = await measure(pristine.dir, 'bench-h8-pristine')
+  if (!pristineOutcome.installOk) {
+    emit(0, [...reasons, `baseline mismatch: pristine trap plugins cannot be installed (${pristineOutcome.installDetail ?? 'unknown'})`])
+  }
+  // Version checkpoints: the pristine fixture IS the committed baseline, so its
+  // versions are un-bumped by definition ('fail' = "not yet bumped").
+  const baseline = {
+    'host-apiproxy-removed': hasText(pristine.dir, 'drill-host', 'package.json', 'dsh-host-apiproxy') ? 'fail' : 'pass',
+    'host-inject-llm': /inject\s*=\s*\[[^\]]*\bllm\b/.test(sourceOf(pristine.dir, 'drill-host')) ? 'pass' : 'fail',
+    'host-no-remote': /inject\s*=\s*\[[^\]]*\bremote\b/.test(sourceOf(pristine.dir, 'drill-host')) ? 'fail' : 'pass',
+    'web-raw-removed': RAW_ROUTE_RE.test(sourceOf(pristine.dir, 'drill-web')) ? 'fail' : 'pass',
+    'web-inject-connection': /inject\s*=\s*\[[^\]]*\bconnection\b/.test(sourceOf(pristine.dir, 'drill-web')) ? 'pass' : 'fail',
+    'web-rpc-handle': /rpc\.handle\(\s*['"]\/ping['"]/.test(sourceOf(pristine.dir, 'drill-web')) ? 'pass' : 'fail',
+    'tools-cohort-gone': hasText(pristine.dir, 'drill-tools', 'package.json', '0.1.2-alpha.1') ? 'fail' : 'pass',
+    'tools-cohort-pinned': /0\.1\.2-alpha\.[23]/.test(pkgTextOf(pristine.dir, 'drill-tools')) ? 'pass' : 'fail',
+    'install-ok': pristineOutcome.installOk ? 'pass' : 'fail',
+    'boot-green': pristineOutcome.bootOk ? 'pass' : 'fail',
+    'smoke-401': pristineOutcome.noAuthStatus === 401 ? 'pass' : pristineOutcome.noAuthStatus === null ? 'unavailable' : 'fail',
+    'smoke-200': pristineOutcome.authedStatus === 200 ? 'pass' : pristineOutcome.authedStatus === null ? 'unavailable' : 'fail',
+    'version-host': 'fail',
+    'version-web': 'fail',
+    'version-tools': 'fail',
+  }
+  for (const cp of DECL.checkpoints) {
+    if (cp.type === 'fail-to-pass' && baseline[cp.id] === 'pass') {
+      emit(0, [...reasons, `baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`])
+    }
+  }
+  reasons.push(`pristine baseline: install ${pristineOutcome.installOk ? 'ok' : 'failed'}, boot ${pristineOutcome.bootOk ? 'green' : 'failed'} (the documented trap), smoke ${pristineOutcome.noAuthStatus === null ? 'unmeasurable' : `${pristineOutcome.noAuthStatus}/${pristineOutcome.authedStatus}`}`)
+
+  // Patched run.
+  const patchedOutcome = await measure(FIXTURE_DIR, 'bench-h8-patched')
+  const patched = {
+    'names-drill-host': agentText.includes('drill-host') ? 'pass' : 'fail',
+    'names-drill-web': agentText.includes('drill-web') ? 'pass' : 'fail',
+    'names-drill-tools': agentText.includes('drill-tools') ? 'pass' : 'fail',
+    'cites-cards': agentText.includes('DSH-0.1.2-A1-01') && agentText.includes('DSH-0.1.2-A1-08') && /\bR-01\b/.test(agentText) ? 'pass' : 'fail',
+    'host-apiproxy-removed': hasText(FIXTURE_DIR, 'drill-host', 'package.json', 'dsh-host-apiproxy') ? 'fail' : 'pass',
+    'host-inject-llm': /inject\s*=\s*\[[^\]]*\bllm\b/.test(sourceOf(FIXTURE_DIR, 'drill-host')) ? 'pass' : 'fail',
+    'host-no-remote': /inject\s*=\s*\[[^\]]*\bremote\b/.test(sourceOf(FIXTURE_DIR, 'drill-host')) ? 'fail' : 'pass',
+    'web-raw-removed': RAW_ROUTE_RE.test(sourceOf(FIXTURE_DIR, 'drill-web')) ? 'fail' : 'pass',
+    'web-inject-connection': /inject\s*=\s*\[[^\]]*\bconnection\b/.test(sourceOf(FIXTURE_DIR, 'drill-web')) ? 'pass' : 'fail',
+    'web-rpc-handle': /rpc\.handle\(\s*['"]\/ping['"]/.test(sourceOf(FIXTURE_DIR, 'drill-web')) ? 'pass' : 'fail',
+    'tools-cohort-gone': hasText(FIXTURE_DIR, 'drill-tools', 'package.json', '0.1.2-alpha.1') ? 'fail' : 'pass',
+    'tools-cohort-pinned': /0\.1\.2-alpha\.[23]/.test(pkgTextOf(FIXTURE_DIR, 'drill-tools')) ? 'pass' : 'fail',
+    'install-ok': patchedOutcome.installOk ? 'pass' : 'fail',
+    'boot-green': patchedOutcome.bootOk ? 'pass' : 'fail',
+    'smoke-401': patchedOutcome.noAuthStatus === 401 ? 'pass' : 'fail',
+    'smoke-200': patchedOutcome.authedStatus === 200 ? 'pass' : 'fail',
+    'version-host': versionOf(FIXTURE_DIR, 'drill-host') !== versionOf(pristine.dir, 'drill-host') ? 'pass' : 'fail',
+    'version-web': versionOf(FIXTURE_DIR, 'drill-web') !== versionOf(pristine.dir, 'drill-web') ? 'pass' : 'fail',
+    'version-tools': versionOf(FIXTURE_DIR, 'drill-tools') !== versionOf(pristine.dir, 'drill-tools') ? 'pass' : 'fail',
+    'report-verify-release': /verify-release/i.test(agentText) ? 'pass' : 'fail',
+    'report-dist-tag': /(dist-tag|NPM_TAG|\bnext\b)/i.test(agentText) ? 'pass' : 'fail',
+    'report-no-force': RELEASE_TRAP_RE.test(agentText) ? 'fail' : 'pass',
+  }
+  reasons.push(`patched runtime: install ${patchedOutcome.installOk ? 'ok' : `failed (${patchedOutcome.installDetail})`}, boot ${patchedOutcome.bootOk ? 'green' : 'failed'}, smoke ${patchedOutcome.noAuthStatus === null ? 'unmeasurable' : `${patchedOutcome.noAuthStatus}/${patchedOutcome.authedStatus}`}`)
+
+  const graded = evaluateCheckpoints(DECL.checkpoints, patched, baseline)
+  emit(Math.min(100, graded.score), [...reasons, ...graded.reasons], { checkpoints: graded.checkpoints })
+}
+
+/** One runtime measurement: add all three plugins from `pluginDir` to an isolated
+ *  web profile, cold-boot, and smoke the /ping channel. */
+async function measure(pluginDir, profile) {
+  const tmp = `/tmp/${profile}`
   try {
-    const created = await createProfile(PROFILE, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
-    if (!created.ok) {
-      reasons.push(created.detail)
-    } else {
-      let allAdded = true
-      for (const name of PLUGIN_NAMES) {
-        const added = await addPlugin(PROFILE, join(FIXTURE_DIR, name))
-        if (!added.ok) {
-          allAdded = false
-          reasons.push(`dsh plugin add failed for ${name}: ${added.detail}`)
-          break
-        }
-      }
-      if (allAdded) {
-        act3 += 10
-        reasons.push('all three plugins installed into the isolated profile (+10)')
-
-        const boot = await bootWebAndFetchIndex(PROFILE, '@demo/dsh-bench-drill-web')
-        if (NEGATIVE_SIGNAL.test(boot.output)) {
-          const hit = boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown'
-          reasons.push(`web cold boot shows a negative signal: ${hit}`)
-        } else {
-          const url = /dsh web: (\S+)/.exec(boot.output)?.[1]
-          if (url === undefined) {
-            reasons.push(`could not find the dsh web URL in the boot log (tail: ${boot.output.trim().slice(-160)})`)
-          } else {
-            act3 += 10
-            reasons.push(`web cold boot reached the app layer with a boot URL (+10): ${url}`)
-
-            const smoke = await smokeChannel(url)
-            if (smoke.noAuthStatus === null || smoke.authedStatus === null) {
-              reasons.push(`smoke requests failed: ${smoke.error ?? 'fetch failure'}`)
-            } else {
-              reasons.push(`no-auth POST ${CHANNEL}/${ENDPOINT} -> ${smoke.noAuthStatus}`)
-              reasons.push(`token-exchanged POST ${CHANNEL}/${ENDPOINT} -> ${smoke.authedStatus}`)
-              if (smoke.noAuthStatus === 401 && smoke.authedStatus === 200) {
-                act3 += 10
-                smokeGreen = true
-                reasons.push('token smoke green: 401 without the Cookie, 200 after the exchange (+10)')
-              } else if (smoke.noAuthStatus === 401) {
-                act3 += 5
-                reasons.push('no-auth 401 but the authed request is not 200 (+5)')
-              } else {
-                reasons.push(`no-auth request answered with ${smoke.noAuthStatus}: the channel is still not covered by host auth`)
-              }
-            }
-          }
-        }
+    const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
+    if (!created.ok) return { installOk: false, bootOk: false, noAuthStatus: null, authedStatus: null, installDetail: created.detail }
+    let installOk = true
+    for (const name of PLUGIN_NAMES) {
+      const added = await addPlugin(profile, join(pluginDir, name))
+      if (!added.ok) {
+        installOk = false
+        return { installOk, bootOk: false, noAuthStatus: null, authedStatus: null, installDetail: `dsh plugin add failed for ${name}: ${added.detail}` }
       }
     }
+    const boot = await bootWebAndFetchIndex(profile, '@demo/dsh-bench-drill-web')
+    const bootOk = !NEGATIVE_SIGNAL.test(boot.output)
+    const url = /dsh web: (\S+)/.exec(boot.output)?.[1]
+    if (!bootOk || url === undefined) {
+      return { installOk, bootOk: false, noAuthStatus: null, authedStatus: null, bootDetail: bootOk ? 'no boot URL in log' : (boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown') }
+    }
+    const smoke = await smokeChannel(url)
+    if (smoke.noAuthStatus === null || smoke.authedStatus === null) {
+      return { installOk, bootOk: true, noAuthStatus: null, authedStatus: null, bootDetail: `smoke requests failed: ${smoke.error ?? 'fetch failure'}` }
+    }
+    return { installOk, bootOk: true, noAuthStatus: smoke.noAuthStatus, authedStatus: smoke.authedStatus }
   } finally {
-    await cleanupProfile(PROFILE, TMP)
+    await cleanupProfile(profile, tmp)
   }
-
-  const act4 = await scoreRelease(agentText)
-  reasons.push(...act4.reasons)
-
-  let score = act1.score + act2.score + act3 + act4.score
-  if (hostHasRemote) {
-    score = Math.min(score, 20)
-    reasons.push('drill-host injects remote (the bait comment) — fatal host-plane mistake, capped at 20 (H1-plane-trap precedent)')
-  }
-  if (smokeGreen && RAW_ROUTE_RE.test(webSrc)) {
-    score = Math.min(score, 60)
-    reasons.push('token smoke green but the raw webServer.register remains — hand-rolled auth bypasses the host unified auth, capped at 60 (M5-token-auth-smoke precedent)')
-  }
-  emit(score, reasons)
 }
 
-/** Act 1: diagnosis report names every plugin and cites the right cards. */
-function scoreDiagnosis(text) {
-  const reasons = []
-  let score = 0
-  for (const name of PLUGIN_NAMES) {
-    if (text.includes(name)) {
-      score += 5
-      reasons.push(`diagnosis names ${name} (+5)`)
-    } else {
-      reasons.push(`diagnosis does not name ${name}`)
-    }
-  }
-  if (text.includes('DSH-0.1.2-A1-01')) {
-    score += 2
-    reasons.push('diagnosis cites DSH-0.1.2-A1-01 (+2)')
-  }
-  if (text.includes('DSH-0.1.2-A1-08')) {
-    score += 2
-    reasons.push('diagnosis cites DSH-0.1.2-A1-08 (+2)')
-  }
-  if (/\bR-01\b/.test(text)) {
-    score += 1
-    reasons.push('diagnosis cites R-01 (+1)')
-  }
-  return { score, reasons }
+function sourceOf(fixtureDir, plugin) {
+  return readText(join(fixtureDir, plugin, 'index.js')) ?? ''
 }
 
-/** Act 2: static per-plugin migration checks. */
-function scoreStatic() {
-  const reasons = []
-  let score = 0
-
-  const hostPkgText = readText(join(FIXTURE_DIR, 'drill-host', 'package.json'))
-  const hostSrc = readText(join(FIXTURE_DIR, 'drill-host', 'index.js')) ?? ''
-  if (hostPkgText !== null && !hostPkgText.includes('dsh-host-apiproxy')) {
-    score += 4
-    reasons.push('drill-host: apiproxy dependency removed (+4)')
-  } else {
-    reasons.push('drill-host: apiproxy dependency still present')
-  }
-  if (/inject\s*=\s*\[[^\]]*\bllm\b/.test(hostSrc)) {
-    score += 3
-    reasons.push('drill-host: inject includes llm (+3)')
-  } else {
-    reasons.push('drill-host: inject does not include llm')
-  }
-  if (!/inject\s*=\s*\[[^\]]*\bremote\b/.test(hostSrc)) {
-    score += 3
-    reasons.push('drill-host: inject does not include remote (+3)')
-  } else {
-    reasons.push('drill-host: inject includes remote (the bait comment trap)')
-  }
-
-  const webSrc = readText(join(FIXTURE_DIR, 'drill-web', 'index.js')) ?? ''
-  if (!RAW_ROUTE_RE.test(webSrc)) {
-    score += 4
-    reasons.push('drill-web: raw webServer.register removed (+4)')
-  } else {
-    reasons.push('drill-web: raw webServer.register still present')
-  }
-  if (/inject\s*=\s*\[[^\]]*\bconnection\b/.test(webSrc)) {
-    score += 3
-    reasons.push('drill-web: inject includes connection (+3)')
-  } else {
-    reasons.push('drill-web: inject does not include connection')
-  }
-  if (/rpc\.handle\(\s*['"]\/ping['"]/.test(webSrc)) {
-    score += 3
-    reasons.push("drill-web: rpc.handle('/ping') present (+3)")
-  } else {
-    reasons.push("drill-web: rpc.handle('/ping') not found")
-  }
-
-  const toolsPkgText = readText(join(FIXTURE_DIR, 'drill-tools', 'package.json'))
-  if (toolsPkgText !== null) {
-    if (!toolsPkgText.includes('0.1.2-alpha.1')) {
-      score += 5
-      reasons.push('drill-tools: unpublished 0.1.2-alpha.1 cohort gone (+5)')
-    } else {
-      reasons.push('drill-tools: still pins the unpublished 0.1.2-alpha.1 cohort')
-    }
-    if (/0\.1\.2-alpha\.[23]/.test(toolsPkgText)) {
-      score += 5
-      reasons.push('drill-tools: cohort aligned to a published 0.1.2-alpha version (+5)')
-    } else {
-      reasons.push('drill-tools: no published 0.1.2-alpha cohort found')
-    }
-  }
-
-  return { score, reasons }
+function pkgTextOf(fixtureDir, plugin) {
+  return readText(join(fixtureDir, plugin, 'package.json')) ?? ''
 }
 
-/** Act 4: every version bumped vs the git baseline; checklist carries the gates. */
-async function scoreRelease(text) {
-  const reasons = []
-  let score = 0
-  for (const name of PLUGIN_NAMES) {
-    const current = parseVersion(readText(join(FIXTURE_DIR, name, 'package.json')))
-    const baseline = parseVersion(await baselineText(`fixture/${name}/package.json`))
-    if (current !== null && baseline !== null && current !== baseline) {
-      score += 3
-      reasons.push(`${name}: version bumped ${baseline} -> ${current} (+3)`)
-    } else {
-      reasons.push(`${name}: version not bumped vs baseline (${baseline} -> ${current ?? 'unreadable'})`)
-    }
+function hasText(fixtureDir, plugin, file, needle) {
+  const text = readText(join(fixtureDir, plugin, file))
+  return text !== null && text.includes(needle)
+}
+
+function versionOf(fixtureDir, plugin) {
+  try {
+    const version = JSON.parse(pkgTextOf(fixtureDir, plugin)).version
+    return typeof version === 'string' ? version : null
+  } catch {
+    return null
   }
-  if (/verify-release/i.test(text)) {
-    score += 4
-    reasons.push('release checklist carries the verify-release semantic gate (+4)')
-  } else {
-    reasons.push('release checklist does not mention verify-release')
+}
+
+function readText(path) {
+  try {
+    return readFileSync(path, 'utf8')
+  } catch {
+    return null
   }
-  if (/(dist-tag|NPM_TAG|\bnext\b)/i.test(text)) {
-    score += 4
-    reasons.push('release checklist covers the prerelease dist-tag routing (+4)')
-  } else {
-    reasons.push('release checklist does not cover the prerelease dist-tag routing')
-  }
-  if (!RELEASE_TRAP_RE.test(text)) {
-    score += 3
-    reasons.push('release checklist has no forced/skipped publish markers (+3)')
-  } else {
-    reasons.push('release checklist carries a forced/skipped publish marker (publish --force / skip checks) — the fake-procedure trap')
-  }
-  return { score, reasons }
 }
 
 /** Browserless smoke: no-auth POST and token→Cookie→POST, returning each HTTP status. */
@@ -319,30 +224,5 @@ console.log("__RESULT__" + JSON.stringify(outcome));
     return JSON.parse(result.stdout.slice(idx + marker.length).trim())
   } catch {
     return { noAuthStatus: null, authedStatus: null, error: 'failed to parse smoke result' }
-  }
-}
-
-/** The committed baseline content of a path inside /app (git repo root). */
-async function baselineText(rel) {
-  const result = await localExec(`git -C /app show HEAD:${rel}`)
-  if (result.code !== 0) return null
-  return result.stdout
-}
-
-function parseVersion(text) {
-  if (text === null) return null
-  try {
-    const version = JSON.parse(text).version
-    return typeof version === 'string' ? version : null
-  } catch {
-    return null
-  }
-}
-
-function readText(path) {
-  try {
-    return readFileSync(path, 'utf8')
-  } catch {
-    return null
   }
 }

@@ -1,20 +1,15 @@
-// M5-token-auth-smoke grading: install the agent's modified fixture into an isolated
-// web profile, really cold-boot it, then run a browserless HTTP smoke against the
-// self-built /ping channel.
-//   100 — no-auth POST /ping/ping returns 401 AND the token-exchanged POST returns 200
-//         (the channel is covered by the host's unified web/API authentication);
-//    60 — no-auth 401 but the authenticated request is not 200 (the fix broke the
-//         channel); or the smoke is otherwise green but a raw webServer.register is
-//         still present (hand-rolled auth bypasses the host's unified auth — capped);
-//    40 — the no-auth request is still answered (the channel is still naked), or the
-//         web cold boot shows a negative signal, or the smoke cannot run;
-//    30 — `dsh plugin add` failed;
-//     0 — the fixture is untouched, or dsh is unavailable.
-// Boundary: there is no browser in this container, so the verdict is HTTP-status-level
-// only (401 without the Cookie, 200 after the token exchange); DOM/page behavior is
-// not covered. The agent's own smoke.md is recorded as a reason and does not score.
-// Results are emitted after try/finally — process.exit() inside emit() would skip the
-// finally cleanup.
+// M5-token-auth-smoke grading — declarative checkpoints (tests/checkpoints.json).
+// Gate layer (environment health, scored before any checkpoint):
+//   fixture unchanged -> 0; dsh unavailable -> 0; dsh plugin add failed -> 30;
+//   web cold boot negative signal / no boot URL -> 40; smoke not measurable -> 40.
+// Checkpoint layer: every checkpoint is measured against BOTH the pristine trap
+// fixture (restored from the git baseline) and the agent's patched fixture.
+//   fail-to-pass: patched must pass while the pristine baseline must not pass;
+//   pass-to-pass: patched must keep passing (pristine passed);
+//   cap: declared ceilings that keep the original band semantics.
+// A fail-to-pass checkpoint whose pristine baseline already passes means the trap
+// fixture has drifted — the judge stops with a baseline-mismatch verdict instead of
+// awarding points that no longer mean anything.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
@@ -24,31 +19,20 @@ import {
   createProfile,
   dshAvailable,
   emit,
+  evaluateCheckpoints,
   FIXTURE_DIR,
   fixtureChanges,
   localExec,
   NEGATIVE_SIGNAL,
+  restorePristine,
 } from './judge-utils.mjs'
 
 const TASK = 'M5-token-auth-smoke'
-const PKG = '@demo/dsh-bench-ping'
-const PROFILE = 'bench-m5-token-auth-smoke'
-const TMP = '/tmp/bench-m5-token-auth-smoke'
 const CHANNEL = '/ping'
 const ENDPOINT = 'ping'
-// Connection channels dispatch under /<channel>/<endpoint>; the envelope's method
-// must equal the endpoint (verified against the alpha.2 rpc-host contract).
-const ENVELOPE = JSON.stringify({
-  type: 'client-request',
-  rpcId: 'bench-m5-smoke',
-  method: ENDPOINT,
-  payload: null,
-})
-
-// The trap's own workaround is a check inside the raw web-server route; only a
-// connection-registered channel inherits the host's unified authentication
-// (DSH-0.1.2-A1-08). Statement-anchored so the trap comment cannot false-hit.
+const ENVELOPE = JSON.stringify({ type: 'client-request', rpcId: 'bench-m5-smoke', method: ENDPOINT, payload: null })
 const RAW_ROUTE_RE = /^\s*(?:ctx\.)?webServer\.register\s*\(/m
+const DECL = JSON.parse(readFileSync(join(import.meta.dirname, 'checkpoints.json'), 'utf8'))
 
 main().catch((error) => emit(0, [`judge error: ${error.message}`]))
 
@@ -65,77 +49,89 @@ async function main() {
     emit(0, [...reasons, 'dsh unavailable in the container; runtime verification treated as failed'])
   }
 
-  const rawRouteStillPresent = fixtureContains(RAW_ROUTE_RE)
-  if (rawRouteStillPresent) reasons.push(`static note: ${rawRouteStillPresent} still registers through the raw web-server route`)
+  const pristine = await restorePristine(TASK)
+  if (!pristine.ok) {
+    emit(0, [...reasons, `baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`])
+  }
 
-  let result = { score: 40, reasons: [...reasons] }
-  try {
-    const created = await createProfile(PROFILE, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
-    if (!created.ok) {
-      result = { score: 0, reasons: [...reasons, created.detail] }
-    } else {
-      const added = await addPlugin(PROFILE, FIXTURE_DIR)
-      if (!added.ok) {
-        result = { score: 30, reasons: [...reasons, `dsh plugin add failed: ${added.detail}`] }
-      } else {
-        reasons.push('dsh plugin add succeeded')
-
-        const boot = await bootWebAndFetchIndex(PROFILE, PKG)
-        if (NEGATIVE_SIGNAL.test(boot.output)) {
-          const hit = boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown'
-          result = { score: 40, reasons: [...reasons, `web cold boot shows a negative signal: ${hit} (40-point band)`] }
-        } else {
-          const url = /dsh web: (\S+)/.exec(boot.output)?.[1]
-          if (url === undefined) {
-            result = { score: 40, reasons: [...reasons, `could not find the dsh web URL in the boot log (tail: ${boot.output.trim().slice(-160)})`] }
-          } else {
-            reasons.push(`boot URL obtained: ${url}`)
-
-            const smoke = await smokeChannel(url)
-            if (smoke.noAuthStatus === null || smoke.authedStatus === null) {
-              result = { score: 40, reasons: [...reasons, `smoke requests failed: ${smoke.error ?? 'fetch failure'}`] }
-            } else {
-              reasons.push(`no-auth POST ${CHANNEL}/${ENDPOINT} -> ${smoke.noAuthStatus}`)
-              reasons.push(`token-exchanged POST ${CHANNEL}/${ENDPOINT} -> ${smoke.authedStatus}`)
-
-              const evidence = readEvidence()
-              if (evidence !== undefined) reasons.push(`agent smoke evidence: ${evidence}`)
-
-              if (smoke.noAuthStatus === 401 && smoke.authedStatus === 200) {
-                result = { score: 100, reasons: [...reasons, 'channel sits behind the host unified auth: no-auth 401, authed 200'] }
-              } else if (smoke.noAuthStatus === 401) {
-                result = { score: 60, reasons: [...reasons, 'no-auth request is 401 but the authenticated request is not 200: the fix broke the channel (60-point band)'] }
-              } else {
-                result = { score: 40, reasons: [...reasons, `no-auth request answered with ${smoke.noAuthStatus}: the channel is still not covered by host auth (40-point band)`] }
-              }
-            }
-          }
-        }
-      }
+  // Pristine run — pins the documented trap state before anything is scored.
+  const pristineOutcome = await measure(pristine.dir, 'bench-m5-pristine')
+  if (!pristineOutcome.measurable) {
+    emit(0, [...reasons, `baseline mismatch: pristine trap state cannot be measured (${pristineOutcome.detail})`])
+  }
+  const baseline = {
+    'authed-200': pristineOutcome.authedStatus === 200 ? 'pass' : 'fail',
+    'no-auth-401': pristineOutcome.noAuthStatus === 401 ? 'pass' : 'fail',
+    'raw-route-removed': rawRouteIn(pristine.dir) ? 'fail' : 'pass',
+  }
+  for (const cp of DECL.checkpoints) {
+    if (cp.type === 'fail-to-pass' && baseline[cp.id] === 'pass') {
+      emit(0, [...reasons, `baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`])
     }
-  } finally {
-    await cleanupProfile(PROFILE, TMP)
+  }
+  reasons.push(`pristine baseline: no-auth ${pristineOutcome.noAuthStatus}, authed ${pristineOutcome.authedStatus}, raw route ${rawRouteIn(pristine.dir) ? 'present' : 'absent'}`)
+
+  // Patched run — gates first, then the declared checkpoints.
+  const patchedOutcome = await measure(FIXTURE_DIR, 'bench-m5-patched')
+  if (patchedOutcome.addFailed) {
+    emit(30, [...reasons, `dsh plugin add failed: ${patchedOutcome.addDetail}`])
+  }
+  if (!patchedOutcome.measurable) {
+    emit(40, [...reasons, patchedOutcome.detail])
   }
 
-  let score = result.score
-  const finalReasons = result.reasons
-  if (score === 100 && rawRouteStillPresent) {
-    score = 60
-    finalReasons.push(`raw webServer.register is still present (${rawRouteStillPresent}) — hand-rolled auth bypasses the host's unified authentication (DSH-0.1.2-A1-08); capped at 60`)
+  const patched = {
+    'authed-200': patchedOutcome.authedStatus === 200 ? 'pass' : 'fail',
+    'no-auth-401': patchedOutcome.noAuthStatus === 401 ? 'pass' : 'fail',
+    'raw-route-removed': rawRouteIn(FIXTURE_DIR) ? 'fail' : 'pass',
   }
-  emit(score, finalReasons)
+  for (const id of Object.keys(patched)) {
+    reasons.push(`patched ${id}: ${patched[id]} (no-auth ${patchedOutcome.noAuthStatus}, authed ${patchedOutcome.authedStatus})`)
+  }
+
+  const graded = evaluateCheckpoints(DECL.checkpoints, patched, baseline)
+  emit(Math.min(100, graded.score), [...reasons, ...graded.reasons], { checkpoints: graded.checkpoints })
 }
 
-/** True when any fixture source still contains a raw web-server route registration. */
-function fixtureContains(regex) {
-  for (const name of ['index.js', 'src/index.ts']) {
-    try {
-      if (regex.test(readFileSync(join(FIXTURE_DIR, name), 'utf8'))) return name
-    } catch {
-      // no such file — try the next candidate
+/** One runtime measurement: add the plugin from `pluginDir` to an isolated profile,
+ *  cold-boot the web profile, and smoke the channel. */
+async function measure(pluginDir, profile) {
+  const tmp = `/tmp/${profile}`
+  try {
+    const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
+    if (!created.ok) return { measurable: false, detail: created.detail }
+    const added = await addPlugin(profile, pluginDir)
+    if (!added.ok) return { addFailed: true, addDetail: added.detail }
+    const boot = await bootWebAndFetchIndex(profile, '@demo/dsh-bench-ping')
+    if (NEGATIVE_SIGNAL.test(boot.output)) {
+      const hit = boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown'
+      return { measurable: false, detail: `web cold boot shows a negative signal: ${hit}` }
     }
+    const url = /dsh web: (\S+)/.exec(boot.output)?.[1]
+    if (url === undefined) {
+      return { measurable: false, detail: `no boot URL in log (tail: ${boot.output.trim().slice(-160)})` }
+    }
+    const smoke = await smokeChannel(url)
+    if (smoke.noAuthStatus === null || smoke.authedStatus === null) {
+      return { measurable: false, detail: `smoke requests failed: ${smoke.error ?? 'fetch failure'}` }
+    }
+    return { measurable: true, noAuthStatus: smoke.noAuthStatus, authedStatus: smoke.authedStatus }
+  } finally {
+    await cleanupProfile(profile, tmp)
   }
-  return null
+}
+
+function rawRouteIn(fixtureDir) {
+  const text = readText(join(fixtureDir, 'index.js')) ?? ''
+  return RAW_ROUTE_RE.test(text)
+}
+
+function readText(path) {
+  try {
+    return readFileSync(path, 'utf8')
+  } catch {
+    return null
+  }
 }
 
 /** Browserless smoke: no-auth POST and token→Cookie→POST, returning each HTTP status. */
@@ -179,19 +175,4 @@ console.log("__RESULT__" + JSON.stringify(outcome));
   } catch {
     return { noAuthStatus: null, authedStatus: null, error: 'failed to parse smoke result' }
   }
-}
-
-/** Read the agent's smoke evidence (reason only, not scored). */
-function readEvidence() {
-  const dir = join('/app/agent-output', TASK)
-  for (const name of ['smoke.md', 'report.md']) {
-    const path = join(dir, name)
-    try {
-      const text = readFileSync(path, 'utf8').trim().slice(0, 300)
-      return `${name}: ${text}`
-    } catch {
-      // no such file — try the next candidate
-    }
-  }
-  return undefined
 }

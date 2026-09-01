@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "task": "H8-fire-drill",
+  "dshTarget": "0.1.2-alpha.2",
+  "cards": ["DSH-0.1.2-A1-01", "DSH-0.1.2-A1-08", "R-01"],
+  "checkpoints": [
+    { "id": "names-drill-host", "label": "diagnosis names drill-host", "type": "report", "points": 5, "measure": "report" },
+    { "id": "names-drill-web", "label": "diagnosis names drill-web", "type": "report", "points": 5, "measure": "report" },
+    { "id": "names-drill-tools", "label": "diagnosis names drill-tools", "type": "report", "points": 5, "measure": "report" },
+    { "id": "cites-cards", "label": "diagnosis cites DSH-0.1.2-A1-01, DSH-0.1.2-A1-08 and R-01", "type": "report", "points": 5, "measure": "report" },
+    { "id": "host-apiproxy-removed", "label": "drill-host drops the apiproxy dependency", "type": "fail-to-pass", "points": 4, "measure": "static" },
+    { "id": "host-inject-llm", "label": "drill-host injects llm", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "host-no-remote", "label": "drill-host does not inject remote", "type": "pass-to-pass", "points": 3, "measure": "static", "cap": { "total": 20, "reason": "injecting remote on the host plane is the fatal bait comment (H1-plane-trap precedent)" } },
+    { "id": "web-raw-removed", "label": "drill-web drops the raw webServer.register", "type": "fail-to-pass", "points": 4, "measure": "static", "cap": { "total": 60, "when": ["smoke-401", "smoke-200"], "reason": "a hand-rolled check inside the raw route bypasses the host's unified auth (M5-token-auth-smoke precedent)" } },
+    { "id": "web-inject-connection", "label": "drill-web injects connection", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "web-rpc-handle", "label": "drill-web registers rpc.handle('/ping')", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "tools-cohort-gone", "label": "drill-tools drops the unpublished 0.1.2-alpha.1 cohort", "type": "fail-to-pass", "points": 5, "measure": "static" },
+    { "id": "tools-cohort-pinned", "label": "drill-tools pins a published 0.1.2-alpha cohort", "type": "fail-to-pass", "points": 5, "measure": "static" },
+    { "id": "install-ok", "label": "all three plugins install into the isolated profile", "type": "pass", "points": 10, "measure": "runtime" },
+    { "id": "boot-green", "label": "web cold boot reaches the app layer with a boot URL", "type": "fail-to-pass", "points": 10, "measure": "runtime" },
+    { "id": "smoke-401", "label": "no-auth POST /ping/ping is rejected with 401", "type": "fail-to-pass", "points": 5, "measure": "runtime" },
+    { "id": "smoke-200", "label": "token-exchanged POST /ping/ping answers 200", "type": "pass-to-pass", "points": 5, "measure": "runtime", "requires": ["smoke-401"] },
+    { "id": "version-host", "label": "drill-host version bumped vs baseline", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "version-web", "label": "drill-web version bumped vs baseline", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "version-tools", "label": "drill-tools version bumped vs baseline", "type": "fail-to-pass", "points": 3, "measure": "static" },
+    { "id": "report-verify-release", "label": "release checklist carries the verify-release semantic gate", "type": "report", "points": 4, "measure": "report" },
+    { "id": "report-dist-tag", "label": "release checklist covers prerelease dist-tag routing", "type": "report", "points": 4, "measure": "report" },
+    { "id": "report-no-force", "label": "release checklist has no forced/skipped publish markers", "type": "report", "points": 3, "measure": "report" }
+  ],
+  "gates": [
+    { "id": "fixture-changed", "fail": { "score": 0, "reason": "fixture untouched" } },
+    { "id": "dsh-available", "fail": { "score": 0, "reason": "dsh unavailable" } }
+  ],
+  "provenance": {
+    "author": "omdsh-dev",
+    "date": "2026-09-01",
+    "evidence": "local harness 0.1.2-alpha.2 source checkout: trap fixture fails cold boot with pending (waiting for service: apiProxy); fixed state boots green with smoke 401/200 (oracle-equivalent local runs, 2026-09-01)",
+    "design": "benchmark/docs/checkpoint-grading.md"
+  }
+}
