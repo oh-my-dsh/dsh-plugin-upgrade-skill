@@ -12,9 +12,8 @@ See [solution/plugin/](plugin/) (expected judge score 100):
 
 ## Core Point (In One Sentence)
 
-DSH-0.1.2-A1-08's unified web/API authentication covers connection-registered
-channels automatically (bootstrap token → signed Cookie; 401 without it), while
-raw `webServer.register` routes sit outside the gate — so the fix is to move the
+DSH-0.1.2-A1-08 · Web/API channels use process-scoped bootstrap tokens and signed cookies: connection-registered channels are covered automatically (401 without the Cookie),
+while raw `webServer.register` routes sit outside the gate — so the fix is to move the
 channel's registration to `ctx.connection.rpc.handle()`, not to hand-roll a check
 inside the route.
 
