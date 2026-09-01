@@ -289,6 +289,43 @@ runs keep the same task image and prompt.
   published `HostConnectionService` implementations and records the supplied legacy
   authority object; a mock-only green result cannot earn the cohort points.
 
+## Summarizing Harbor runs
+
+After running trials, aggregate the real Harbor `result.json` files with the bundled
+deterministic summarizer instead of relying on Harbor's built-in mean:
+
+```sh
+# single group, repeated trials across files
+node benchmark/scripts/summarize-runs.mjs \
+  --group run:jobs/<job>/<trial>/result.json \
+  --group run:jobs/<job>/<other-trial>/result.json
+
+# paired 3-run comparison (per-task medians, group A − group B)
+node benchmark/scripts/summarize-runs.mjs \
+  --group with-skill:jobs/r1/S1-static-scan__x/result.json \
+  --group with-skill:jobs/r2/S1-static-scan__y/result.json \
+  --group with-skill:jobs/r3/S1-static-scan__z/result.json \
+  --group no-skill:jobs/r1/S1-static-scan__x/result.json \
+  --group no-skill:jobs/r2/S1-static-scan__y/result.json \
+  --group no-skill:jobs/r3/S1-static-scan__z/result.json
+```
+
+Behavior:
+
+- accepts trial-level and job-level `result.json` (job-level files are expanded from
+  `reward_stats` / `exception_stats`);
+- repeated trials of the same task aggregate per task (mean / median / min / max /
+  perfect) — later runs never overwrite earlier ones;
+- exactly two groups produce a paired per-task-median comparison with
+  improved / tied / regressed counts; a task present in only one group is listed as
+  missing and excluded from the delta aggregates, never treated as 0;
+- rewards are extracted from the trial records only — Harbor's precomputed aggregate
+  mean is not used, so stopped/unscored trials cannot distort the score;
+- trials without a reward are anomalies (never scored as 0); a scored trial that also
+  records an execution exception keeps its reward and is flagged;
+- default output is Markdown (`--format json` for machine-readable raw numbers);
+  duplicate inputs and malformed rewards are hard errors.
+
 ## Historical documents
 
 All validation and result reports live in [`results/`](results/). When opening a PR
