@@ -1,0 +1,29 @@
+{
+  "$comment": "Documentation contract for benchmark/snapshots/*.json. The validator (benchmark/scripts/validate-evaluation-snapshots.mjs) enforces this shape; no JSON-Schema tooling is used.",
+  "schemaVersion": 1,
+  "id": "<YYYY-MM-DD>-<slug>",
+  "createdAt": "<YYYY-MM-DD>",
+  "repository": "oh-my-dsh/dsh-plugin-upgrade-skill",
+  "benchmark": {
+    "commit": "<full 40-char lowercase hex git SHA>",
+    "taskCount": 23,
+    "tasks": [
+      "S1-static-scan"
+    ]
+  },
+  "skill": {
+    "commit": "<full 40-char lowercase hex git SHA>",
+    "path": "skills/plugin-upgrade"
+  },
+  "protocol": {
+    "runsPerTask": 3,
+    "aggregation": "per-task-median",
+    "conditions": [
+      "with-skill",
+      "no-harbor-injected-skill"
+    ]
+  },
+  "notes": [
+    "<optional strings>"
+  ]
+}

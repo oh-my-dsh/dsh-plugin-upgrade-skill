@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-09-01-main-23",
+  "createdAt": "2026-09-01",
+  "repository": "oh-my-dsh/dsh-plugin-upgrade-skill",
+  "benchmark": {
+    "commit": "2de49059ec3178e23ea644cd78e7d20575b74745",
+    "taskCount": 23,
+    "tasks": [
+      "S1-static-scan",
+      "S2-negative-scan",
+      "S3-snapshot-migration",
+      "H4-tsbuildinfo-trap",
+      "M1-host-migration",
+      "H1-plane-trap",
+      "H2-baseline-trap",
+      "H3-client-plane",
+      "H5-runtime-export-drift",
+      "M5-token-auth-smoke",
+      "H8-fire-drill",
+      "H9-dsh-web-alpha2",
+      "S4-legacy-client-imports",
+      "S5-negative-naming",
+      "H6-remote-error-trap",
+      "S6-corridor-net-state",
+      "S7-unpublished-cohort",
+      "S8-release-routing-trap",
+      "M2-optional-dep-trap",
+      "M3-session-projection",
+      "M4-peer-prerelease-range",
+      "H7-locale-trap",
+      "H10-browser-activation-trap"
+    ]
+  },
+  "skill": {
+    "commit": "2de49059ec3178e23ea644cd78e7d20575b74745",
+    "path": "skills/plugin-upgrade"
+  },
+  "protocol": {
+    "runsPerTask": 3,
+    "aggregation": "per-task-median",
+    "conditions": [
+      "with-skill",
+      "no-harbor-injected-skill"
+    ]
+  },
+  "notes": [
+    "Current 23-task main evaluation snapshot. Infrastructure/current-evaluation anchor, not retroactive metadata for earlier runs.",
+    "The 2026-09-01 19-task paired run predates snapshot recording; its exact repository and skill commits were not recorded, so it is intentionally not reconstructed here."
+  ]
+}
