@@ -18,6 +18,15 @@ const expectedModes = new Map([
   ['H5-runtime-export-drift', 'mutable'],
   ['M5-token-auth-smoke', 'mutable'],
   ['H8-fire-drill', 'mutable'],
+  ['H6-remote-error-trap', 'readonly'],
+  ['S4-legacy-client-imports', 'readonly'],
+  ['S5-negative-naming', 'readonly'],
+  ['S6-corridor-net-state', 'readonly'],
+  ['S7-unpublished-cohort', 'readonly'],
+  ['M2-optional-dep-trap', 'mutable'],
+  ['M3-session-projection', 'mutable'],
+  ['M4-peer-prerelease-range', 'mutable'],
+  ['H7-locale-trap', 'mutable'],
 ])
 
 const compact = (text) => text.replaceAll('\r\n', '\n').replace(/\s+/g, ' ')
