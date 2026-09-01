@@ -36,6 +36,7 @@ Requirements:
 
 | Skill | What it does | Author |
 |---|---|---|
+| [plugin-workflow](plugin-workflow/) | Select and coordinate inspection, upgrades, tests, naming registration, release, and rollback with one phase ledger and separate confirmation boundaries | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-upgrade](plugin-upgrade/) | Read-only inspection, installed-plugin upgrades, host compatibility migration; seven touchpoints + version cards + safe rollback | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-write](plugin-write/) | Write DSH plugins, choose the extension form for the target Harness version, and distinguish official single-repo rules from external plugin rules | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-test](plugin-test/) | Choose the test level for DSH plugin changes, covering real combinations, release artifacts, and target-version product entry points | [@omdsh-dev](https://github.com/omdsh-dev) |
