@@ -9,6 +9,7 @@ Describe the single logical change and link the related Issue, card, or version 
 - [ ] I cited fixed first-party sources for version-specific claims.
 - [ ] For migration or card work, I listed the affected touchpoints (`#1`-`#7`) and complete card IDs.
 - [ ] I kept Host, Web Client, and ordinary Cordis plugin faces distinct.
+- [ ] For benchmark result or validation-report PRs, the report states the consumed tokens and the total run duration per round (as recorded by Harbor's trial outputs).
 
 ## Verification
 

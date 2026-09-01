@@ -242,6 +242,12 @@ environment, and it does not leak migration answers to either round.
 All validation and result reports live in [`results/`](results/). When opening a PR
 that adds a benchmark result or validation report, put the file there.
 
+Every submitted report must state the **consumed tokens** and the **total run
+duration** of each round, next to the scores — e.g. the input/output/reasoning
+token sums and the summed job duration as recorded in Harbor's trial outputs
+(`result.json`). Cost figures are recommended but optional. Scores without these
+numbers cannot be compared across models or against later runs.
+
 - `results/validation-report-2026-08-30.md`: the skill-effectiveness validation report (v1
   era). The manual `dsh-verify` container reproduction in its section 6 has been
   replaced by the self-contained environment — each task image is now built with the
