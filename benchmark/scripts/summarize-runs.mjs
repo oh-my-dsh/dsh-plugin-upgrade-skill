@@ -100,7 +100,7 @@ export function normalizeFile(parsed, label, sourceFile) {
     agent: parsed.agent_info?.name ?? parsed.config?.agent?.name ?? null,
     model: parsed.agent_info?.model_info ?? parsed.config?.agent?.model_name ?? null,
   }
-  if (parsed.verifier_result !== undefined || parsed.verifier_result === null) {
+  if (parsed.verifier_result !== undefined) {
     const records = normalizeTrialLevel(parsed, common, anomalies, notes)
     return { records, anomalies, notes }
   }
@@ -111,23 +111,33 @@ export function normalizeFile(parsed, label, sourceFile) {
   throw new Error(`unsupported Harbor result.json schema: ${sourceFile} (has neither "verifier_result" nor "stats.evals")`)
 }
 
-function extractReward(rewards, sourceFile) {
+function extractReward(rewards, sourceFile, context = '') {
   if (rewards === undefined || rewards === null) return null
   if (typeof rewards !== 'object' || Array.isArray(rewards)) {
     throw new Error(`malformed "verifier_result.rewards" in ${sourceFile}: expected an object`)
   }
   const keys = Object.keys(rewards)
-  if (keys.length === 0) return null
-  const key = keys.includes('reward') ? 'reward' : keys[0]
+  if (keys.length === 0) {
+    throw new Error(`malformed "verifier_result.rewards" in ${sourceFile}${context}: empty rewards object`)
+  }
+  let key
+  if (keys.includes('reward')) {
+    key = 'reward'
+  } else if (keys.length === 1) {
+    key = keys[0]
+  } else {
+    throw new Error(`ambiguous rewards in ${sourceFile}${context}: multiple reward keys (${keys.join(', ')}) and no canonical "reward" key — refusing to guess`)
+  }
   const value = rewards[key]
   if (typeof value !== 'number' || Number.isNaN(value) || value < 0 || value > 1) {
-    throw new Error(`malformed reward in ${sourceFile}: ${JSON.stringify(value)} (must be a number in [0, 1])`)
+    throw new Error(`malformed reward in ${sourceFile}${context}: ${JSON.stringify(value)} (must be a number in [0, 1])`)
   }
   return value
 }
 
 function normalizeTrialLevel(parsed, common, anomalies, notes) {
-  const reward = extractReward(parsed.verifier_result?.rewards, common.sourceFile)
+  const context = ` (trial ${common.trialId ?? common.sourceFile})`
+  const reward = extractReward(parsed.verifier_result?.rewards, common.sourceFile, context)
   const hasException = parsed.exception_info !== null && parsed.exception_info !== undefined
   const taskId = normalizeTaskId(parsed, common, notes)
   const record = {
@@ -154,12 +164,20 @@ function normalizeJobLevel(parsed, common, anomalies, notes) {
   const exceptionsByName = new Map()
   for (const evalKey of Object.keys(parsed.stats.evals)) {
     const evalStats = parsed.stats.evals[evalKey]
-    const rewardStats = evalStats?.reward_stats
-    const exceptionStats = evalStats?.exception_stats
-    if (rewardStats && typeof rewardStats === 'object') {
+    if (evalStats === null || typeof evalStats !== 'object' || Array.isArray(evalStats)) {
+      throw new Error(`malformed stats.evals entry in ${common.sourceFile}: "${evalKey}" is not an object`)
+    }
+    const rewardStats = evalStats.reward_stats
+    const exceptionStats = evalStats.exception_stats
+    if (rewardStats !== undefined && rewardStats !== null) {
+      if (typeof rewardStats !== 'object' || Array.isArray(rewardStats)) {
+        throw new Error(`malformed reward_stats in ${common.sourceFile} (${evalKey}): expected an object`)
+      }
       for (const rewardKey of Object.keys(rewardStats)) {
         const entries = rewardStats[rewardKey]
-        if (!entries || typeof entries !== 'object') continue
+        if (entries === null || typeof entries !== 'object' || Array.isArray(entries)) {
+          throw new Error(`malformed reward_stats entry in ${common.sourceFile} (${evalKey}.${rewardKey}): expected an object mapping reward values to trial names`)
+        }
         for (const valueKey of Object.keys(entries)) {
           const reward = Number(valueKey)
           if (!Number.isFinite(reward) || reward < 0 || reward > 1) {
@@ -167,9 +185,12 @@ function normalizeJobLevel(parsed, common, anomalies, notes) {
           }
           const names = entries[valueKey]
           if (!Array.isArray(names)) {
-            throw new Error(`malformed reward_stats entry in ${common.sourceFile}: ${JSON.stringify(entries[valueKey])}`)
+            throw new Error(`malformed reward_stats entry in ${common.sourceFile} (${evalKey}.${rewardKey}.${valueKey}): expected an array of trial names, got ${JSON.stringify(names)}`)
           }
           for (const trialName of names) {
+            if (typeof trialName !== 'string' || trialName.trim() === '') {
+              throw new Error(`malformed trial name in ${common.sourceFile} (${evalKey}.${rewardKey}.${valueKey}): ${JSON.stringify(trialName)}`)
+            }
             if (seenTrialNames.has(trialName)) {
               throw new Error(`duplicate trial "${trialName}" in ${common.sourceFile}`)
             }
@@ -189,11 +210,21 @@ function normalizeJobLevel(parsed, common, anomalies, notes) {
         }
       }
     }
-    if (exceptionStats && typeof exceptionStats === 'object') {
+    if (exceptionStats !== undefined && exceptionStats !== null) {
+      if (typeof exceptionStats !== 'object' || Array.isArray(exceptionStats)) {
+        throw new Error(`malformed exception_stats in ${common.sourceFile} (${evalKey}): expected an object`)
+      }
       for (const exceptionKey of Object.keys(exceptionStats)) {
         const names = exceptionStats[exceptionKey]
-        if (!Array.isArray(names)) continue
-        for (const trialName of names) exceptionsByName.set(trialName, exceptionKey)
+        if (!Array.isArray(names)) {
+          throw new Error(`malformed exception_stats entry in ${common.sourceFile} (${evalKey}.${exceptionKey}): expected an array of trial names, got ${JSON.stringify(names)}`)
+        }
+        for (const trialName of names) {
+          if (typeof trialName !== 'string' || trialName.trim() === '') {
+            throw new Error(`malformed trial name in ${common.sourceFile} (${evalKey}.${exceptionKey}): ${JSON.stringify(trialName)}`)
+          }
+          exceptionsByName.set(trialName, exceptionKey)
+        }
       }
     }
   }
@@ -293,7 +324,7 @@ export function groupStats(records, files, label) {
     tasks: perTaskStats(records).size,
     rewardSum: round4(rewardSum),
     mean: rewards.length > 0 ? round4(rewardSum / rewards.length) : null,
-    median: median(rewards),
+    median: rewards.length > 0 ? round4(median(rewards)) : null,
     perfect: rewards.filter((value) => value === 1).length,
     min: rewards.length > 0 ? rewards[0] : null,
     max: rewards.length > 0 ? rewards[rewards.length - 1] : null,
@@ -385,23 +416,32 @@ function fmt(value) {
   return String(value)
 }
 
+// Escape a free-form label for a Markdown table cell: pipe characters would
+// split the cell and newlines would break the row.
+function escapeLabel(label) {
+  return String(label).replaceAll('|', '\\|').replaceAll('\n', ' ').replaceAll('\r', '')
+}
+
 export function renderMarkdown(summary) {
   const lines = []
   lines.push('# Benchmark Run Summary')
   lines.push('')
   lines.push('## Groups')
   lines.push('')
-  lines.push('| Group | Files | Records | Scored | Tasks | Reward | Mean | Median | Perfect |')
+  lines.push('| Group | Files | Records | Scored | Tasks | Reward | Trial mean | Median | Perfect |')
   lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |')
+  lines.push('')
+  lines.push('The "Trial mean" is trial-weighted: every scored trial contributes equally, regardless of how many trials each task has.')
+  lines.push('')
   for (const group of summary.groups) {
     const stats = group.stats
-    lines.push(`| ${stats.label} | ${stats.files.length} | ${stats.records} | ${stats.scored} | ${stats.tasks} | ${fmt(stats.rewardSum)} | ${fmt(stats.mean)} | ${fmt(stats.median)} | ${stats.perfect} |`)
+    lines.push(`| ${escapeLabel(stats.label)} | ${stats.files.length} | ${stats.records} | ${stats.scored} | ${stats.tasks} | ${fmt(stats.rewardSum)} | ${fmt(stats.mean)} | ${fmt(stats.median)} | ${stats.perfect} |`)
   }
   lines.push('')
   lines.push('## Per-task results')
   lines.push('')
   for (const group of summary.groups) {
-    lines.push(`### ${group.stats.label}`)
+    lines.push(`### ${escapeLabel(group.stats.label)}`)
     lines.push('')
     lines.push('| Task | n | Mean | Median | Min | Max | Perfect |')
     lines.push('| --- | --- | --- | --- | --- | --- | --- |')
@@ -414,9 +454,9 @@ export function renderMarkdown(summary) {
     const comparison = summary.comparison
     lines.push('## Paired comparison')
     lines.push('')
-    lines.push(`delta = ${comparison.groupA} median − ${comparison.groupB} median`)
+    lines.push(`delta = ${escapeLabel(comparison.groupA)} median − ${escapeLabel(comparison.groupB)} median`)
     lines.push('')
-    lines.push(`| Task | ${comparison.groupA} median | ${comparison.groupB} median | delta |`)
+    lines.push(`| Task | ${escapeLabel(comparison.groupA)} median | ${escapeLabel(comparison.groupB)} median | delta |`)
     lines.push('| --- | --- | --- | --- |')
     for (const row of comparison.rows) {
       lines.push(`| ${row.taskId} | ${fmt(row.aMedian)} | ${fmt(row.bMedian)} | ${fmt(row.delta)} |`)

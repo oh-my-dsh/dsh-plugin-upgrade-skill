@@ -26,7 +26,7 @@ function trialJson({ id, taskId = 'S1-static-scan', trialName = `${taskId}__abc`
     task_id: { path: `benchmark/tasks/${taskId}` },
     agent_info: { name: 'claude-code', model_info: model },
     config: { agent: { name: 'claude-code', model_name: model } },
-    verifier_result: { rewards: reward === null ? {} : { reward } },
+    verifier_result: reward === null ? null : { rewards: { reward } },
     exception_info: exception,
   }
 }
@@ -320,4 +320,87 @@ test('normalizeFile on a trial-level object yields one record with normalized ta
 
 test('loadResultFile throws for a missing path', () => {
   assert.throws(() => loadResultFile('/tmp/definitely-not-present-xyz.json'), /result file not found/)
+})
+
+test('multiple reward keys without a canonical reward key fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'multi.json')
+  writeFileSync(file, JSON.stringify({ id: 't1', task_name: 'dsh-plugin-upgrade/x', trial_name: 'x__1', task_id: { path: 'benchmark/tasks/X1' }, verifier_result: { rewards: { a: 1, b: 0.5 } }, exception_info: null }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /ambiguous rewards.*multiple reward keys \(a, b\) and no canonical "reward" key/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('empty rewards object fails loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'empty.json')
+  writeFileSync(file, JSON.stringify({ id: 't1', task_name: 'dsh-plugin-upgrade/x', trial_name: 'x__1', task_id: { path: 'benchmark/tasks/X1' }, verifier_result: { rewards: {} }, exception_info: null }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /empty rewards object/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('a single non-canonical numeric reward key is still accepted (kept compatibility)', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'single.json')
+  writeFileSync(file, JSON.stringify({ id: 't1', task_name: 'dsh-plugin-upgrade/x', trial_name: 'x__1', task_id: { path: 'benchmark/tasks/X1' }, verifier_result: { rewards: { other: 0.7 } }, exception_info: null }))
+  const { groups } = summarize([{ label: 'run', paths: [file] }])
+  rmSync(root, { recursive: true, force: true })
+  assert.equal(groups[0].stats.rewardSum, 0.7)
+})
+
+test('non-object eval entry in job-level stats fails loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': 'not-an-object' } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /malformed stats\.evals entry.*not an object/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('non-array trial names in reward_stats fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': { reward_stats: { reward: { '1.0': 'not-an-array' } } } } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /expected an array of trial names/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('non-object reward_stats entries fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': { reward_stats: { reward: 'not-an-object' } } } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /malformed reward_stats entry.*expected an object mapping reward values to trial names/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('non-object exception_stats fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': { reward_stats: { reward: { '1.0': ['x__1'] } }, exception_stats: 'bad' } } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /malformed exception_stats.*expected an object/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('non-array exception_stats names fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': { reward_stats: { reward: { '1.0': ['x__1'] } }, exception_stats: { E: 'not-an-array' } } } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /malformed exception_stats entry.*expected an array of trial names/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('non-string trial names fail loudly', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const file = join(root, 'job.json')
+  writeFileSync(file, JSON.stringify({ id: 'j', stats: { evals: { 'a__b': { reward_stats: { reward: { '1.0': [42] } } } } } }))
+  assert.throws(() => summarize([{ label: 'run', paths: [file] }]), /malformed trial name/)
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('group labels with pipes are escaped in Markdown tables', () => {
+  const root = mkdtempSync(join(tmpdir(), 'sr-'))
+  const f1 = writeTrial(root, 'a1.json', trialJson({ id: 'a1', taskId: 'S1-static-scan', trialName: 'S1-static-scan__a1', reward: 1 }))
+  const summary = summarize([{ label: 'run|with pipe\nsecond line', paths: [f1] }])
+  const md = renderMarkdown(summary)
+  rmSync(root, { recursive: true, force: true })
+  assert.match(md, /run\\\|with pipe second line/)
+  assert.doesNotMatch(md, /second line\n\|/)
 })
