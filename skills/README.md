@@ -36,6 +36,7 @@ description: 一句话说明做什么、何时触发，以及重要的只读/写
 
 | Skill | 说明 | 作者 |
 |---|---|---|
+| [plugin-workflow](plugin-workflow/) | 统一选择并编排检查、升级、测试、命名注册、发布与回滚，维护阶段账本和独立授权边界 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-upgrade](plugin-upgrade/) | 只读检查、已安装插件升级、宿主兼容迁移；七类触点 + 版本卡片 + 安全回滚 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-write](plugin-write/) | 编写 DSH 插件，按目标 Harness 版本选择扩展形态，并区分官方单仓与外部插件规则 | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-test](plugin-test/) | 为 DSH 插件变更选择测试层级，并覆盖真实组合、发布产物与目标版本产品入口 | [@omdsh-dev](https://github.com/omdsh-dev) |
