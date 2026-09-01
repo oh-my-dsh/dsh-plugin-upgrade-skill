@@ -11,7 +11,7 @@
 - **30 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.2.
 - **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
 - **6 skills** — one unified workflow selects and coordinates stages, while the other five check upgrades, write plugins, test plugins, release plugins, and diff two dsh versions.
-- **21 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded; one reproduces the real dsh-web v0.3.8 → v0.3.9 migration.
+- **23 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded; one reproduces the real dsh-web v0.3.8 → v0.3.9 migration.
 - **Multiple validation reports** — we installed two real dsh versions in Docker and confirmed that following the cards really does fix plugins, followed by several rounds of agent benchmark runs.
 
 ## Quick Start
@@ -130,7 +130,7 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 
 ## The exam (benchmark)
 
-The [benchmark/](benchmark/) folder has 21 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details. Seven validation reports sit in the same folder: [validation-report-2026-08-30.md](benchmark/validation-report-2026-08-30.md) (the earlier migration/benchmark validation record), [validation-report-2026-08-31.md](benchmark/validation-report-2026-08-31.md) (end-to-end validation after the Harbor format rework), [validation-report-2026-08-31-auth-v1.md](benchmark/validation-report-2026-08-31-auth-v1.md) (BENCHMARK-AUTH-v1 unattended-authorization validation), and four 2026-09-01 Codex + `gpt-5.6-luna` runs ([18-task batch with the skill](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md), [18-task batch with no Harbor-injected skill](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md), [real-repository task with the skill](benchmark/validation-report-2026-09-01.md), [real-repository task with no Harbor-injected skill](benchmark/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md)).
+The [benchmark/](benchmark/) folder has 23 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details. Seven validation reports sit in the same folder: [validation-report-2026-08-30.md](benchmark/validation-report-2026-08-30.md) (the earlier migration/benchmark validation record), [validation-report-2026-08-31.md](benchmark/validation-report-2026-08-31.md) (end-to-end validation after the Harbor format rework), [validation-report-2026-08-31-auth-v1.md](benchmark/validation-report-2026-08-31-auth-v1.md) (BENCHMARK-AUTH-v1 unattended-authorization validation), and four 2026-09-01 Codex + `gpt-5.6-luna` runs ([18-task batch with the skill](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md), [18-task batch with no Harbor-injected skill](benchmark/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md), [real-repository task with the skill](benchmark/validation-report-2026-09-01.md), [real-repository task with no Harbor-injected skill](benchmark/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md)).
 
 ## References
 
@@ -164,7 +164,7 @@ skills/<skill-name>/
 └── examples/       # example code (read-only, do not run)
 scripts/validate.mjs            # repo self-check
 scripts/validate-manifests.mjs  # multi-agent manifest self-check
-benchmark/                      # 21 exam questions + grader + validation report
+benchmark/                      # 23 exam questions + grader + validation report
 ```
 
 ## Contributing
