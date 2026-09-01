@@ -4,13 +4,14 @@
   "type": "module",
   "scripts": {
     "test": "npm run validate",
-    "validate": "node scripts/validate.mjs && node scripts/validate-manifests.mjs && node benchmark/scripts/validate-task-registry.mjs && node skills/plugin-upgrade/scripts/verify-runtime.check.mjs && npm run test:smoke",
+    "validate": "node scripts/validate.mjs && node scripts/validate-manifests.mjs && node benchmark/scripts/validate-task-registry.mjs && node --test benchmark/scripts/validate-task-registry.test.mjs && node skills/plugin-upgrade/scripts/verify-runtime.check.mjs && npm run test:smoke",
     "validate:skills": "node scripts/validate.mjs",
     "validate:manifests": "node scripts/validate-manifests.mjs",
     "validate:benchmark-registry": "node benchmark/scripts/validate-task-registry.mjs",
     "validate:naming": "node skills/plugin-write/scripts/validate-names.check.mjs",
     "validate:registry": "node skills/plugin-write/scripts/query-registry.check.mjs",
     "verify:runtime": "node skills/plugin-upgrade/scripts/verify-runtime.check.mjs",
-    "test:smoke": "node --test skills/plugin-test/scripts/docker-release-smoke.test.mjs"
+    "test:smoke": "node --test skills/plugin-test/scripts/docker-release-smoke.test.mjs",
+    "validate:workflow": "node skills/plugin-workflow/scripts/plan-workflow.check.mjs"
   }
 }

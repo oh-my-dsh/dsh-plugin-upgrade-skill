@@ -16,6 +16,8 @@ const expectedModes = new Map([
   ['H2-baseline-trap', 'mutable'],
   ['H3-client-plane', 'mutable'],
   ['H5-runtime-export-drift', 'mutable'],
+  ['M5-token-auth-smoke', 'mutable'],
+  ['H8-fire-drill', 'mutable'],
   ['H6-remote-error-trap', 'readonly'],
   ['S4-legacy-client-imports', 'readonly'],
   ['S5-negative-naming', 'readonly'],

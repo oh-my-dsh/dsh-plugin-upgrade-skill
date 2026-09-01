@@ -276,10 +276,19 @@ try {
   fail(registryCheckFile, `registry query check failed: ${error.stack ?? error.message}`)
 }
 
+// Workflow selections must be deterministic, schema-backed, dependency-safe, and read-only.
+const workflowCheckFile = join(root, 'skills', 'plugin-workflow', 'scripts', 'plan-workflow.check.mjs')
+try {
+  const { runWorkflowPlannerChecks } = await import(pathToFileURL(workflowCheckFile).href)
+  await runWorkflowPlannerChecks()
+} catch (error) {
+  fail(workflowCheckFile, `workflow planner check failed: ${error.stack ?? error.message}`)
+}
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`)
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only planner, offline naming validator, read-only registry v2 query`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only migration and workflow planners, offline naming validator, read-only registry v2 query`)
