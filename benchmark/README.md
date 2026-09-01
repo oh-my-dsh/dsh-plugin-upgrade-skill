@@ -45,47 +45,76 @@ honestly instead of quietly fixing it and pretending nothing happened).
 
 ## Benchmark results
 
-On 2026-09-01, Codex ran the then-current 19-task snapshot with
-`openai/gpt-5.6-luna` at `xhigh` reasoning effort in two configurations: with
-`skills/plugin-upgrade`, and with no skill supplied by Harbor. The selected
-single-run results are shown below. `M5-token-auth-smoke` and `H8-fire-drill` were
-added later and therefore have no scores in these reports.
+On 2026-09-01, Codex ran the benchmark at `xhigh` reasoning effort with
+`openai/gpt-5.6-terra` on a 22-task snapshot and with
+`openai/gpt-5.6-luna` on the earlier 19-task snapshot. Terra was tested both
+with `skills/plugin-upgrade` and with Harbor-injected and Codex-native skills
+fully disabled. Luna was tested with `skills/plugin-upgrade` and with no skill
+supplied by Harbor, although native Codex skills remained available in the
+latter condition. These rows belong to the same benchmark family but are not a
+direct model comparison: `S8-release-routing-trap`, `M5-token-auth-smoke`, and
+`H8-fire-drill` were added after the Luna snapshot, while
+`H10-browser-activation-trap` was added after the Terra runs.
 
-| Configuration | Scope | reward | mean | perfect tasks | Detailed report |
-|---|---:|---:|---:|---:|---|
-| With `skills/plugin-upgrade` | 19-task 2026-09-01 snapshot | 15.95/19 | 0.8395 | 13 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md) · [real-repository task](results/validation-report-2026-09-01.md) |
-| No Harbor-injected skill | 19-task 2026-09-01 snapshot | 13.09/19 | 0.6889 | 10 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md) · [real-repository task](results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md) |
+| Model | Skill condition | Scope | reward | mean | perfect tasks | Summed job duration | Tokens (input / cache / output) | Cost | Detailed report |
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| `openai/gpt-5.6-terra` | With `skills/plugin-upgrade` | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 16.75/21 scored; 16.75/22 conservative | 0.7976 scored; 0.7614 conservative | 13 | 2h33m58.860s | 54,094,444 / 51,131,904 / 355,256 | $20.4145 | [22-task report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md) |
+| `openai/gpt-5.6-terra` | Literal zero skill | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 14.93/21 scored; 14.93/22 conservative | 0.7110 scored; 0.6786 conservative | 10 | 2h51m32s | 46,824,114 / 44,432,640 / 283,652 | $17.0733 | [22-task literal-no-skill report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md) |
+| `openai/gpt-5.6-luna` | With `skills/plugin-upgrade` | 19-task 2026-09-01 snapshot | 15.95/19 | 0.8395 | 13 | 1h38m30.556s | 57,118,102 / 54,630,656 / 332,161 | $1.9887 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md) · [real-repository task](results/validation-report-2026-09-01.md) |
+| `openai/gpt-5.6-luna` | No Harbor-injected skill† | 19-task 2026-09-01 snapshot | 13.09/19 | 0.6889 | 10 | 1h49m25.650s | 36,761,760 / 34,515,712 / 244,223 | $1.4326 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md) · [real-repository task](results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md) |
 
-Per-task comparison (`delta = with-skill - no-Harbor-skill`):
+Duration is the sum of the Harbor job durations represented in each report;
+concurrent jobs therefore remain additive rather than being collapsed into an
+elapsed wall-clock window. Token cells are ordered as input / cache / output.
+Cache tokens are a subset of input tokens and must not be added to input when
+calculating total consumption. Costs are the Harbor-recorded USD totals. The
+Luna resource totals were recovered from the persisted historical
+`result.json` artifacts underlying the linked reports. The Terra literal
+zero-skill row uses the exact retained result-file totals; its report notes
+that the provider's absolute billing total is higher because Harbor erased the
+first H8 agent attempt when retrying it.
 
-| Task | with skill | no Harbor-injected skill | delta |
-|---|---:|---:|---:|
-| S1-static-scan | 1.00 | 0.67 | +0.33 |
-| S2-negative-scan | 1.00 | 0.60 | +0.40 |
-| S3-snapshot-migration | 1.00 | 0.00 | +1.00 |
-| H4-tsbuildinfo-trap | 1.00 | 0.30 | +0.70 |
-| M1-host-migration | 1.00 | 1.00 | 0.00 |
-| H1-plane-trap | 1.00 | 1.00 | 0.00 |
-| H2-baseline-trap | 1.00 | 1.00† | 0.00 |
-| H3-client-plane | 1.00 | 1.00† | 0.00 |
-| H5-runtime-export-drift | 1.00 | 1.00 | 0.00 |
-| H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 |
-| S4-legacy-client-imports | 1.00 | 1.00 | 0.00 |
-| S5-negative-naming | 0.75 | 0.50 | +0.25 |
-| H6-remote-error-trap | 0.00 | 0.00 | 0.00 |
-| S6-corridor-net-state | 0.25 | 0.25 | 0.00 |
-| S7-unpublished-cohort | 0.25 | 0.10 | +0.15 |
-| M2-optional-dep-trap | 1.00 | 1.00 | 0.00 |
-| M3-session-projection | 1.00 | 1.00 | 0.00 |
-| M4-peer-prerelease-range | 1.00 | 1.00 | 0.00 |
-| H7-locale-trap | 0.90 | 1.00 | -0.10 |
+Per-task skill comparison (`delta = with-skill - corresponding no-skill
+condition`; `—` means the task was absent or no verifier reward existed):
 
-The observed with-skill uplift is **+2.86 reward points across 19 tasks**, or
-**+0.1505 mean reward**. Seven tasks improved, eleven tied, and one (H7) was
-0.10 lower. The largest gains were S3 (+1.00), H4 (+0.70), S2 (+0.40), and S1
-(+0.33). H6 remained at 0 in both configurations, while the real-repository
-task (run as H8 and now numbered H9) improved from 0.67 to 0.80 but did not
-complete the full runtime validation in either run.
+| Task | Luna with skill | Luna no Harbor skill | Luna delta | Terra with skill | Terra literal zero skill | Terra delta |
+|---|---:|---:|---:|---:|---:|---:|
+| S1-static-scan | 1.00 | 0.67 | +0.33 | 1.00 | 0.83 | +0.17 |
+| S2-negative-scan | 1.00 | 0.60 | +0.40 | 1.00 | 0.60 | +0.40 |
+| S3-snapshot-migration | 1.00 | 0.00 | +1.00 | 1.00 | 0.20 | +0.80 |
+| H4-tsbuildinfo-trap | 1.00 | 0.30 | +0.70 | 1.00 | 0.30 | +0.70 |
+| M1-host-migration | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H1-plane-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H2-baseline-trap | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 |
+| H3-client-plane | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 |
+| H5-runtime-export-drift | 1.00 | 1.00 | 0.00 | 0.20 | 1.00 | -0.80 |
+| M5-token-auth-smoke | — | — | — | 0.60 | 0.60 | 0.00 |
+| H8-fire-drill | — | — | — | error | error | — |
+| H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 | 0.80 | 0.50 | +0.30 |
+| H10-browser-activation-trap | — | — | — | — | — | — |
+| S4-legacy-client-imports | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| S5-negative-naming | 0.75 | 0.50 | +0.25 | 0.75 | 0.50 | +0.25 |
+| H6-remote-error-trap | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| S6-corridor-net-state | 0.25 | 0.25 | 0.00 | 0.25 | 0.25 | 0.00 |
+| S7-unpublished-cohort | 0.25 | 0.10 | +0.15 | 0.25 | 0.25 | 0.00 |
+| S8-release-routing-trap | — | — | — | 1.00 | 1.00 | 0.00 |
+| M2-optional-dep-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| M3-session-projection | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| M4-peer-prerelease-range | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H7-locale-trap | 0.90 | 1.00 | -0.10 | 0.90 | 0.90 | 0.00 |
+
+For Luna, the observed with-skill uplift is **+2.86 reward points across 19
+tasks**, or **+0.1505 mean reward**. Seven tasks improved, eleven tied, and one
+(H7) was 0.10 lower. The largest gains were S3 (+1.00), H4 (+0.70), S2 (+0.40),
+and S1 (+0.33). H6 remained at 0 in both configurations, while the
+real-repository task (run as H8 and now numbered H9) improved from 0.67 to 0.80
+but did not complete the full runtime validation in either run.
+
+For Terra, the observed with-skill uplift is **+1.82 reward points across the
+21 tasks with verifier rewards**, or **+0.0867 mean reward**. Six tasks
+improved, fourteen tied, and one (H5) was 0.80 lower. The largest gains were S3
+(+0.80), H4 (+0.70), S2 (+0.40), and H9 (+0.30). H8 produced no verifier
+reward in either Terra condition and is excluded from this delta.
 
 These numbers are evidence from one selected attempt per task and condition,
 not the three-run median recommended below. They also have these protocol
