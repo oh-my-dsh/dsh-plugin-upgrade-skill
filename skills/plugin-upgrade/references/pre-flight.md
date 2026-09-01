@@ -83,7 +83,7 @@ Also record the face the call lives in (Host, Web Client, ordinary Cordis plugin
 package entry point; an internal architecture migration must not be passed off as a
 public-API recommendation for every plugin.
 
-**Related cards**: `DSH-0.1.2-A1-01`, `DSH-0.1.2-A1-06`, `DSH-0.1.2-A1-11`, `DSH-0.1.2-A1-20`, `DSH-0.1.2-A1-21`, `DSH-0.1.2-A1-22`, `DSH-0.1.2-A1-25`, `DSH-0.1.2-A1-27`, `DSH-0.1.2-A1-30`, `DSH-0.1.2-A1-31`, `DSH-0.1.2-A2-02`, `DSH-0.1.2-A2-05`, `DSH-0.1.2-A2-06`, `DSH-0.1.2-A2-08`, `DSH-0.1.2-A2-10`
+**Related cards**: `DSH-0.1.2-A1-01`, `DSH-0.1.2-A1-06`, `DSH-0.1.2-A1-11`, `DSH-0.1.2-A1-20`, `DSH-0.1.2-A1-21`, `DSH-0.1.2-A1-22`, `DSH-0.1.2-A1-25`, `DSH-0.1.2-A1-27`, `DSH-0.1.2-A1-30`, `DSH-0.1.2-A1-31`, `DSH-0.1.2-A1-32`, `DSH-0.1.2-A2-02`, `DSH-0.1.2-A2-05`, `DSH-0.1.2-A2-06`, `DSH-0.1.2-A2-08`, `DSH-0.1.2-A2-10`
 
 ## #4 direct host directory reads/writes
 

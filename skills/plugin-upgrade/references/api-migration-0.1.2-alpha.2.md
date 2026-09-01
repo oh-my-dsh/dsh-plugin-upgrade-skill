@@ -163,7 +163,7 @@ The table below applies only to the Web Client's generated projection. Host call
 2. The Host directly injects the owning domain service and does not declare `remote`, which only exists on the Client face; do not pull Host-only packages into the Client bundle either.
 3. Client contributions explicitly declare `remote` and the `remote.<namespace>` actually used; do not rely on another plugin having mounted first.
 4. Defer to the target tag's package exports, `.d.ts`, implementation, and consumer tests; architecture notes only explain intent and are not a substitute for the generated API.
-5. For streams such as `workspace.follow`, use the reconnect/snapshot adapter the owning package already provides; ordinary UI uses `ctx.workspaces` and must not reimplement the generation baseline, mutation echo/race handling, or a timed `list()`.
+5. For streams such as `workspace.follow`, use the reconnect/snapshot adapter the owning package already provides; ordinary UI uses `ctx.workspaces` for the list projection and Workspace CRUD, and must not reimplement the generation baseline, mutation echo/race handling, or a timed `list()`. `connectWorkspace` / `startSession` / `pickDirectory` / directory browse are not on that face after the Client Runtime split — they live on `ctx.uiWorkspace` ([DSH-0.1.2-A1-32](v0.1.2-alpha.1.md)).
 
 ### Verification by face
 
@@ -589,7 +589,7 @@ Later layers win over earlier ones. That is why migrating a high-level row requi
 
 ## API-10 · Web Client runtime unbundling, keyed chat snapshots, and command attachment parameters
 
-- **Applies to**: Plugin source repositories that still depend on `@deepseek-ai/dsh-client-runtime/client`, consume session transcripts, extend chat command rows, or call the Host `ctx.commands.execute` directly.
+- **Applies to**: Plugin source repositories that still depend on `@deepseek-ai/dsh-client-runtime/client`, consume session transcripts, extend chat command rows, call Workspace navigation (`connectWorkspace` / `pickDirectory`), or call the Host `ctx.commands.execute` directly.
 - **How it breaks**: `dsh-client-runtime` has been removed since alpha.1. Changing `ClientContext` to the Cordis `Context` alone is not enough: the client facets merged into Context come from their owning packages; without direct type dependencies, `skipLibCheck: true` can silently propagate `useChat` selectors or callback parameters to `any`. On alpha.2, `ChatSnapshot.nodes` is a keyed store, not the old `ConversationNode[]`; Host command execution also gained image attachments between `line` and `signal`.
 
 ### Exact mapping
@@ -603,6 +603,8 @@ Later layers win over earlier ones. That is why migrating a high-level row requi
 | `useSession(session => session?.nodes)` | `useChat(chat => ...)` |
 | `ConversationSnapshot.nodes[]` | Iterate `ChatSnapshot.order` in order, calling `snapshot.nodes.get(id)` per id |
 | `ctx.commands.execute(agent, line, signal)` | `ctx.commands.execute(agent, line, [], signal)`; pass real attachments when there are images |
+| `IWorkspaces.connectWorkspace` / `startSession` / `pickDirectory` / `listDirectory` / `createDirectory` | `ctx.uiWorkspace` from `@deepseek-ai/dsh-client-ui-workspace/client`; list/CRUD stay on `ctx.workspaces` ([DSH-0.1.2-A1-32](v0.1.2-alpha.1.md)) |
+| `workspaces.list` `baselinesReady` / `recentWorkspaceId` | `phase === 'ready'` on both the workspace and session lists; recency is derived from the current session, then `updatedAt` |
 
 `snapshot.legacy.nodes` is only for staged compatibility with an explicit dual-host requirement; it should not become the new primary data surface for alpha.2-only plugins. The minimal read shape for alpha.2-only:
 

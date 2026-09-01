@@ -78,8 +78,10 @@
    卡仅建议，不自动采用。
 6. 兼容修改通过后，单独确定并修改插件自身 SemVer；核对 packed 文件名和 packed manifest
    都是该插件版本，不能误把宿主 DSH 版本当成插件发版版本。涉及删除
-   `dsh-client-runtime`、keyed chat snapshot 或命令执行签名时，使用
-   [alpha.2 API ledger](references/api-migration-0.1.2-alpha.2.md)。
+   `dsh-client-runtime`、keyed chat snapshot、命令执行签名或 Workspace 导航
+   （`connectWorkspace` / `pickDirectory`）时，使用
+   [alpha.2 API ledger](references/api-migration-0.1.2-alpha.2.md) 与
+   [DSH-0.1.2-A1-32](references/v0.1.2-alpha.1.md)。
 
 ## 安全边界
 

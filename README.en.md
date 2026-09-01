@@ -8,7 +8,7 @@
 
 ## What's in this repo
 
-- **30 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.2.
+- **39 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.2.
 - **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
 - **6 skills** — one unified workflow selects and coordinates stages, while the other five check upgrades, write plugins, test plugins, release plugins, and diff two dsh versions.
 - **6 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded.
@@ -112,8 +112,8 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 | Version range | Status | Cards | Notes |
 | --- | --- | --- | --- |
 | 0.1.1-rc.1 → 0.1.1-rc.2 | ✅ Done | [v0.1.1-rc.2.md](skills/plugin-upgrade/references/v0.1.1-rc.2.md) | 3 cards |
-| 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ Done | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 20 cards |
-| 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 7 cards |
+| 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ Done | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 28 cards |
+| 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 8 cards |
 | Cross-version countermeasures | ✅ Done | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 items (running old and new side by side, back up first, what to do when startup hangs, etc.) |
 | 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.2); we'll re-verify everything once it is |
 | 0.1.2 → later versions | 📝 Up for grabs | — | Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
