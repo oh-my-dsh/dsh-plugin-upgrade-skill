@@ -52,3 +52,6 @@ network.
   earlier runs: the 2026-09-01 19-task paired run predates snapshot recording
   and its exact repository/skill commits were not recorded in the validation
   reports, so it cannot be reconstructed faithfully.
+- The anchor is the first post-#105 commit (`472e5ea…`): the H7 `task.toml`
+  escape bug (which made Harbor silently drop H7) is fixed in the pinned tree,
+  so all 23 tasks in the frozen list are actually runnable.
