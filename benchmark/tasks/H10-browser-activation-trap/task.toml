@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: H10 browser client activation trap.
+[task]
+name = "dsh-plugin-upgrade/h10-browser-activation-trap"
+version = "1.1.0"
+description = "A renamed Web plugin appears in the boot manifest and its bundle returns 200, but its browser client never activates: repair the client registration contract and prove it in Chromium"
+keywords = ["dsh", "plugin-migration", "web-client", "browser", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "container-task", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 3072
+storage_mb = 6144

@@ -19,6 +19,7 @@ const expectedModes = new Map([
   ['M5-token-auth-smoke', 'mutable'],
   ['H8-fire-drill', 'mutable'],
   ['H9-dsh-web-alpha2', 'mutable'],
+  ['H10-browser-activation-trap', 'mutable'],
   ['H6-remote-error-trap', 'readonly'],
   ['S4-legacy-client-imports', 'readonly'],
   ['S5-negative-naming', 'readonly'],
