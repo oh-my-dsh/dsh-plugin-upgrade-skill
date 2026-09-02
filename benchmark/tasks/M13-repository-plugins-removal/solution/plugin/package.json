@@ -1,0 +1,21 @@
+{
+  "name": "@demo/dsh-bench-repo",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "main": "./.dsh-plugin/index.js",
+  "exports": {
+    ".": "./.dsh-plugin/index.js",
+    "./client": "./.dsh-plugin/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
+}
