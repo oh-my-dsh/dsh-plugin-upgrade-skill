@@ -43,6 +43,7 @@ Requirements:
 | [plugin-release](plugin-release/) | Package, publish, and distribute DSH plugins: release track selection, unpublished-cohort installation, CI gates, and rollback | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-runtime-debug](plugin-runtime-debug/) | Diagnose DSH Web plugin runtime failures against host source contracts (paste/attachment/input machine, version chips, etc.) — method-level, no answers | [@lhh010](https://github.com/lhh010) |
 | [plugin-heavy-dep](plugin-heavy-dep/) | Integrate heavy dependencies (mermaid etc.) into lightweight DSH Web plugins: lazy single-file chunks, host routes with robust containment, SVG whitelist sanitization, event ownership | [@lhh010](https://github.com/lhh010) |
+| [dsh-benchmark-case](dsh-benchmark-case/) | Extract a real plugin upgrade experience (or existing version cards references/v*.md) into one auto-graded Harbor benchmark task: case selection criteria, fixture & traps, judge scoring boundaries, registry sync discipline | [@vlln](https://github.com/vlln) |
 
 ## Version compatibility audit (separate entry)
 

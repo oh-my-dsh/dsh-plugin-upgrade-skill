@@ -10,7 +10,7 @@
 
 - **58 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.0-rc.8 一路到 0.1.2-rc.1（alpha.5→rc.1 无插件面变更，0 张卡；alpha.2→alpha.3 有 1 张新增能力卡；alpha.3→alpha.4 有 6 张；rc.8→rc.1 为 9 张草稿卡）。
 - **12 条通用对策**：有些坑和版本无关（比如"先备份再动手""新旧版本怎么共存"），这些写成了一份对策清单。
-- **8 个 skill**：一个统一工作流负责选择和编排，另外七个分别负责查升级、写新插件、测插件、发插件、对比两个版本的差别、排查运行时故障和给轻量插件接入重依赖。
+- **9 个 skill**：一个统一工作流负责选择和编排，另外八个分别负责查升级、写新插件、测插件、发插件、对比两个版本的差别、排查运行时故障、给轻量插件接入重依赖，以及把插件升级经验提取成 benchmark 考题。
 - **47 道考题（benchmark）**：用来测"AI 装了我们的 skill 之后到底会不会升级插件"，每道题都有自动判分；其中包含 dsh-web v0.3.8 → v0.3.9 和 dsh-data-agent v0.1.3 → v0.1.4 两道真实迁移。
 - **多份验证报告**：我们在 docker 里真的装了两个版本的 dsh，验证了"按卡片做就能修好插件"；此后又用 Codex 等 agent 做了多轮 benchmark 实测。
 
@@ -109,7 +109,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 帮我把 dsh-ads 这个插件升级到 dsh-v0.1.2-alpha.2
 ```
 
-## 8 个 skill 各自管什么
+## 9 个 skill 各自管什么
 
 | Skill | 干什么用 |
 | --- | --- |
@@ -121,6 +121,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | [dsh-upgrade-audit](skills/dsh-upgrade-audit/) | 对比两个 dsh 版本到底改了什么，给升级卡提供证据 |
 | [plugin-runtime-debug](skills/plugin-runtime-debug/) | 排查插件在宿主里的运行时故障（坐标/投影不匹配、版本滞后、幽灵条目等） |
 | [plugin-heavy-dep](skills/plugin-heavy-dep/) | 给轻量插件接入重依赖（mermaid 这类），含懒加载接入清单 |
+| [dsh-benchmark-case](skills/dsh-benchmark-case/) | 把某个插件的真实升级经验（或已有版本卡）提取成一条可自动判分的 benchmark 考题（fixture + instruction + judge + solution） |
 
 ## 升级卡覆盖到哪个版本了
 
