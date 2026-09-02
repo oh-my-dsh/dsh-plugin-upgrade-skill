@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam M12 (host HTTP gateway + settings-plugins card, in-container cold boot verification)
+[task]
+name = "dsh-plugin-upgrade/m12-interpreters-card"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era interpreters plugin to 0.1.2-alpha.2: the snapshot store's move to dsh-client-store, the dsh-settings Settings -> SettingsProvider rename, client inject rework, and a browser-roster activation proof"
+keywords = ["dsh", "plugin-migration", "settings-card", "http-gateway", "client-plane", "snapshot-store", "cold-boot", "container", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "settings-type-rename", "client-plane", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

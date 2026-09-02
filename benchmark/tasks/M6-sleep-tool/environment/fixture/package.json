@@ -1,0 +1,25 @@
+{
+  "name": "@bench/dsh-bench-sleep-tool",
+  "version": "0.1.0",
+  "description": "DSH tool plugin: one `sleep` tool with cancellation support (0.1.1-era cohort; exam material only)",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "^0.0.1-rc.1",
+    "cordis": "^4.0.0-rc.7"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": { "optional": true },
+    "cordis": { "optional": true }
+  },
+  "private": true
+}

@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam H12 (toolview takeover across the ui-tool/ui-chat split, in-container web cold boot + browser roster)
+[task]
+name = "dsh-plugin-upgrade/h17-merge-calls"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era toolview-merge client plugin to 0.1.2-alpha.2: chat node types move to ui-chat, card derivations move from the deleted resultView/callView to block.meta + args + result text, in-session reads move to useChat, inject recomposition, and a browser-roster activation proof"
+keywords = ["dsh", "plugin-migration", "client-plane", "ui-chat", "ui-tool", "card-derivation", "useChat", "cold-boot", "container", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "client-plane", "ui-chat", "labels-contract", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

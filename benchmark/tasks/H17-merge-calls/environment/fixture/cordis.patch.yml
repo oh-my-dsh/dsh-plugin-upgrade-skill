@@ -1,0 +1,12 @@
+# Insert the bench-merge-calls client plugin row. The plugin only contributes
+# a browser-side toolview takeover (tool.call.toolview shadow registrations),
+# so the row carries the user-facing config and an empty host apply.
+# (exam fixture, distilled from @huanlin/dsh-plugin-merge-tool-calls; the
+# grouping partition walk is elided — the exam is the ui-tool/ui-chat plane)
+- insert:
+    - id: bench-merge-calls
+      name: '@bench/dsh-bench-merge-calls'
+      config:
+        tools: []
+        groupBy: adjacent
+        maxGroupSize: 8

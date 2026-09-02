@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam H9 (host RPC contract + client plane, in-container cold boot verification)
+[task]
+name = "dsh-plugin-upgrade/h14-mineru-api"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era tool plugin with a dedicated host RPC channel to 0.1.2-alpha.2: apiproxy facade removal, 2-arg rpc.handle contract, client inject rework, and a browser-roster activation proof"
+keywords = ["dsh", "plugin-migration", "rpc", "connection-rpc", "client-plane", "cold-boot", "container", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "rpc-contract", "client-plane", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

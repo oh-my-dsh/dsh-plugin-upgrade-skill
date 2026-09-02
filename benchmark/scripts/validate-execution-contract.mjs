@@ -41,6 +41,19 @@ const expectedModes = new Map([
   ['M3-session-projection', 'mutable'],
   ['M4-peer-prerelease-range', 'mutable'],
   ['H7-locale-trap', 'mutable'],
+  ['M6-sleep-tool', 'mutable'],
+  ['M7-d399-overlay', 'mutable'],
+  ['M8-brand-text', 'mutable'],
+  ['M9-mcpanel', 'mutable'],
+  ['M10-tools-tree', 'mutable'],
+  ['M11-sidebar-spur', 'mutable'],
+  ['M12-interpreters-card', 'mutable'],
+  ['H14-mineru-api', 'mutable'],
+  ['H15-locale-pack', 'mutable'],
+  ['H16-history-dock', 'mutable'],
+  ['H17-merge-calls', 'mutable'],
+  ['H18-blame-bubbles', 'mutable'],
+  ['H19-workspace-ya', 'mutable'],
 ])
 
 const compact = (text) => text.replaceAll('\r\n', '\n').replace(/\s+/g, ' ')

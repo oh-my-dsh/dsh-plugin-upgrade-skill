@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam H10 (pure language pack, native third-language API migration, in-container web cold boot + browser roster)
+[task]
+name = "dsh-plugin-upgrade/h15-locale-pack"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era locale monkey-patch plugin to 0.1.2-alpha.2: the native third-party language API (addLanguage + register(ns, locale, dict)) replaces the lookup patch, selection UI, persistence, and the client inject narrows to the single locale module"
+keywords = ["dsh", "plugin-migration", "locale", "language-pack", "monkey-patch-removal", "client-plane", "cold-boot", "container", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "locale-api", "peer-narrowing", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

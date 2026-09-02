@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam H11 (Lexical composer + session-view split on the client plane, in-container cold boot verification)
+[task]
+name = "dsh-plugin-upgrade/h16-history-dock"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era composer-history plugin to 0.1.2-alpha.2: the composer became a Lexical contenteditable (capture-phase keydown + inputActions.setDraft), the listener moved into the session-scoped dock, history collection moved to the ui-chat legacy node slice, and a browser-roster activation proof"
+keywords = ["dsh", "plugin-migration", "lexical-composer", "keydown-capture", "client-plane", "ui-chat", "cold-boot", "container", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "composer-surface", "client-plane", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

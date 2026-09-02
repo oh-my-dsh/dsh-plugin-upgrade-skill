@@ -1,0 +1,11 @@
+# bench-locale-pack bundle layer: inserts the plugin row.
+# (exam fixture, distilled from @huanlin/dsh-plugin-better-locale; 16 of the
+# 19 languages elided — the exam is the lookup patch → native language API)
+# The browser half patches the locale runtime's lookup chain so calls to
+# ctx.locale's translate chain consult the override store before falling
+# back to DSH's native zh/en dictionaries. The dsh active locale is never
+# mutated; the selected override id persists in localStorage
+# (dsh-plugin-better-locale:active), sidestepping the LOCALE_IDS schema enum.
+- insert:
+    - id: bench-locale-pack
+      name: '@bench/dsh-bench-locale-pack'
