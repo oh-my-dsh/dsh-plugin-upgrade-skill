@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam question M14 (0812 service renames, cold boot verification)
+[task]
+name = "dsh-plugin-upgrade/m14-service-renames-0812"
+version = "1.1.0"
+description = "Migrate a 0.1.1-era plugin whose inject/ctx usage still names the pre-0812 services (httpServer/tasks/onTaskDone) to the alpha.2 names (webServer/jobs/onJobDone) so it activates and its route is served"
+keywords = ["dsh", "plugin-migration", "service-rename", "webServer", "jobs", "container", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "service-rename", "0812", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

@@ -49,6 +49,7 @@ const expectedModes = new Map([
   ['M11-sidebar-spur', 'mutable'],
   ['M12-interpreters-card', 'mutable'],
   ['M13-repository-plugins-removal', 'mutable'],
+  ['M14-service-renames-0812', 'mutable'],
   ['H14-mineru-api', 'mutable'],
   ['H15-locale-pack', 'mutable'],
   ['H16-history-dock', 'mutable'],

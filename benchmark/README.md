@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.4 · Harbor format)
 
-The 45 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 46 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 14 are written exams (read
-the code, produce the answer); the last 31 are hands-on (actually install dsh and run
+the code, produce the answer); the last 32 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -56,6 +56,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | M11-sidebar-spur | Hands-on | ClientContext lived in the deleted client-runtime: does it move to the cordis Context + ui-renderer slots merge, rework the inject list, and keep the dock registration |
 | M12-interpreters-card | Hands-on | The store engine moved to dsh-client-store and dsh-settings renamed Settings to SettingsProvider: does it re-home both type surfaces, the client inject list, and the peer cohort |
 | M13-repository-plugins-removal | Hands-on | A 0.1.1-era repository-plugin ships in the removed shape (`.dsh-plugin/` + `dsh.entry` + a self-executing client): does it convert it to the one official npm-package path — bundle `dsh.bundle`/`dsh.client`/`exports` + cordis.patch.yml insert — drop the legacy manifest, and prove the browser half is recognized in the boot manifest |
+| M14-service-renames-0812 | Hands-on | A bundle plugin still names the pre-0812 host services — `inject: ['tasks', 'httpServer']`, `ctx.tasks` reads, `ctx.httpServer.register`, an `onTaskDone` listener — while the alpha.2 host renamed them (`httpServer`→`webServer`, `tasks`→`jobs`, `onTaskDone`→`onJobDone`) and the boot fails at `pending (waiting for services: tasks, httpServer)`: does it recognize the high-frequency low-diff breaking change, rename every identifier (comments included), and prove activation plus a live route with a cold boot |
 | H14-mineru-api | Hands-on | A tool plugin serves its settings page through a dedicated /mineru-api RPC channel: apiproxy is deleted, rpc.handle lost its third authority argument, and the client inject list names the removed runtime - migrate both planes and prove the boot-roster entry |
 | H15-locale-pack | Hands-on | A 19-language override layer built on a LocaleRuntime lookup monkey-patch: does it migrate to the native third-language API (addLanguage + register(ns, locale, dict)) and delete the patch, the settings row, and localStorage - instead of the belt-and-braces bait |
 | H16-history-dock | Hands-on | The composer became a Lexical contenteditable: does it switch to a capture-phase document keydown inside the session-scoped dock, collect history through useChat legacy nodes, and yield to data-trigger-menu - instead of the textarea bait |
@@ -216,7 +217,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 45 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 46 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -228,7 +229,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 45 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 46 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
@@ -404,7 +405,7 @@ numbers cannot be compared across models or against later runs.
   adding ordinary fixture tasks** — the point is to stop anyone from accidentally
   publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 45 tasks, and verify the
+  judge / solve.sh following the layout of the existing 46 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the
