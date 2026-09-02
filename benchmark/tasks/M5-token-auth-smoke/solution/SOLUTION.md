@@ -20,7 +20,8 @@ inside the route.
 ## Boundaries
 
 - The judge replays the two requests itself in a clean profile; the agent's own
-  smoke.md is only recorded as a reason, never scored.
+  smoke.md is a required audit artifact but is not read by the judge and never
+  scored.
 - The channel root `/ping` alone is not a dispatch target — connection channels
   dispatch under `/ping/<endpoint>` with the envelope method equal to the
   endpoint, so the smoke posts to `/ping/ping` (method `ping`).

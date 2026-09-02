@@ -31,6 +31,7 @@ export function emit(score, reasons, extra = {}) {
  *   fail-to-pass: patched must pass while the baseline must not pass;
  *   pass-to-pass: patched must keep passing (baseline fail blocks the credit);
  *   pass / report: patched-only requirement.
+ * `requires` lists checkpoint ids that must all have passed before this one counts.
  * Caps apply after the sum: `cap.when` lists checkpoint ids that must all have
  * passed (used for cross-checkpoint traps), otherwise a failed checkpoint's own cap
  * applies when it was not passed.
