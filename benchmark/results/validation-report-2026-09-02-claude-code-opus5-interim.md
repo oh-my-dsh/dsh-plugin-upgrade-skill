@@ -108,6 +108,12 @@ byte-identical content of upstream `ba7c702` (#105). Without it the task cannot 
 resolved at all (finding 1). No H7 data is reported here — the fix only takes
 effect in the pending round.
 
+For orientation relative to current main: this run pins the commit frozen in #100
+(`main@232b00a`), not the formal evaluation snapshot added by #104
+(`benchmark/snapshots/2026-09-01-main-23.json`, which pins `main@472e5ea`). The
+#104 snapshot already contains the #105 H7 fix; the #100 pin predates it, which
+is the root cause of the H7 data gap recorded here (finding 1).
+
 ## How to reproduce
 
 Per task and arm:
