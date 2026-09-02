@@ -1,0 +1,26 @@
+schema_version = "1.4"
+# Harbor task: migrate a plugin-internal session event ledger from the alpha.3
+# implicit whole-event-array surface to the alpha.4 sequence/window ledger API.
+[task]
+name = "dsh-plugin-upgrade/h20-session-events-ledger"
+version = "1.1.0"
+description = "dsh 0.1.2-alpha.4 removes Session.events: migrate a plugin-internal event ledger module to the explicit sequence/window access surface (visible window, exact-seq lookup, own/inherited cut) without patching the runtime"
+keywords = ["dsh", "plugin-migration", "session-events", "alpha4", "ledger", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "session-events", "alpha4", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

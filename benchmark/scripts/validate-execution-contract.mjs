@@ -54,6 +54,7 @@ const expectedModes = new Map([
   ['H17-merge-calls', 'mutable'],
   ['H18-blame-bubbles', 'mutable'],
   ['H19-workspace-ya', 'mutable'],
+  ['H20-session-events-ledger', 'mutable'],
   ['H21-question-answerer-waterfall', 'mutable'],
 ])
 

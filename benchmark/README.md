@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.4 · Harbor format)
 
-The 43 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 44 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 14 are written exams (read
-the code, produce the answer); the last 29 are hands-on (actually install dsh and run
+the code, produce the answer); the last 30 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -61,6 +61,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | H17-merge-calls | Hands-on | ui-tool deleted its resultView/callView derivations and ui-chat owns the chat nodes: does it derive cards from block.meta + call args + result text, read through useChat, and relax override dicts to Partial - instead of the renamed-fields bait |
 | H18-blame-bubbles | Hands-on | The suggestion-bubbles plugin rides the deleted apiproxy facade with a three-argument rpc.handle and an undeclared projection cell: does it migrate to ConnectionRpcResult, the two-argument handle, and the SessionProjectionStateMap dual-table declaration |
 | H19-workspace-ya | Hands-on | The workspace browser must take over the disabled official ui-workspace through slots.provideRoot plus a stand-in service (the boot-deadlock fix): does it compose the takeover instead of patching the shipped package in node_modules |
+| H20-session-events-ledger | Hands-on | alpha.4 removes the `Session.events` getter (implicit whole-event-array access): does the agent migrate a plugin-internal event ledger module to the explicit sequence/window surface — visible window keeps fork-inherited history, exact-seq lookup, half-open window bounds, own/inherited cut — instead of a symbol rename, an invented getEvents, or a runtime patch |
 | H21-question-answerer-waterfall | Hands-on | A structured-question answerer still uses the rc.2 single-seat registration: can it migrate to the alpha.2 waterfall while preserving current-owner claim, foreign-owner delegation, rebinding, disposal, and the legacy cohort |
 
 ## Benchmark results
@@ -214,7 +215,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 43 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 44 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -226,7 +227,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 43 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 44 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
@@ -402,7 +403,7 @@ numbers cannot be compared across models or against later runs.
   adding ordinary fixture tasks** — the point is to stop anyone from accidentally
   publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 43 tasks, and verify the
+  judge / solve.sh following the layout of the existing 44 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the
