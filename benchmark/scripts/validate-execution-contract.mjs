@@ -139,6 +139,15 @@ for (const [taskId, mode] of expectedModes) {
     fail(taskFile, 'task version must be 1.1.0 for BENCHMARK-AUTH-v1')
   }
 
+  // A prompt-level closed-book clause is not an execution boundary: every task
+  // that declares one must also disable agent-container network access.
+  if (/closed-book|闭卷/i.test(normalized)) {
+    const agentBlock = taskToml.match(/\[agent\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? ''
+    if (!/^network_mode = "no-network"$/m.test(agentBlock)) {
+      fail(taskFile, 'closed-book task agent must run with no network')
+    }
+  }
+
   if (taskId === 'H9-dsh-web-alpha2') {
     const agentBlock = taskToml.match(/\[agent\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? ''
     const verifierBlock = taskToml.match(/\[verifier\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? ''
