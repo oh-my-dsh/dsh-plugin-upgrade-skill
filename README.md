@@ -135,7 +135,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 
 ## 考题（benchmark）
 
-[benchmark/](benchmark/) 目录下有 27 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 dsh 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可出 0~1 分。同一只 AI 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。详见 [benchmark/README.md](benchmark/README.md)。同目录还有多份验证报告：[validation-report-2026-08-30.md](benchmark/results/validation-report-2026-08-30.md)（此前的迁移/benchmark 验证记录）、[validation-report-2026-08-31.md](benchmark/results/validation-report-2026-08-31.md)（Harbor 格式改造后的端到端验证）、[validation-report-2026-08-31-auth-v1.md](benchmark/results/validation-report-2026-08-31-auth-v1.md)（BENCHMARK-AUTH-v1 无人值守授权验证），以及四份 2026-09-01 的 Codex + `gpt-5.6-luna` 实测报告（[带 skill 的其余 18 题](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md)、[不带 skill 的其余 18 题](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md)、[带 skill 的真实仓库题](benchmark/results/validation-report-2026-09-01.md)、[不带 skill 的真实仓库题](benchmark/results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md)）。
+[benchmark/](benchmark/) 目录下有 29 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 dsh 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可出 0~1 分。同一只 AI 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。详见 [benchmark/README.md](benchmark/README.md)。同目录还有多份验证报告：[validation-report-2026-08-30.md](benchmark/results/validation-report-2026-08-30.md)（此前的迁移/benchmark 验证记录）、[validation-report-2026-08-31.md](benchmark/results/validation-report-2026-08-31.md)（Harbor 格式改造后的端到端验证）、[validation-report-2026-08-31-auth-v1.md](benchmark/results/validation-report-2026-08-31-auth-v1.md)（BENCHMARK-AUTH-v1 无人值守授权验证），以及四份 2026-09-01 的 Codex + `gpt-5.6-luna` 实测报告（[带 skill 的其余 18 题](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md)、[不带 skill 的其余 18 题](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md)、[带 skill 的真实仓库题](benchmark/results/validation-report-2026-09-01.md)、[不带 skill 的真实仓库题](benchmark/results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md)）。
 
 ## 参考资源
 
@@ -169,7 +169,7 @@ skills/<skill-name>/
 └── examples/       # 示例代码（只读，不要运行）
 scripts/validate.mjs            # 仓库自检
 scripts/validate-manifests.mjs  # 多 agent 清单自检
-benchmark/                      # 27 道考题 + 判分 + 验证报告
+benchmark/                      # 29 道考题 + 判分 + 验证报告
 ```
 
 ## 想贡献？
