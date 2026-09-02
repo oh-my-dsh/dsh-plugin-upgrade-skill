@@ -5,7 +5,7 @@
 //        + rpc.handle carries exactly (channel, handler) — no authority option (10)
 //        + ConnectionRpcResult type source declared (10)
 //        + dsh.client.inject drops dsh-client-runtime (5) and names dsh-client-connection (5)
-//        + every @deepseek-ai peer floor sits on the 0.1.2-alpha cohort (10);
+//        + every @deepseek-ai/dsh-* peer floor sits on the 0.1.2-alpha cohort (10);
 //   25 — real container verification: `dsh plugin add` succeeds (8), web cold boot with
 //        no negative signal (9), __DSH_BOOT__.entries lists the client entry (8);
 //   10 — version bumped vs the git baseline (6) + "private": true preserved (4).
@@ -228,14 +228,14 @@ function scoreStatic() {
 
   // (e) the peer cohort.
   const peers = pkg.peerDependencies ?? {}
-  const dshPeers = Object.entries(peers).filter(([k]) => k.startsWith('@deepseek-ai/'))
+  const dshPeers = Object.entries(peers).filter(([k]) => k.startsWith('@deepseek-ai/dsh-'))
   const offCohort = dshPeers.filter(([, v]) => !ALPHA_COHORT.test(String(v)))
   if (dshPeers.length > 0 && offCohort.length === 0) {
     score += 10
-    reasons.push(`all ${dshPeers.length} @deepseek-ai peer floors sit on the 0.1.2-alpha cohort (+10)`)
+    reasons.push(`all ${dshPeers.length} @deepseek-ai/dsh-* peer floors sit on the 0.1.2-alpha cohort (+10)`)
   } else {
     allPassed = false
-    reasons.push(`peer floors off the 0.1.2-alpha cohort: ${offCohort.map(([k, v]) => `${k}@${v}`).join(', ') || 'no @deepseek-ai peers declared'}`)
+    reasons.push(`peer floors off the 0.1.2-alpha cohort: ${offCohort.map(([k, v]) => `${k}@${v}`).join(', ') || 'no @deepseek-ai/dsh-* peers declared'}`)
   }
 
   return { score, allPassed, authorityRetained, apiproxyRetained, reasons }

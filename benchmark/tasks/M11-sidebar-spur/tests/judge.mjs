@@ -240,14 +240,14 @@ function scoreStatic() {
 
   // (e) the peer cohort.
   const peers = pkg.peerDependencies ?? {}
-  const dshPeers = Object.entries(peers).filter(([k]) => k.startsWith('@deepseek-ai/'))
+  const dshPeers = Object.entries(peers).filter(([k]) => k.startsWith('@deepseek-ai/dsh-'))
   const offCohort = dshPeers.filter(([, v]) => !ALPHA_COHORT.test(String(v)))
   if (dshPeers.length > 0 && offCohort.length === 0) {
     score += 8
-    reasons.push(`all ${dshPeers.length} @deepseek-ai peer floors sit on the 0.1.2-alpha cohort (+8)`)
+    reasons.push(`all ${dshPeers.length} @deepseek-ai/dsh-* peer floors sit on the 0.1.2-alpha cohort (+8)`)
   } else {
     allPassed = false
-    reasons.push(`peer floors off the 0.1.2-alpha cohort: ${offCohort.map(([k, v]) => `${k}@${v}`).join(', ') || 'no @deepseek-ai peers declared'}`)
+    reasons.push(`peer floors off the 0.1.2-alpha cohort: ${offCohort.map(([k, v]) => `${k}@${v}`).join(', ') || 'no @deepseek-ai/dsh-* peers declared'}`)
   }
 
   // (f) no bare `cordis` peer; the scoped cordis peer at ^4.0.1 exactly.
