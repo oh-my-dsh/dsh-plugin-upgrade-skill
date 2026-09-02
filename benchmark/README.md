@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.4 · Harbor format)
 
-The 46 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 47 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 14 are written exams (read
-the code, produce the answer); the last 32 are hands-on (actually install dsh and run
+the code, produce the answer); the last 33 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -65,6 +65,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | H19-workspace-ya | Hands-on | The workspace browser must take over the disabled official ui-workspace through slots.provideRoot plus a stand-in service (the boot-deadlock fix): does it compose the takeover instead of patching the shipped package in node_modules |
 | H20-session-events-ledger | Hands-on | alpha.4 removes the `Session.events` getter (implicit whole-event-array access): does the agent migrate a plugin-internal event ledger module to the explicit sequence/window surface — visible window keeps fork-inherited history, exact-seq lookup, half-open window bounds, own/inherited cut — instead of a symbol rename, an invented getEvents, or a runtime patch |
 | H21-question-answerer-waterfall | Hands-on | A structured-question answerer still uses the rc.2 single-seat registration: can it migrate to the alpha.2 waterfall while preserving current-owner claim, foreign-owner delegation, rebinding, disposal, and the legacy cohort |
+| H22-dsh-data-agent-alpha2 | Hands-on | Can it migrate the complete real dsh-data-agent v0.1.3 repository to the exact v0.1.4 alpha.2 client behavior, including provider ownership, New Session Hero preservation, revisioned workbench hand-off, Lexical fallback, release artifacts, and browser execution |
 
 ## Benchmark results
 
@@ -77,13 +78,13 @@ supplied by Harbor, although native Codex skills remained available in the
 latter condition. These rows belong to the same benchmark family but are not a
 direct model comparison: `S8-release-routing-trap`, `M5-token-auth-smoke`, and
 `H8-fire-drill` were added after the Luna snapshot, while
-`H10-browser-activation-trap` was added after the Terra runs, and
-`H11-dual-cohort-rpc` is added by this PR.
+`H10-browser-activation-trap`, `H11-dual-cohort-rpc`, and
+`H22-dsh-data-agent-alpha2` were added after the Terra runs.
 
 | Model | Skill condition | Scope | reward | mean | perfect tasks | Summed job duration | Tokens (input / cache / output) | Cost | Detailed report |
 |---|---|---|---:|---:|---:|---:|---:|---:|---|
 | `openai/gpt-5.6-terra` | With `skills/plugin-upgrade` | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 16.75/21 scored; 16.75/22 conservative | 0.7976 scored; 0.7614 conservative | 13 | 2h33m58.860s | 54,094,444 / 51,131,904 / 355,256 | $20.4145 | [22-task report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md) |
-| `openai/gpt-5.6-terra` | Literal zero skill | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 14.93/21 scored; 14.93/22 conservative | 0.7110 scored; 0.6786 conservative | 10 | 2h51m32s | 46,824,114 / 44,432,640 / 283,652 | $17.0733 | [22-task literal-no-skill report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md) |
+| `openai/gpt-5.6-terra` | Literal zero skill | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 14.93/21 scored; 14.93/22 conservative | 0.7110 scored; 0.6786 conservative | 10 | 2h51m31.853s | 46,824,114 / 44,432,640 / 283,652 | $17.0733 | [22-task literal-no-skill report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md) |
 | `openai/gpt-5.6-luna` | With `skills/plugin-upgrade` | 19-task 2026-09-01 snapshot | 15.95/19 | 0.8395 | 13 | 1h38m30.556s | 57,118,102 / 54,630,656 / 332,161 | $1.9887 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md) · [real-repository task](results/validation-report-2026-09-01.md) |
 | `openai/gpt-5.6-luna` | No Harbor-injected skill† | 19-task 2026-09-01 snapshot | 13.09/19 | 0.6889 | 10 | 1h49m25.650s | 36,761,760 / 34,515,712 / 244,223 | $1.4326 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md) · [real-repository task](results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md) |
 | `deepseek/deepseek-v4-flash` + terminus-2 | With `skills/plugin-upgrade` | 23-task full set (3-run median) | 18.55/23 | 0.8063 | 14 | 2h34m | 58.7M / n/a / 2.5M | $5.28 | [terminus-2 + deepseek-v4-flash report](results/validation-report-2026-09-01-terminus2-deepseek-v4-flash.md) |
@@ -118,6 +119,7 @@ condition`; `—` means the task was absent or no verifier reward existed):
 | H8-fire-drill | — | — | — | error | error | — |
 | H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 | 0.80 | 0.50 | +0.30 |
 | H10-browser-activation-trap | — | — | — | — | — | — |
+| H22-dsh-data-agent-alpha2 | 0.08 | 0.11‡ | -0.03 | — | — | — |
 | S4-legacy-client-imports | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
 | S5-negative-naming | 0.75 | 0.50 | +0.25 | 0.75 | 0.50 | +0.25 |
 | H6-remote-error-trap | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
@@ -153,12 +155,16 @@ limits:
   no-Harbor-injected-skill result rather than a literal zero-skill baseline.
   Excluding those two contaminated trials, the audit-clean subset including
   the real-repository task scored 11.09/17 (mean 0.6524).
+- ‡ **H22 control boundary:** H22 disabled both Harbor-injected and Codex-native
+  skills, so its 0.11 control is a literal-zero-skill result rather than the
+  earlier Luna column's no-Harbor-skill condition. See the linked H22 reports.
 - The standalone with-skill report calls the real-repository task
   `H5-dsh-web-alpha2`, and the no-skill report calls it `H8-dsh-web-alpha2`.
   After upstream assigned H8 to the fire-drill task, it is listed here as
   `H9-dsh-web-alpha2`; only the task number changed.
-- H7's checked-in `task.toml` contained an unescaped `\s`, so both 18-task
-  batches used a temporary copy with only that TOML description escape fixed.
+- H7's checked-in `task.toml` contained an unescaped `\s`, so both Luna
+  18-task batches and both Terra 22-task runs used a temporary copy with only
+  that TOML description escape fixed.
 - Several runs recorded setup or timeout anomalies. The linked reports retain
   the exact selected-result, retry, installer, scope-cap, and timeout evidence.
 
@@ -217,7 +223,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 46 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 47 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -229,7 +235,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 46 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 47 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
@@ -256,7 +262,7 @@ node benchmark/scripts/validate-execution-contract.mjs
    - Build-cache diagnosis task (H4): the agent keeps `src/` unchanged, may only clean
      the `lib/` build artifacts, and writes its report to
      `/app/agent-output/H4-tsbuildinfo-trap/`;
-   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8/H9/H10/H21): the agent edits files under `/app/fixture/`
+   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8/H9/H10/H21/H22): the agent edits files under `/app/fixture/`
      directly; H2 additionally requires writing the migration report to
      `/app/agent-output/H2-baseline-trap/`.
 3. **Grading**: after the agent finishes, Harbor automatically runs `tests/test.sh`;
@@ -400,12 +406,13 @@ numbers cannot be compared across models or against later runs.
 
 - Every fake plugin in a task's `environment/fixture/` has `"private": true` in its
   package.json, and its README states it is "exam material only, do not publish".
-  The H9-dsh-web-alpha2 fixture is the exception: it is an Apache-2.0 upstream source
-  slice and must retain its original package metadata. **Keep both safeguards when
+  H9-dsh-web-alpha2 and H22-dsh-data-agent-alpha2 are the exceptions: they are
+  Apache-2.0/MIT upstream source snapshots and must retain their original package
+  metadata. **Keep both safeguards when
   adding ordinary fixture tasks** — the point is to stop anyone from accidentally
   publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 46 tasks, and verify the
+  judge / solve.sh following the layout of the existing 47 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the

@@ -1,6 +1,6 @@
 # Scoring rules and checkpoint mapping
 
-Total 4600 (46 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
+Total 4700 (47 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
 Every judge: exit 0, with the last stdout line
 `{"score": 0-100, "max": 100, "reasons": [...]}`; `tests/test.sh` parses that last
 line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
@@ -55,6 +55,7 @@ line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
 | H18-blame-bubbles | DSH-0.1.2-A1-01 apiproxy removal; DSH-0.1.2-A2-08 sessionProjections; DSH-0.1.2-A1-25 | Static 50 (apiproxy gone 10 + two-arg handle 10 + SessionProjectionStateMap merge 8 + runtime gone 10 + inject 6 + cohort 6) + deploy 25 + diagnose 15 (exists 5 + names 5 + A1-01 3 + A2-08 2) + release 10; authority retained caps at 60, apiproxy retained caps at 40, runtime retained caps at 20 |
 | H19-workspace-ya | DSH-0.1.2-A1-25 split; DSH-0.1.2-A1-03; M3 precedent (never edit shipped packages) | Static 50 (provideRoot takeover 10 + runtimeGone 10 + controllers+ui-session inject 10 + no actionable node_modules edit 10 + GlobalStandardProps.useWorkspaces declaration 5 + cohort 5) + deploy 25 + diagnose 15 (exists 5 + names 5 + A1-25 3 + A1-03 2) + release 10; any node_modules patching present caps at 20 (M3 precedent), runtime retained caps at 20 |
 | H21-question-answerer-waterfall | DSH-0.1.2-A1-20 · structured-question answerer registration seam | fixture changed/import/export 10 + fixture mock tests 10 + real rc.2 seat claim/dispose 15 + real alpha.2 shared-Context agentless claim 15 + scoped current-owner claim 15 + foreign-owner delegation exactly once 15 + owner-object rebinding 10 + disposer fallthrough 10; version/identity/retry branching, `ctx.root` bypass, tampered cohorts, or deleting the answerer contract are rejected or capped; agentless delivery is scored only on the shared-Context topology |
+| H22-dsh-data-agent-alpha2 | dsh-data-agent [v0.1.3](https://github.com/omdsh-dev/dsh-data-agent/tree/v0.1.3) → [v0.1.4](https://github.com/omdsh-dev/dsh-data-agent/tree/v0.1.4); DSH-0.1.2-A1-19 / A1-25 / A1-28 / A1-32 | Static 100: release/cohort/provider graph (16) + client Context/type owners (10) + Session projection/workbench delivery (10) + host Hero seat preservation (18) + revisioned Hero→Session bridge (16) + Lexical/textarea placeholder restoration (10) + generated artifacts/tests/conformance (10) + exact bytes across every one of the 34 release-diff paths (10). At 80+, the judge performs frozen-lockfile install, upstream test/typecheck/build, packs the candidate, installs only that tarball through the official CLI, cold-boots dsh 0.1.2-alpha.2 Web, and has Chromium fetch and execute the served candidate client while observing its real `__ModuleLoader__.load` handoff with no activation failure. Test/build failure caps at 85, runtime failure at 80, and tag-diff-external edits at 90 |
 
 ## Liveness signals (shared convention for container tasks)
 
@@ -76,8 +77,14 @@ code" checkpoint (the attribution principle from the validation report).
   runtime; "browser plane pass" means the host-advertised `__DSH_BOOT__` boot manifest
   contains this plugin's entry. The runtime behavior of the `RemoteResult`
   error-flow branch is not covered.
-- H10 is the narrow exception: Chromium executes client.js and must observe the
-  activation marker. Manifest presence and a 200 response are deliberately partial.
+- H10-browser-activation-trap and H22-dsh-data-agent-alpha2 are the
+  browser-execution exceptions. H10 requires its fixture-owned activation marker.
+  H22-dsh-data-agent-alpha2 has no benchmark marker in the exact upstream source, so it
+  executes the real served `client.js` in Chromium and observes the exact package id
+  plus a factory function at alpha.2's `__ModuleLoader__.load` boundary, without
+  claiming an application-specific DOM marker or a public module-import API that the
+  host does not expose. This is backed by the exact upstream regression suite and the
+  semantic contracts above.
 - M1/H1/H2/H3/H5-runtime-export-drift/H9-dsh-web-alpha2: only "activation + service call reachable" is verified; no full round of
   real conversation is run (no API key); a route count of 0 is expected and not a
   failure. H5-runtime-export-drift additionally installs only via the pack → tarball → add path (a link
@@ -107,6 +114,9 @@ code" checkpoint (the attribution principle from the validation report).
   separately drives scope-targeted requests for current/foreign owners. It does not
   claim sibling-entry agentless delivery, a full DSH agent registry, a TUI panel,
   credentials, or whole-product equivalence between cohorts.
+- H22-dsh-data-agent-alpha2 preserves all 171 Git-tracked v0.1.3 files without
+  exclusions and locks the complete 34-path v0.1.4 delta. The runtime always builds
+  and packs the submitted fixture; it never substitutes the npm-published v0.1.4.
 - Container-task judges only create the `bench-*` profile and the `/tmp/bench-*`
   directories and clean them up when the run ends; nothing else in the environment is
   touched.
@@ -117,7 +127,9 @@ code" checkpoint (the attribution principle from the validation report).
   are generous (add 180s, boot 60s, web 150s). H9-dsh-web-alpha2 also performs a cold
   install, build, and pack of the real workspace, so its verifier timeout is 900s rather
   than the ordinary 600s.
-- H10 also starts system Chromium; its 600s verifier budget includes browser startup.
+- H10-browser-activation-trap and H22-dsh-data-agent-alpha2 start system Chromium.
+  H22-dsh-data-agent-alpha2 also performs a cold dependency install, full upstream
+  test/typecheck/build, pack, and alpha.2 profile install, so its verifier budget is 900s.
 - Every Harbor trial is a fresh container, so tasks are naturally isolated and no
   manual fixture restoration is needed; repeated runs of the same task do not affect
   each other's profiles.

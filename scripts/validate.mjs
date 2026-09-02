@@ -64,6 +64,10 @@ for (const entry of skillEntries) {
 }
 
 // Repository-relative Markdown links; external links are deliberately not network-gated.
+const deltaOverlays = [{
+  target: join(root, 'benchmark', 'tasks', 'H22-dsh-data-agent-alpha2', 'solution', 'target'),
+  base: join(root, 'benchmark', 'tasks', 'H22-dsh-data-agent-alpha2', 'environment', 'fixture'),
+}]
 for (const file of markdownFiles) {
   const text = await readFile(file, 'utf8')
   const links = text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)
@@ -72,7 +76,17 @@ for (const file of markdownFiles) {
     if (/^(https?:|mailto:|#)/.test(target)) continue
     target = target.split('#', 1)[0].split('?', 1)[0]
     if (!target) continue
-    if (!existsSync(resolve(dirname(file), target))) fail(file, `broken relative link: ${match[1]}`)
+    const resolved = resolve(dirname(file), target)
+    if (existsSync(resolved)) continue
+    const overlay = deltaOverlays.find(({ target: targetRoot }) => {
+      const rel = relative(targetRoot, resolved)
+      return rel !== '' && !rel.startsWith('..')
+    })
+    if (overlay !== undefined) {
+      const rel = relative(overlay.target, resolved)
+      if (existsSync(resolve(overlay.base, rel))) continue
+    }
+    fail(file, `broken relative link: ${match[1]}`)
   }
 }
 

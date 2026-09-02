@@ -1,0 +1,38 @@
+schema_version = "1.4"
+artifacts = [
+  { source = "/app/fixture" },
+  { source = "/app/.git" },
+]
+
+[task]
+name = "dsh-plugin-upgrade/h22-dsh-data-agent-alpha2"
+version = "1.1.0"
+description = "Migrate the complete omdsh-dev/dsh-data-agent v0.1.3 repository to the exact v0.1.4 compatibility behavior for dsh 0.1.2-alpha.2"
+keywords = ["dsh", "plugin-migration", "dsh-data-agent", "real-world", "client-runtime", "session-projection", "harbor"]
+
+[metadata]
+difficulty = "expert"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "real-repository", "alpha2", "chinese-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+upstream_repository = "https://github.com/omdsh-dev/dsh-data-agent"
+source_tag = "v0.1.3"
+target_tag = "v0.1.4"
+source_commit = "8e3ab6a3560733c11417bdf2912c9db4f09a6974"
+target_commit = "d1bd4381ed771d505db69f2a9065379f7d3165a0"
+license = "MIT"
+
+[agent]
+timeout_sec = 18000.0
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "separate"
+network_mode = "public"
+
+[environment]
+network_mode = "public"
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192

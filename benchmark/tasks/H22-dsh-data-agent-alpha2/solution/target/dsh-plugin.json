@@ -1,0 +1,72 @@
+{
+  "$schema": "https://dsh.community/schemas/dsh-plugin-0.15.json",
+  "manifestVersion": "0.15",
+  "id": "io.github.omdsh-dev.dsh-data-agent",
+  "name": "DSH Data Agent",
+  "version": "0.1.4",
+  "facets": {
+    "host": {
+      "entry": "lib/ecosystem.js",
+      "apiVersion": "v1alpha1"
+    }
+  },
+  "requires": {
+    "contracts": [
+      {
+        "apiVersion": "commands.dsh/v1alpha1",
+        "kind": "Command"
+      },
+      {
+        "apiVersion": "storage.dsh/v1alpha1",
+        "kind": "LocalStorage",
+        "optional": true,
+        "fallback": "use the native Cordis storage-domain, or process-local state when native persistence is disabled"
+      }
+    ],
+    "services": []
+  },
+  "permissions": [
+    {
+      "name": "commands.invoke",
+      "scope": "io.github.omdsh-dev.dsh-data-agent",
+      "reason": "invoke the declared database and human-controlled Catalog commands when the dsh-tui runtime is loaded"
+    }
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "id": "io.github.omdsh-dev.dsh-data-agent.database",
+        "title": "Database",
+        "description": "Manage the native data-agent database connection when the dsh-tui runtime is loaded"
+      },
+      {
+        "id": "io.github.omdsh-dev.dsh-data-agent.catalog",
+        "title": "Data Catalog",
+        "description": "Scan system metadata, follow persistent progress, and browse versioned Catalog results when the dsh-tui runtime is loaded"
+      }
+    ],
+    "panels": []
+  },
+  "subscriptions": [],
+  "license": "MIT",
+  "source": {
+    "repository": "https://github.com/omdsh-dev/dsh-data-agent"
+  },
+  "overrides": [
+    {
+      "target": "package.json#dsh.bundle",
+      "kind": "native",
+      "description": "The existing Cordis bundle remains the sole functional runtime"
+    },
+    {
+      "target": "lib/client.js",
+      "kind": "build",
+      "description": "The Web client is a generated browser closure-factory artifact"
+    },
+    {
+      "target": "database-clients",
+      "kind": "native",
+      "description": "Database execution may require external CLI clients; ClickHouse uses its packaged HTTP client"
+    }
+  ]
+}
