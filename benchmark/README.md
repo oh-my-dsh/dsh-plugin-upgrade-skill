@@ -148,11 +148,12 @@ it is alive.
   switch to a cloud sandbox such as Daytona with `--env`).
 - Harbor CLI: `uv tool install harbor` or `pip install harbor`.
 - A model API key for the agent (e.g. `ANTHROPIC_API_KEY`, depending on the agent you use).
-- For formal/reproducible runs, pin an evaluation snapshot under
-  [`benchmark/snapshots/`](snapshots/README.md) instead of describing the object
-  as "the current benchmark".
 
 ## How to run
+
+For formal/reproducible runs, pin an evaluation snapshot under
+[`benchmark/snapshots/`](snapshots/README.md) instead of describing the object
+as "the current benchmark".
 
 ```sh
 # oracle self-check (no API cost): the reference answer must score a perfect 1.0

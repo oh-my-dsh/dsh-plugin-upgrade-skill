@@ -11,9 +11,9 @@
 // clone, the validator fails with an actionable "fetch the referenced commit"
 // message instead of fetching anything.
 import { execFileSync } from 'node:child_process'
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync, realpathSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 export const SNAPSHOT_ID_RE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$/
 export const DATE_RE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/
@@ -196,7 +196,13 @@ export function validateSnapshots(snapshotsDir, repoRoot) {
 
 // ── CLI ───────────────────────────────────────────────────────────────────────
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+const isMain = (() => {
+  try {
+    return realpathSync(process.argv[1] ?? '') === realpathSync(fileURLToPath(import.meta.url))
+  } catch {
+    return false
+  }
+})()
 if (isMain) {
   const repoRoot = resolve(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
   const snapshotsDir = join(repoRoot, 'benchmark', 'snapshots')

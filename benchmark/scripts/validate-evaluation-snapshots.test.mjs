@@ -46,7 +46,7 @@ function buildRepo({ withSkill = true, t2Instruction = true } = {}) {
   writeTask(root, 'T1-alpha')
   writeTask(root, 'T2-beta')
   if (!t2Instruction) {
-    execFileSync('rm', ['-f', join(root, 'benchmark/tasks/T2-beta/instruction.md')], { cwd: root })
+    rmSync(join(root, 'benchmark/tasks/T2-beta/instruction.md'), { force: true })
   }
   if (withSkill) writeSkill(root)
   const commitA = commitAll(root, 'A')
