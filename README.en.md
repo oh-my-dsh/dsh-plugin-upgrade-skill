@@ -128,7 +128,7 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 | 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 8 cards |
 | 0.1.2-alpha.2 → 0.1.2-alpha.3 | ✅ Done | [v0.1.2-alpha.3.md](skills/plugin-upgrade/references/v0.1.2-alpha.3.md) | 0 cards (no plugin-facing changes; carries the verification record) |
 | Cross-version countermeasures | ✅ Done | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 items (running old and new side by side, back up first, what to do when startup hangs, etc.) |
-| 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.3); we'll re-verify everything once it is |
+| 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.4; the corridor is verified through alpha.3); we'll re-verify everything once it is |
 | 0.1.2 → later versions | 📝 Up for grabs | — | Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
 
 ## The exam (benchmark)

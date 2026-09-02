@@ -1,6 +1,6 @@
 # Rollup · 0.1.1 → 0.1.2 Corridor
 
-> Status: based on `dsh-v0.1.2-alpha.3`. The 0.1.2 final release is not out yet — measured on npm dist-tags, `latest`/`next` = `0.1.1-rc.2` and `alpha` = `0.1.2-alpha.3`. Once the final release ships, this file must be re-verified and promoted against the final tag (the original caveat in [issue #1](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/issues/1)).
+> Status: based on `dsh-v0.1.2-alpha.3`. The 0.1.2 final release is not out yet — measured on npm dist-tags on 2026-09-01, `latest`/`next` = `0.1.1-rc.2` and `alpha` = `0.1.2-alpha.3` (note: `0.1.2-alpha.4` shipped later on 2026-09-01 and is not yet covered by this corridor or the alpha.3 card). Once the final release ships, this file must be re-verified and promoted against the final tag (the original caveat in [issue #1](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/issues/1)).
 > Scope: this file does not repeat the version cards. Each change is governed by its card; this file only covers corridor-level increments — cross-cohort coexistence, unpublished-cohort installation, CI/release coupling, pre-migration inventory and baseline attribution, boot-race handling, the three install-channel pitfalls, type-surface export drift, the host's own safety boundary, and the layered validation checklist.
 > Card format: see [README.md](README.md). Touchpoint numbers correspond to the [pre-flight checklist](pre-flight.md).
 
