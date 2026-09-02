@@ -92,6 +92,7 @@ Structure the report as:
 | [references/README.md](references/README.md) | Version corridors, card schema, and maintenance rules |
 | [references/pre-flight.md](references/pre-flight.md) | Seven-class touchpoint self-check and summary template |
 | [references/troubleshooting.md](references/troubleshooting.md) | Post-migration symptom → root cause → card lookup |
+| [references/v0.1.1-rc.1.md](references/v0.1.1-rc.1.md) | rc.8→rc.1 draft cards: repository-plugins mechanism removal, `dshClient`→`dsh.client` manifest merge, client-modules scan → bundle `dsh.client`, strict injection + weak `ctx.get`, session event contract, self-rendering client session aggregation, `tasks.peek` removal, 0812 service renames (vlln plugin migrations; corridor is the closest published-tag alignment for the internal 0810–0812 snapshot window) |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated cards |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated cards |
 | [references/v0.1.2-alpha.3.md](references/v0.1.2-alpha.3.md) | alpha.2→alpha.3 curated cards (zero cards: no plugin-facing changes; carries the verification record) |

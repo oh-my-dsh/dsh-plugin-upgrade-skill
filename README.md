@@ -126,6 +126,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 
 | 版本区间 | 状态 | 说明卡 | 备注 |
 | --- | --- | --- | --- |
+| 0.1.0-rc.8 → 0.1.1-rc.1 | 📝 草稿 | [v0.1.1-rc.1.md](skills/plugin-upgrade/references/v0.1.1-rc.1.md) | 9 张草稿卡（vlln 插件迁移：repository 机制移除、strict inject、0812 服务改名等；走廊为 0810–0812 内测快照窗口的最近公开 tag 对齐，待上游复核） |
 | 0.1.1-rc.1 → 0.1.1-rc.2 | ✅ 完成 | [v0.1.1-rc.2.md](skills/plugin-upgrade/references/v0.1.1-rc.2.md) | 3 张卡 |
 | 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ 完成 | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 28 张卡 |
 | 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ 完成 | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 8 张卡 |
