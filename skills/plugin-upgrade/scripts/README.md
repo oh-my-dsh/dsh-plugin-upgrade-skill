@@ -37,7 +37,7 @@ node skills/plugin-upgrade/scripts/plan-migration.mjs ... --touchpoints 1,5
 ## What it does
 
 1. reads `pre-flight-patterns.json`;
-2. scans code and config files (`.ts .tsx .js .jsx .mjs .cjs .json .yml .yaml .toml`, plus lockfiles/Dockerfile/Makefile) while skipping Markdown, `.git`, dependencies, generated output, sensitive filenames and files larger than 1 MiB;
+2. scans code and config files (`.ts .tsx .js .jsx .mjs .cjs .json .yml .yaml .toml`, plus lockfiles/Dockerfile/Makefile) while skipping Markdown, `.git`, dependencies (including `.node_modules-delete-pending` cleanup residue), generated output, sensitive filenames and files larger than 1 MiB; on macOS it reports and skips `dataless` cloud placeholders instead of implicitly downloading them;
    hits are ranked `src/` code first, other code next, config last, then capped at `--max-hits` (default 20); the touchpoint table reports shown/total;
 3. reports path, line number and pattern number only—never the matching source line;
 4. resolves an exact `from → to` path through card-set frontmatter;
@@ -58,6 +58,7 @@ node skills/plugin-upgrade/scripts/plan-migration.mjs ... --touchpoints 1,5
 This is an intentionally conservative heuristic:
 
 - zero hits do not prove public-contract-only coupling;
+- skipped large or macOS `dataless` files leave the plan incomplete until those files are made available and the scan is rerun;
 - card sets are curated, not complete API diffs;
 - it does not parse TypeScript data flow or dynamic imports;
 - it does not install dependencies, contact registries, edit files or run plugin code;

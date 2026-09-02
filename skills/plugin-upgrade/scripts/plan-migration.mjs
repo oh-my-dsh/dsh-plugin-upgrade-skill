@@ -1,19 +1,32 @@
 #!/usr/bin/env node
+import { execFile } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { readFile, readdir, stat } from 'node:fs/promises'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { promisify } from 'node:util'
 
 // This script lives inside the skill so installers that copy only skills/<name>/ still ship it.
 const skillRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const referencesRoot = join(skillRoot, 'references')
-const ignoredDirectories = new Set(['.git', 'node_modules', 'vendor', 'lib', 'dist', 'build', 'coverage'])
+const ignoredDirectories = new Set([
+  '.git',
+  '.node_modules-delete-pending',
+  'node_modules',
+  'vendor',
+  'lib',
+  'dist',
+  'build',
+  'coverage',
+])
 const sensitiveNames = new Set(['.env', '.npmrc', '.yarnrc', '.pypirc', 'credentials.json'])
 // Markdown is deliberately not scanned: prose about a touchpoint is not a touchpoint.
 const allowedExtensions = new Set(['.cjs', '.js', '.jsx', '.json', '.mjs', '.toml', '.ts', '.tsx', '.yaml', '.yml'])
 const codeExtensions = new Set(['.cjs', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
 const alwaysReadNames = new Set(['Dockerfile', 'Makefile', 'pnpm-lock.yaml', 'package-lock.json', 'yarn.lock', 'bun.lock', 'bun.lockb'])
 const maxFileBytes = 1024 * 1024
+const execFileAsync = promisify(execFile)
+const darwinStatBatchSize = 256
 
 function relativePath(root, file) {
   return relative(root, file).replaceAll('\\', '/')
@@ -33,6 +46,38 @@ function parseFrontmatter(text, file) {
     meta[match[1]] = /^\d+$/.test(value) ? Number(value) : value
   }
   return { meta, body: normalized.slice(end + 5) }
+}
+
+async function readDarwinFileFlags(files) {
+  const flags = []
+  for (let index = 0; index < files.length; index += darwinStatBatchSize) {
+    const batch = files.slice(index, index + darwinStatBatchSize)
+    const { stdout } = await execFileAsync('/usr/bin/stat', ['-f', '%Sf', ...batch], {
+      encoding: 'utf8',
+      maxBuffer: 1024 * 1024,
+    })
+    const rows = stdout.replace(/\n$/, '').split('\n')
+    if (rows.length !== batch.length) throw new Error('macOS stat returned an unexpected file count')
+    flags.push(...rows)
+  }
+  return flags
+}
+
+export async function partitionDatalessFiles(
+  files,
+  { platform = process.platform, readFlags = readDarwinFileFlags } = {},
+) {
+  if (platform !== 'darwin' || files.length === 0) return { localFiles: files, datalessFiles: [] }
+  const flags = await readFlags(files)
+  if (flags.length !== files.length) throw new Error('macOS stat flags do not match the candidate file count')
+  const localFiles = []
+  const datalessFiles = []
+  for (let index = 0; index < files.length; index += 1) {
+    const flagSet = new Set(flags[index].split(','))
+    if (flagSet.has('dataless')) datalessFiles.push(files[index])
+    else localFiles.push(files[index])
+  }
+  return { localFiles, datalessFiles }
 }
 
 async function walkReadableFiles(root) {
@@ -62,7 +107,12 @@ async function walkReadableFiles(root) {
   await visit(root)
   files.sort()
   skippedLargeFiles.sort()
-  return { files, skippedLargeFiles }
+  const { localFiles, datalessFiles } = await partitionDatalessFiles(files)
+  return {
+    files: localFiles,
+    skippedLargeFiles,
+    skippedDatalessFiles: datalessFiles.map((file) => relativePath(root, file)),
+  }
 }
 
 function matchingLine(text, source) {
@@ -80,7 +130,7 @@ export async function scanRepository(targetRoot, { maxHits = 20, manualTouchpoin
   if (!existsSync(root)) throw new Error(`target root does not exist: ${root}`)
   const patternFile = join(referencesRoot, 'pre-flight-patterns.json')
   const patternData = JSON.parse(await readFile(patternFile, 'utf8'))
-  const { files, skippedLargeFiles } = await walkReadableFiles(root)
+  const { files, skippedLargeFiles, skippedDatalessFiles } = await walkReadableFiles(root)
   const texts = new Map()
   for (const file of files) texts.set(file, await readFile(file, 'utf8'))
 
@@ -116,6 +166,7 @@ export async function scanRepository(targetRoot, { maxHits = 20, manualTouchpoin
     root,
     scannedFiles: files.length,
     skippedLargeFiles,
+    skippedDatalessFiles,
     touchpoints,
   }
 }
@@ -236,6 +287,15 @@ export function renderMarkdown(plan) {
   if (plan.gaps.length) lines.push('', '## Unsupported corridor gaps', '', ...plan.gaps.map((gap) => `- ${gap}`))
   if (plan.scan.skippedLargeFiles.length) {
     lines.push('', '## Skipped large files', '', ...plan.scan.skippedLargeFiles.map((file) => `- \`${file}\``))
+  }
+  if (plan.scan.skippedDatalessFiles.length) {
+    lines.push(
+      '',
+      '## Skipped macOS dataless files',
+      '',
+      '- These files are not stored locally. Hydrate them and rerun before making a compatibility claim.',
+      ...plan.scan.skippedDatalessFiles.map((file) => `- \`${file}\``),
+    )
   }
   return `${lines.join('\n')}\n`
 }
