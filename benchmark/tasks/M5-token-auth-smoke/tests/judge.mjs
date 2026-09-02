@@ -10,7 +10,7 @@
 // A fail-to-pass checkpoint whose pristine baseline already passes means the trap
 // fixture has drifted — the judge stops with a baseline-mismatch verdict instead of
 // awarding points that no longer mean anything.
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   addPlugin,
@@ -56,7 +56,7 @@ async function main() {
 
   // Pristine run — pins the documented trap state before anything is scored.
   const pristineOutcome = await measure(pristine.dir, 'bench-m5-pristine')
-  if (!pristineOutcome.measurable) {
+  if (pristineOutcome.createFailed || !pristineOutcome.measurable) {
     emit(0, [...reasons, `baseline mismatch: pristine trap state cannot be measured (${pristineOutcome.detail})`])
   }
   const baseline = {
@@ -73,6 +73,9 @@ async function main() {
 
   // Patched run — gates first, then the declared checkpoints.
   const patchedOutcome = await measure(FIXTURE_DIR, 'bench-m5-patched')
+  if (patchedOutcome.createFailed) {
+    emit(0, [...reasons, `profile creation failed: ${patchedOutcome.detail}`])
+  }
   if (patchedOutcome.addFailed) {
     emit(30, [...reasons, `dsh plugin add failed: ${patchedOutcome.addDetail}`])
   }
@@ -99,7 +102,7 @@ async function measure(pluginDir, profile) {
   const tmp = `/tmp/${profile}`
   try {
     const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
-    if (!created.ok) return { measurable: false, detail: created.detail }
+    if (!created.ok) return { createFailed: true, detail: created.detail }
     const added = await addPlugin(profile, pluginDir)
     if (!added.ok) return { addFailed: true, addDetail: added.detail }
     const boot = await bootWebAndFetchIndex(profile, '@demo/dsh-bench-ping')
@@ -121,9 +124,25 @@ async function measure(pluginDir, profile) {
   }
 }
 
+/** Recursive raw-route scan: the registration may live in any fixture source file
+ *  (the legacy judge scanned index.js and src/index.ts; this covers the whole tree). */
 function rawRouteIn(fixtureDir) {
-  const text = readText(join(fixtureDir, 'index.js')) ?? ''
-  return RAW_ROUTE_RE.test(text)
+  for (const file of walkSource(fixtureDir)) {
+    const text = readText(file)
+    if (text !== null && RAW_ROUTE_RE.test(text)) return true
+  }
+  return false
+}
+
+function walkSource(dir, out = []) {
+  for (const entry of readdirSync(dir)) {
+    if (entry === 'node_modules') continue
+    const full = join(dir, entry)
+    const stat = statSync(full)
+    if (stat.isDirectory()) walkSource(full, out)
+    else if (/\.(js|mjs|ts)$/.test(entry)) out.push(full)
+  }
+  return out
 }
 
 function readText(path) {

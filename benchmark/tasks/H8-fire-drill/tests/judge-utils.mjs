@@ -227,7 +227,7 @@ const fs = await import("node:fs");
 let log = "";
 for (let i = 0; i < 90; i += 1) {
   try { log = fs.readFileSync(logPath, "utf8"); } catch {}
-  if (/dsh web: http|plugin tree failed|did not activate/i.test(log)) break;
+  if (/dsh web: http|plugin tree failed|did not activate|pending \(waiting for service/i.test(log)) break;
   await new Promise((r) => setTimeout(r, 1000));
 }
 const match = /dsh web: (http:\\S+)/.exec(log);

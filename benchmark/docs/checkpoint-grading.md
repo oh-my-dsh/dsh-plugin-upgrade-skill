@@ -72,6 +72,31 @@ that every declared checkpoint id is implemented in `judge.mjs`.
 Opt-in: only `M5-token-auth-smoke` and `H8-fire-drill` use checkpoint grading. All
 other tasks keep their existing band logic and are unaffected by the validator.
 
+## Semantic notes
+
+The main bands are preserved (100 full fix / 60 half-fixed / 40 unfixed / 30 add
+failure / 0 environment or untouched), and the M5 migration to additive
+per-checkpoint scoring deliberately adjusts two boundary states that the old
+band tree could not express:
+
+- `401 + authed not-200 + raw route still present` — old 60, now 40: the agent
+  earned exactly one of the three checkpoints;
+- raw registration deleted outright (channel gone, no-auth answers non-401) —
+  old 40, now 20: removing the trap is progress, but the channel must keep
+  answering to earn the rest.
+
+Both are declared here and in the scoring table, so cross-run comparisons stay
+explicit.
+
+## Maintenance notes
+
+- `evaluateCheckpoints` / `restorePristine` live in each task's own copy of
+  `judge-utils.mjs` (the repo convention is per-task copies); when one copy
+  changes, update the other in the same PR.
+- The manifest's `gates` and `measure` fields are documentation-only today;
+  validating them mechanically is a planned enhancement.
+- `cap.when` (cross-checkpoint caps) is exercised by H8's raw-route trap.
+
 ## Suggestions to the repository
 
 1. **Generalize after consensus** — if maintainers agree with this model, migrate

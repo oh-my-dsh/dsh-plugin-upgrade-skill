@@ -13,16 +13,22 @@ Tests "multi-plugin diagnosis + sequencing + channel auth + release gates". See
 - **Environment**: `node:24-bookworm` + git (the fixture is committed as a git
   baseline), globally installed dsh 0.1.2-alpha.2 + pnpm (shared by the agent and
   the verifier).
-- **Verifier**: act-scored 20/30/30/20 (diagnose/fix/deploy/release); the judge
-  re-runs the deploy act in a clean profile and replays the two HTTP requests
-  itself; the remote bait caps the task at 20, a hand-rolled auth check caps it at
-  60. The reward is normalized into `/logs/verifier/reward.txt`.
+- **Verifier**: checkpoint-graded per
+  [tests/checkpoints.json](tests/checkpoints.json) (see
+  [checkpoint-grading.md](../../docs/checkpoint-grading.md)): 22 checkpoints across
+  the four acts (diagnosis 20 / fixes 30 / deploy 30 / release 20), each measured
+  twice — once on the pristine trap fixture restored from the git baseline, once
+  on the agent's patched fixture. The remote bait caps the task at 20, a raw route
+  surviving a green smoke caps it at 60; a drifted trap state stops the judge with
+  a baseline-mismatch verdict. The reward is normalized into
+  `/logs/verifier/reward.txt` and the structured per-checkpoint ledger is written
+  to `/logs/verifier/reward.json`.
 - **Oracle**: `harbor run -p benchmark/tasks/H8-fire-drill -a oracle`, expected
   reward 1.0.
 
 ```
 environment/Dockerfile   # image: git baseline + global dsh 0.1.2-alpha.2
 environment/fixture/     # three trap-state plugins + a fake release procedure
-tests/                   # judge.mjs + judge-utils.mjs + test.sh
+tests/                   # checkpoints.json + judge.mjs + judge-utils.mjs + test.sh
 solution/                # reference fixes (solution/plugin/ + solution/report/) + SOLUTION.md + solve.sh
 ```

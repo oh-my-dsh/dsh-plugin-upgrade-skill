@@ -12,17 +12,22 @@ authentication + connection registration + browserless smoke". See
 - **Environment**: `node:24-bookworm` + git (the fixture is committed as a git
   baseline to support the migration gate), globally installed dsh 0.1.2-alpha.2 +
   pnpm (shared by the agent and the verifier).
-- **Verifier**: the judge installs the agent's fixture into an isolated web
-  profile, cold-boots it, and replays the two HTTP requests itself
-  (0/30/40/60/100 tiers); a hand-rolled check inside a raw route is capped at 60
-  even when the smoke looks green. The reward is normalized into
-  `/logs/verifier/reward.txt`.
+- **Verifier**: checkpoint-graded per
+  [tests/checkpoints.json](tests/checkpoints.json) (see
+  [checkpoint-grading.md](../../docs/checkpoint-grading.md)): every checkpoint is
+  measured twice — once on the pristine trap fixture restored from the git
+  baseline, once on the agent's patched fixture — before any points are awarded
+  (authed-200 40 / no-auth-401 40 / raw-route-removed 20, cap 60 on the last;
+  gates 0/0/0/30/40/40). A drifted trap state stops the judge with a
+  baseline-mismatch verdict. The reward is normalized into
+  `/logs/verifier/reward.txt` and the structured per-checkpoint ledger is written
+  to `/logs/verifier/reward.json`.
 - **Oracle**: `harbor run -p benchmark/tasks/M5-token-auth-smoke -a oracle`,
   expected reward 1.0.
 
 ```
 environment/Dockerfile   # image: git baseline + global dsh 0.1.2-alpha.2
 environment/fixture/     # web plugin with a raw /ping route outside the auth gate
-tests/                   # judge.mjs + judge-utils.mjs + test.sh
+tests/                   # checkpoints.json + judge.mjs + judge-utils.mjs + test.sh
 solution/                # reference changes (solution/plugin/) + SOLUTION.md + solve.sh
 ```
