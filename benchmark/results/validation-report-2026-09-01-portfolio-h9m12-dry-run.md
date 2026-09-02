@@ -1,5 +1,7 @@
 # H9/M6 系列试考报告（4 道最难题 × 4 个子代理，无 skill 裸考）
 
+> **编号映射说明**：本报告成文于任务目录最终定号之前，通篇使用的是当时的内部编号。对应关系为 H9→H14-mineru-api、H10→H15-locale-pack、H11→H16-history-dock、H12→H17-merge-calls、H13→H18-blame-bubbles、H14→H19-workspace-ya（M6-M12 编号不变）；系列名 `H9/M6` 即最终的 `H14/M6` portfolio series。报告正文保留原编号作为历史记录。
+
 日期：2026-09-01 · 环境：本地 dry-run（无 Docker/dsh runtime；Deploy 幕不可执行，判分 0 并单列）
 口径：with 容器时满分 100 = 15 诊断 + 50 静态 + 25 部署 + 10 发布；本表 Deploy=0，offline-normalized = 实得 / 75。
 判分器：各任务**修后** judge（v2，修复了试考暴露的 4 处锚点误判，见「judge 修复记录」），经 stub harness 以真实 judge 代码执行。

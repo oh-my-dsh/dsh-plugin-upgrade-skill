@@ -1,4 +1,4 @@
-# H10 · Locale Pack (third-language override layer → native language API, 0.1.1-era → 0.1.2-alpha.2)
+# H15 · Locale Pack (third-language override layer → native language API, 0.1.1-era → 0.1.2-alpha.2)
 
 ## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 

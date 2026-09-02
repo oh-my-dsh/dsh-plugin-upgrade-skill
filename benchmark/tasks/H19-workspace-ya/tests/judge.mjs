@@ -23,7 +23,7 @@
 // never edit shipped packages — the composition replaces the official entry,
 // via slots.provideRoot + the plugin's own stand-in service); the removed
 // dsh-client-runtime module retained in the client inject caps at 20 (the web
-// tree cannot compose — H9 precedent); static incomplete → cap 40; fixture
+// tree cannot compose — H14 precedent); static incomplete → cap 40; fixture
 // unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -144,7 +144,7 @@ async function main() {
   }
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('the removed dsh-client-runtime module retained — the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('the removed dsh-client-runtime module retained — the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)

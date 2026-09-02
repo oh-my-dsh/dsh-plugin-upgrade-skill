@@ -1,6 +1,6 @@
 # M8 · Sidebar Brand Text
 
-**One of the 13-task `H9/M6` portfolio series** — each task distills one real
+**One of the 13-task `H14/M6` portfolio series** — each task distills one real
 community plugin migration from the 0.1.x era onto dsh 0.1.2-alpha.2.
 
 ## What it tests
@@ -12,7 +12,7 @@ The **snapshot-store engine move** of the client-runtime split (card
   `dsh-client-runtime` to `@deepseek-ai/dsh-client-store` — the fixture's
   memo claims the old engine "still ships deprecated but present"; following
   it (keeping the runtime import) caps at 60, and the runtime entry left in
-  the client inject list is boot-fatal (cap 20, H9 precedent);
+  the client inject list is boot-fatal (cap 20, H14 precedent);
 - the `ClientContext` type → cordis `Context` + type-only ui-renderer /
   api-session-controller merges;
 - the cordis peer keeps an `-rc` prerelease suffix (`^4.0.0-rc.7`) that never

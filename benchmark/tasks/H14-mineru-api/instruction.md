@@ -1,4 +1,4 @@
-# H9 · MinerU API Channel (host RPC contract + client plane, 0.1.1-era → 0.1.2-alpha.2)
+# H14 · MinerU API Channel (host RPC contract + client plane, 0.1.1-era → 0.1.2-alpha.2)
 
 ## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 

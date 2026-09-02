@@ -16,10 +16,10 @@
 //   10 — version bumped vs the git baseline (6) + "private": true preserved (4).
 // Caps (single-task precedents): the fixture's memo says to KEEP the third authority
 // argument ("the split made it mandatory") and that the SessionProjectionStateMap
-// merge is optional — following it caps at 60 (M5-token-auth-smoke/H9 memo precedent);
-// the dead dsh-host-apiproxy references retained cap at 40 (H9 precedent); the
+// merge is optional — following it caps at 60 (M5-token-auth-smoke/H14 memo precedent);
+// the dead dsh-host-apiproxy references retained cap at 40 (H14 precedent); the
 // removed dsh-client-runtime module retained in the client inject caps at 20 (the
-// web tree cannot compose — H9 precedent); static incomplete → cap 40; fixture
+// web tree cannot compose — H14 precedent); static incomplete → cap 40; fixture
 // unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -137,11 +137,11 @@ async function main() {
   }
   if (act2.apiproxyRetained) {
     score = Math.min(score, 40)
-    reasons.push('dsh-host-apiproxy references remain — the gateway facade was deleted in alpha.1, capped at 40 (H9 precedent)')
+    reasons.push('dsh-host-apiproxy references remain — the gateway facade was deleted in alpha.1, capped at 40 (H14 precedent)')
   }
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('the removed dsh-client-runtime module retained — the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('the removed dsh-client-runtime module retained — the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)

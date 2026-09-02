@@ -20,7 +20,7 @@
 // Caps (single-task precedents): the fixture's memo says resultView/callView were
 // "only renamed" — following it (the derivation fields are deleted in ui-tool, not
 // renamed) caps at 60 (M5 precedent); the deleted dsh-client-runtime module retained
-// caps at 20 (the web tree cannot compose — H9 precedent); static incomplete → cap 40;
+// caps at 20 (the web tree cannot compose — H14 precedent); static incomplete → cap 40;
 // fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -141,7 +141,7 @@ async function main() {
   }
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime retained — the package was removed, the web tree cannot compose — capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime retained — the package was removed, the web tree cannot compose — capped at 20 (H14 precedent)')
   }
   emit(score, reasons)
 }

@@ -1,4 +1,4 @@
-# H11 · History Dock (Lexical composer + client-runtime split, 0.1.1-era → 0.1.2-alpha.2)
+# H16 · History Dock (Lexical composer + client-runtime split, 0.1.1-era → 0.1.2-alpha.2)
 
 ## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 

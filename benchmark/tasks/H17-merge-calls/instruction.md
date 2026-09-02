@@ -1,4 +1,4 @@
-# H12 · Merge Tool Calls (toolview takeover across the ui-tool/ui-chat split, 0.1.1-era → 0.1.2-alpha.2)
+# H17 · Merge Tool Calls (toolview takeover across the ui-tool/ui-chat split, 0.1.1-era → 0.1.2-alpha.2)
 
 ## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 

@@ -1,4 +1,4 @@
-// M10-tools-tree grading: client-runtime split migration, slots-service ownership (web two-plane plugin; H9-mineru-api web-profile precedent).
+// M10-tools-tree grading: client-runtime split migration, slots-service ownership (web two-plane plugin; H14-mineru-api web-profile precedent).
 //   15 — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-25 (3) + R-01 (2);
 //   50 — static migration contract:
 //        dsh-client-runtime references gone from deps + client inject + import paths (10)
@@ -19,7 +19,7 @@
 // inject entry") — false: the SlotRegistry Context merge lives in ui-renderer since the
 // client-runtime split, so a slots registration kept with NO ui-renderer wiring anywhere
 // (client inject list NOR the client source) leaves the slots service absent and the boot
-// pends on 'slots' → capped at 40 (H9/M9 cap tier); static incomplete → cap 40;
+// pends on 'slots' → capped at 40 (H14/M9 cap tier); static incomplete → cap 40;
 // fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.

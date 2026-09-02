@@ -1,4 +1,4 @@
-# H13 · Blame Bubbles (host RPC contract + projection state map + client plane, 0.1.2-era → 0.1.2-alpha.2)
+# H18 · Blame Bubbles (host RPC contract + projection state map + client plane, 0.1.2-era → 0.1.2-alpha.2)
 
 ## Unattended Benchmark Authorization (BENCHMARK-AUTH-v1)
 

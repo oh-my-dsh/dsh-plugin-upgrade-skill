@@ -18,7 +18,7 @@
 // ships" in the deleted engine package ("deprecated but present") — keeping the
 // runtime import for the store caps at 60 (M5-token-auth-smoke memo precedent); the
 // deleted dsh-client-runtime module retained in the client inject caps at 20 (the web
-// tree cannot compose — H9 precedent); static incomplete → capped at 40; fixture
+// tree cannot compose — H14 precedent); static incomplete → capped at 40; fixture
 // unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -132,7 +132,7 @@ async function main() {
   }
   if (act2.runtimeInInject) {
     score = Math.min(score, 20)
-    reasons.push('dsh.client.inject still names @deepseek-ai/dsh-client-runtime (the package was removed; the web tree cannot compose) — capped at 20 (H9 precedent)')
+    reasons.push('dsh.client.inject still names @deepseek-ai/dsh-client-runtime (the package was removed; the web tree cannot compose) — capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)
@@ -198,7 +198,7 @@ function scoreStatic() {
   }
 
   // (a) the deleted engine package is gone from the inject list, every
-  // dependency block, and both sources (bare-name check, H9 runtimeGone
+  // dependency block, and both sources (bare-name check, H14 runtimeGone
   // precedent).
   const depBlocks = JSON.stringify({ i: pkg.dsh?.client?.inject ?? [], d: pkg.dependencies ?? {}, p: pkg.peerDependencies ?? {}, pd: pkg.devDependencies ?? {}, m: pkg.peerDependenciesMeta ?? {} })
   const sources = hostSrc + clientSrc

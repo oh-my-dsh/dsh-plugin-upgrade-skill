@@ -19,9 +19,9 @@
 // Caps (single-task precedents): the fixture's memo says the composer is "still a
 // <textarea> under the hood — keep querySelector('textarea') and the apply-level
 // listener so history works in hero mode too" — keeping the textarea locator OR
-// the apply-level listener caps at 60 (H9/M5 memo precedent); the removed
+// the apply-level listener caps at 60 (H14/M5 memo precedent); the removed
 // dsh-client-runtime module retained caps at 20 (the web tree cannot compose —
-// H9 precedent); static incomplete → cap 40; fixture unchanged → 0.
+// H14 precedent); static incomplete → cap 40; fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
 import { readFileSync } from 'node:fs'
@@ -138,7 +138,7 @@ async function main() {
   }
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('the removed dsh-client-runtime module still referenced — the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('the removed dsh-client-runtime module still referenced — the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)

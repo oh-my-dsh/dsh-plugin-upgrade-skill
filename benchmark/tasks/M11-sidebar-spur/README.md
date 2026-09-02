@@ -1,6 +1,6 @@
 # M11 · Sidebar Spur Dock
 
-**One of the 13-task `H9/M6` portfolio series** — each task distills one real
+**One of the 13-task `H14/M6` portfolio series** — each task distills one real
 community plugin migration from the 0.1.1 era onto dsh 0.1.2-alpha.2.
 
 ## What it tests
@@ -25,7 +25,7 @@ The **client-runtime split** on a pure client plane (card `DSH-0.1.2-A1-25`):
 The fixture's "migration memo" claims the `ctx.slots` service *still lives in
 dsh-client-runtime on alpha* ("only renamed internally; keep the runtime
 inject entry so the dock keeps mounting") — false: the package is deleted.
-Following it caps at 20 (boot-fatal bait, H9 precedent). An agent that drops
+Following it caps at 20 (boot-fatal bait, H14 precedent). An agent that drops
 the runtime entry but forgets to re-source `ctx.slots` from ui-renderer while
 keeping the dock registration caps at 40.
 

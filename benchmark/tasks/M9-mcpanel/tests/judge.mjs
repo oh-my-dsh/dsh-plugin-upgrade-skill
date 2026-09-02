@@ -1,5 +1,5 @@
 // M9-mcpanel grading: client-runtime split migration on a web two-plane plugin
-// (MCP-server management panel; H9-mineru-api web-profile precedent).
+// (MCP-server management panel; H14-mineru-api web-profile precedent).
 //   15 — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-25 (3) + DSH-0.1.2-A1-19 (2);
 //   50 — static migration contract:
 //        dsh-client-runtime references gone from deps + client inject + import paths (10)
@@ -17,7 +17,7 @@
 // Caps (single-task precedents): the fixture's memo says to KEEP @deepseek-ai/dsh-client-runtime
 // in the client inject because "type imports need the package present" — false (type-only
 // imports are erased; the package is deleted and its inject entry breaks client-graph
-// composition): retaining dsh-client-runtime anywhere caps at 20 (H9 precedent, the web
+// composition): retaining dsh-client-runtime anywhere caps at 20 (H14 precedent, the web
 // tree cannot compose); static incomplete → cap 40; fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -124,7 +124,7 @@ async function main() {
   let score = act1.score + act2.score + act3 + act4.score
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime is retained (the memo bait) — the package was deleted in alpha.1 and the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime is retained (the memo bait) — the package was deleted in alpha.1 and the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)

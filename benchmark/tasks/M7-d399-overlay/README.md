@@ -1,6 +1,6 @@
 # M7 · D399 Game Overlay
 
-**One of the 13-task `H9/M6` portfolio series** — each task distills one real
+**One of the 13-task `H14/M6` portfolio series** — each task distills one real
 community plugin migration from the 0.1.1 era onto dsh 0.1.2-alpha.2.
 
 ## What it tests
@@ -28,7 +28,7 @@ The **boot-fatal half of the client-runtime split** (card
 
 ## Provenance
 
-Distilled from `@huanlin/dsh-plugin-d399` (repo `huanlinoto/dsh-d399`),
+Distilled from `@huanlin/dsh-plugin-d399` (repo `HuanLinOTO/dsh-plugin-d399`),
 adaptation commit `6184995` "v0.2.0: 适配 DSH v0.1.2-alpha.1
 （client-runtime 拆分迁移）" (`ClientContext` → cordis `Context`;
 `useSessionRunning` annotates `ctx.sessions.list` as `ISessions['list']`

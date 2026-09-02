@@ -17,7 +17,7 @@
 // at 60 (M5 precedent: the native API replaces lookup, selection UI, persistence,
 // <html lang> sync and per-key fallback, so a retained patch is double registration);
 // the removed dsh-client-runtime module retained in the client inject caps at 20 (the
-// web tree cannot compose — H9 precedent); static incomplete → cap 40; fixture
+// web tree cannot compose — H14 precedent); static incomplete → cap 40; fixture
 // unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -135,7 +135,7 @@ async function main() {
   }
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime retained — the package was removed, the web tree cannot compose — capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime retained — the package was removed, the web tree cannot compose — capped at 20 (H14 precedent)')
   }
   emit(score, reasons)
 }
@@ -190,7 +190,7 @@ function scoreStatic() {
   }
 
   // The deleted runtime module anywhere — inject list or type surface — is
-  // boot-fatal for the web tree (H9 precedent).
+  // boot-fatal for the web tree (H14 precedent).
   const runtimeRetained = /dsh-client-runtime/.test(JSON.stringify(pkg?.dsh?.client?.inject ?? []))
     || RUNTIME_REF.test(hostSrc + clientSrc)
 

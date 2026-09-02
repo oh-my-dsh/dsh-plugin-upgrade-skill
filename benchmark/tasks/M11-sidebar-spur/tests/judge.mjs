@@ -14,7 +14,7 @@
 // Caps (single-task precedents): the fixture's memo says the ctx.slots service still lives in
 // dsh-client-runtime on alpha ("only renamed internally; keep the runtime inject entry so the
 // dock keeps mounting") — following it retains the deleted package in the client inject, which
-// is boot-fatal, caps at 20 (H9-mineru-api precedent); ui-renderer missing from the client
+// is boot-fatal, caps at 20 (H14-mineru-api precedent); ui-renderer missing from the client
 // inject while the dock registration is kept caps at 40 (the dock mounts through the
 // ui-renderer SlotRegistry since the split); static incomplete → cap 40; fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
@@ -129,7 +129,7 @@ async function main() {
   let score = act1.score + act2.score + act3 + act4.score
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime retained in the client inject — the package was deleted; the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime retained in the client inject — the package was deleted; the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (act2.uiRendererMissing) {
     score = Math.min(score, 40)

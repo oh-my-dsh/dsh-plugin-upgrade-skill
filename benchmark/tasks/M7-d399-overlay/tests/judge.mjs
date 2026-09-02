@@ -14,7 +14,7 @@
 // fails the type-source checkpoint and lands in the static-incomplete tier, capped
 // at 40 (M4 tier; no separate 60 cap — the omission cannot pass the static gate).
 // The deleted dsh-client-runtime module retained in the client inject caps at 20
-// (the web tree cannot compose — H9 precedent); static incomplete → cap 40;
+// (the web tree cannot compose — H14 precedent); static incomplete → cap 40;
 // fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -114,7 +114,7 @@ async function main() {
   let score = act1.score + act2.score + act3 + act4.score
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime retained in the client inject — the package was removed, the web tree cannot compose — capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime retained in the client inject — the package was removed, the web tree cannot compose — capped at 20 (H14 precedent)')
   }
   if (!act2.allPassed) {
     score = Math.min(score, 40)
@@ -173,7 +173,7 @@ function scoreStatic() {
   }
 
   // (a) the deleted client-runtime package is gone from every dependency
-  // block and from both sources (bare-name check: the H9 runtimeGone
+  // block and from both sources (bare-name check: the H14 runtimeGone
   // precedent — no `/client` path survives to hide behind).
   const depBlocks = JSON.stringify({ i: pkg.dsh?.client?.inject ?? [], d: pkg.dependencies ?? {}, p: pkg.peerDependencies ?? {}, pd: pkg.devDependencies ?? {}, m: pkg.peerDependenciesMeta ?? {} })
   if (!RUNTIME_REF.test(depBlocks) && !hostSrc.includes('dsh-client-runtime') && !clientSrc.includes('dsh-client-runtime')) {

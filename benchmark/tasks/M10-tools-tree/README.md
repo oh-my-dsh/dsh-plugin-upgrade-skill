@@ -1,6 +1,6 @@
 # M10 · Tools Management Tree
 
-**One of the 13-task `H9/M6` portfolio series** — each task distills one real
+**One of the 13-task `H14/M6` portfolio series** — each task distills one real
 community plugin migration onto dsh 0.1.2-alpha.2.
 
 ## What it tests

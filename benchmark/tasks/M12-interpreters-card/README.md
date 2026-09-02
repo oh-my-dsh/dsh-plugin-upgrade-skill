@@ -1,6 +1,6 @@
 # M12 · Interpreters Settings Card
 
-**One of the 13-task `H9/M6` portfolio series** — each task distills one real
+**One of the 13-task `H14/M6` portfolio series** — each task distills one real
 community plugin migration from the 0.1.1 era onto dsh 0.1.2-alpha.2.
 
 ## What it tests

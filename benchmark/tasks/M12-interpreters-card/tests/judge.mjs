@@ -13,7 +13,7 @@
 // of the old Settings type and that the snapshot store "still ships in dsh-client-runtime on
 // alpha (deprecated but present)" — BOTH false. Keeping the old Settings type import path
 // caps at 60 (M5-token-auth-smoke precedent); the removed dsh-client-runtime retained in the
-// client inject caps at 20 (the web tree cannot compose; H9 precedent); static incomplete →
+// client inject caps at 20 (the web tree cannot compose; H14 precedent); static incomplete →
 // cap 40; fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
@@ -127,7 +127,7 @@ async function main() {
   let score = act1.score + act2.score + act3 + act4.score
   if (act2.runtimeRetained) {
     score = Math.min(score, 20)
-    reasons.push('dsh-client-runtime retained — the package was removed and split by domain; the web tree cannot compose, capped at 20 (H9 precedent)')
+    reasons.push('dsh-client-runtime retained — the package was removed and split by domain; the web tree cannot compose, capped at 20 (H14 precedent)')
   }
   if (act2.oldSettingsKept) {
     score = Math.min(score, 60)
