@@ -45,7 +45,7 @@ over the 19-task snapshot** (vs +2.86 single-run for Codex + GPT-5.6-Luna).
 
 | Task | with skill (median) | no skill (median) | delta | runs (with) | runs (no) | cost both cond. | Luna ref (with/no) |
 |---|---:|---:|---:|---|---|---:|---|
-| S1-static-scan | 1.00 | 0.33 | +0.67 | 0.00, 1.00, 1.00 | 0.33, 0.00, 0.33 | $0.26 | 1.00 / 0.33 |
+| S1-static-scan | 1.00 | 0.33 | +0.67 | 0.00, 1.00, 1.00 | 0.33, 0.00, 0.33 | $0.26 | 1.00 / 0.67 |
 | S2-negative-scan | 1.00 | 0.40 | +0.60 | 1.00, 0.80, 1.00 | 0.00, 0.40, 0.60 | $0.21 | 1.00 / 0.60 |
 | S3-snapshot-migration | 0.80 | 0.60 | +0.20 | 1.00, 0.80, 0.00 | 0.60, 0.60, 0.60 | $0.32 | 1.00 / 0.00 |
 | S4-legacy-client-imports | 1.00 | 1.00 | +0.00 | 0.70, 1.00, 1.00 | 1.00, 1.00, 1.00 | $0.20 | 1.00 / 1.00 |
@@ -91,8 +91,8 @@ price point are cheap enough to be the default protocol rather than an aspiratio
    positive median delta (H4 +0.70, S1 +0.67, S2 +0.60, H8 +0.50, H6 +0.25,
    S6 +0.25, S3 +0.20). Notably **H6 and S6 — flat/dead under Luna (0.00/0.00 and
    0.25/0.25) — now discriminate**, and H8 (never scored before) shows a +0.50 gap.
-2. **12 of 23 tasks remain tied at 1.00 in both conditions even for this weak
-   pairing** (all five M-series hands-on tasks plus H1/H2/H3/H5/H10, S4, S8). These
+2. **11 of 23 tasks remain tied at 1.00 in both conditions even for this weak
+   pairing** (M1–M4 plus H1/H2/H3/H5/H10, S4, S8; M5 sits at 0.60 in both). These
    tasks appear easy for *any* tool-using agent regardless of skill or model
    strength — stronger evidence than the Luna report alone that they are candidates
    for hardening or for exclusion from a "frontier subset" headline metric.
