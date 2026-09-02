@@ -237,8 +237,8 @@ export function scoreReport(reportText) {
     capped = Math.min(capped, 60)
     reasons.push('cap 60: the corrected fenced code discriminates with instanceof RemoteError')
   }
-  for (const match of correctedCode.matchAll(/catch\s*(?:\([^)]*\))?\s*\{([\s\S]*?)\}/g)) {
-    if (!/throw/.test(match[1])) {
+  for (const body of catchBodies(correctedCode)) {
+    if (!/throw|reject/.test(body)) {
       capped = Math.min(capped, 60)
       reasons.push('cap 60: the corrected fenced code has a catch block that swallows/retries/converts rejects instead of propagating them')
       break
@@ -279,6 +279,25 @@ export function parseSections(text) {
   const result = new Map()
   for (const title of CANONICAL) result.set(title, (sections.get(title) ?? []).join('\n'))
   return result
+}
+
+// Extract catch-block bodies with brace matching. A lazy `[\s\S]*?` stops at the
+// first `}`, so a correct fix like `catch (e) { if (x) { log(e) } throw e }`
+// would be misread as swallowing; walk brace depth to the real end of the block.
+export function catchBodies(code) {
+  const bodies = []
+  const re = /catch\s*(?:\([^)]*\))?\s*\{/g
+  for (const m of code.matchAll(re)) {
+    let depth = 1
+    let i = m.index + m[0].length
+    while (i < code.length && depth > 0) {
+      if (code[i] === '{') depth++
+      else if (code[i] === '}') depth--
+      i++
+    }
+    bodies.push(code.slice(m.index + m[0].length, i - 1))
+  }
+  return bodies
 }
 
 // Fenced code blocks: ```ts / ```js / ```typescript / ```javascript / plain ```.

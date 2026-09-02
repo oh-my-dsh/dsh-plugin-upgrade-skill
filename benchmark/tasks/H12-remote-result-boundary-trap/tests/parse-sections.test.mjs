@@ -82,3 +82,20 @@ test('a canonical heading spelled in Chinese alias switches sections', () => {
   ].join('\n'))
   assert.match(sections.get('Problems in the Current Code'), /reads result\.value/)
 })
+
+test('catchBodies matches nested blocks and honors rethrow-after-nested-block', async () => {
+  const { catchBodies } = await import('./judge.mjs')
+  const code = [
+    'try { await run() } catch (e) {',
+    '  if (debug) { log(e) }',
+    '  throw e',
+    '}',
+    'try { await other() } catch {',
+    '  return fallback()',
+    '}',
+  ].join('\n')
+  const bodies = catchBodies(code)
+  assert.equal(bodies.length, 2)
+  assert.match(bodies[0], /throw e/)
+  assert.doesNotMatch(bodies[1], /throw|reject/)
+})
