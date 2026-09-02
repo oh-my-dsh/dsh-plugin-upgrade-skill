@@ -15,7 +15,7 @@ source: if a field is removed in alpha.1 and restored in alpha.2, do not delete 
 | 1 | [v0.1.1-rc.2.md](v0.1.1-rc.2.md) | `dsh-v0.1.1-rc.1` | `dsh-v0.1.1-rc.2` | 3 | reviewed / curated |
 | 2 | [v0.1.2-alpha.1.md](v0.1.2-alpha.1.md) | `dsh-v0.1.1-rc.2` | `dsh-v0.1.2-alpha.1` | 28 | reviewed / curated |
 | 3 | [v0.1.2-alpha.2.md](v0.1.2-alpha.2.md) | `dsh-v0.1.2-alpha.1` | `dsh-v0.1.2-alpha.2` | 8 | reviewed / curated |
-| 4 | [v0.1.2-alpha.3.md](v0.1.2-alpha.3.md) | `dsh-v0.1.2-alpha.2` | `dsh-v0.1.2-alpha.3` | 0 | reviewed / curated |
+| 4 | [v0.1.2-alpha.3.md](v0.1.2-alpha.3.md) | `dsh-v0.1.2-alpha.2` | `dsh-v0.1.2-alpha.3` | 1 | reviewed / curated (no breaking plugin changes; one additive capability: `settings.plugin.item` keyed-slot settings card, first real-world integrations) |
 | 5 | [v0.1.2-alpha.4.md](v0.1.2-alpha.4.md) | `dsh-v0.1.2-alpha.3` | `dsh-v0.1.2-alpha.4` | 6 | reviewed / curated |
 | 6 | [v0.1.2-alpha.5.md](v0.1.2-alpha.5.md) | `dsh-v0.1.2-alpha.4` | `dsh-v0.1.2-alpha.5` | 3 | reviewed / curated |
 | 7 | [v0.1.2-rc.1.md](v0.1.2-rc.1.md) | `dsh-v0.1.2-alpha.5` | `dsh-v0.1.2-rc.1` | 0 | reviewed / curated |
