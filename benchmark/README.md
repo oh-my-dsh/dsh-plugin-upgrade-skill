@@ -81,12 +81,20 @@ direct model comparison: `S8-release-routing-trap`, `M5-token-auth-smoke`, and
 `H10-browser-activation-trap`, `H11-dual-cohort-rpc`, and
 `H22-dsh-data-agent-alpha2` were added after the Terra runs.
 
+On 2026-09-02, Luna also ran the new `H22-dsh-data-agent-alpha2` task once with
+`skills/plugin-upgrade` and once with both Harbor-injected and Codex-native
+skills disabled. Both rows below are scored single trials; the literal-zero-skill
+report separately accounts for an excluded preliminary attempt that read a native
+skill and timed out.
+
 | Model | Skill condition | Scope | reward | mean | perfect tasks | Summed job duration | Tokens (input / cache / output) | Cost | Detailed report |
 |---|---|---|---:|---:|---:|---:|---:|---:|---|
 | `openai/gpt-5.6-terra` | With `skills/plugin-upgrade` | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 16.75/21 scored; 16.75/22 conservative | 0.7976 scored; 0.7614 conservative | 13 | 2h33m58.860s | 54,094,444 / 51,131,904 / 355,256 | $20.4145 | [22-task report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md) |
 | `openai/gpt-5.6-terra` | Literal zero skill | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 14.93/21 scored; 14.93/22 conservative | 0.7110 scored; 0.6786 conservative | 10 | 2h51m31.853s | 46,824,114 / 44,432,640 / 283,652 | $17.0733 | [22-task literal-no-skill report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md) |
 | `openai/gpt-5.6-luna` | With `skills/plugin-upgrade` | 19-task 2026-09-01 snapshot | 15.95/19 | 0.8395 | 13 | 1h38m30.556s | 57,118,102 / 54,630,656 / 332,161 | $1.9887 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18.md) · [real-repository task](results/validation-report-2026-09-01.md) |
 | `openai/gpt-5.6-luna` | No Harbor-injected skill† | 19-task 2026-09-01 snapshot | 13.09/19 | 0.6889 | 10 | 1h49m25.650s | 36,761,760 / 34,515,712 / 244,223 | $1.4326 | [18-task batch](results/validation-report-2026-09-01-codex-gpt-5.6-luna-other-18-no-injected-skill.md) · [real-repository task](results/validation-report-2026-09-01-h8-dsh-web-alpha2-no-skill.md) |
+| `openai/gpt-5.6-luna` | With `skills/plugin-upgrade` | H22 dsh-data-agent; 1 scored trial | 0.08/1 | 0.0800 | 0 | 3h58m55.457s | 143,377,248 / 138,872,576 / 445,689 | $4.2132 | [H22 with-skill report](results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-plugin-upgrade.md) |
+| `openai/gpt-5.6-luna` | Literal zero skill‡ | H22 dsh-data-agent; 1 accepted scored trial | 0.11/1 | 0.1100 | 0 | 1h34m53.399s | 70,605,981 / 68,899,072 / 227,439 | $1.9923 | [H22 literal-zero-skill report](results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-no-skill.md) |
 | `deepseek/deepseek-v4-flash` + terminus-2 | With `skills/plugin-upgrade` | 23-task full set (3-run median) | 18.55/23 | 0.8063 | 14 | 2h34m | 58.7M / n/a / 2.5M | $5.28 | [terminus-2 + deepseek-v4-flash report](results/validation-report-2026-09-01-terminus2-deepseek-v4-flash.md) |
 | `deepseek/deepseek-v4-flash` + terminus-2 | No skill | 23-task full set (3-run median) | 16.09/23 | 0.6996 | 11 | 2h24m | 53.9M / n/a / 2.3M | $4.85 | [terminus-2 + deepseek-v4-flash report](results/validation-report-2026-09-01-terminus2-deepseek-v4-flash.md) |
 
