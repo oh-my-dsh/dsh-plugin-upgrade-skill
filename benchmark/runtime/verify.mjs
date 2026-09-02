@@ -40,9 +40,9 @@ function parseArguments(argv) {
 function usage() {
   return [
     'Usage:',
-    '  node tests/dsh/verify.mjs --check',
-    '  node tests/dsh/verify.mjs --all [--report-dir <path>]',
-    '  node tests/dsh/verify.mjs --case <id> [--report-dir <path>]',
+    '  node benchmark/runtime/verify.mjs --check',
+    '  node benchmark/runtime/verify.mjs --all [--report-dir <path>]',
+    '  node benchmark/runtime/verify.mjs --case <id> [--report-dir <path>]',
   ].join('\n')
 }
 

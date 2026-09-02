@@ -127,7 +127,7 @@ export function classifyFailure(containerResult, containerExitCode, infrastructu
   if (!containerResult) return containerExitCode === 0 ? 'result' : 'container'
   if (containerResult.status === 'passed' && containerExitCode === 0) return null
   const phase = containerResult.failure?.phase
-  if (['install-package-manager', 'install-dsh', 'install-toolchain', 'verify-pnpm-version', 'verify-dsh-version'].includes(phase)) {
+  if (['install-toolchain', 'verify-pnpm-version', 'verify-dsh-version'].includes(phase)) {
     return 'host-setup'
   }
   if (phase === 'install-plugin') return 'plugin-install'
