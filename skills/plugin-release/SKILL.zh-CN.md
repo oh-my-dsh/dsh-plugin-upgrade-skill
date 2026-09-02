@@ -13,7 +13,7 @@
 | hub 收录 | 在 hub catalog 登记 | 登记是独立动作，不代替打包验证 |
 | collection | 把成员插件 vendored 成 pack artifact | 见所属 collection 仓库的自有流程 |
 
-未发布 cohort（例如 0.1.2-alpha.* 只有 GitHub 来源）走 [references/publish-playbook.md](references/publish-playbook.md) 的 overrides 流程，**不要**在 npm 上找不存在的版本，也不要因此切换包管理器。
+未发布 cohort（例如某个 cohort 版本从未发到 npm——alpha.1 只有 GitHub 来源；alpha.2、alpha.3 已通过 `alpha` 通道标签发布）走 [references/publish-playbook.md](references/publish-playbook.md) 的 overrides 流程，**不要**在 npm 上找不存在的版本，也不要因此切换包管理器。
 
 ## 第 1 步：打包与产物校验
 

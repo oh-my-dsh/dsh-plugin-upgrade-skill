@@ -8,7 +8,7 @@
 
 ## What's in this repo
 
-- **39 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.2.
+- **39 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.1 all the way to 0.1.2-alpha.3 (alpha.2→alpha.3 has no plugin-facing changes: 0 cards).
 - **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
 - **8 skills** — one unified workflow selects and coordinates stages, while the other seven check upgrades, write plugins, test plugins, release plugins, diff two dsh versions, debug runtime failures, and integrate heavy dependencies into lightweight plugins.
 - **26 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded; one reproduces the real dsh-web v0.3.8 → v0.3.9 migration.
@@ -126,8 +126,9 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 | 0.1.1-rc.1 → 0.1.1-rc.2 | ✅ Done | [v0.1.1-rc.2.md](skills/plugin-upgrade/references/v0.1.1-rc.2.md) | 3 cards |
 | 0.1.1-rc.2 → 0.1.2-alpha.1 | ✅ Done | [v0.1.2-alpha.1.md](skills/plugin-upgrade/references/v0.1.2-alpha.1.md) | 28 cards |
 | 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ Done | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 8 cards |
+| 0.1.2-alpha.2 → 0.1.2-alpha.3 | ✅ Done | [v0.1.2-alpha.3.md](skills/plugin-upgrade/references/v0.1.2-alpha.3.md) | 0 cards (no plugin-facing changes; carries the verification record) |
 | Cross-version countermeasures | ✅ Done | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 items (running old and new side by side, back up first, what to do when startup hangs, etc.) |
-| 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.2); we'll re-verify everything once it is |
+| 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (latest is alpha.3); we'll re-verify everything once it is |
 | 0.1.2 → later versions | 📝 Up for grabs | — | Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
 
 ## The exam (benchmark)
