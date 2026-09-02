@@ -243,9 +243,9 @@ All validation and result reports live in [`results/`](results/). When opening a
 that adds a benchmark result or validation report, put the file there.
 
 Every submitted report must state the **consumed tokens** and the **total run
-duration** of each round, next to the scores — e.g. the input/output/reasoning
+duration** of each round, next to the scores — e.g. the input/output (cache)
 token sums and the summed job duration as recorded in Harbor's trial outputs
-(`result.json`). Cost figures are recommended but optional. Scores without these
+(`result.json`, fields `n_input_tokens` / `n_cache_tokens` / `n_output_tokens`). Cost figures are recommended but optional. Scores without these
 numbers cannot be compared across models or against later runs.
 
 - `results/validation-report-2026-08-30.md`: the skill-effectiveness validation report (v1
