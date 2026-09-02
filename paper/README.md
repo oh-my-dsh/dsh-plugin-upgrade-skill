@@ -23,6 +23,28 @@ pdflatex acl_latex && bibtex acl_latex && pdflatex acl_latex && pdflatex acl_lat
 
 Or upload the `latex/` directory to [Overleaf](https://www.overleaf.com/). The document currently uses `review` mode (with line numbers).
 
+## Generated benchmark metadata
+
+The benchmark task metadata used by the paper is **generated, never hand-written**:
+
+- **Source of truth**: one frozen evaluation snapshot, `benchmark/snapshots/2026-09-01-main-23.json` (currently 23 tasks, 3 runs per task, `per-task-median` aggregation, 2 conditions).
+- The generator (`paper/scripts/generate-benchmark-table.mjs`) reads every task row, registry Type (`Static` / `Hands-on`), and description from **git objects at the snapshot's pinned benchmark commit** — never from the current checkout. Tasks added to the living benchmark after the pinned commit do not change the paper metadata of this experiment.
+- The living benchmark (43+ tasks on `main`) is **not** the paper's evaluation set. Paper experiments are always pinned to an explicit snapshot; there is no "latest snapshot" behavior.
+
+Generated files (committed, do not edit by hand):
+
+- `paper/generated/benchmark-metadata.tex` — deterministic macros (`\BenchmarkTaskCount`, `\BenchmarkStaticCount` / `\BenchmarkHandsOnCount`, ID-prefix counts `\BenchmarkPrefixSCount` / `\BenchmarkPrefixMCount` / `\BenchmarkPrefixHCount`, pinned benchmark/skill commits, runs-per-task, aggregation, condition count). Prefix counts and registry interaction Type are kept as **two separate dimensions** (H4/H6 are registry-Static despite the H prefix).
+- `paper/generated/task-pool-table.tex` — the `Task | Type | What it tests` table (`\input` into the appendix).
+
+Regenerate (from the repo root):
+
+```bash
+npm run generate:paper-benchmark
+npm run check:paper-benchmark   # CI gate: fails if the committed files drift
+```
+
+`check:paper-benchmark` and the generator unit tests run as part of `npm test`, so a snapshot/metadata drift turns CI red. The generator is deterministic: the same snapshot plus the same local git objects always produces byte-identical files (no timestamps, no host paths), and a snapshot whose pinned commit is missing locally is a hard error rather than a fallback to current `main`.
+
 ## Writing status
 
 - [x] Title / authors / abstract

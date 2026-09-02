@@ -39,6 +39,13 @@
 
 \newcommand{\framework}{\textsc{dsh}}
 
+% Frozen benchmark metadata: deterministic macros generated from
+% benchmark/snapshots/2026-09-01-main-23.json (task rows, types, and
+% descriptions resolve from git objects at the pinned benchmark commit; the
+% current checkout's task inventory is ignored). Regenerate with
+% `npm run generate:paper-benchmark`; never edit the generated files by hand.
+\input{../generated/benchmark-metadata.tex}
+
 \title{Do Migration Skills Actually Help? A Community-Grounded Benchmark for Skill-Guided Framework Migration}
 
 % Author information can be set in various styles:
@@ -391,7 +398,11 @@ The unattended authorization protocol grants agents only in-fixture permissions,
 
 \section{Full Task List and Provenance}
 \label{app:tasklist}
-Placeholder: all 24 task cards with metadata (prefix, difficulty, card-dependence, adversarial family) and the task--incident mapping.
+Table~\ref{tab:frozen-task-pool} lists the task pool of the frozen evaluation snapshot (\texttt{benchmark/snapshots/\BenchmarkSnapshotId{}.json}, pinned benchmark commit \texttt{\BenchmarkCommitFull{}}). The table is generated from git objects at the pinned commit and must not be edited by hand.
+
+\input{../generated/task-pool-table.tex}
+
+Per-task difficulty, card-dependence, adversarial family, and the task--incident mapping remain future work.
 
 \section{Judge Grading Rubrics}
 \label{app:rubrics}
