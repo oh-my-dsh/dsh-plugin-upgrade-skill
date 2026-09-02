@@ -301,13 +301,14 @@ node benchmark/scripts/summarize-runs.mjs \
   --group run:jobs/<job>/<other-trial>/result.json
 
 # paired 3-run comparison (per-task medians, group A − group B)
+# note: the same file cannot feed both groups — duplicate inputs are hard errors
 node benchmark/scripts/summarize-runs.mjs \
-  --group with-skill:jobs/r1/S1-static-scan__x/result.json \
-  --group with-skill:jobs/r2/S1-static-scan__y/result.json \
-  --group with-skill:jobs/r3/S1-static-scan__z/result.json \
-  --group no-skill:jobs/r1/S1-static-scan__x/result.json \
-  --group no-skill:jobs/r2/S1-static-scan__y/result.json \
-  --group no-skill:jobs/r3/S1-static-scan__z/result.json
+  --group with-skill:jobs/with-skill/r1/S1-static-scan__x/result.json \
+  --group with-skill:jobs/with-skill/r2/S1-static-scan__y/result.json \
+  --group with-skill:jobs/with-skill/r3/S1-static-scan__z/result.json \
+  --group no-skill:jobs/no-skill/r1/S1-static-scan__x/result.json \
+  --group no-skill:jobs/no-skill/r2/S1-static-scan__y/result.json \
+  --group no-skill:jobs/no-skill/r3/S1-static-scan__z/result.json
 ```
 
 Behavior:

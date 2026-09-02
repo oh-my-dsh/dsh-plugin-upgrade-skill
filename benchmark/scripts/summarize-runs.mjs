@@ -428,11 +428,10 @@ export function renderMarkdown(summary) {
   lines.push('')
   lines.push('## Groups')
   lines.push('')
-  lines.push('| Group | Files | Records | Scored | Tasks | Reward | Trial mean | Median | Perfect |')
-  lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |')
-  lines.push('')
   lines.push('The "Trial mean" is trial-weighted: every scored trial contributes equally, regardless of how many trials each task has.')
   lines.push('')
+  lines.push('| Group | Files | Records | Scored | Tasks | Reward | Trial mean | Median | Perfect |')
+  lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |')
   for (const group of summary.groups) {
     const stats = group.stats
     lines.push(`| ${escapeLabel(stats.label)} | ${stats.files.length} | ${stats.records} | ${stats.scored} | ${stats.tasks} | ${fmt(stats.rewardSum)} | ${fmt(stats.mean)} | ${fmt(stats.median)} | ${stats.perfect} |`)
