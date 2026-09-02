@@ -34,8 +34,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 export const FAILURE_PREFIX = '[task-toml]'
 
-const SIMPLE_ESCAPES = new Set(['b', 't', 'n', 'f', 'r', 'e', '"', '\\'])
-const HEX_ESCAPES = { x: 2, u: 4, U: 8 }
+// TOML 1.0.0 escapes only. Harbor parses task.toml with Python tomllib, which
+// implements TOML 1.0: \e and \xHH are TOML 1.1-draft additions and are rejected
+// by the real parser, so accepting them here would let tasks pass validation
+// that Harbor then silently drops.
+const SIMPLE_ESCAPES = new Set(['b', 't', 'n', 'f', 'r', '"', '\\'])
+const HEX_ESCAPES = { u: 4, U: 8 }
 const isHex = (ch) => /[0-9a-fA-F]/.test(ch)
 
 // Scans one TOML document and returns a list of string-syntax failures.
@@ -85,10 +89,17 @@ export function scanTomlStrings(text) {
           mode = null
           break
         }
-        if (ch === '"' && mode === 'ml-basic' && text.startsWith('"""', i)) {
-          mode = null
-          i += 2
-          column += 2
+        if (ch === '"' && mode === 'ml-basic') {
+          // A run of quotes closes greedily from the end: TOML treats the LAST
+          // three quotes as the delimiter, so """x"""" is the string `x"` and
+          // must not leave a stray opening quote behind.
+          let run = 0
+          while (text[i + run] === '"') run++
+          if (run >= 3) {
+            mode = null
+            i += run - 1
+            column += run - 1
+          }
           break
         }
         if (ch !== '\\') break
@@ -126,7 +137,7 @@ export function scanTomlStrings(text) {
           column,
           message:
             `invalid escape "\\${next}" in basic string ` +
-            '(TOML allows \\b \\t \\n \\f \\r \\e \\" \\\\ \\xHH \\uXXXX \\UXXXXXXXX; ' +
+            '(TOML 1.0 allows \\b \\t \\n \\f \\r \\" \\\\ \\uXXXX \\UXXXXXXXX; ' +
             `write "\\\\${next}" for a literal backslash, or use a literal '...' string)`,
         })
         i++

@@ -22,11 +22,18 @@ test('H7 regression: the shipped broken description fails, the #105 fix passes',
   assert.deepEqual(scanTomlStrings(fixed), [])
 })
 
-test('all valid TOML escapes are accepted', () => {
+test('all valid TOML 1.0 escapes are accepted', () => {
   const doc =
-    'a = "\\b\\t\\n\\f\\r\\e\\"\\\\"\n' +
-    'b = "\\x41\\u0041\\U0001F600"\n'
+    'a = "\\b\\t\\n\\f\\r\\"\\\\"\n' +
+    'b = "\\u0041\\U0001F600"\n'
   assert.deepEqual(scanTomlStrings(doc), [])
+})
+
+test('TOML 1.1-only escapes are rejected (Harbor parses with tomllib / TOML 1.0)', () => {
+  const failures = scanTomlStrings('a = "\\e\\x41"\n')
+  assert.equal(failures.length, 2)
+  assert.match(failures[0].message, /invalid escape "\\e"/)
+  assert.match(failures[1].message, /invalid escape "\\x"/)
 })
 
 test('malformed hex escapes are reported', () => {
