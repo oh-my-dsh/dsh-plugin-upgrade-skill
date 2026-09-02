@@ -1,0 +1,25 @@
+schema_version = "1.4"
+# Harbor task config: dsh plugin migration exam question H12 (RemoteResult control-flow boundary trap, read-only Markdown diagnosis)
+[task]
+name = "dsh-plugin-upgrade/h12-remote-result-boundary-trap"
+version = "1.1.0"
+description = "Diagnose a Remote consumer whose error vocabulary is already migrated but whose control flow is wrong: ordinary unary failures resolve to RemoteResult ok:false instead of rejecting, result.value is read without checking result.ok, and genuine assembly/programming rejects are swallowed"
+keywords = ["dsh", "plugin-migration", "remote-result", "control-flow", "reject-boundary", "diagnosis", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "remote-result-boundary", "markdown-report", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 300.0
+
+[verifier]
+timeout_sec = 120.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096
