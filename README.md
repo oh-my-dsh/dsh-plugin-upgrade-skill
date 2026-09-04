@@ -8,7 +8,7 @@
 
 ## 这个仓库里有什么
 
-- **45 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.1 一路到 0.1.2-alpha.4（alpha.2→alpha.3 无插件面变更，0 张卡；alpha.3→alpha.4 有 6 张）。
+- **57 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.0-rc.8 一路到 0.1.2-rc.1（alpha.2→alpha.3 与 alpha.5→rc.1 无插件面变更，0 张卡；alpha.3→alpha.4 有 6 张；rc.8→rc.1 为 9 张草稿卡）。
 - **12 条通用对策**：有些坑和版本无关（比如"先备份再动手""新旧版本怎么共存"），这些写成了一份对策清单。
 - **8 个 skill**：一个统一工作流负责选择和编排，另外七个分别负责查升级、写新插件、测插件、发插件、对比两个版本的差别、排查运行时故障和给轻量插件接入重依赖。
 - **26 道考题（benchmark）**：用来测"AI 装了我们的 skill 之后到底会不会升级插件"，每道题都有自动判分；其中包含 dsh-web v0.3.8 → v0.3.9 的真实迁移。
@@ -132,8 +132,10 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | 0.1.2-alpha.1 → 0.1.2-alpha.2 | ✅ 完成 | [v0.1.2-alpha.2.md](skills/plugin-upgrade/references/v0.1.2-alpha.2.md) | 8 张卡 |
 | 0.1.2-alpha.2 → 0.1.2-alpha.3 | ✅ 完成 | [v0.1.2-alpha.3.md](skills/plugin-upgrade/references/v0.1.2-alpha.3.md) | 0 张卡（无插件面变更，含核对记录） |
 | 0.1.2-alpha.3 → 0.1.2-alpha.4 | ✅ 完成 | [v0.1.2-alpha.4.md](skills/plugin-upgrade/references/v0.1.2-alpha.4.md) | 6 张卡（`report` → `send_message`、Python 运行时包改名、`Session.events` 移除、seq 强类型、PTC `workflow` 与 base `web_fetch` 默认值；三台真宿主验证） |
+| 0.1.2-alpha.4 → 0.1.2-alpha.5 | ✅ 完成 | [v0.1.2-alpha.5.md](skills/plugin-upgrade/references/v0.1.2-alpha.5.md) | 3 张卡（storage 域 `compatibleVersions` 读兼容与 `backup-and-skip` 兜底；旧家升级拒启/标题丢失修复；storage 层复现核对） |
+| 0.1.2-alpha.5 → 0.1.2-rc.1 | ✅ 完成 | [v0.1.2-rc.1.md](skills/plugin-upgrade/references/v0.1.2-rc.1.md) | 0 张卡（纯版本 bump；含核对记录、macOS 真机验证与 release notes 覆盖矩阵） |
 | 跨版本通用对策 | ✅ 完成 | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 12 条（新旧共存、先备份、启动卡死怎么办等） |
-| 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（最新是 alpha.4，走廊已核实到 alpha.4），发了之后我们要复核一遍 |
+| 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（最新是 rc.1，走廊已核实到 rc.1），发了之后我们要复核一遍 |
 | 0.1.2 → 更新版本 | 📝 等社区认领 | — | 想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
 
 ## 考题（benchmark）

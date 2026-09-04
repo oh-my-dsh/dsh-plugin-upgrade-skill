@@ -123,6 +123,7 @@
 | [references/README.md](references/README.md) | 版本走廊、卡片 schema 与维护规则 |
 | [references/pre-flight.md](references/pre-flight.md) | 七类触点自查与汇总模板 |
 | [references/troubleshooting.md](references/troubleshooting.md) | 迁移后症状 → 根因 → 卡片 / 走廊配方速查 |
+| [references/v0.1.1-rc.1.md](references/v0.1.1-rc.1.md) | rc.8→rc.1 草稿卡：repository-plugins 机制移除、`dshClient`→`dsh.client` manifest 合并、client-modules 扫描 → bundle `dsh.client`、严格注入 + 弱 `ctx.get`、session 事件契约、自渲染 client 会话聚合、`tasks.peek` 移除、0812 服务改名（vlln 插件迁移；走廊为 0810–0812 内测快照窗口的最近公开 tag 对齐，待上游复核） |
 | [references/v0.1.2-alpha.1.md](references/v0.1.2-alpha.1.md) | rc.2→alpha.1 curated 卡 |
 | [references/v0.1.2-alpha.2.md](references/v0.1.2-alpha.2.md) | alpha.1→alpha.2 curated 卡 |
 | [references/v0.1.2-alpha.3.md](references/v0.1.2-alpha.3.md) | alpha.2→alpha.3 curated 卡（0 张卡：无插件面变更，含核对记录） |
