@@ -86,7 +86,7 @@ export function check(output) {
   const summary = summarize([{ label: manifest.condition, paths }])
   const failures = checkRecords(summary.groups[0].records, manifest)
   writeFileSync(join(output, 'summary.json'), `${renderJson(summary)}\n`)
-  const usage = { inputTokens: 0, outputTokens: 0, cacheTokens: 0, durationSeconds: 0, missingUsageTrials: 0 }
+  const usage = { inputTokens: 0, outputTokens: 0, cacheTokens: 0, durationSeconds: 0, missingUsageTrials: 0, missingCacheTrials: 0, missingDurationTrials: 0 }
   for (const path of paths) {
     const trial = JSON.parse(readFileSync(path, 'utf8'))
     const agent = trial.agent_result
@@ -94,10 +94,12 @@ export function check(output) {
     else {
       usage.inputTokens += agent.n_input_tokens
       usage.outputTokens += agent.n_output_tokens
-      usage.cacheTokens += Number.isFinite(agent.n_cache_tokens) ? agent.n_cache_tokens : 0
     }
+    if (Number.isFinite(agent?.n_cache_tokens)) usage.cacheTokens += agent.n_cache_tokens
+    else usage.missingCacheTrials++
     const duration = (Date.parse(trial.finished_at) - Date.parse(trial.started_at)) / 1000
     if (Number.isFinite(duration) && duration >= 0) usage.durationSeconds += duration
+    else usage.missingDurationTrials++
   }
   const evidence = { ...manifest, usage, failures, complete: failures.length === 0 }
   writeFileSync(join(output, 'evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`)

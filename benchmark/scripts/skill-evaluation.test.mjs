@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
-import { checkRecords, evaluationConfig, TASKS } from './skill-evaluation.mjs'
+import { check, checkRecords, evaluationConfig, TASKS } from './skill-evaluation.mjs'
 import { compareEvidence, GROUPS } from './compare-skill-evaluation.mjs'
 
 test('comparison conditions change only supplied Skills, keeping tasks, model and attempts fixed', () => {
@@ -67,4 +70,42 @@ test('comparison identifies per-task degradation and refuses mismatched or incom
   }
   groups['all-skills'].summary.groups['all-skills'].perTask = {}
   assert.throws(() => compareEvidence(groups), /incomplete task inventory/)
+})
+
+test('Harbor trial files produce complete evidence and usage; missing usage remains explicit', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'skill-evidence-test-'))
+  try {
+    writeFileSync(join(directory, 'manifest.json'), JSON.stringify({
+      condition: 'all-skills', tasks: ['S1-static-scan'], attempts: 1,
+      sourceCommit: 'a'.repeat(40), dirty: false,
+    }))
+    const trialDirectory = join(directory, 'jobs/all-skills/S1-static-scan__trial')
+    mkdirSync(trialDirectory, { recursive: true })
+    const path = join(trialDirectory, 'result.json')
+    const trial = {
+      id: 'synthetic-test-only', task_id: { path: '/tasks/S1-static-scan' },
+      verifier_result: { rewards: { reward: 0.75 } }, exception_info: null,
+      agent_result: { n_input_tokens: 100, n_output_tokens: 20, n_cache_tokens: 50 },
+      started_at: '2026-09-04T00:00:00Z', finished_at: '2026-09-04T00:00:02Z',
+    }
+    writeFileSync(path, JSON.stringify(trial))
+    const evidence = check(directory)
+    assert.equal(evidence.complete, true)
+    assert.equal(evidence.usage.inputTokens, 100)
+    assert.equal(evidence.usage.outputTokens, 20)
+    assert.equal(evidence.usage.cacheTokens, 50)
+    assert.equal(evidence.usage.durationSeconds, 2)
+    assert.equal(JSON.parse(readFileSync(join(directory, 'summary.json'), 'utf8')).groups['all-skills'].scored, 1)
+    delete trial.agent_result
+    delete trial.finished_at
+    writeFileSync(path, JSON.stringify(trial))
+    const missing = check(directory)
+    assert.equal(missing.usage.missingUsageTrials, 1)
+    assert.equal(missing.usage.missingCacheTrials, 1)
+    assert.equal(missing.usage.missingDurationTrials, 1)
+    rmSync(path)
+    assert.equal(check(directory).complete, false)
+  } finally {
+    rmSync(directory, { recursive: true, force: true })
+  }
 })
