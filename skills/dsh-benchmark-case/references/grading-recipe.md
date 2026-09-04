@@ -27,7 +27,7 @@ if (gate.changed !== true) emit(0, [`fixture unchanged (${gate.detail}), graded 
 // 1. 静态段 — manifest 字段 / exports / patch / 源码 grep
 //    每 check: score += N; reasons.push(具体原因)
 //    manifest 用 JSON.parse；patch 用文本 regex；源码模式用正则
-//    半对给半带（如 dsh.client 声明缺 platform → 20 而非全 40）
+//    半对给半带（如关键声明缺字段 → 给半分而非满分）
 //    陷阱跟随封顶：误导注释说"别改 X"，留着 X → 该 check 上限
 
 // 2. 运行时段 — 容器真实执行
@@ -62,22 +62,23 @@ emit(score, reasons)
 
 ## 分数带设计原则
 
-1. **给半对留带**：`dsh.client` 声明完整 40 / 缺 platform 20 / 完全缺失 0。
-2. **陷阱封顶**：跟随误导 = 上限（H1：inject 含 remote 不含量 llm → 上限 20）。
-3. **绕道封顶**：看似全绿但 pnpm.overrides 钉旧运行时 / 手写 shim → 上限
-   （H5：pin/shim 封顶）。封顶要有静态引擎（grep 特定字段/模式），因为
-   这些绕道 boot 也绿。
+1. **给半对留带**：关键声明完整给满分 / 缺字段给半分 / 完全缺失 0 分。
+2. **陷阱封顶**：跟随误导 = 该 check 上限。误导注释把 agent 引向"看起来对
+   其实致命"的改法，跟着改的解必须拿不到该 check 满分。
+3. **绕道封顶**：看似全绿但用"钉旧依赖版本 / 手写兼容层"等方式绕开迁移 →
+   上限。封顶要有静态引擎（grep 特定字段/模式），因为这些绕道 boot 也绿。
 4. **100 = 完全正确路径**：oracle 只走合法路径拿到 100；任何绕道拿不到满分。
 5. **分数差即评测点**：装 skill vs 不装的分差 = 该题测的能力。0 分差愚蠢题。
 6. **判别力验证（交付前必跑负例矩阵）**：oracle=100 只是下限——还要验证
    judge 不是"什么都给高分"。每个陷阱/半迁移态跑一版：
    - 未动 fixture → 必须 0（gate）；
-   - 跟随误导注释 → 该 check 上限（如 M7 注释残留旧名 → 静态丢对应点）；
-   - 半迁移（如只改服务名不改事件名）→ 落在预期带（静态失分 + 运行时
-     `jobs.onTaskDone is not a function` → plugin tree failed）；
-   - `dsh plugin add` 失败 → 30 带。
-   负例分数矩阵记录进 SOLUTION.md / 交付报告。M6 已验 0/100/80、M7 已验
-   0/100/90/50/30——这两组矩阵就是 skill 的"判分有区分度"证据。
+   - 跟随误导注释 → 该 check 上限（静态丢对应点）；
+   - 半迁移（如标识符只改了一部分、漏改其余引用）→ 落在预期带（静态
+     失分 + 运行时负信号）；
+   - `dsh plugin add` 失败 → 低分带。
+   负例分数矩阵记录进 SOLUTION.md / 交付报告；既有题的交付记录里都附了
+   这类矩阵，可参照其格式（各题具体分值与落带以该题 judge 为准，本 skill
+   不展开——方法级不讲答案）。
 
 ## 运行纪律
 
@@ -96,7 +97,7 @@ emit(score, reasons)
 
 ## 参考实现
 
-`tasks/H3-client-plane/tests/judge.mjs`（client 声明 40 + add 10 + 无 pending
-10 + boot 条目 40 —— 最干净的四段）、`tasks/M6-repository-plugins-removal`
-（静态 60 + 运行时 40，含 manifest 遮蔽深坑）、`tasks/M5-token-auth-smoke`
-（raw webServer.register 封顶 60 的静态引擎）。
+读既有任务的 `tests/judge.mjs` 学结构与惯例（如 `tasks/H3-client-plane`、
+`tasks/M13-repository-plugins-removal`、`tasks/M5-token-auth-smoke`）——
+三段式怎么排、静态 caps 引擎怎么写、reasons 文案什么风格，照它们对齐。
+各题的具体分值与封顶线以该题 judge 为准，本 skill 不展开。

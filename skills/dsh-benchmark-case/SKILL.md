@@ -11,7 +11,7 @@ license: MIT
 oracle 参考解，judge 在容器内真实冷启动判活。产出跟随
 `./benchmark/`（上文：`oh-my-dsh/dsh-plugin-upgrade-skill` 的 benchmark 目录）。
 
-> 上下文锚点：目标套件是 dsh-plugin-upgrade-skill 的 benchmark v2.3（Harbor
+> 上下文锚点：目标套件是 dsh-plugin-upgrade-skill 的 benchmark v2.4（Harbor
 > 格式），host 镜像固定为 node:24-bookworm + 全局 dsh 0.1.2-alpha.2。每条考题
 > 遵循 execution-contract（BENCHMARK-AUTH-v1）与固定评分模型（100 分/题）。
 
@@ -54,7 +54,10 @@ fixture 应模拟的第 N 个 commit 形态（迁移前）。Checkpoint：三者
 ### Stage 1 · 骨架与命名
 
 任务目录 `tasks/<id>/`，id 命名：前缀字母 S（静态只读）/ M（迁移可改）/
-H（hands-on 陷阱），编号接现有最大值（当前 23 题，最新 M6）。一个任务一个目录：
+H（hands-on 陷阱），编号接该系列现有最大值。**编号不要凭记忆硬编码**——
+动手前先 `ls benchmark/tasks/` 并对照 `benchmark/README.md` 任务表与注册表
+校验脚本确认当前集合（当前 52 题：S1–S16 / M1–M14 / H1–H22，下一可用
+S17 / M15 / H23），勿跳号。一个任务一个目录：
 
 ```
 tasks/<id>/
@@ -100,11 +103,12 @@ commit（judge 靠 `git status --porcelain -- fixture` 判"fixture 是否被改"
    `tasks/H9-dsh-web-alpha2/provenance/`）。
 
 **fixture 放哪、可以留什么**：Node half 可留在 `.dsh-plugin/` 子目录等
-旧布局位置——但**注意隐藏深坑**：host 的 client-modules 从 Node entry 文件
-向上找最近 package.json 作为包身份（见 `$_S/references/host-archaeology.md`
-的"manifest 遮蔽"条目）。fixture 保留旧 `.dsh-plugin/package.json`（无
-dsh.client）会让"只补根清单不删残留"的解法静默漏掉浏览器半——这是真实
-R1-01 迁移踩过的、极好的题点，参考解必须删残留。
+旧布局位置——但这类布局有深坑可挖：host 的 client-modules 从 Node entry
+文件向上找最近 package.json 作为包身份（机制见
+`$_S/references/host-archaeology.md` 的"manifest 遮蔽"条目）。设计 fixture
+时可利用这类机制布坑：让旧布局残留文件影响包识别，浏览器半静默消失；
+判分侧的 boot 图条目检查会自然抓到。具体某道在线题怎么布、参考解怎么收
+尾，不在此展开——方法级不讲答案。
 
 Checkpoint：`dsh plugin add` 旧 fixture 在容器里真的坏 / 有静默缺陷；
 新 fixture（参考解）全绿。两态都必须先本地 docker 验证，不许只靠想象。
@@ -138,9 +142,10 @@ Checkpoint：`dsh plugin add` 旧 fixture 在容器里真的坏 / 有静默缺�
 内没有浏览器 → client 运行时行为不判，只判宿主宣告的 boot 图条目"这类边界；
 未覆盖面同样写进 scoring.md。
 
-**分数带设计提醒**：给"半对"留带（如缺 platform 的 dsh.client = 20 而非 40）；
-陷阱跟随者给封顶（如误导注释说别改 X，留着 X = 该 check 上限）。判分必须能
-区分"真迁移"与"看起来绿但绕开了迁移"（参考 H5 的 static caps）。
+**分数带设计提醒**：给"半对"留带（关键声明完整给满分、缺字段给半分、
+完全缺失 0 分）；陷阱跟随者给封顶（如误导注释说别改 X，留着 X = 该
+check 上限）。判分必须能区分"真迁移"与"看起来绿但绕开了迁移"——绕道
+路径 boot 也能绿，要用静态检查（grep 特定字段/模式）封顶才抓得住。
 
 **运行纪律**：judge 只建 `bench-<task>` profile 与 `/tmp/bench-<task>`，
 finally 里清理（pkill 用 `[x]` 自逃逸模式防止自杀）。timeout 充足（add 180s /
@@ -150,7 +155,7 @@ test.sh 解析不了 JSON 时按 0 计。
 ### Stage 4 · oracle（参考解）
 
 `solution/plugin/` 是完整迁移后的 fixture；`solve.sh` 逐文件覆盖进
-`/app/fixture/`，并删除必须删除的残留（如 `.dsh-plugin/package.json`）。
+`/app/fixture/`，并显式删除该题迁移要求删除的残留文件。
 SOLUTION.md 三节必备：
 
 1. **Reference Changes**：每条改动对应卡 ID 全名（如 DSH-0.1.1-R1-01，
@@ -158,8 +163,8 @@ SOLUTION.md 三节必备：
 2. **The Point (one sentence)**：这道题真正测的一招。
 3. **Grading Boundary**：与 Stage 3 的边界一致。
 4. **Warning**：如果 judge 是 grep 源码模式判"已删除"，参考解源码注释里
-   **不得出现被 grep 的字面 token**（本次实战教训：solution 注释写
-   "httpServer.tapIndex 已删除" 会自伤 10 分）。
+   **不得出现被 grep 的字面 token**（实战教训：solution 注释复述了被判
+   "已删除"的旧标识符字面，judge grep 命中注释导致自伤扣分）。
 
 Checkpoint：oracle 在容器里跑出 **100/100**（reward 1.0，下一步做）。
 
@@ -198,7 +203,7 @@ Checkpoint：oracle 在容器里跑出 **100/100**（reward 1.0，下一步做�
 ```sh
 cd dsh-plugin-upgrade-skill
 node scripts/validate.mjs                       # 卡 + 链接 + 引用全绿
-node benchmark/scripts/validate-task-registry.mjs    # 23→N 注册表一致
+node benchmark/scripts/validate-task-registry.mjs    # 任务清单/计数注册表一致
 node benchmark/scripts/validate-execution-contract.mjs  # 契约五子句 + mode
 # oracle 自检（must be 1.0）：
 harbor run -p benchmark/tasks/<id> -a oracle
@@ -230,7 +235,7 @@ Checkpoint：三个校验全绿 + oracle 100/100 + 文件权限（solve.sh / tes
 5. **profile 组合**：web 冷启动 profile 用
    `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']`；headless 用
    headless 预设。别复用共享 ~/.dsh。
-6. **版本钉死**：Dockerfile 的 pnpm/dsh 版本与现有 22 题完全一致
+6. **版本钉死**：Dockerfile 的 pnpm/dsh 版本与现有全部任务完全一致
    （pnpm@11.24.0 / dsh@0.1.2-alpha.2）；改了等于换题。
 7. **pkill 自杀**：judge 清理命令 pidpattern 用 `[x]` 括号技巧，否则匹配到
    自己执行的 sh -c 会杀自己（本次实测 exit 143）。**注意 `[x]` 只防"模式
@@ -240,7 +245,7 @@ Checkpoint：三个校验全绿 + oracle 100/100 + 文件权限（solve.sh / tes
    做路由冒烟时，内嵌脚本中的单引号会在 sh 单引号内提前闭合 → node 收残缺
    程序 → SyntaxError 伪装成"路由失败"（stderr 只有 node 栈尾）。修法：
    内嵌脚本零单引号（断言用 `JSON.parse(text).ok === true` 而非
-   `text.includes('"ok":true')`）。已写进 M7 judge 头注释。
+   `text.includes('"ok":true')`）。已写进 M14 judge 头注释。
 9. **harbor 可用性**：本机 harbor CLI 因 uv/pip 沙箱装不上；oracle 验证可用
    docker 手动等价路径，README 说明跑法（harbor run -a oracle 为标准式）。
 10. **一个走廊多题**：强 case（如 bundle 转换、服务改名）可出多道独立题，

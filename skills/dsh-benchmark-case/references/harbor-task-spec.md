@@ -1,7 +1,8 @@
-# Harbor 任务规范（dsh-plugin-upgrade benchmark v2.3）
+# Harbor 任务规范（dsh-plugin-upgrade benchmark v2.4）
 
 Stage 1 / Stage 3 的展开。目标套件：`oh-my-dsh/dsh-plugin-upgrade-skill` 的
-`benchmark/`，23 道既有题（S1..S8 静态 / M1..M6 迁移 / H1..H9 陷阱）为参照。
+`benchmark/`，52 道既有题（S1..S16 / M1..M14 / H1..H22）为参照——动手前先
+`ls benchmark/tasks/` 与 `benchmark/README.md` 任务表确认当前集合，勿凭记忆。
 
 ## 任务目录（6 块，缺一不可）
 
@@ -82,17 +83,13 @@ boot 图 URL 按 **exports key** 拼（`"exports": {"./client": "..."}` → boot
 `<pkg>/client.js`），与文件真实路径无关（实测证据：H3/H9 client 在
 `lib/client.js` 或 `.dsh-plugin/client.js`，boot URL 都是 `<pkg>/client.js`）。
 
-## 既有 23 题清单（命名参照）
+## 既有任务集合与新 id 命名（以实物为准，勿凭本节记忆）
 
-静态 readonly：S1 static-scan、S2 negative-scan、S3 snapshot-migration、
-S4 legacy-client-imports、S5 negative-naming、S6 corridor-net-state、
-S7 unpublished-cohort、S8 release-routing-trap（+H4 tsbuildinfo-trap、
-H6 remote-error-trap 名义 H 实为静态）。
-mutable hands-on：M1 host-migration、M2 optional-dep-trap、
-M3 session-projection、M4 peer-prerelease-range、M5 token-auth-smoke、
-M6 repository-plugins-removal、H1 plane-trap、H2 baseline-trap、
-H3 client-plane、H5 runtime-export-drift、H7 locale-trap、H8 fire-drill、
-H9 dsh-web-alpha2。
+既有题的**唯一权威清单**是 `ls benchmark/tasks/` + `benchmark/README.md`
+任务表 + `benchmark/scripts/validate-task-registry.mjs` 的注册数据，本节不
+逐题罗列（罗列必过期）。当前（2026-09）为 52 题：S1–S16、M1–M14、H1–H22；
+其中 H4/H6 名义 H 实为静态题，Type 以 README 任务表的 Type 列为准。
 
-新任务 id：S9… / M7… / H10…（接续，勿跳号）；命名用连字符描述性词
-（`M6-repository-plugins-removal` 风格）。
+新任务 id：接对应系列现有最大编号（当前下一可用 S17 / M15 / H23），勿跳号；
+命名用连字符描述性词（`M13-repository-plugins-removal` 风格）。写题前重新
+核对一次目录与注册表——主线随时可能又进新题。

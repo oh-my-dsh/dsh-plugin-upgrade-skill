@@ -1,7 +1,7 @@
 # 契约条款银行（BENCHMARK-AUTH-v1）
 
 `benchmark/scripts/validate-execution-contract.mjs` 用**正则逐条匹配**，
-字面必须命中。以下措辞全部来自既有 23 题，**照抄最稳**。双语任选其一，
+字面必须命中。以下措辞全部来自既有题，**照抄最稳**。双语任选其一，
 但英文版已证明匹配，推荐复制。
 
 ## 完整 instruction.md 模板（mutable / hands-on）
@@ -69,7 +69,7 @@ version = "1.1.0"                          # 校验：必须这串
    边界句必须与 expectedModes 的 mode 一致。
 3. **校验入口**：
    `node benchmark/scripts/validate-execution-contract.mjs`（一次校验全部
-   instruction.md + task.toml，23→24 自动）。
+   instruction.md + task.toml，新题注册 expectedModes 后自动纳入）。
 4. 新增题必须同时把 `['<task-id>', '<mode>']` 加进脚本头部 expectedModes
    Map，否则 "task has no execution-contract mode" 失败。
 

@@ -5,8 +5,7 @@ cp "$(dirname "$0")/plugin/package.json" /app/fixture/package.json
 cp "$(dirname "$0")/plugin/cordis.patch.yml" /app/fixture/cordis.patch.yml
 cp "$(dirname "$0")/plugin/.dsh-plugin/index.js" /app/fixture/.dsh-plugin/index.js
 cp "$(dirname "$0")/plugin/.dsh-plugin/client.js" /app/fixture/.dsh-plugin/client.js
-# The repository-shaped .dsh-plugin/package.json manifest is dropped: the alpha host
-# walks up from the Node entry to the nearest package.json (the package root, which
-# carries dsh.client); a nested manifest without dsh.client would shadow it and the
-# browser half would stay invisible (DSH-0.1.1-R1-01).
-rm -f /app/fixture/.dsh-plugin/package.json
+# If the migration requires dropping legacy layout files, delete them here explicitly.
+# Leftover files that still look loadable to the host are a classic silent-failure trap;
+# which files must go is task-specific and documented in that task's SOLUTION.md.
+# rm -f /app/fixture/<legacy-file-that-must-go>
