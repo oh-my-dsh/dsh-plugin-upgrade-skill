@@ -20,8 +20,10 @@ The model adapts three ideas from [DeepSWE](https://github.com/datacurve-ai/deep
    agent must fix the trap without breaking what already worked).
 3. **Per-component reward breakdown** — the judge emits a structured
    `checkpoints: [{ id, label, type, points, awarded, patched, pristine }]` ledger,
-   and `test.sh` writes it to `/logs/verifier/reward.json` next to the Harbor
-   `reward.txt`.
+   and `test.sh` writes it to `/logs/verifier/grading.json` next to the Harbor
+   `reward.txt` and numeric `reward.json`. Harbor reserves `reward.json` for a flat numeric reward map and
+   reads it before `reward.txt`; structured reasons/checkpoints must use a different
+   filename. Historical structured `reward.json` files remain valid exporter inputs.
 
 Deliberately **not** borrowed: DeepSWE's network allowlists, its real-repository task
 set, and trajectory critique — those do not fit this benchmark's scope.
@@ -91,12 +93,12 @@ explicit.
 ## Export to DeepSWE-style reports
 
 `benchmark/scripts/export-deepswe-report.mjs` converts a checkpoint-graded judge
-result (the `/logs/verifier/reward.json` ledger) into the report fields DeepSWE
+result (the `/logs/verifier/grading.json` ledger) into the report fields DeepSWE
 writes ([reward.json/ctrf.json](https://github.com/datacurve-ai/deep-swe)), so the
 two benchmarks can be compared side by side:
 
 ```sh
-node benchmark/scripts/export-deepswe-report.mjs /logs/verifier/reward.json --task M5-token-auth-smoke
+node benchmark/scripts/export-deepswe-report.mjs /logs/verifier/grading.json --task M5-token-auth-smoke
 ```
 
 Mapping (verified against DeepSWE's `grader.py` output schema):
@@ -130,7 +132,7 @@ bucket defaults its ratio to 1.0, matching DeepSWE's own edge behavior.
    the per-task facts now duplicated in the README/scoring tables (cards covered,
    trap description), becoming the single source of truth that
    `validate-task-registry.mjs` cross-checks the prose tables against.
-3. **Publish the ledger** — `reward.json` already carries the structured
+3. **Publish the ledger** — `grading.json` already carries the structured
    checkpoints; `export-deepswe-report.mjs` maps it onto DeepSWE-style report
    fields (reward/ctrf) for cross-benchmark comparison.
 4. **Pin the trap states** — the baseline-mismatch verdict turns fixture drift into

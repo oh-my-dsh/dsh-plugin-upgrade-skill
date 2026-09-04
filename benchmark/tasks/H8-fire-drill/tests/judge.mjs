@@ -118,6 +118,7 @@ async function main() {
     'report-no-force': RELEASE_TRAP_RE.test(agentText) ? 'fail' : 'pass',
   }
   reasons.push(`patched runtime: install ${patchedOutcome.installOk ? 'ok' : `failed (${patchedOutcome.installDetail})`}, boot ${patchedOutcome.bootOk ? 'green' : 'failed'}, smoke ${patchedOutcome.noAuthStatus === null ? 'unmeasurable' : `${patchedOutcome.noAuthStatus}/${patchedOutcome.authedStatus}`}`)
+  if (patchedOutcome.bootDetail) reasons.push(`patched runtime detail: ${patchedOutcome.bootDetail}`)
 
   const graded = evaluateCheckpoints(DECL.checkpoints, patched, baseline)
   emit(Math.min(100, graded.score), [...reasons, ...graded.reasons], { checkpoints: graded.checkpoints })
@@ -142,7 +143,7 @@ async function measure(pluginDir, profile) {
     const bootOk = !NEGATIVE_SIGNAL.test(boot.output)
     const url = /dsh web: (\S+)/.exec(boot.output)?.[1]
     if (!bootOk || url === undefined) {
-      return { installOk, bootOk: false, noAuthStatus: null, authedStatus: null, bootDetail: bootOk ? 'no boot URL in log' : (boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown') }
+      return { installOk, bootOk: false, noAuthStatus: null, authedStatus: null, bootDetail: boot.probeError || (bootOk ? 'no boot URL in log' : (boot.output.match(/pending \(waiting for service: [^)]+\)|plugin tree failed|did not activate/)?.[0] ?? 'unknown')) }
     }
     const smoke = await smokeChannel(url)
     if (smoke.noAuthStatus === null || smoke.authedStatus === null) {

@@ -7,7 +7,7 @@ claim that a model opened a Skill or followed its instructions.
 |---|---|---|
 | `validate` / `skill-composition` | Every PR and main push | File/script checks plus workflow ownership, dependency and scope invariants |
 | `dsh-integration` | Runtime-related paths, manual, weekly | The checked-in M1 reference plugin behaves as expected on the two pinned DSH versions |
-| `skill-evaluation` controls | Skill, task or evaluation-code changes | Six reference answers score 1; doing nothing scores 0; every expected trial is present |
+| `skill-evaluation` controls | Skill, task or evaluation-code changes | Seven reference answers score 1; doing nothing scores 0; every expected trial is present |
 | `skill-evaluation` model jobs | Manual dispatch only | Actual model outcomes for three Skill catalogs, with complete per-task evidence |
 
 ## Local deterministic checks
@@ -47,7 +47,7 @@ reference answers and no-op rewards above zero. A Harbor process exiting zero by
 itself is insufficient.
 
 The suite is maintained in [suite.json](../skill-evaluation/suite.json): S1
-(read-only scan), M1 (real host migration), S5 (naming), S9 (runtime diagnosis),
+(read-only scan), M1 (real host migration), M5 (channel authentication), S5 (naming), S9 (runtime diagnosis),
 S11 (heavy dependency diagnosis), and H8 (multi-plugin release rehearsal). It is a
 regression subset of the living benchmark, not an additional benchmark task set.
 
@@ -59,7 +59,7 @@ Dispatch **skill-evaluation** in GitHub Actions with an explicit matching
 fail the run with a setup message; they never become a successful skipped test.
 The workflow first requires both control jobs to pass.
 
-The same six task prompts, model, Harbor version and attempt count run in fresh
+The same seven task prompts, model, Harbor version and attempt count run in fresh
 Docker trials using Harbor's `terminus-2` agent:
 
 | Condition | Injected directories |
@@ -74,7 +74,7 @@ prompt. The baseline label describes injection, not verified absence of internet
 access or all possible Skill content. These public task environments retain their
 existing network policy. This is not a closed-book efficacy experiment.
 
-There are at most 18 model trials for a one-attempt smoke run, or 54 for a
+There are at most 21 model trials for a one-attempt smoke run, or 63 for a
 three-attempt comparison, with two concurrent trials per condition and no automatic
 retries. Model use incurs provider charges. Local generation uses the same entry:
 

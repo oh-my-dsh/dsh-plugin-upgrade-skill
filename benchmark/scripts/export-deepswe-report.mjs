@@ -1,4 +1,4 @@
-// Export a checkpoint-graded judge result (benchmark/tasks/<id>/…/reward.json, the
+// Export a checkpoint-graded judge result (benchmark/tasks/<id>/…/grading.json, the
 // structured ledger emitted by the M5/H8-style judges) into a DeepSWE-shaped report
 // so results from the two benchmarks can be compared side by side.
 //
@@ -11,7 +11,7 @@
 // DeepSWE's "apply_failed" field has no equivalent here (our judges have environment
 // gates instead) and is intentionally not invented.
 //
-// Usage: node benchmark/scripts/export-deepswe-report.mjs <reward.json> [--task <id>] [--out <file>]
+// Usage: node benchmark/scripts/export-deepswe-report.mjs <grading.json> [--task <id>] [--out <file>]
 // With no --out, the report is written to stdout.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -75,7 +75,7 @@ if (isMain) {
   const taskIdx = args.indexOf('--task')
   const outIdx = args.indexOf('--out')
   if (input === undefined) {
-    console.error('usage: node export-deepswe-report.mjs <reward.json> [--task <id>] [--out <file>]')
+    console.error('usage: node export-deepswe-report.mjs <grading.json> [--task <id>] [--out <file>]')
     process.exit(2)
   }
   const taskId = taskIdx >= 0 ? args[taskIdx + 1] : 'unknown'
@@ -84,7 +84,7 @@ if (isMain) {
   try {
     result = JSON.parse(readFileSync(resolve(input), 'utf8'))
   } catch (error) {
-    console.error(`cannot read reward.json: ${error.message}`)
+    console.error(`cannot read grading JSON: ${error.message}`)
     process.exit(2)
   }
   const report = toDeepsweReport(result, taskId)

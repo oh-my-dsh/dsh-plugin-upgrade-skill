@@ -58,7 +58,7 @@ jobs:
           python-version: "3.12"
       - name: Install pinned Harbor
         run: python -m pip install harbor==0.22.0
-      - name: Prepare six-task control suite
+      - name: Prepare seven-task control suite
         id: prepare
         run: node benchmark/scripts/skill-evaluation.mjs prepare --condition '${{ matrix.condition }}' --output "$EVAL_DIR"
       - name: Execute reference answers or untouched fixtures
@@ -76,6 +76,8 @@ jobs:
             ${{ env.EVAL_DIR }}/evidence.json
             ${{ env.EVAL_DIR }}/summary.*
             ${{ env.EVAL_DIR }}/jobs/**/verifier/**
+            ${{ env.EVAL_DIR }}/jobs/**/exception.txt
+            ${{ env.EVAL_DIR }}/jobs/**/trial.log
           retention-days: 7
 
   compare:
