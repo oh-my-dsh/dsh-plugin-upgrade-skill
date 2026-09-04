@@ -1,6 +1,6 @@
 # Scoring rules and checkpoint mapping
 
-Total 4200 (42 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
+Total 4300 (43 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
 Every judge: exit 0, with the last stdout line
 `{"score": 0-100, "max": 100, "reasons": [...]}`; `tests/test.sh` parses that last
 line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
@@ -51,6 +51,7 @@ line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
 | H17-merge-calls | DSH-0.1.2-A1-03 view derivations; DSH-0.1.2-A1-29 labels contract | Static 50 (runtimeGone 6 + legacy member-access derivations gone 12 + block.meta derivation 8 + useChat 8 + inject recomposed 8 + Partial/labels 4 + cohort 4) + deploy 25 + diagnose 15 (exists 5 + names 5 + A1-03 3 + A1-29 2) + release 10; resultView/callView member access retained caps at 60 (bait payload), runtime retained caps at 20 | 
 | H18-blame-bubbles | DSH-0.1.2-A1-01 apiproxy removal; DSH-0.1.2-A2-08 sessionProjections; DSH-0.1.2-A1-25 | Static 50 (apiproxy gone 10 + two-arg handle 10 + SessionProjectionStateMap merge 8 + runtime gone 10 + inject 6 + cohort 6) + deploy 25 + diagnose 15 (exists 5 + names 5 + A1-01 3 + A2-08 2) + release 10; authority retained caps at 60, apiproxy retained caps at 40, runtime retained caps at 20 |
 | H19-workspace-ya | DSH-0.1.2-A1-25 split; DSH-0.1.2-A1-03; M3 precedent (never edit shipped packages) | Static 50 (provideRoot takeover 10 + runtimeGone 10 + controllers+ui-session inject 10 + no actionable node_modules edit 10 + GlobalStandardProps.useWorkspaces declaration 5 + cohort 5) + deploy 25 + diagnose 15 (exists 5 + names 5 + A1-25 3 + A1-03 2) + release 10; any node_modules patching present caps at 20 (M3 precedent), runtime retained caps at 20 |
+| H21-question-answerer-waterfall | DSH-0.1.2-A1-20 · structured-question answerer registration seam | fixture changed/import/export 10 + fixture mock tests 10 + real rc.2 seat claim/dispose 15 + real alpha.2 shared-Context agentless claim 15 + scoped current-owner claim 15 + foreign-owner delegation exactly once 15 + owner-object rebinding 10 + disposer fallthrough 10; version/identity/retry branching, `ctx.root` bypass, tampered cohorts, or deleting the answerer contract are rejected or capped; agentless delivery is scored only on the shared-Context topology |
 
 ## Liveness signals (shared convention for container tasks)
 
@@ -97,6 +98,12 @@ code" checkpoint (the attribution principle from the validation report).
   unpublished alpha.1 executable only because the fixed source has the same
   two-argument registration behavior. No product browser, token exchange, Provider
   credential, or bit-identical packed mnemon artifact is scored.
+- H21-question-answerer-waterfall proves the structured-question answerer seam only.
+  The rc.2 and alpha.2 user-questions closures are independently locked; the alpha.2
+  probe uses a service and listener on the same Context for agentless delivery, and
+  separately drives scope-targeted requests for current/foreign owners. It does not
+  claim sibling-entry agentless delivery, a full DSH agent registry, a TUI panel,
+  credentials, or whole-product equivalence between cohorts.
 - Container-task judges only create the `bench-*` profile and the `/tmp/bench-*`
   directories and clean them up when the run ends; nothing else in the environment is
   touched.

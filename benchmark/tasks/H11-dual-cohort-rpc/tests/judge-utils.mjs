@@ -39,7 +39,7 @@ export async function inspectBranching(sourceRoot) {
   for (const file of await sourceFiles(sourceRoot)) {
     const source = stripComments(await readFile(file, 'utf8'))
     for (const [pattern, label] of BRANCH_CHECKS) {
-      if (pattern.test(source)) hits.push(`${relative(sourceRoot, file)}: ${label}`)
+      if (pattern.test(source)) hits.push(`${relative(sourceRoot, file).replaceAll('\\', '/')}: ${label}`)
     }
   }
   return { ok: hits.length === 0, hits }

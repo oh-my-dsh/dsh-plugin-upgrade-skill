@@ -1,0 +1,35 @@
+schema_version = "1.4"
+# Harbor task: a real dual-cohort structured-question answerer migration.
+[task]
+name = "dsh-plugin-upgrade/h21-question-answerer-waterfall"
+version = "1.1.0"
+description = "Repair an rc.2-era single-seat provider registration so one implementation answers structured user questions on the legacy rc.2 seat and on the newer host that removed it"
+keywords = ["dsh", "plugin-migration", "dual-cohort", "user-questions", "answerer", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "dual-cohort", "real-incident", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+evaluation_partition = "closed-book-transfer"
+skill_snapshot_commit = "5f7234ba4e00aeaa46c699ea32384389ad38a2a6"
+skill_snapshot_tree = "817a48e6795b40a51a08befff62dd03d55e124df"
+skill_snapshot_archive_sha256 = "0906ca558c02b20fe095f50ddd3120fab8001e12caccba91613d7ede3bfd7f97"
+skill_snapshot_path = "skills/plugin-upgrade"
+incident_repository = "https://github.com/ccch1mneyyy/dsh-TUI"
+source_dsh_commit = "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e"
+preview_dsh_commit = "cd5ef8148158c3a752a658978873241fdf8e2bbc"
+executable_new_cohort_commit = "0a53fb55bea101816fa226bb964ae2bed71c343b"
+
+[agent]
+timeout_sec = 900.0
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 300.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

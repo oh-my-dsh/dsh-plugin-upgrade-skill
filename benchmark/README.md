@@ -1,8 +1,8 @@
 # dsh plugin upgrade tasks (benchmark v2.4 · Harbor format)
 
-The 42 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+The 43 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
 installed, will it actually upgrade the plugin**. The first 14 are written exams (read
-the code, produce the answer); the last 28 are hands-on (actually install dsh and run
+the code, produce the answer); the last 29 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
 
@@ -61,6 +61,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | H17-merge-calls | Hands-on | ui-tool deleted its resultView/callView derivations and ui-chat owns the chat nodes: does it derive cards from block.meta + call args + result text, read through useChat, and relax override dicts to Partial - instead of the renamed-fields bait |
 | H18-blame-bubbles | Hands-on | The suggestion-bubbles plugin rides the deleted apiproxy facade with a three-argument rpc.handle and an undeclared projection cell: does it migrate to ConnectionRpcResult, the two-argument handle, and the SessionProjectionStateMap dual-table declaration |
 | H19-workspace-ya | Hands-on | The workspace browser must take over the disabled official ui-workspace through slots.provideRoot plus a stand-in service (the boot-deadlock fix): does it compose the takeover instead of patching the shipped package in node_modules |
+| H21-question-answerer-waterfall | Hands-on | A structured-question answerer still uses the rc.2 single-seat registration: can it migrate to the alpha.2 waterfall while preserving current-owner claim, foreign-owner delegation, rebinding, disposal, and the legacy cohort |
 
 ## Benchmark results
 
@@ -213,7 +214,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 42 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 43 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -225,7 +226,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 42 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 43 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
@@ -252,7 +253,7 @@ node benchmark/scripts/validate-execution-contract.mjs
    - Build-cache diagnosis task (H4): the agent keeps `src/` unchanged, may only clean
      the `lib/` build artifacts, and writes its report to
      `/app/agent-output/H4-tsbuildinfo-trap/`;
-   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8/H9/H10): the agent edits files under `/app/fixture/`
+   - Hands-on tasks (M1/H1/H2/H3/H5/M2/M3/M4/H7/M5/H8/H9/H10/H21): the agent edits files under `/app/fixture/`
      directly; H2 additionally requires writing the migration report to
      `/app/agent-output/H2-baseline-trap/`.
 3. **Grading**: after the agent finishes, Harbor automatically runs `tests/test.sh`;
@@ -279,9 +280,10 @@ environment, and it does not leak migration answers to either round.
 Tasks carrying `metadata.skill_snapshot_commit` are an exception to attaching the
 current skill tree. Their provenance document identifies the exact pre-answer skill
 snapshot that must be materialized for the with-skill condition. In particular, H11
-must use `7d33bf4c492da250c94f48aebd29bb16877d7a36`: the current Example 04 contains
-its answer and would turn a transfer test into retrieval. No-skill and generic-skill
-runs keep the same task image and prompt.
+uses `7d33bf4c492da250c94f48aebd29bb16877d7a36` because the current Example 04
+contains its answer, while H21 uses `5f7234ba4e00aeaa46c699ea32384389ad38a2a6`
+because it predates the A1-20 migration material and is reachable from upstream
+main. No-skill and generic-skill runs keep the same task image and prompt.
 
 ## Grading design notes
 
@@ -400,7 +402,7 @@ numbers cannot be compared across models or against later runs.
   adding ordinary fixture tasks** — the point is to stop anyone from accidentally
   publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 42 tasks, and verify the
+  judge / solve.sh following the layout of the existing 43 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the

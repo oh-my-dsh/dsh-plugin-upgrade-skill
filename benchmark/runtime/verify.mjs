@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { runDockerSmoke } from '../../skills/plugin-test/scripts/docker-release-smoke.mjs'
@@ -102,7 +102,10 @@ function validateCases(data) {
     if (!entry.fixtures || typeof entry.fixtures !== 'object') throw new Error(`${prefix}.fixtures are required`)
     for (const [name, relativePath] of Object.entries(entry.fixtures)) {
       const path = resolve(benchmarkRoot, requireString(relativePath, `${prefix}.fixtures.${name}`))
-      if (!path.startsWith(`${benchmarkRoot}/`)) throw new Error(`${id} fixture leaves benchmark: ${relativePath}`)
+      const fromBenchmark = relative(benchmarkRoot, path)
+      if (fromBenchmark === '' || fromBenchmark.startsWith('..') || isAbsolute(fromBenchmark)) {
+        throw new Error(`${id} fixture leaves benchmark: ${relativePath}`)
+      }
       if (!existsSync(join(path, 'package.json'))) throw new Error(`${id} fixture is missing package.json: ${relativePath}`)
     }
     if (!Array.isArray(entry.checks) || entry.checks.length === 0) throw new Error(`${prefix}.checks are required`)
