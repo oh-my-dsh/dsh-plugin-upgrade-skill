@@ -203,6 +203,10 @@ it is alive.
 
 ## How to run
 
+For PR controls and manual multi-Skill model comparisons, see
+[Skill CI and composition coverage](docs/skill-ci.md). The model comparison is
+separate from the reference-answer controls; neither is inferred from `npm test`.
+
 For formal/reproducible runs, pin an evaluation snapshot under
 [`benchmark/snapshots/`](snapshots/README.md) instead of describing the object
 as "the current benchmark".

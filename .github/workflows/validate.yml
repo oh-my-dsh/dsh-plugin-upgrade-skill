@@ -30,6 +30,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Fetch immutable evaluation snapshot commits
+        run: npm run prepare:ci
       - name: Validate skills, cards, and manifests
         run: npm test
       - name: Install pinned Claude Code validator
@@ -38,3 +40,13 @@ jobs:
       - name: Validate Claude plugin marketplace
         if: matrix.node-version == 22
         run: claude plugin validate .
+
+  skill-composition:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check every Skill owner and pairwise workflow conflicts (no model)
+        run: npm run test:composition
