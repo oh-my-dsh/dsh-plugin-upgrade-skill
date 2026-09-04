@@ -11,7 +11,7 @@
 - **58 upgrade cards** — each records one real pitfall: what breaks, why, how to fix it, and which version the information comes from. Ordered by version, from 0.1.0-rc.8 all the way to 0.1.2-rc.1 (alpha.5→rc.1 has no plugin-facing changes: 0 cards; alpha.2→alpha.3 has 1 additive capability card; alpha.3→alpha.4 has 6; rc.8→rc.1 carries 9 draft cards).
 - **12 general-purpose countermeasures** — some problems have nothing to do with the version (back up first, run old and new side by side, what to do when startup hangs). These live in one checklist.
 - **8 skills** — one unified workflow selects and coordinates stages, while the other seven check upgrades, write plugins, test plugins, release plugins, diff two dsh versions, debug runtime failures, and integrate heavy dependencies into lightweight plugins.
-- **47 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded; two reproduce the real dsh-web v0.3.8 → v0.3.9 and dsh-data-agent v0.1.3 → v0.1.4 migrations.
+- **52 exam questions (benchmark)** — tests whether an AI with our skill actually knows how to upgrade a plugin. Every question is auto-graded; two reproduce the real dsh-web v0.3.8 → v0.3.9 and dsh-data-agent v0.1.3 → v0.1.4 migrations.
 - **Multiple validation reports** — we installed two real dsh versions in Docker and confirmed that following the cards really does fix plugins, followed by several rounds of agent benchmark runs.
 
 ## Quick Start
@@ -137,7 +137,7 @@ Upgrade the dsh-ads plugin to dsh-v0.1.2-alpha.2
 
 ## The exam (benchmark)
 
-The [benchmark/](benchmark/) folder has 47 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details. The result set includes two 2026-09-01 Codex + `gpt-5.6-terra` 22-task reports ([with the skill](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md), [with literally zero skills](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md)), four Codex + `gpt-5.6-luna` reports for the earlier 19-task snapshot, and the 2026-09-02 H22 dsh-data-agent pair ([with `plugin-upgrade`](benchmark/results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-plugin-upgrade.md), [with literally zero skills](benchmark/results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-no-skill.md)).
+The [benchmark/](benchmark/) folder has 52 upgrade exam questions with auto-grading, in [Harbor](https://github.com/harbor-framework/harbor) task format: each question is a self-contained task (its own container with dsh preinstalled, plus an automatic verifier). Run `harbor run -p benchmark/tasks/<task-id> -a <agent>` to get a 0–1 score. Run the same AI twice — once with this skill installed, once without — and the score difference is the skill's real effect. See [benchmark/README.md](benchmark/README.md) for details. The result set includes two 2026-09-01 Codex + `gpt-5.6-terra` 22-task reports ([with the skill](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md), [with literally zero skills](benchmark/results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22-literal-no-skill.md)), four Codex + `gpt-5.6-luna` reports for the earlier 19-task snapshot, and the 2026-09-02 H22 dsh-data-agent pair ([with `plugin-upgrade`](benchmark/results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-plugin-upgrade.md), [with literally zero skills](benchmark/results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-no-skill.md)).
 
 ## References
 
@@ -171,7 +171,7 @@ skills/<skill-name>/
 └── examples/       # example code (read-only, do not run)
 scripts/validate.mjs            # repo self-check
 scripts/validate-manifests.mjs  # multi-agent manifest self-check
-benchmark/                      # 47 exam questions + grader + validation reports
+benchmark/                      # 52 exam questions + grader + validation reports
 ```
 
 ## Contributing
