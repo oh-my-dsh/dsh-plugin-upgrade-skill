@@ -93,7 +93,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
-首次只调用统一入口、尚未说明目标流程时，它会先列出 7 个工作流程和 12 项可选能力，推荐只读
+首次只调用统一入口、尚未说明目标流程时，它会先列出 9 个工作流程和 14 项可选能力，推荐只读
 `health-check` 但不会自动执行。回复流程编号或名称，并按需增减能力后，它才会生成阶段账本并开始：
 
 ```text
@@ -175,6 +175,9 @@ benchmark/                      # 29 道考题 + 判分 + 验证报告
 ```
 
 ## 想贡献？
+
+CI 分层、工作流组合回归和真实模型对照评测入口见
+[Skill CI 说明](benchmark/docs/skill-ci.md)。参考答案测试通过不代表模型已正确使用 Skill。
 
 1. 按 [skills/README.md](skills/README.md) 的规范写；
 2. 升级卡按 [卡片格式](skills/plugin-upgrade/references/README.md) 填；

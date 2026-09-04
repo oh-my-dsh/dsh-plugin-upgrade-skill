@@ -23,6 +23,7 @@ inventory.
 ## Validating
 
 ```sh
+npm run prepare:ci  # fetch missing immutable pins explicitly, including squash-merged PR commits
 node benchmark/scripts/validate-evaluation-snapshots.mjs
 ```
 

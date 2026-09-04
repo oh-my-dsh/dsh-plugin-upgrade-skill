@@ -21,7 +21,7 @@ authentication + connection registration + browserless smoke". See
   gates 0/0/0/30/40/40). A drifted trap state stops the judge with a
   baseline-mismatch verdict. The reward is normalized into
   `/logs/verifier/reward.txt` and the structured per-checkpoint ledger is written
-  to `/logs/verifier/reward.json`.
+  to `/logs/verifier/grading.json`.
 - **Oracle**: `harbor run -p benchmark/tasks/M5-token-auth-smoke -a oracle`,
   expected reward 1.0.
 

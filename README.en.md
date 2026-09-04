@@ -88,8 +88,8 @@ In Claude Code, invoke the skill by name (namespaced once the plugin is installe
 /dsh-plugin-upgrade-skill:plugin-upgrade 0.1.2
 ```
 
-When the unified entry point is invoked without an explicit workflow, it first lists all 7
-workflows and 12 optional capabilities. It recommends the read-only `health-check` but does not
+When the unified entry point is invoked without an explicit workflow, it first lists all 9
+workflows and 14 optional capabilities. It recommends the read-only `health-check` but does not
 start it automatically. Reply with a workflow number or ID and add or remove capabilities before
 the phase ledger is created:
 
@@ -159,6 +159,10 @@ For the unified workflow, copy the complete `skills/` directory because `plugin-
 Keep `SKILL.md` and the `references/` folder inside — don't copy just one file. You can also point DSH's local skill loader at the `skills/` directory of this repo.
 
 ## Repository layout
+
+See [Skill CI and composition coverage](benchmark/docs/skill-ci.md) for workflow
+regressions, reference-answer controls and manual model comparisons. Passing the
+controls does not establish that a model used the Skills correctly.
 
 ```text
 skills/<skill-name>/

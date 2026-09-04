@@ -1,0 +1,154 @@
+name: skill-evaluation
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "benchmark/tasks/**"
+      - "benchmark/scripts/**"
+      - "benchmark/skill-evaluation/**"
+      - ".github/workflows/skill-evaluation.yml"
+      - "package.json"
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "benchmark/tasks/**"
+      - "benchmark/scripts/**"
+      - "benchmark/skill-evaluation/**"
+      - ".github/workflows/skill-evaluation.yml"
+      - "package.json"
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Exact LiteLLM model: anthropic/<model> or openai/<model>; requires matching repository API key secret"
+        required: true
+        type: string
+      attempts:
+        description: "Attempts per task and condition: 1 for smoke, 3 for per-task medians"
+        type: choice
+        options: ["1", "3"]
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-evaluation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  controls:
+    name: benchmark-${{ matrix.condition }} (no model)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        condition: [oracle, nop]
+    env:
+      EVAL_DIR: .artifacts/skill-evaluation/${{ matrix.condition }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Harbor
+        run: python -m pip install harbor==0.22.0
+      - name: Prepare seven-task control suite
+        id: prepare
+        run: node benchmark/scripts/skill-evaluation.mjs prepare --condition '${{ matrix.condition }}' --output "$EVAL_DIR"
+      - name: Execute reference answers or untouched fixtures
+        run: harbor run --config "$EVAL_DIR/config.json"
+      - name: Require all oracle rewards 1 or all untouched rewards 0
+        if: always() && steps.prepare.outcome == 'success'
+        run: node benchmark/scripts/skill-evaluation.mjs check --output "$EVAL_DIR"
+      - name: Upload control evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-evaluation-${{ matrix.condition }}
+          path: |
+            ${{ env.EVAL_DIR }}/manifest.json
+            ${{ env.EVAL_DIR }}/evidence.json
+            ${{ env.EVAL_DIR }}/summary.*
+            ${{ env.EVAL_DIR }}/jobs/**/verifier/**
+            ${{ env.EVAL_DIR }}/jobs/**/exception.txt
+            ${{ env.EVAL_DIR }}/jobs/**/trial.log
+          retention-days: 7
+
+  compare:
+    if: always() && github.event_name == 'workflow_dispatch'
+    needs: model
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: skill-evaluation-*
+          path: .artifacts/comparison
+      - name: Compare matched per-task medians and report degraded tasks
+        run: node benchmark/scripts/compare-skill-evaluation.mjs .artifacts/comparison >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skill-evaluation-comparison
+          path: .artifacts/comparison/comparison.*
+          retention-days: 7
+
+  model:
+    name: model-${{ matrix.condition }}
+    if: github.event_name == 'workflow_dispatch'
+    needs: controls
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        condition: [no-injected-skill, upgrade-only, all-skills]
+    env:
+      MODEL: ${{ inputs.model }}
+      ATTEMPTS: ${{ inputs.attempts }}
+      EVAL_DIR: .artifacts/skill-evaluation/${{ matrix.condition }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Harbor
+        run: python -m pip install harbor==0.22.0
+      - name: Prepare identical tasks with the selected Skill catalog
+        id: prepare
+        run: node benchmark/scripts/skill-evaluation.mjs prepare --condition '${{ matrix.condition }}' --model "$MODEL" --attempts "$ATTEMPTS" --output "$EVAL_DIR"
+      - name: Run actual model evaluation
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          case "$MODEL" in
+            anthropic/*) test -n "$ANTHROPIC_API_KEY" || { echo 'Configure the ANTHROPIC_API_KEY repository secret to run this evaluation.'; exit 1; } ;;
+            openai/*) test -n "$OPENAI_API_KEY" || { echo 'Configure the OPENAI_API_KEY repository secret to run this evaluation.'; exit 1; } ;;
+            *) echo 'Unsupported model provider'; exit 1 ;;
+          esac
+          harbor run --config "$EVAL_DIR/config.json"
+      - name: Reject missing, unscored or exceptional trials
+        if: always() && steps.prepare.outcome == 'success'
+        run: node benchmark/scripts/skill-evaluation.mjs check --output "$EVAL_DIR"
+      - name: Upload outcome evidence (raw model trajectories remain private to the runner)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-evaluation-${{ matrix.condition }}
+          path: |
+            ${{ env.EVAL_DIR }}/manifest.json
+            ${{ env.EVAL_DIR }}/evidence.json
+            ${{ env.EVAL_DIR }}/summary.*
+          retention-days: 7

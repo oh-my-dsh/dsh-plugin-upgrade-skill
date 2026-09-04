@@ -8,6 +8,7 @@ on:
       - "benchmark/tasks/**/solution/plugin/**"
       - "package.json"
       - ".github/workflows/dsh-integration.yml"
+      - "scripts/fetch-snapshot-commits.mjs"
   push:
     branches:
       - main
@@ -17,6 +18,7 @@ on:
       - "benchmark/tasks/**/solution/plugin/**"
       - "package.json"
       - ".github/workflows/dsh-integration.yml"
+      - "scripts/fetch-snapshot-commits.mjs"
   workflow_dispatch:
   schedule:
     - cron: "0 3 * * 1"
@@ -42,7 +44,9 @@ jobs:
         with:
           node-version: 24
       - name: Run fast validation first
-        run: npm test
+        run: |
+          npm run prepare:ci
+          npm test
       - name: Run exact-version DSH integration cases
         run: npm run test:dsh -- --report-dir .artifacts/dsh-integration
       - name: Upload failure evidence

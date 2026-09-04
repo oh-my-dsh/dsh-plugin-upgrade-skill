@@ -22,7 +22,7 @@ Tests "multi-plugin diagnosis + sequencing + channel auth + release gates". See
   surviving a green smoke caps it at 60; a drifted trap state stops the judge with
   a baseline-mismatch verdict. The reward is normalized into
   `/logs/verifier/reward.txt` and the structured per-checkpoint ledger is written
-  to `/logs/verifier/reward.json`.
+  to `/logs/verifier/grading.json`.
 - **Oracle**: `harbor run -p benchmark/tasks/H8-fire-drill -a oracle`, expected
   reward 1.0.
 

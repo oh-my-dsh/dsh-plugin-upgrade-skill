@@ -216,10 +216,10 @@ export async function bootHeadless(profile) {
  * 2. Exchange the bootstrap token for a Cookie, then GET / for the HTML;
  * 3. Return { output, html }; the caller judges negative signals and plugin entry.
  */
-export async function bootWebAndFetchIndex(profile, pkgName) {
+export async function bootWebAndFetchIndex(profile, pkgName, execute = localExec) {
   const logPath = `/tmp/${profile}-boot.log`
-  await localExec(`cd /root && nohup timeout 45 dsh --profile '${profile}' --no-open > '${logPath}' 2>&1 & echo started`)
-  const probe = await localExec(
+  await execute(`cd /root && nohup timeout 45 dsh --profile '${profile}' --no-open > '${logPath}' 2>&1 & echo started`)
+  const probe = await execute(
     `node --input-type=module -e '
 const logPath = process.argv[1];
 const pkgName = process.argv[2];
@@ -227,7 +227,7 @@ const fs = await import("node:fs");
 let log = "";
 for (let i = 0; i < 90; i += 1) {
   try { log = fs.readFileSync(logPath, "utf8"); } catch {}
-  if (/dsh web: http|plugin tree failed|did not activate|pending \(waiting for service/i.test(log)) break;
+  if (/dsh web: http|plugin tree failed|did not activate|pending \\(waiting for service/i.test(log)) break;
   await new Promise((r) => setTimeout(r, 1000));
 }
 const match = /dsh web: (http:\\S+)/.exec(log);
