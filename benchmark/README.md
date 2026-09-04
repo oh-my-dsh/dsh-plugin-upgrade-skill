@@ -92,6 +92,14 @@ skills disabled. Both rows below are scored single trials; the literal-zero-skil
 report separately accounts for an excluded preliminary attempt that read a native
 skill and timed out.
 
+On 2026-09-03, `deepseek/deepseek-v4-flash` with terminus-2 also ran the new
+`H21-question-answerer-waterfall` task three times per condition — with the fixed
+pre-answer skill snapshot `5f7234ba…` and with no Harbor-injected skill. Harbor
+0.22.0 on the Windows Docker Desktop host rejected H21's formal `no-network`
+agent policy, so these six trials ran on a public-network calibration copy of
+the task; treat the two H21 rows below as calibration evidence rather than
+formal no-network scores.
+
 | Model | Skill condition | Scope | reward | mean | perfect tasks | Summed job duration | Tokens (input / cache / output) | Cost | Detailed report |
 |---|---|---|---:|---:|---:|---:|---:|---:|---|
 | `openai/gpt-5.6-terra` | With `skills/plugin-upgrade` | 22-task 2026-09-01 snapshot; 21 rewarded + 1 verifier error | 16.75/21 scored; 16.75/22 conservative | 0.7976 scored; 0.7614 conservative | 13 | 2h33m58.860s | 54,094,444 / 51,131,904 / 355,256 | $20.4145 | [22-task report](results/validation-report-2026-09-01-codex-gpt-5.6-terra-all-22.md) |
@@ -102,6 +110,8 @@ skill and timed out.
 | `openai/gpt-5.6-luna` | Literal zero skill‡ | H22 dsh-data-agent; 1 accepted scored trial | 0.11/1 | 0.1100 | 0 | 1h34m53.399s | 70,605,981 / 68,899,072 / 227,439 | $1.9923 | [H22 literal-zero-skill report](results/validation-report-2026-09-02-h22-dsh-data-agent-alpha2-no-skill.md) |
 | `deepseek/deepseek-v4-flash` + terminus-2 | With `skills/plugin-upgrade` | 23-task full set (3-run median) | 18.55/23 | 0.8063 | 14 | 2h34m | 58.7M / n/a / 2.5M | $5.28 | [terminus-2 + deepseek-v4-flash report](results/validation-report-2026-09-01-terminus2-deepseek-v4-flash.md) |
 | `deepseek/deepseek-v4-flash` + terminus-2 | No skill | 23-task full set (3-run median) | 16.09/23 | 0.6996 | 11 | 2h24m | 53.9M / n/a / 2.3M | $4.85 | [terminus-2 + deepseek-v4-flash report](results/validation-report-2026-09-01-terminus2-deepseek-v4-flash.md) |
+| `deepseek/deepseek-v4-flash` + terminus-2 | With fixed pre-answer skill snapshot§ | H21 question-answerer-waterfall; 3 scored trials | 1.00/1 median (2.90/3 raw) | 0.9667 | 2/3 trials | 45m33.274s | 8,042,266 / 7,779,840 / 291,429 | $0.6091 | [H21 paired report](results/validation-report-2026-09-03-terminus2-deepseek-v4-flash-h21.md) |
+| `deepseek/deepseek-v4-flash` + terminus-2 | No Harbor-injected skill§ | H21 question-answerer-waterfall; 3 scored trials | 0.90/1 median (2.70/3 raw) | 0.9333 | 1/3 trials | 45m27.972s | 6,270,437 / 6,040,320 / 292,922 | $0.5725 | [H21 paired report](results/validation-report-2026-09-03-terminus2-deepseek-v4-flash-h21.md) |
 
 Duration is the sum of the Harbor job durations represented in each report;
 concurrent jobs therefore remain additive rather than being collapsed into an
@@ -117,32 +127,33 @@ first H8 agent attempt when retrying it.
 Per-task skill comparison (`delta = with-skill - corresponding no-skill
 condition`; `—` means the task was absent or no verifier reward existed):
 
-| Task | Luna with skill | Luna no Harbor skill | Luna delta | Terra with skill | Terra literal zero skill | Terra delta |
-|---|---:|---:|---:|---:|---:|---:|
-| S1-static-scan | 1.00 | 0.67 | +0.33 | 1.00 | 0.83 | +0.17 |
-| S2-negative-scan | 1.00 | 0.60 | +0.40 | 1.00 | 0.60 | +0.40 |
-| S3-snapshot-migration | 1.00 | 0.00 | +1.00 | 1.00 | 0.20 | +0.80 |
-| H4-tsbuildinfo-trap | 1.00 | 0.30 | +0.70 | 1.00 | 0.30 | +0.70 |
-| M1-host-migration | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| H1-plane-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| H2-baseline-trap | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 |
-| H3-client-plane | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 |
-| H5-runtime-export-drift | 1.00 | 1.00 | 0.00 | 0.20 | 1.00 | -0.80 |
-| M5-token-auth-smoke | — | — | — | 0.60 | 0.60 | 0.00 |
-| H8-fire-drill | — | — | — | error | error | — |
-| H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 | 0.80 | 0.50 | +0.30 |
-| H10-browser-activation-trap | — | — | — | — | — | — |
-| H22-dsh-data-agent-alpha2 | 0.08 | 0.11‡ | -0.03 | — | — | — |
-| S4-legacy-client-imports | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| S5-negative-naming | 0.75 | 0.50 | +0.25 | 0.75 | 0.50 | +0.25 |
-| H6-remote-error-trap | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| S6-corridor-net-state | 0.25 | 0.25 | 0.00 | 0.25 | 0.25 | 0.00 |
-| S7-unpublished-cohort | 0.25 | 0.10 | +0.15 | 0.25 | 0.25 | 0.00 |
-| S8-release-routing-trap | — | — | — | 1.00 | 1.00 | 0.00 |
-| M2-optional-dep-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| M3-session-projection | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| M4-peer-prerelease-range | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
-| H7-locale-trap | 0.90 | 1.00 | -0.10 | 0.90 | 0.90 | 0.00 |
+| Task | Luna with skill | Luna no Harbor skill | Luna delta | Terra with skill | Terra literal zero skill | Terra delta | Flash with skill (median) | Flash no skill (median) | Flash delta |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| S1-static-scan | 1.00 | 0.67 | +0.33 | 1.00 | 0.83 | +0.17 | 1.00 | 0.33 | +0.67 |
+| S2-negative-scan | 1.00 | 0.60 | +0.40 | 1.00 | 0.60 | +0.40 | 1.00 | 0.40 | +0.60 |
+| S3-snapshot-migration | 1.00 | 0.00 | +1.00 | 1.00 | 0.20 | +0.80 | 0.80 | 0.60 | +0.20 |
+| H4-tsbuildinfo-trap | 1.00 | 0.30 | +0.70 | 1.00 | 0.30 | +0.70 | 1.00 | 0.30 | +0.70 |
+| M1-host-migration | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H1-plane-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H2-baseline-trap | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H3-client-plane | 1.00 | 1.00† | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H5-runtime-export-drift | 1.00 | 1.00 | 0.00 | 0.20 | 1.00 | -0.80 | 1.00 | 1.00 | 0.00 |
+| M5-token-auth-smoke | — | — | — | 0.60 | 0.60 | 0.00 | 0.60 | 0.60 | 0.00 |
+| H8-fire-drill | — | — | — | error | error | — | 0.70 | 0.20 | +0.50 |
+| H9-dsh-web-alpha2 | 0.80 | 0.67 | +0.13 | 0.80 | 0.50 | +0.30 | 0.05 | 0.26 | -0.21 |
+| H10-browser-activation-trap | — | — | — | — | — | — | 1.00 | 1.00 | 0.00 |
+| H22-dsh-data-agent-alpha2 | 0.08 | 0.11‡ | -0.03 | — | — | — | — | — | — |
+| H21-question-answerer-waterfall | — | — | — | — | — | — | 1.00§ | 0.90§ | +0.10 |
+| S4-legacy-client-imports | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| S5-negative-naming | 0.75 | 0.50 | +0.25 | 0.75 | 0.50 | +0.25 | 0.50 | 0.75 | -0.25 |
+| H6-remote-error-trap | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.25 | 0.00 | +0.25 |
+| S6-corridor-net-state | 0.25 | 0.25 | 0.00 | 0.25 | 0.25 | 0.00 | 0.50 | 0.25 | +0.25 |
+| S7-unpublished-cohort | 0.25 | 0.10 | +0.15 | 0.25 | 0.25 | 0.00 | 0.25 | 0.50 | -0.25 |
+| S8-release-routing-trap | — | — | — | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| M2-optional-dep-trap | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| M3-session-projection | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| M4-peer-prerelease-range | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 |
+| H7-locale-trap | 0.90 | 1.00 | -0.10 | 0.90 | 0.90 | 0.00 | 0.90 | 0.90 | 0.00 |
 
 For Luna, the observed with-skill uplift is **+2.86 reward points across 19
 tasks**, or **+0.1505 mean reward**. Seven tasks improved, eleven tied, and one
@@ -157,9 +168,15 @@ improved, fourteen tied, and one (H5) was 0.80 lower. The largest gains were S3
 (+0.80), H4 (+0.70), S2 (+0.40), and H9 (+0.30). H8 produced no verifier
 reward in either Terra condition and is excluded from this delta.
 
-These numbers are evidence from one selected attempt per task and condition,
-not the three-run median recommended below. They also have these protocol
-limits:
+For the terminus-2 + DeepSeek V4 Flash pairing, the observed with-skill uplift
+is **+2.46 reward points across 23 tasks**, or **+0.1067 mean reward**, using
+three-run medians. Seven tasks improved, thirteen tied, and three regressed
+(S5, S7, and H9). The largest gains were H4 (+0.70), S1 (+0.67), S2 (+0.60),
+and H8 (+0.50).
+
+The Luna and Terra numbers are evidence from one selected attempt per task and
+condition; the Flash columns are the three-run medians recommended below. These
+numbers have these protocol limits:
 
 - † **Native-skill boundary:** Harbor supplied no skill and every
   corresponding job lock recorded empty skill arrays, but the Codex-native
@@ -171,6 +188,12 @@ limits:
 - ‡ **H22 control boundary:** H22 disabled both Harbor-injected and Codex-native
   skills, so its 0.11 control is a literal-zero-skill result rather than the
   earlier Luna column's no-Harbor-skill condition. See the linked H22 reports.
+- § **H21 network boundary:** Harbor 0.22.0 on the Windows Docker Desktop host
+  rejected H21's formal `no-network` agent policy (the Docker egress-control
+  capability probe reported nftables unavailable), so all six H21 trials ran on
+  a public-network calibration copy of the task; the with-skill condition used
+  the fixed pre-answer skill snapshot `5f7234ba…`. The H21 numbers are
+  calibration evidence, not formal no-network scores.
 - The standalone with-skill report calls the real-repository task
   `H5-dsh-web-alpha2`, and the no-skill report calls it `H8-dsh-web-alpha2`.
   After upstream assigned H8 to the fire-drill task, it is listed here as
