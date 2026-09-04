@@ -346,6 +346,38 @@ Behavior:
 - default output is Markdown (`--format json` for machine-readable raw numbers);
   duplicate inputs and malformed rewards are hard errors.
 
+## Auditing skill activation
+
+Reward alone does not say whether the agent actually used the skill. The bundled
+deterministic auditor measures **skill availability vs observed skill use** along
+the activation chain (supplied → discovered → `SKILL.md` opened → references
+accessed), with an observed content-bearing access to the target `SKILL.md` as
+the primary activation metric:
+
+```sh
+# one trial (or a job directory, which expands all trial subdirectories)
+node benchmark/scripts/audit-skill-activation.mjs \
+  jobs/<job>/<trial> \
+  --target-name plugin-upgrade \
+  --target-path skills/plugin-upgrade \
+  --condition with-skill --json
+```
+
+Behavior (full operational definitions and schema in
+[docs/skill-activation-audit.md](docs/skill-activation-audit.md)):
+
+- verified input format: Harbor v0.22.0 trial directories with the Codex CLI
+  0.152.0 session log (`agent/sessions/**/rollout-*.jsonl`); ATIF-v1.7
+  `agent/trajectory.json` is a metadata-only fallback; anything else is a hard
+  error, never a guess;
+- `ls`/`find`/`stat`/`test`/`echo`, prose mentions, comments, and error-output
+  mentions never count as an open; complex shell mentioning the target warns
+  (`ambiguous-shell-access`) instead of guessing;
+- `opened: false` is a valid result and exits 0 — only unsupported/malformed
+  input is an error;
+- output is byte-deterministic and redacts absolute paths, command text, and
+  command output text.
+
 ## Historical documents
 
 All validation and result reports live in [`results/`](results/). When opening a PR

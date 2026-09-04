@@ -97,9 +97,9 @@ regressions for inspection; no stable performance threshold has yet been establi
 - The current suite evaluates outcomes on existing tasks. It does not prove every
   natural-language trigger, all possible Skill combinations or phase handoff at runtime.
 - Availability is not activation. Every manifest says `skillActivation: not-measured`.
-  Trajectory-based activation auditing is separate work in
-  [PR #132](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/pull/132); this change
-  does not duplicate that implementation or claim its results.
+  The existing [trajectory activation auditor](skill-activation-audit.md) supports
+  a specific Codex session format. These Terminus-2 runs are not covered by that
+  parser; this workflow does not infer activation from a supplied catalog.
 - The all-Skill condition lets the agent discover `plugin-workflow`; it does not
   guarantee the agent invoked the planner or loaded every owner.
 - CI uploads numeric outcome evidence, manifests and control verifier logs for
