@@ -1,0 +1,66 @@
+{
+  "$comment": "Documentation contract for benchmark/holdouts/temporal-holdout-v1.json. The validator (benchmark/scripts/validate-temporal-holdout.mjs) enforces this shape against local git objects; no JSON-Schema tooling is used.",
+  "schemaVersion": 1,
+  "id": "temporal-holdout-v1",
+  "kind": "distillation-time-holdout",
+  "definitionCommitPolicy": "outcome-blind provenance-only selection; no reward/activation/model result was consulted",
+  "freeze": {
+    "commit": "<full 40-char lowercase hex git SHA of the skill-knowledge freeze>",
+    "commitDate": "<ISO commit date>",
+    "skillPath": "skills/plugin-upgrade",
+    "skillTree": "<git tree id of the frozen skill path>",
+    "skillEntryBlob": "<git blob id of the frozen SKILL.md>",
+    "note": "<optional>"
+  },
+  "candidateInventoryCommit": "<full 40-char SHA of the main commit whose task inventory was fully audited>",
+  "candidateInventoryCommitDate": "<ISO commit date>",
+  "candidateInventoryNote": "<optional>",
+  "eligibilityPolicy": {
+    "clean-holdout": [
+      "task first introduced after the freeze commit",
+      "every core knowledge card first introduced after the freeze AND absent from the frozen skill tree",
+      "core graded migration knowledge absent from the frozen skill corpus",
+      "the task judge materially depends on that post-freeze knowledge"
+    ],
+    "mixed": "<definition>",
+    "ineligible": "<definition>",
+    "relativeToFreeze": "<definition>",
+    "primary": "primaryTasks contains exactly the candidates classified clean-holdout"
+  },
+  "candidates": [
+    {
+      "currentTaskId": "<task id on candidateInventoryCommit>",
+      "historicalTaskId": "<pre-rename id or null>",
+      "firstTaskCommit": "<40-char SHA of the commit that first introduced the task directory on main history>",
+      "firstTaskDate": "<ISO commit date>",
+      "taskPathAtCurrentMain": "benchmark/tasks/<id>",
+      "taskPathAtFirstAppearance": "benchmark/tasks/<id>",
+      "cards": [
+        {
+          "id": "<card id, e.g. DSH-0.1.2-A2-08>",
+          "firstCommit": "<40-char SHA where the card id string first appeared under skills/>",
+          "firstDate": "<ISO commit date>",
+          "relativeToFreeze": "before|after",
+          "presentAtFreezeTree": true,
+          "role": "core|supporting (only on pre-freeze supporting citations of clean candidates)"
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent|partial|present|not-applicable",
+        "evidence": [
+          { "commit": "<freeze SHA>", "path": "skills/plugin-upgrade/<rel>", "match": "<what was checked>" }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "<why the judge depends on post-freeze knowledge, or why not>"
+      },
+      "coreKnowledgeRationale": "<required for clean-holdout>",
+      "classification": "clean-holdout|mixed|ineligible",
+      "exclusionReason": "<required for mixed and ineligible; null for clean-holdout>"
+    }
+  ],
+  "primaryTasks": [
+    "<currentTaskId of every clean-holdout candidate, and only those>"
+  ]
+}

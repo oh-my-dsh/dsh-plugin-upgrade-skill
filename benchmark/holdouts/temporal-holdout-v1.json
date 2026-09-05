@@ -1,0 +1,1202 @@
+{
+  "schemaVersion": 1,
+  "id": "temporal-holdout-v1",
+  "kind": "distillation-time-holdout",
+  "definitionCommitPolicy": "outcome-blind provenance-only selection; no reward/activation/model result was consulted",
+  "freeze": {
+    "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+    "commitDate": "2026-08-31T11:03:08+08:00",
+    "skillPath": "skills/plugin-upgrade",
+    "skillTree": "817a48e6795b40a51a08befff62dd03d55e124df",
+    "skillEntryBlob": "a3ee71d3567d38e545f12542ff5aafaf76b714d8",
+    "note": "same commit used by H21-question-answerer-waterfall as its skill_snapshot_commit"
+  },
+  "candidateInventoryCommit": "d4f7e8c229bfc9e9a4dc78efa290f954d39e42fe",
+  "candidateInventoryCommitDate": "2026-09-04T17:00:57+08:00",
+  "candidateInventoryNote": "task-universe cutoff: the benchmark task inventory at this commit is the complete universe audited for v1; tasks added later belong to a future v2",
+  "eligibilityPolicy": {
+    "clean-holdout": [
+      "task first introduced after the freeze commit (taskCreatedAfterFreeze)",
+      "every core knowledge card first introduced after the freeze AND absent from the frozen skill tree (pre-freeze supporting citations are allowed and recorded with role=supporting)",
+      "core graded migration knowledge absent from the frozen skill corpus (no equivalent recipe / exact API fact)",
+      "the task judge materially depends on that post-freeze knowledge"
+    ],
+    "mixed": "task depends on both pre-freeze and post-freeze knowledge that cannot be cleanly separated without changing the judge",
+    "ineligible": "core knowledge present at freeze, card is a rewrite of frozen knowledge, knowledge authority is a different skill, or provenance is insufficient",
+    "relativeToFreeze": "before = card id present in the frozen skill tree; after = absent from the frozen tree AND first-introduction commit is not an ancestor of the freeze commit (tree membership is authoritative, not the commit timestamp)",
+    "primary": "primaryTasks contains exactly the candidates classified clean-holdout; task selection was outcome-blind"
+  },
+  "candidates": [
+    {
+      "currentTaskId": "H1-plane-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H1-plane-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H1-plane-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A1-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A1-01 present at freeze"
+    },
+    {
+      "currentTaskId": "H10-browser-activation-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "232b00a2331a397789f7d61c57067e73d12fdac0",
+      "firstTaskDate": "2026-09-01T15:08:33+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H10-browser-activation-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H10-browser-activation-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "post-freeze A1-26 (register id must equal package name) is the core trap, but A1-19 browser acceptance anchor is pre-freeze and present in the frozen corpus"
+      },
+      "classification": "mixed",
+      "exclusionReason": "post-freeze A1-26 (register id must equal package name) is the core trap, but A1-19 browser acceptance anchor is pre-freeze and present in the frozen corpus"
+    },
+    {
+      "currentTaskId": "H11-dual-cohort-rpc",
+      "historicalTaskId": null,
+      "firstTaskCommit": "40885022bd1c7c664f8cd9e989a203301753f7e1",
+      "firstTaskDate": "2026-09-02T10:59:14+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H11-dual-cohort-rpc",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H11-dual-cohort-rpc",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "frozen R-02 already covers cross-cohort coexistence, but the graded rpc.handle arity/per-channel authority call shape came from the post-freeze dsh-mnemon incident; the task also pins its own closed-book snapshot 7d33bf4c (not the T2 freeze)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "frozen R-02 already covers cross-cohort coexistence, but the graded rpc.handle arity/per-channel authority call shape came from the post-freeze dsh-mnemon incident; the task also pins its own closed-book snapshot 7d33bf4c (not the T2 freeze)"
+    },
+    {
+      "currentTaskId": "H12-remote-result-boundary-trap",
+      "historicalTaskId": "H11-remote-result-boundary-trap (pre-merge PR identity; merged to main directly as H12)",
+      "firstTaskCommit": "851b4439eb8d4bbc5e51b3ef8a90379414136ac3",
+      "firstTaskDate": "2026-09-02T11:06:00+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H12-remote-result-boundary-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H12-remote-result-boundary-trap",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A2-02",
+          "firstCommit": "8eeb2bf0a315fc035b4918d2fcf272040162ed70",
+          "firstDate": "2026-08-30T23:15:18+08:00",
+          "relativeToFreeze": "before",
+          "presentAtFreezeTree": true
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade/references/v0.1.2-alpha.2.md",
+            "match": "DSH-0.1.2-A2-02 RemoteResult resolved-vs-rejected recipe"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "frozen A2-02 and the frozen rollup Remote-error-flow section already contain the resolved-vs-rejected boundary recipe (the task core); task identity note: historical H11-remote-result-boundary-trap, merged to main directly as H12"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "frozen A2-02 and the frozen rollup Remote-error-flow section already contain the resolved-vs-rejected boundary recipe (the task core); task identity note: historical H11-remote-result-boundary-trap, merged to main directly as H12"
+    },
+    {
+      "currentTaskId": "H13-ghost-host-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "ae4a0d43f2d6fd7e93a47242d2d65ebfa8eb3ac5",
+      "firstTaskDate": "2026-09-02T10:25:24+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H13-ghost-host-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H13-ghost-host-trap",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A1-08",
+          "firstCommit": "8eeb2bf0a315fc035b4918d2fcf272040162ed70",
+          "firstDate": "2026-08-30T23:15:18+08:00",
+          "relativeToFreeze": "before",
+          "presentAtFreezeTree": true,
+          "role": "supporting"
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen pre-flight has no ghost-host step; no R-12 in frozen rollup (has R-01..R-07 only)"
+          },
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade/references/rollup-0.1.2.md",
+            "match": "no R-12 ghost-host recipe at freeze (frozen rollup has R-01..R-07 only)"
+          },
+          {
+            "commit": "ed655db2a92397b283d5a0151831a91cd26adf3b",
+            "path": "skills/plugin-upgrade/references/rollup-0.1.2.md",
+            "match": "R-12 running-host recipe introduced post-freeze"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "100/100 scored on hostWireGeneration/processMatchesDisk/migrationFrom/evidence/untouched — all ghost-host pre-flight aspects"
+      },
+      "coreKnowledgeRationale": "pre-flight step 1.5 ghost host: pin migration FROM to the running process wire generation (R-12, post-freeze); core knowledge authority is the post-freeze R-12 ghost-host recipe (idless rollup recipe), A1-08 cited only as the supporting auth-generation base",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "H14-mineru-api",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H14-mineru-api",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H14-mineru-api",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-01/A1-19 + post-freeze A1-25 (partial frozen precedent)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-01/A1-19 + post-freeze A1-25 (partial frozen precedent)"
+    },
+    {
+      "currentTaskId": "H15-locale-pack",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H15-locale-pack",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H15-locale-pack",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-10 + post-freeze A1-25 (partial frozen precedent)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-10 + post-freeze A1-25 (partial frozen precedent)"
+    },
+    {
+      "currentTaskId": "H16-history-dock",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H16-history-dock",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H16-history-dock",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-03 + post-freeze A1-28"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-03 + post-freeze A1-28"
+    },
+    {
+      "currentTaskId": "H17-merge-calls",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H17-merge-calls",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H17-merge-calls",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-03 + post-freeze A1-29"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-03 + post-freeze A1-29"
+    },
+    {
+      "currentTaskId": "H18-blame-bubbles",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H18-blame-bubbles",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H18-blame-bubbles",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-01 + post-freeze A1-25/A2-08"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-01 + post-freeze A1-25/A2-08"
+    },
+    {
+      "currentTaskId": "H19-workspace-ya",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H19-workspace-ya",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H19-workspace-ya",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-03 + post-freeze A1-25 (partial frozen precedent)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-03 + post-freeze A1-25 (partial frozen precedent)"
+    },
+    {
+      "currentTaskId": "H2-baseline-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H2-baseline-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H2-baseline-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core R-06 baseline attribution present in the frozen rollup"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core R-06 baseline attribution present in the frozen rollup"
+    },
+    {
+      "currentTaskId": "H20-session-events-ledger",
+      "historicalTaskId": null,
+      "firstTaskCommit": "626a7b24c7221dc39b6c9859cdbc536dd00a6b5a",
+      "firstTaskDate": "2026-09-04T11:49:51+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H20-session-events-ledger",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H20-session-events-ledger",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A4-03",
+          "firstCommit": "14756073936fced07a43237cd25f7157a5c26d3a",
+          "firstDate": "2026-09-02T13:56:23+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen corpus predates alpha.4: no snapshotEvents/Session.events-ledger content (grep 0)"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "75 behavioral + 15 canonical API migration + 12 hygiene; caps on stale reads"
+      },
+      "coreKnowledgeRationale": "alpha.4 removes Session.events; seq/eventAt/snapshotEvents/ownEvents ledger (A4-03, post-freeze #116)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "H21-question-answerer-waterfall",
+      "historicalTaskId": null,
+      "firstTaskCommit": "dd0f39629904e357db8b63602cc69fa298383eec",
+      "firstTaskDate": "2026-09-04T10:32:08+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H21-question-answerer-waterfall",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H21-question-answerer-waterfall",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A1-20",
+          "firstCommit": "08483c921fa830e431affec711288b301ae626ba",
+          "firstDate": "2026-08-31T11:03:08+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen corpus has no answerer/structured-question content (grep 0); H21 already pins skill_snapshot_commit=5f7234ba"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "fixture changed + import/export + mock tests + host two-stage call"
+      },
+      "coreKnowledgeRationale": "structured-question answerer registration seam (A1-20, post-freeze)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "H22-dsh-data-agent-alpha2",
+      "historicalTaskId": null,
+      "firstTaskCommit": "68b2d2d0b4aeb33d82a6edd18d7bd2dcf11641e7",
+      "firstTaskDate": "2026-09-04T12:16:25+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H22-dsh-data-agent-alpha2",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H22-dsh-data-agent-alpha2",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core is a real external project slice (dsh-data-agent v0.1.3->v0.1.4) plus pre-freeze A1-19; provenance is external"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core is a real external project slice (dsh-data-agent v0.1.3->v0.1.4) plus pre-freeze A1-19; provenance is external"
+    },
+    {
+      "currentTaskId": "H3-client-plane",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H3-client-plane",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H3-client-plane",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core cards A1-01/A1-19/A2-02 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core cards A1-01/A1-19/A2-02 present at freeze"
+    },
+    {
+      "currentTaskId": "H4-tsbuildinfo-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "728da54599d44de379ee28222686226df3ed0b90",
+      "firstTaskDate": "2026-08-31T19:15:53+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H4-tsbuildinfo-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H4-tsbuildinfo-trap",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A1-21",
+          "firstCommit": "08483c921fa830e431affec711288b301ae626ba",
+          "firstDate": "2026-08-31T11:03:08+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen corpus has no tsbuildinfo/build-cache/hygiene content (grep 0 matches)"
+          },
+          {
+            "commit": "6686614b632b6f3d75b0db12efc3873dcd9cf819",
+            "path": "skills/plugin-upgrade/references/migration-hygiene.md",
+            "match": "migration-hygiene reference introduced post-freeze"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "40/100 hinges on recognizing the cache false positive and concluding source needs no changes"
+      },
+      "coreKnowledgeRationale": "migration-hygiene build-cache false-positive discipline (migration-hygiene reference added post-freeze in 6686614; A1-21 not in frozen tree)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "H5-runtime-export-drift",
+      "historicalTaskId": null,
+      "firstTaskCommit": "23942ebeb9e4c4549ad4d96ad69ec02489e3e479",
+      "firstTaskDate": "2026-08-31T22:00:30+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H5-runtime-export-drift",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H5-runtime-export-drift",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "post-freeze A2-10/R-11 framing, but the frozen api-migration reference already carries the exact settingsNamespace removal recipe (TS2305 / no exported member -> string literal); core API fact present at freeze"
+      },
+      "classification": "mixed",
+      "exclusionReason": "post-freeze A2-10/R-11 framing, but the frozen api-migration reference already carries the exact settingsNamespace removal recipe (TS2305 / no exported member -> string literal); core API fact present at freeze"
+    },
+    {
+      "currentTaskId": "H6-remote-error-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "91fb56bb8537e5f565771d79ff7901259e21887a",
+      "firstTaskDate": "2026-08-31T23:19:49+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H6-remote-error-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H6-remote-error-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "frozen A2-02 already carries namespaced codes, no-retry, and no-silent-swallow recipes"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "frozen A2-02 already carries namespaced codes, no-retry, and no-silent-swallow recipes"
+    },
+    {
+      "currentTaskId": "H7-locale-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a4cf488f116d7fe1a8005022000c27265ca9c981",
+      "firstTaskDate": "2026-09-01T09:42:59+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H7-locale-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H7-locale-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen corpus has no display-text/data-slot/localization content (grep 0)"
+          },
+          {
+            "commit": "e757769946adcffcbc62d1c2722ec0f83363c1aa",
+            "path": "skills/plugin-upgrade/references/rollup-0.1.2.md",
+            "match": "R-13 display-text anchoring recipe introduced post-freeze"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "static gates: data-slot anchor + render assertion; display-text regex capped"
+      },
+      "coreKnowledgeRationale": "display-text anchoring breaks after localization (R-13, post-freeze)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "H8-fire-drill",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a49e814a207572cc5fc32e8745274c86d28c8faf",
+      "firstTaskDate": "2026-09-01T10:48:53+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H8-fire-drill",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H8-fire-drill",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core cards A1-01/A1-08 and R-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core cards A1-01/A1-08 and R-01 present at freeze"
+    },
+    {
+      "currentTaskId": "H9-dsh-web-alpha2",
+      "historicalTaskId": null,
+      "firstTaskCommit": "32b766ab9660804ea65397c2c992ec073ba99503",
+      "firstTaskDate": "2026-09-01T13:54:07+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/H9-dsh-web-alpha2",
+      "taskPathAtFirstAppearance": "benchmark/tasks/H9-dsh-web-alpha2",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "cites pre-freeze A2-02/A2-03 and post-freeze A2-10; core is a real-repository v0.3.8->v0.3.9 slice whose version-specific migration facts did not exist at freeze"
+      },
+      "classification": "mixed",
+      "exclusionReason": "cites pre-freeze A2-02/A2-03 and post-freeze A2-10; core is a real-repository v0.3.8->v0.3.9 slice whose version-specific migration facts did not exist at freeze"
+    },
+    {
+      "currentTaskId": "M1-host-migration",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M1-host-migration",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M1-host-migration",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A1-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A1-01 present at freeze"
+    },
+    {
+      "currentTaskId": "M10-tools-tree",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M10-tools-tree",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M10-tools-tree",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "A1-25 is the cited card, but the frozen example 01 already walks the client-runtime import rehome, so the graded knowledge is only partially absent"
+      },
+      "classification": "mixed",
+      "exclusionReason": "A1-25 is the cited card, but the frozen example 01 already walks the client-runtime import rehome, so the graded knowledge is only partially absent"
+    },
+    {
+      "currentTaskId": "M11-sidebar-spur",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M11-sidebar-spur",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M11-sidebar-spur",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "A1-25 cited; frozen example 01 partially covers the client-runtime split"
+      },
+      "classification": "mixed",
+      "exclusionReason": "A1-25 cited; frozen example 01 partially covers the client-runtime split"
+    },
+    {
+      "currentTaskId": "M12-interpreters-card",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M12-interpreters-card",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M12-interpreters-card",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "A1-25 cited; frozen example 01 partially covers the client-runtime split; store-move specifics post-freeze"
+      },
+      "classification": "mixed",
+      "exclusionReason": "A1-25 cited; frozen example 01 partially covers the client-runtime split; store-move specifics post-freeze"
+    },
+    {
+      "currentTaskId": "M13-repository-plugins-removal",
+      "historicalTaskId": null,
+      "firstTaskCommit": "80faa20e337ed70bbbb4f36342b1e32f637de377",
+      "firstTaskDate": "2026-09-04T11:56:54+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M13-repository-plugins-removal",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M13-repository-plugins-removal",
+      "cards": [
+        {
+          "id": "DSH-0.1.1-R1-01",
+          "firstCommit": "d7f451bb1306d41538f3e6b3d87669ebe0c8e382",
+          "firstDate": "2026-09-04T11:35:36+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen dsh.bundle mentions are the alpha.2 dsh.bundle.patch tarball axis, not the rc.1 repository-plugins mechanism (grep: 3 matches, different mechanism)"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "fixture migration + boot; drop-the-row is a fix"
+      },
+      "coreKnowledgeRationale": "rc.1 repository-plugins removal: dsh.bundle/dsh.client/exports + cordis.patch.yml insert (R1-01, post-freeze 2026-09-04)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "M14-service-renames-0812",
+      "historicalTaskId": null,
+      "firstTaskCommit": "798e121e8709a2b1e7efd0dca6f1eecab8b93fc2",
+      "firstTaskDate": "2026-09-04T12:03:28+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M14-service-renames-0812",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M14-service-renames-0812",
+      "cards": [
+        {
+          "id": "DSH-0.1.1-R1-09",
+          "firstCommit": "d7f451bb1306d41538f3e6b3d87669ebe0c8e382",
+          "firstDate": "2026-09-04T11:35:36+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen corpus has no httpServer/onTaskDone rename knowledge (grep 0)"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "rename migration + boot + unchanged-API assertions"
+      },
+      "coreKnowledgeRationale": "rc.1 service renames httpServer->webServer, tasks->jobs, onTaskDone->onJobDone (R1-09, post-freeze 2026-09-04)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "M2-optional-dep-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a4cf488f116d7fe1a8005022000c27265ca9c981",
+      "firstTaskDate": "2026-09-01T09:42:59+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M2-optional-dep-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M2-optional-dep-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A2-03 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A2-03 present at freeze"
+    },
+    {
+      "currentTaskId": "M3-session-projection",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a4cf488f116d7fe1a8005022000c27265ca9c981",
+      "firstTaskDate": "2026-09-01T09:42:59+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M3-session-projection",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M3-session-projection",
+      "cards": [
+        {
+          "id": "DSH-0.1.2-A2-08",
+          "firstCommit": "08483c921fa830e431affec711288b301ae626ba",
+          "firstDate": "2026-08-31T11:03:08+08:00",
+          "relativeToFreeze": "after",
+          "presentAtFreezeTree": false
+        }
+      ],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen A2 set ends at A2-06; no sessionProjections knowledge (grep 0)"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "cold-boot verdict: pending vs activation vs dropped service"
+      },
+      "coreKnowledgeRationale": "missing inject service is a runtime pending (A2-08, post-freeze)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "M4-peer-prerelease-range",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a4cf488f116d7fe1a8005022000c27265ca9c981",
+      "firstTaskDate": "2026-09-01T09:42:59+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M4-peer-prerelease-range",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M4-peer-prerelease-range",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen rollup has R-01..R-07; no prerelease-range knowledge (grep 0)"
+          },
+          {
+            "commit": "9bb8e3047f0a992ff428edebd74a2e3fd940fe4c",
+            "path": "skills/plugin-upgrade/references/rollup-0.1.2.md",
+            "match": "R-08 prerelease-range recipe introduced post-freeze"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "static range gate + cold boot; meaningless * ranges capped"
+      },
+      "coreKnowledgeRationale": "npm semver prerelease rule: lower bound ^0.1.0-rc.8 does not match 0.1.2-alpha.2 (R-08 #3, post-freeze)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "M5-token-auth-smoke",
+      "historicalTaskId": null,
+      "firstTaskCommit": "a49e814a207572cc5fc32e8745274c86d28c8faf",
+      "firstTaskDate": "2026-09-01T10:48:53+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M5-token-auth-smoke",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M5-token-auth-smoke",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A1-08 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A1-08 present at freeze"
+    },
+    {
+      "currentTaskId": "M6-sleep-tool",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M6-sleep-tool",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M6-sleep-tool",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A2-03 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A2-03 present at freeze"
+    },
+    {
+      "currentTaskId": "M7-d399-overlay",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M7-d399-overlay",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M7-d399-overlay",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-19 + post-freeze A1-25 (client-runtime axis partially covered by the frozen example 01)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-19 + post-freeze A1-25 (client-runtime axis partially covered by the frozen example 01)"
+    },
+    {
+      "currentTaskId": "M8-brand-text",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M8-brand-text",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M8-brand-text",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "post-freeze A1-25 (partial frozen precedent) + pre-freeze R-06 baseline attribution"
+      },
+      "classification": "mixed",
+      "exclusionReason": "post-freeze A1-25 (partial frozen precedent) + pre-freeze R-06 baseline attribution"
+    },
+    {
+      "currentTaskId": "M9-mcpanel",
+      "historicalTaskId": null,
+      "firstTaskCommit": "20c2c1659f04c1d2f00d81ea61403f6e8b266ce7",
+      "firstTaskDate": "2026-09-02T14:12:27+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/M9-mcpanel",
+      "taskPathAtFirstAppearance": "benchmark/tasks/M9-mcpanel",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "pre-freeze A1-19 + post-freeze A1-25 (partial frozen precedent)"
+      },
+      "classification": "mixed",
+      "exclusionReason": "pre-freeze A1-19 + post-freeze A1-25 (partial frozen precedent)"
+    },
+    {
+      "currentTaskId": "S1-static-scan",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S1-static-scan",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S1-static-scan",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core cards A1-01/A1-02/A1-03/A1-04/A1-08/A2-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core cards A1-01/A1-02/A1-03/A1-04/A1-08/A2-01 present at freeze"
+    },
+    {
+      "currentTaskId": "S10-paste-rename-and-version-chip",
+      "historicalTaskId": null,
+      "firstTaskCommit": "7d33bf4c492da250c94f48aebd29bb16877d7a36",
+      "firstTaskDate": "2026-09-02T10:35:51+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S10-paste-rename-and-version-chip",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S10-paste-rename-and-version-chip",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+    },
+    {
+      "currentTaskId": "S11-mermaid-lazyload-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "70f003e7abff3c3df73ac89973ae10e127bd421d",
+      "firstTaskDate": "2026-09-02T11:02:48+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S11-mermaid-lazyload-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S11-mermaid-lazyload-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-heavy-dep skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-heavy-dep skill, not the frozen plugin-upgrade corpus"
+    },
+    {
+      "currentTaskId": "S12-global-upgrade-ebusy-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "fc5ca9d907a6249286fb5b193ba9bd0590a4ad4d",
+      "firstTaskDate": "2026-09-04T12:26:56+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S12-global-upgrade-ebusy-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S12-global-upgrade-ebusy-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "no carded knowledge authority in skills/plugin-upgrade (real 2026-09-02 incident, uncarded); provenance insufficient"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "no carded knowledge authority in skills/plugin-upgrade (real 2026-09-02 incident, uncarded); provenance insufficient"
+    },
+    {
+      "currentTaskId": "S13-peer-range-vs-runtime",
+      "historicalTaskId": null,
+      "firstTaskCommit": "fc5ca9d907a6249286fb5b193ba9bd0590a4ad4d",
+      "firstTaskDate": "2026-09-04T12:26:56+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S13-peer-range-vs-runtime",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S13-peer-range-vs-runtime",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "no carded knowledge authority (real 2026-09-02 incident, uncarded); provenance insufficient"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "no carded knowledge authority (real 2026-09-02 incident, uncarded); provenance insufficient"
+    },
+    {
+      "currentTaskId": "S14-link-install-lock-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "5419f3376db2b67a74fbbb5a5821ff3f9bd30bce",
+      "firstTaskDate": "2026-09-04T12:32:15+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S14-link-install-lock-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S14-link-install-lock-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+    },
+    {
+      "currentTaskId": "S15-slot-error-boundary-crash",
+      "historicalTaskId": null,
+      "firstTaskCommit": "5419f3376db2b67a74fbbb5a5821ff3f9bd30bce",
+      "firstTaskDate": "2026-09-04T12:32:15+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S15-slot-error-boundary-crash",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S15-slot-error-boundary-crash",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+    },
+    {
+      "currentTaskId": "S16-self-host-upgrade-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "6d8466c0022a0d206e52c75c6febbfaba52ec614",
+      "firstTaskDate": "2026-09-04T12:39:50+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S16-self-host-upgrade-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S16-self-host-upgrade-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "real 2026-09-03 incident; no carded knowledge found in skills/plugin-upgrade; provenance insufficient"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "real 2026-09-03 incident; no carded knowledge found in skills/plugin-upgrade; provenance insufficient"
+    },
+    {
+      "currentTaskId": "S2-negative-scan",
+      "historicalTaskId": null,
+      "firstTaskCommit": "b09d5d8a1cd43c4cbc07fc14d4eb6307e152db3d",
+      "firstTaskDate": "2026-08-31T13:50:12+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S2-negative-scan",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S2-negative-scan",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A1-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A1-01 present at freeze"
+    },
+    {
+      "currentTaskId": "S3-snapshot-migration",
+      "historicalTaskId": null,
+      "firstTaskCommit": "728da54599d44de379ee28222686226df3ed0b90",
+      "firstTaskDate": "2026-08-31T19:15:53+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S3-snapshot-migration",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S3-snapshot-migration",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core card A1-03 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core card A1-03 present at freeze"
+    },
+    {
+      "currentTaskId": "S4-legacy-client-imports",
+      "historicalTaskId": null,
+      "firstTaskCommit": "91fb56bb8537e5f565771d79ff7901259e21887a",
+      "firstTaskDate": "2026-08-31T23:19:49+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S4-legacy-client-imports",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S4-legacy-client-imports",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "partial",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "A1-26/A1-27/A1-30 are post-freeze and absent at freeze, but the A1-25 client-runtime removal axis has a pre-freeze walkthrough in frozen examples/01-simple-client-plugin.md"
+      },
+      "classification": "mixed",
+      "exclusionReason": "A1-26/A1-27/A1-30 are post-freeze and absent at freeze, but the A1-25 client-runtime removal axis has a pre-freeze walkthrough in frozen examples/01-simple-client-plugin.md"
+    },
+    {
+      "currentTaskId": "S5-negative-naming",
+      "historicalTaskId": null,
+      "firstTaskCommit": "91fb56bb8537e5f565771d79ff7901259e21887a",
+      "firstTaskDate": "2026-08-31T23:19:49+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S5-negative-naming",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S5-negative-naming",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-write skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-write skill, not the frozen plugin-upgrade corpus"
+    },
+    {
+      "currentTaskId": "S6-corridor-net-state",
+      "historicalTaskId": null,
+      "firstTaskCommit": "91fb56bb8537e5f565771d79ff7901259e21887a",
+      "firstTaskDate": "2026-08-31T23:19:49+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S6-corridor-net-state",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S6-corridor-net-state",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core cards A1-02/A2-01 present at freeze"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core cards A1-02/A2-01 present at freeze"
+    },
+    {
+      "currentTaskId": "S7-unpublished-cohort",
+      "historicalTaskId": null,
+      "firstTaskCommit": "91fb56bb8537e5f565771d79ff7901259e21887a",
+      "firstTaskDate": "2026-08-31T23:19:49+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S7-unpublished-cohort",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S7-unpublished-cohort",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "present",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "core R-01 unpublished-cohort recipe present in the frozen rollup"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "core R-01 unpublished-cohort recipe present in the frozen rollup"
+    },
+    {
+      "currentTaskId": "S8-release-routing-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "aac651e36368ad992893559e1a9a195dc51bcae9",
+      "firstTaskDate": "2026-09-01T13:55:36+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S8-release-routing-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S8-release-routing-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "absent",
+        "evidence": [
+          {
+            "commit": "5f7234ba4e00aeaa46c699ea32384389ad38a2a6",
+            "path": "skills/plugin-upgrade",
+            "match": "frozen rollup has dist-tag facts but no version-routing/tag-sync discipline (grep 0)"
+          },
+          {
+            "commit": "876d16c5b5a795a0bfc4ad1320bc2be51ef5ada1",
+            "path": "skills/plugin-release/references/profile-dependency-management.md",
+            "match": "version routing + tag sync sections introduced post-freeze"
+          }
+        ]
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": true,
+        "rationale": "five diagnosis aspects x20: tag-missing attribution, forward-incompat symptom, version direction, remedy, maintainer tag-sync fix"
+      },
+      "coreKnowledgeRationale": "profile-dependency-management §8 version routing + §9 tag sync (real 2026-08-31 incident, distilled post-freeze in #90)",
+      "classification": "clean-holdout",
+      "exclusionReason": null
+    },
+    {
+      "currentTaskId": "S9-composer-coordinate-trap",
+      "historicalTaskId": null,
+      "firstTaskCommit": "7d33bf4c492da250c94f48aebd29bb16877d7a36",
+      "firstTaskDate": "2026-09-02T10:35:51+08:00",
+      "taskPathAtCurrentMain": "benchmark/tasks/S9-composer-coordinate-trap",
+      "taskPathAtFirstAppearance": "benchmark/tasks/S9-composer-coordinate-trap",
+      "cards": [],
+      "knowledgeAtFreeze": {
+        "status": "not-applicable",
+        "evidence": []
+      },
+      "coreJudgeDependency": {
+        "postFreezeKnowledgeRequired": false,
+        "rationale": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+      },
+      "classification": "ineligible",
+      "exclusionReason": "knowledge authority is the plugin-runtime-debug skill, not the frozen plugin-upgrade corpus"
+    }
+  ],
+  "primaryTasks": [
+    "H13-ghost-host-trap",
+    "H20-session-events-ledger",
+    "H21-question-answerer-waterfall",
+    "H4-tsbuildinfo-trap",
+    "H7-locale-trap",
+    "M13-repository-plugins-removal",
+    "M14-service-renames-0812",
+    "M3-session-projection",
+    "M4-peer-prerelease-range",
+    "S8-release-routing-trap"
+  ]
+}
