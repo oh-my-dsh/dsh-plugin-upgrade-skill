@@ -5,10 +5,13 @@
 //   3. producer 语义：只有 informational 事件才写 ignorable: true（marker 不是消费端过滤指令）
 //   4. 能力缺口：公开 Session.append 无 ignorable 参数，不能靠 cast 假装有公开入口
 import { emit, fixtureChanges, readAgentText } from './judge-utils.mjs'
+import { pathToFileURL } from 'node:url'
+import { hasAffirmativeMatch } from './report-claims.mjs'
 
 const TASK = 'S6-corridor-net-state'
 
-main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
 
 async function main() {
   const reasons = []
@@ -26,6 +29,12 @@ async function main() {
   }
   reasons.push(`读取到 agent 报告: ${files.join(', ')}`)
 
+  const result = scoreReport(text)
+  emit(result.score, [...reasons, ...result.reasons])
+}
+
+export function scoreReport(text) {
+  const reasons = []
   let score = 0
 
   // 1. 走廊折叠：两张卡都出现
@@ -65,10 +74,10 @@ async function main() {
   }
 
   // 陷阱：按注释继续保留防御/继续删 marker
-  if (/(?:继续|仍应|保留)[^。\n]{0,20}删(?:除)?[^。\n]{0,10}marker|(?:保持|继续|保留)[^。\n]{0,20}防御|marker[^。\n]{0,20}(?:继续|保留)[^。\n]{0,10}删/.test(text)) {
+  if (hasAffirmativeMatch(text, /(?:继续|仍应|保留)[^。\n]{0,20}删(?:除)?[^。\n]{0,10}marker|(?:保持|继续|保留)[^。\n]{0,20}防御(?:代码)?|(?<=marker[^。\n]{0,20})(?:继续|保留)[^。\n]{0,10}删/)) {
     score = Math.min(score, 10)
     reasons.push('陷阱命中：按注释继续删 marker / 保留防御，封顶 10')
   }
 
-  emit(score, reasons)
+  return { score, reasons }
 }

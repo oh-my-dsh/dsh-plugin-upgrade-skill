@@ -6,10 +6,13 @@
 //   3. 退出路径/纪律：正式发布后删 overrides；不切换包管理器
 //   4. 语义分析：^0.1.2-alpha.1 按 semver 静默解析到 alpha.2（声明与解析背离）
 import { emit, fixtureChanges, readAgentText } from './judge-utils.mjs'
+import { pathToFileURL } from 'node:url'
+import { hasAffirmativeMatch } from './report-claims.mjs'
 
 const TASK = 'S7-unpublished-cohort'
 
-main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
 
 async function main() {
   const reasons = []
@@ -27,6 +30,12 @@ async function main() {
   }
   reasons.push(`读取到 agent 报告: ${files.join(', ')}`)
 
+  const result = scoreReport(text)
+  emit(result.score, [...reasons, ...result.reasons])
+}
+
+export function scoreReport(text) {
+  const reasons = []
   let score = 0
 
   // 1. registry 查证先行
@@ -70,10 +79,10 @@ async function main() {
   }
 
   // 陷阱：直接 npm i alpha.1 的处方
-  if (/npm (?:i|install)[^。\n]{0,50}0\.1\.2-alpha\.1/.test(text)) {
+  if (hasAffirmativeMatch(text, /npm[ \t]+(?:i|install)\b[^。\n]{0,50}?0\.1\.2-alpha\.1\b/)) {
     score = Math.min(score, 10)
     reasons.push('陷阱命中：处方直接安装从未发布的 alpha.1，封顶 10')
   }
 
-  emit(score, reasons)
+  return { score, reasons }
 }
