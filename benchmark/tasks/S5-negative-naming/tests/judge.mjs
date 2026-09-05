@@ -5,10 +5,13 @@
 //   3. events web-search/ready 是共享通道 → informational，发布者 schema 不兼容才判冲突
 //   4. 未做线上查询 → unknown/not checked，禁止断言"已保留/全局可用"
 import { emit, fixtureChanges, readAgentText } from './judge-utils.mjs'
+import { pathToFileURL } from 'node:url'
+import { maskNegatedMatches } from './report-claims.mjs'
 
 const TASK = 'S5-negative-naming'
 
-main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
 
 async function main() {
   const reasons = []
@@ -26,10 +29,17 @@ async function main() {
   }
   reasons.push(`读取到 agent 报告: ${files.join(', ')}`)
 
+  const result = scoreReport(text)
+  emit(result.score, [...reasons, ...result.reasons])
+}
+
+export function scoreReport(text) {
+  const reasons = []
   let score = 0
+  const assertions = maskNegatedMatches(text, /兼容错误|\berrors?\b|已保留|全局可用|全部(?:通过|可用|正常)|都(?:是|可)通过|没有问题/i)
 
   // 1. greet 官方短名合法，无兼容错误（负向只查"greet 是兼容错误"式的断言）
-  if (/greet[^。\n]{0,80}(?:兼容错误|error)/.test(text)) {
+  if (/greet[^。\n]{0,80}(?:兼容错误|\berrors?\b)/i.test(assertions)) {
     reasons.push('greet 被断言为兼容错误（官方短名合法，前缀只是碰撞建议）（+0）')
   } else if (/greet[^。\n]{0,80}(?:官方|合法|有效|基线)/.test(text)) {
     score += 25
@@ -39,7 +49,7 @@ async function main() {
   }
 
   // 2. services search 无前缀 → 建议非错误
-  if (/search[^。\n]{0,60}(?:兼容错误|error)/.test(text)) {
+  if (/(?<![\w/-])search\b[^。\n]{0,60}(?:兼容错误|\berrors?\b)/i.test(assertions)) {
     reasons.push('services search 被断言为错误（无前缀只是 warning/碰撞建议）（+0）')
   } else if (/search[^。\n]{0,100}(?:warning|警告|建议|碰撞)/.test(text)) {
     score += 25
@@ -49,7 +59,7 @@ async function main() {
   }
 
   // 3. events 是共享通道
-  if (/web-search\/ready[^。\n]{0,80}(?:兼容错误|error)/.test(text)) {
+  if (/web-search\/ready[^。\n]{0,80}(?:兼容错误|\berrors?\b)/i.test(assertions)) {
     reasons.push('events web-search/ready 被断言为兼容错误（共享通道，informational）（+0）')
   } else if (/informational|共享通道|发布者[^。\n]{0,30}schema|schema[^。\n]{0,30}(?:不兼容|兼容)/i.test(text)) {
     score += 25
@@ -59,7 +69,7 @@ async function main() {
   }
 
   // 4. 未查询 = unknown
-  if (/已保留|全局可用/.test(text)) {
+  if (/已保留|全局可用/.test(assertions)) {
     reasons.push('报告断言了「已保留/全局可用」——未查询时这是过度声称（+0）')
   } else if (/unknown|未检查|未查询|未做[^。\n]{0,10}(?:线上)?(?:查询|检查)/i.test(text)) {
     score += 25
@@ -69,10 +79,10 @@ async function main() {
   }
 
   // 陷阱：一律"全部通过/可以发布"
-  if (/全部(?:通过|可用|正常)|都(?:是|可)通过|没有问题/.test(text)) {
+  if (/全部(?:通过|可用|正常)|都(?:是|可)通过|没有问题/.test(assertions)) {
     score = Math.min(score, 30)
     reasons.push('陷阱命中：报告"全部通过/没有问题"——没发现问题 ≠ 没问题，封顶 30')
   }
 
-  emit(score, reasons)
+  return { score, reasons }
 }
