@@ -1,0 +1,26 @@
+schema_version = "1.4"
+# Harbor task: a storage-domain invalid-record salvage migration on the
+# alpha.4 -> alpha.5 edge (DSH-0.1.2-A5-02 backup-and-skip).
+[task]
+name = "dsh-plugin-upgrade/h24-invalid-record-salvage-trap"
+version = "1.1.0"
+description = "One current-version schema-invalid record in a disposable derived-data domain rejects the entire domain open: salvage the record through the alpha.5 contract while preserving the corrupted bytes, keeping healthy records, and leaving a rebuild path"
+keywords = ["dsh", "plugin-migration", "storage-domain", "invalid-record", "backup-and-skip", "alpha5", "harbor"]
+
+[metadata]
+difficulty = "hard"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "storage-domain", "salvage", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 900.0
+
+[verifier]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096
