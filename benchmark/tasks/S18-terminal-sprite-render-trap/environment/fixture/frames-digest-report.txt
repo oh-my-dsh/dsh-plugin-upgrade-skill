@@ -1,0 +1,15 @@
+Frame digest report (sha256 of each frame's 25 rows, compared against the source-art
+frames the sprite was ported from):
+
+standard  OK        blink    OK        fin1     OK        fin2     OK
+spout1-6  OK        tail1    OK        tail2    MISMATCH  tail3    OK
+tail4     OK        heart1-3 OK        sleep1-5 OK
+
+tail2 detail (cells where the ported frame differs from the source art):
+  row  2: ported D at col 26, source D at col 27 (1 col left shift)
+  row  3: ported extra D at col 25; DBD at cols 26-28 shifted left 1; extra DD at cols 36-37
+  rows 4-6: the upper-right cluster is shifted 1 column left throughout
+  total: 23 differing cells, all in the upper-right spout/tail-tip area
+
+The ported tail2 was hand-copied during conversion; an excerpt-based regression
+(added later for a different frame) did not cover it.

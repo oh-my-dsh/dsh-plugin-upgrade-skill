@@ -1,0 +1,26 @@
+schema_version = "1.4"
+# Harbor task config: terminal half-block sprite rendering defects and the
+# dev-loop hang they rode in on (task S18, static, read-only)
+[task]
+name = "dsh-plugin-upgrade/s18-terminal-sprite-render-trap"
+version = "1.1.0"
+description = "A terminal pixel sprite (whale) shows phantom pixels at its right edges and ghost pixels surviving frame switches; flipping the animation feature default-on then hangs a CI job for its whole timeout - diagnose the half-block SGR background leak, the trailing-trim ghosting, the frame-data drift, the timer pinning, and write the prevention checklist"
+keywords = ["dsh", "tui", "ansi", "half-block", "sprite", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "tui-rendering", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 300.0
+
+[verifier]
+timeout_sec = 120.0
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

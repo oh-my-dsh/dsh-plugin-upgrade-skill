@@ -1,0 +1,16 @@
+CI hang evidence (channel-ui group, after the animation feature flipped default-on):
+
+- Job "channel-ui" shows PASS for all scene checks, then the process sits idle. The job
+  does not exit; it is eventually killed at the runner timeout (the same job had always
+  finished in ~3 minutes before the flip; one local observation recorded 19 minutes of
+  idle before manual kill).
+- Process state at kill: no running test, no pending assertion; the event loop has live
+  handles of kind Timeout - one per tick of the sprite animation planner, each
+  re-arming the next. The planner reschedules a setTimeout for as long as its
+  component stays mounted, and these particular hosts mount the header component and
+  finish WITHOUT unmounting it.
+- The interactive terminal product is unaffected: its process is kept alive by the
+  TTY/stdin handles regardless of the timer chain.
+
+Timeline: the hang first appeared in the same push that flipped the animation feature's
+default from off to on.
