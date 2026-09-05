@@ -115,3 +115,29 @@ The script only validates inputs and never publishes, tags, or queries the netwo
 
 - After the 0.1.2 final dist-tag and final tag name are published, re-verify the unpublished-cohort recipes;
 - The pnpm version sensitivity (see above) comes from a single field report; keep it marked as pending confirmation until reproduced.
+
+## Dev-loop install of a local plugin pack: tarball, not link:/file: (recipe R-07)
+
+Handing a colleague (or another agent) a plugin you just built — a local pack directory
+with `lib/` output and a manifest — fails when imported the obvious two ways:
+
+- a `link:<path>` / `file:<path>` specifier is imported AS-IS by pnpm 11's default path
+  handling and collides with the symlink junction the profile already uses for
+  link-installed plugins (two views of one directory; edits leak both ways);
+- declaring the pack's bundles via `bundledDependencies` gets the tarball REJECTED at
+  install ("bundled dependencies" are not accepted by the profile's plugin pipeline).
+
+Recipe: ship a TARBALL and refresh by remove + re-add.
+
+```sh
+npm pack <pack-dir>                      # produces <name>-<version>.tgz
+dsh plugin --profile web add ./<name>-<version>.tgz
+# later content refresh:
+dsh plugin --profile web remove <name>
+dsh plugin --profile web add ./<name>-<version>.tgz
+```
+
+The tarball is a plain, self-contained artifact: no symlink collision, no bundled-
+dependency rejection, and the remove+re-add cycle guarantees the installed copy actually
+changes. Remember the boot contract: the client combo is assembled once at host boot, so
+the refresh still needs a host restart plus a browser hard refresh before re-testing.
