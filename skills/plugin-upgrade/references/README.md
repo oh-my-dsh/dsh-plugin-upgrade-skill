@@ -19,6 +19,7 @@ source: if a field is removed in alpha.1 and restored in alpha.2, do not delete 
 | 5 | [v0.1.2-alpha.4.md](v0.1.2-alpha.4.md) | `dsh-v0.1.2-alpha.3` | `dsh-v0.1.2-alpha.4` | 6 | reviewed / curated |
 | 6 | [v0.1.2-alpha.5.md](v0.1.2-alpha.5.md) | `dsh-v0.1.2-alpha.4` | `dsh-v0.1.2-alpha.5` | 3 | reviewed / curated |
 | 7 | [v0.1.2-rc.1.md](v0.1.2-rc.1.md) | `dsh-v0.1.2-alpha.5` | `dsh-v0.1.2-rc.1` | 0 | reviewed / curated |
+| 8 | [v0.1.3-alpha.1.md](v0.1.3-alpha.1.md) | `dsh-v0.1.2-rc.1` | `dsh-v0.1.3-alpha.1` | 4 | draft / curated (first carded breaking edge of the 0.1.3 series, all on the host/session plane: lifecycle-held `SessionHandle` + session lock, session format v2 with adjacent-generation migration, unpublished-cohort source-host verification, composer/upload runtime re-check; six-plugin client fleet crossed zero-code) |
 | — | [rollup-0.1.2.md](rollup-0.1.2.md) | `dsh-v0.1.1-rc.2` → `dsh-v0.1.2-rc.1` full corridor | rollup | non-card file: corridor-level increment (cross-cohort coexistence, unpublished-cohort installation, `RemoteResult` error flow, pre-migration baseline attribution, bounded retry for boot race, base-only preset precondition, type-surface export drift, host-self safety boundary, three install-channel pitfalls, layered validation checklist); based on rc.1, subject to final-release review |
 
 `curated` means only the identified plugin-relevant changes are included, not a complete
