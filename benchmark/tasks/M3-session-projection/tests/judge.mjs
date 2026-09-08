@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M3-session-projection grading: compose the profile from the agent-modified fixture and cold boot.
 //   100 — the composed tree activates (MISSING_CREDENTIAL without a key) AND still provides
 //         the todo tool (the final composition must not drop the capability — dodging scores 0);
@@ -20,12 +21,13 @@ const TASK = 'M3-session-projection'
 const PROFILE = 'bench-m3-session-projection'
 const PROFILE_DIR = `/root/.dsh/profiles/${PROFILE}`
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -47,7 +49,7 @@ async function main() {
   reasons.push(`composing profile ${PROFILE} from fixture bundles: ${bundles.join(', ')}`)
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   let score = 0

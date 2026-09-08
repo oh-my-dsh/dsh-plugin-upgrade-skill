@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S12-global-upgrade-ebusy-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected diagnosis:
 //   1. EBUSY root cause: the running dsh web HOST PROCESS loaded @koromix/koffi
@@ -32,7 +33,7 @@ const ASPECTS = [
     pattern: /README|install.{0,40}command|documentation|doc/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -41,7 +42,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

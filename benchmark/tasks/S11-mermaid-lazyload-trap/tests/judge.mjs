@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S11-mermaid-lazyload-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected diagnosis (skills/plugin-heavy-dep checklist applied to the evidence):
 //   1. Split chunks: a dynamically imported chunk's sibling imports resolve as URLs relative
@@ -29,7 +30,7 @@ const ASPECTS = [
   { key: 'regression: import-failure fallback + containment case test + modal inertness', pattern: /(fallback|fall back)[\s\S]{0,200}(import|chunk)|(regression|test)[\s\S]{0,160}(contain|403|case)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -38,7 +39,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 import {
   addPlugin,
   bootWebInBrowser,
@@ -11,15 +12,16 @@ import {
 
 const PKG = '@demo/dsh-bench-browser-activation'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
 
   let score = 0
-  if (!(await dshAvailable())) emit(0, ['dsh unavailable; runtime verification failed'])
+  if (!(await dshAvailable())) emitError(new Error('dsh unavailable: runtime verification cannot run'))
 
   const profile = 'bench-h10'
   try {

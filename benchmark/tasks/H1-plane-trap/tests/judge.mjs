@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H1-plane-trap grading: the plane trap = the comment lures you into injecting remote.
 //   Static gate: if the fixture source injects "remote" but not "llm", the score is capped at 20;
 //   container cold boot activated 100 / changed but pending 40 / add failed 30 / unchanged 0.
@@ -9,7 +10,7 @@ import { addPlugin, bootHeadless, cleanupProfile, createProfile, dshAvailable, e
 const TASK = 'H1-plane-trap'
 const FIXTURE = FIXTURE_DIR
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 function collectSource(dir) {
   const out = []
@@ -25,6 +26,7 @@ async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}); treated as 0 points`])
   }
@@ -43,7 +45,7 @@ async function main() {
   }
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime judgment impossible, treated as 0 points'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   const profile = 'bench-h1-plane-trap'

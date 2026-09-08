@@ -14,7 +14,9 @@ I am a DSH plugin maintainer. `/app/fixture/` in the container holds the source 
 Please **scan this source read-only** (do not modify any file under `/app/fixture/`) and produce a touchpoint inspection report, written under `/app/agent-output/S1-static-scan/` (any filename; .md/.txt both fine). Requirements:
 
 1. For each of the seven touchpoint categories (#1 source patch, #2 events, #3 service/Remote, #4 host directory, #5 UI/commands/tools, #6 custom channel, #7 subprocess/output parsing), report: whether it hits, the hit files/lines, and the concrete coupling points hit;
-2. Map every hit to the specific change card in the 0.1.1-rc.2 → 0.1.2-alpha.2 corridor (card IDs may be written as `A1-01` or as the full ID). Note the corridor folding: when a field is removed in an intermediate corridor version and restored in the target version, treat it by the final net state — think through how that should be mapped;
+2. Explain the concrete version change and migration direction for every hit in the 0.1.1-rc.2 → 0.1.2-alpha.2 corridor; cite file evidence. Card IDs are optional and do not earn correctness points. Note the corridor folding: when a field is removed in an intermediate corridor version and restored in the target version, treat it by the final net state — think through how that should be mapped;
 3. For the touchpoint categories with no hits, state clearly which files you scanned, what you ruled out, and why you cannot directly conclude "no hit = no problem".
 
-There are no traps in this brief; what is tested is whether the scan is complete, the card mapping is accurate, and read-only discipline is respected.
+There are no traps in this brief; what is tested is whether the scan is complete, the diagnosis and migration direction are correct, and read-only discipline is respected.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

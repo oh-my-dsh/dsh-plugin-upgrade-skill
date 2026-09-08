@@ -36,12 +36,20 @@ beforeEach(() => {
 })
 after(() => { if (root) rmSync(root, { recursive: true, force: true }) })
 
-function grade(source, prepare = () => {}) {
+function grade(source, prepare = () => {}, expectVerifierError = false) {
   if (source !== null) writeFileSync(join(app, 'fixture/src/domain-spec.mjs'), source)
   prepare()
-  const output = execFileSync(process.execPath, ['--input-type=module', '-e',
+  let output
+  try { output = execFileSync(process.execPath, ['--input-type=module', '-e',
     `import { grade } from ${JSON.stringify(judgeUrl)}; await grade(${JSON.stringify(app)}, ${JSON.stringify(baselineFile)});`,
-  ], { encoding: 'utf8', timeout: 30000 })
+  ], { encoding: 'utf8', timeout: 30000 }) } catch (error) {
+    if (!expectVerifierError) throw error
+    assert.equal(error.status, 1)
+    const packet = JSON.parse(error.stdout.trim().split('\n').at(-1))
+    assert.equal(packet.status, 'verifier_error')
+    return packet
+  }
+  assert.equal(expectVerifierError, false, 'verifier failure must not exit successfully')
   return JSON.parse(output.trim().split('\n').at(-1))
 }
 
@@ -155,9 +163,10 @@ for (const value of [null, '', 'not-a-sha', '0'.repeat(40)]) {
       if (value === null) rmSync(baselineFile)
       else writeFileSync(baselineFile, value)
       writeFileSync(join(app, 'baseline.sha'), git('rev-parse', 'HEAD'))
-    })
-    assert.equal(result.score, 0)
-    assert.ok(result.reasons.some((reason) => reason.includes('trusted baseline unavailable')))
+    }, true)
+    assert.equal(result.score, undefined)
+    assert.equal(result.status, 'verifier_error')
+    assert.ok(result.error.message.length > 0)
   })
 }
 

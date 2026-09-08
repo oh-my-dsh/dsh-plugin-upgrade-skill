@@ -1,0 +1,155 @@
+{
+  "createdAt": "2026-09-08T01:43:48.509Z",
+  "mode": "offline existing task images; current tests and original solutions mounted read-only",
+  "results": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H20-session-events-ledger",
+        "variant": "oracle",
+        "chunk_id": "e41db6",
+        "wall_time_seconds": 0.035216,
+        "exit_code": 0,
+        "original_token_count": 164,
+        "output": "{\"score\":100,\"max\":100,\"reasons\":[\"behavioral 75/75\",\"  +10 fullVisibleLog/plain: length 7\",\"  +10 fullVisibleLog/fork-inherited: length 9 (inherited prefix kept)\",\"  +10 eventAtSeq/bounds: exact hit (plain + fork own/inherited) + out-of-range/negative/NaN → null\",\"  +20 windowFrom/half-open: from=3 → seqs 3..6; from=0 full; from=end empty\",\"  +10 eventInWindow/seq-lookup: in-window exact hit; below/over/at-end handled\",\"  +15 ownOnlyEvents/inherited-cut: fork → seqs 4..8; plain → full\",\"behavioral 75/75; canonical 15/15 (fullVisibleLog:3 windowFrom:3 eventAtSeq:3 eventInWindow:3 ownOnlyEvents:3); hygiene 12/12\"]}\nreward: 1\n{\"reward\":1}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H20-session-events-ledger",
+        "variant": "nop",
+        "chunk_id": "c01bf5",
+        "wall_time_seconds": 0.003844958,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "{\"score\":0,\"max\":100,\"reasons\":[\"fixture untouched — no migration performed\"]}\nreward: 0\n{\"reward\":0}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H23-storage-domain-version-compat-trap",
+        "variant": "oracle",
+        "chunk_id": "4b601b",
+        "wall_time_seconds": 0.049171708,
+        "exit_code": 0,
+        "original_token_count": 104,
+        "output": "{\"score\":100,\"max\":100,\"reasons\":[\"+25 v4 records A and B preserved unchanged\",\"+10 v5 record C intact with its optional field\",\"+10 unlisted v3 record D still foreign\",\"+10 read-modify-write preserved the record and re-stamped version 5\",\"+10 close+reopen retains the expected state\",\"behavioral 65/65; migration 25/25 (compatibleVersions:[4]:15 version:5 schema-honest:5); hygiene 10/10\"]}\nreward: 1\n{\"reward\":1}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H23-storage-domain-version-compat-trap",
+        "variant": "nop",
+        "chunk_id": "0ccce5",
+        "wall_time_seconds": 0.043138833,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "{\"score\":0,\"max\":100,\"reasons\":[\"fixture untouched — no migration performed\"]}\nreward: 0\n{\"reward\":0}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H24-invalid-record-salvage-trap",
+        "variant": "oracle",
+        "chunk_id": "e4bd85",
+        "wall_time_seconds": 0.04731375,
+        "exit_code": 0,
+        "original_token_count": 102,
+        "output": "{\"score\":100,\"max\":100,\"reasons\":[\"+20 domain open resolves\",\"+15 healthy A+B intact with correct values\",\"+15 corrupt document moved to a backup file\",\"+10 backup bytes equal the sealed baseline bytes\",\"+5 damaged key absent before rebuild\",\"+5 rebuilt key persists across reopen\",\"behavioral 70/70; migration 20/20 (backup-and-skip:10 schema-honest:5 contract:5); hygiene 10/10\"]}\nreward: 1\n{\"reward\":1}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H24-invalid-record-salvage-trap",
+        "variant": "nop",
+        "chunk_id": "ac678f",
+        "wall_time_seconds": 0.014208834,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "{\"score\":0,\"max\":100,\"reasons\":[\"fixture untouched — no migration performed\"]}\nreward: 0\n{\"reward\":0}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H25-session-seed-boundary-trap",
+        "variant": "oracle",
+        "chunk_id": "4c0352",
+        "wall_time_seconds": 9.542e-06,
+        "exit_code": 0,
+        "original_token_count": 127,
+        "output": "{\"score\":100,\"max\":100,\"reasons\":[\"+15 fresh fork reports inherited cut 3\",\"+20 resumed fork retains the ORIGINAL cut 3 (log grew to 8)\",\"+10 unforked session has inherited 0\",\"+10 projection init+apply classifies own vs inherited correctly\",\"+5 valid seq/offset construction works\",\"+5 invalid constructors still throw TypeError\",\"behavioral 65/65; migration 25/25 (seedLength-gone:5 isSeeded:5 inheritedEventCount:5 SessionSeq-position:5 SessionLogOffset-offset:5); hygiene 10/10\"]}\nreward: 1\n{\"reward\":1}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "id": "H25-session-seed-boundary-trap",
+        "variant": "nop",
+        "chunk_id": "955a7f",
+        "wall_time_seconds": 4e-06,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "{\"score\":0,\"max\":100,\"reasons\":[\"fixture untouched — no migration performed\"]}\nreward: 0\n{\"reward\":0}\n"
+      }
+    }
+  ],
+  "imageIds": {
+    "main56-audit-h20": "85eb12281ba5",
+    "main56-audit-h23": "7408ac2d655f",
+    "main56-audit-h24": "b9bb913c89cc",
+    "main56-audit-h25": "3757b87e21cd"
+  },
+  "sourceHashes": {
+    "H20-session-events-ledger": {
+      "tests/judge-result.mjs": "892d335f80b3910e0acee21cadfb78ba8c55c16fa28c91c9ab1dd34e1b864910",
+      "tests/judge-utils.mjs": "021894c223b54fd583c205cf7d6f14530f5bc6bffe627b33ab99a6cf0b41721e",
+      "tests/judge-utils.test.mjs": "b2b9e3706ea825255c376507209eb04ef42cd629aee03082c7c6884d0f68a8a5",
+      "tests/judge.mjs": "5940a4d43a221c7a42438f19fc635c90b7d3c4e1aa91320a2f22bcf9871e152f",
+      "tests/test.sh": "a0403abf22a10c959714d440cdc59e4e8195dffbd54ea0fa86c9829c0768f65d",
+      "tests/verifier.mjs": "709ca129408d3441b8d533630f231a500ff3eb4440d3e71d48f2b4a70bfe58eb",
+      "solution/SOLUTION.md": "caed80d713910c9c4d2c0341fa85a9c904a7b9b98da2a080f67df33246103614",
+      "solution/solve.sh": "693b9db4d130c9d81b90cd495288c4128bcb457e18878c7951dd53e204835dfb",
+      "solution/src/session-ledger.mjs": "3afc70a2bcbbadee309dcb0e426cacc1e46f85bd2354d4b7787a4fbe75f6c695"
+    },
+    "H23-storage-domain-version-compat-trap": {
+      "tests/judge-result.mjs": "892d335f80b3910e0acee21cadfb78ba8c55c16fa28c91c9ab1dd34e1b864910",
+      "tests/judge-utils.mjs": "73eea3aa5a7c80ff8044c4ba7d86e70386cfd952fcb4bb086aa7bd47860b92dd",
+      "tests/judge-utils.test.mjs": "e3ba7bc13e95fff30928c1aa0025f9d8ee6505235b88005e07938afa98c1dd0d",
+      "tests/judge.mjs": "aca4cf2b20f48fd8f779b3759aa71d6fadc91d416d158d10d639c0d271df876d",
+      "tests/judge.test.mjs": "f3ebb0aef28abb5777aba757037b9338a680e4f597b2b9fba1324a21689d6745",
+      "tests/test.sh": "a0403abf22a10c959714d440cdc59e4e8195dffbd54ea0fa86c9829c0768f65d",
+      "tests/verifier.mjs": "709ca129408d3441b8d533630f231a500ff3eb4440d3e71d48f2b4a70bfe58eb",
+      "solution/SOLUTION.md": "846bea33c27eb0736532e4839c1606002d5c982e7384aa73f601177b33250f7e",
+      "solution/solve.sh": "996fece5d90802fbdfa29b7356d0232d5b3aec9ca70cb329fa8a4938857a125b",
+      "solution/src/domain-spec.mjs": "caba503f2d1dd7ff5f2f6b831c8a039798f516814b42bcf367363332f54b01f8"
+    },
+    "H24-invalid-record-salvage-trap": {
+      "tests/judge-result.mjs": "892d335f80b3910e0acee21cadfb78ba8c55c16fa28c91c9ab1dd34e1b864910",
+      "tests/judge-utils.mjs": "5c660338462ceb88407b58fa854204bc0afd52d580b4115344b60b7f608b1542",
+      "tests/judge-utils.test.mjs": "e51016a8fefeb2477680728283b8608645ff5baf7ff2bf9a8b369e462bfeb993",
+      "tests/judge.mjs": "bfba06b8f3edd656f563b96a7a924786eba331962edb92136bbadc4e62199abc",
+      "tests/test.sh": "a0403abf22a10c959714d440cdc59e4e8195dffbd54ea0fa86c9829c0768f65d",
+      "tests/verifier.mjs": "709ca129408d3441b8d533630f231a500ff3eb4440d3e71d48f2b4a70bfe58eb",
+      "solution/SOLUTION.md": "8fd167c4ffa1291d7478ad251aeb3affcd3dc8c9de8086b8c6156f6684dda3bd",
+      "solution/solve.sh": "9db3ee97ef31105a62d4f6027d2f21560774acc185b6abd8d469d9a1a182f296",
+      "solution/src/domain-spec.mjs": "d0e99e70ea7b8a7e26689323f9a9f21ea747114ab62cd96fbda971f55f6849f4"
+    },
+    "H25-session-seed-boundary-trap": {
+      "tests/judge-result.mjs": "892d335f80b3910e0acee21cadfb78ba8c55c16fa28c91c9ab1dd34e1b864910",
+      "tests/judge-utils.mjs": "b75b95bdbe57c76293d45bf8df67f09e32fbffa2eb870df06edb3c620dc415d8",
+      "tests/judge-utils.test.mjs": "9cf6bcba012fc839342e4da7bea03c77b57dd2f18dfc43062404668ffc861912",
+      "tests/judge.mjs": "399c789be8e5756cb9e7a7a93fe1e06c8afa9538ce01d8bb6690176cfd1f4555",
+      "tests/test.sh": "a0403abf22a10c959714d440cdc59e4e8195dffbd54ea0fa86c9829c0768f65d",
+      "tests/verifier.mjs": "709ca129408d3441b8d533630f231a500ff3eb4440d3e71d48f2b4a70bfe58eb",
+      "solution/SOLUTION.md": "8db1fc7773d36a2372a41394c1c21f05c69fc47486e44dfa137d05583b258c41",
+      "solution/solve.sh": "fb612cb2c497d8f421ff08589c88270ae22910122c11d3da325230e0978d6056",
+      "solution/src/fork-state.mjs": "b13935be98352f447370421a5a809eeb103b33342b4e39ee0b38f61d06078c26"
+    }
+  }
+}

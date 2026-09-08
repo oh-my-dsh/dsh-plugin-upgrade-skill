@@ -17,3 +17,5 @@ Please **analyze it read-only** (do not modify any file under `/app/fixture/`) a
 1. State the fate of this defense code (delete or keep) with the reasoning — account for the full history of this semantics across the version corridor;
 2. State the correct producer semantics, and what an ordinary plugin going through `Session.append(...)` should do (hint: the public API surface may not even have that parameter);
 3. Decide by evidence, not by the comment; mark anything you cannot verify as "unconfirmed".
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

@@ -1,13 +1,14 @@
 {
   "schema": 1,
   "task": "H8-fire-drill",
+  "primaryMax": 95,
   "dshTarget": "0.1.2-alpha.2",
   "cards": ["DSH-0.1.2-A1-01", "DSH-0.1.2-A1-08", "R-01"],
   "checkpoints": [
     { "id": "names-drill-host", "label": "diagnosis names drill-host", "type": "report", "points": 5, "measure": "report" },
     { "id": "names-drill-web", "label": "diagnosis names drill-web", "type": "report", "points": 5, "measure": "report" },
     { "id": "names-drill-tools", "label": "diagnosis names drill-tools", "type": "report", "points": 5, "measure": "report" },
-    { "id": "cites-cards", "label": "diagnosis cites DSH-0.1.2-A1-01, DSH-0.1.2-A1-08 and R-01", "type": "report", "points": 5, "measure": "report" },
+    { "id": "cites-cards", "auxiliary": true, "label": "diagnosis cites DSH-0.1.2-A1-01, DSH-0.1.2-A1-08 and R-01", "type": "report", "points": 5, "measure": "report" },
     { "id": "host-apiproxy-removed", "label": "drill-host drops the apiproxy dependency", "type": "fail-to-pass", "points": 4, "measure": "static" },
     { "id": "host-inject-llm", "label": "drill-host injects llm", "type": "fail-to-pass", "points": 3, "measure": "static" },
     { "id": "host-no-remote", "label": "drill-host does not inject remote", "type": "pass-to-pass", "points": 3, "measure": "static", "cap": { "total": 20, "reason": "injecting remote on the host plane is the fatal bait comment (H1-plane-trap precedent)" } },
@@ -29,7 +30,7 @@
   ],
   "gates": [
     { "id": "fixture-changed", "fail": { "score": 0, "reason": "fixture untouched" } },
-    { "id": "dsh-available", "fail": { "score": 0, "reason": "dsh unavailable" } }
+    { "id": "dsh-available", "fail": { "status": "error", "reason": "dsh unavailable" } }
   ],
   "provenance": {
     "author": "omdsh-dev",

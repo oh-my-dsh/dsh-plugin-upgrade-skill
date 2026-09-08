@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H3-client-plane grading: the dsh.client plane contract of a browser plugin.
 //   40 pts — package.json gains the top-level "dsh": {"client": {...}} declaration the
 //             alpha requires (an object with platform "web"; declared but platform
@@ -29,12 +30,13 @@ import {
 const TASK = 'H3-client-plane'
 const PKG = '@demo/dsh-bench-paste'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -60,7 +62,7 @@ async function main() {
   }
 
   if (!(await dshAvailable())) {
-    emit(score, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   // 2/3. Container: add + web cold boot + boot entries.

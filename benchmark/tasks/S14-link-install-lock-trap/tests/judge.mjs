@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S14-link-install-lock-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected (link-installed lib-only plugin rollout failure):
 //   1. Junction semantics: the profile entry IS the repo working tree; copying repo files
@@ -25,7 +26,7 @@ const ASPECTS = [
   { key: 'pre-flight install-mode check (LinkType/Target or patch.yml link marker)', pattern: /(LinkType|Target|patch\.yml|link:)[\s\S]{0,240}(before|first|pre-?flight|check|determin)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -34,7 +35,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

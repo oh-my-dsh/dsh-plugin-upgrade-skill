@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H5-runtime-export-drift 判分：把 agent 改后的 fixture pack 成 tarball 装进隔离
 // profile 做真实冷启动（禁止 link 安装——会带进 fixture 自带 node_modules 掩盖漂移）。
 //   100 —— pack + add 成功，冷启动无 pending / plugin tree failed，推进到应用层，
@@ -24,7 +25,7 @@ const SHIM_VAR_RE = /^\s*(?:export\s+)?(?:const|let|var)\s+settingsNamespace\b/m
 const SHIM_REEXPORT_RE = /^\s*export\s*\{[^}]*\bsettingsNamespace\b[^}]*\}/m
 const OLD_COHORT_RE = /0\.1\.[01]/
 
-main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -36,6 +37,7 @@ async function main() {
   reasons.push('宿主完整性 OK：全局 dsh 0.1.2-alpha.2，dsh-settings 导出面无 settingsNamespace')
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture 未改动（${gate.detail}），按 0 分处理`])
   }

@@ -13,9 +13,11 @@ Our team is shipping one dsh 0.1.2-alpha.2 release containing three plugins. The
 
 Run the upgrade as a four-act drill, in order:
 
-1. **Diagnose** — inspect all three plugins against the 0.1.2-alpha.2 host, find every breakage (there is at least one per plugin), and write the diagnosis with the corresponding card IDs to `/app/agent-output/H8-fire-drill/diagnosis.md`;
+1. **Diagnose** — inspect all three plugins against the 0.1.2-alpha.2 host, find every breakage (there is at least one per plugin), and write the diagnosis with concrete file evidence and migration reasoning (card IDs are optional) to `/app/agent-output/H8-fire-drill/diagnosis.md`;
 2. **Fix** — migrate all three plugins by editing the files under `/app/fixture/` directly;
 3. **Deploy** — create an isolated profile, install all three plugins into it, cold-boot the web profile, exchange the bootstrap token for a Cookie, and smoke the `/ping` channel (unauthenticated request → 401, authenticated request → 200); record the evidence under `/app/agent-output/H8-fire-drill/smoke.md`;
 4. **Release** — bump the version in every plugin `package.json`, and write the pre-publish checklist to `/app/agent-output/H8-fire-drill/release.md`: what must be verified before publishing, and which npm dist-tag a prerelease must use. Do not actually publish — this container has no publish credentials and publishing is outside the authorized scope.
 
 There is only one goal: all three plugins boot cleanly on 0.1.2-alpha.2, the `/ping` channel is covered by the host's unified authentication, and the release is prepared with the correct gates — no skipped checks, no forced publish. dsh 0.1.2-alpha.2 and pnpm are installed globally; the fixture is git-committed as the baseline, and nothing outside `/app/fixture/` and your own `/app/agent-output/` is part of this task — leave it alone.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

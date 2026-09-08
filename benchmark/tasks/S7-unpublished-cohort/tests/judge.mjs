@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S7-unpublished-cohort 判分：fixture 只读门禁 + 方案四要点 + 陷阱封顶。
 // 考点（rollup R-01 + npm semver 语义）：
 //   1. registry 查证先行（npm view / 从未发布），不凭 dist-tag 推断
@@ -12,7 +13,7 @@ import { hasAffirmativeMatch } from './report-claims.mjs'
 const TASK = 'S7-unpublished-cohort'
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
-if (isMain) main().catch((error) => emit(0, [`judge 异常: ${error.message}`]))
+if (isMain) main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -21,7 +22,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture 被改动，本题 0 分（只读纪律）: ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`警告: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture 未被修改（只读纪律通过）')
 
   const { text, files } = readAgentText('', TASK)

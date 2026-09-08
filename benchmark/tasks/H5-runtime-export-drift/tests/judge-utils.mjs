@@ -17,11 +17,7 @@ export const PROFILE = (taskId) => `bench-${taskId.toLowerCase()}`
 
 // ── 结果输出 ──────────────────────────────────────────────
 
-export function emit(score, reasons) {
-  const result = { score: Math.max(0, Math.min(100, Math.round(score))), max: 100, reasons }
-  process.stdout.write(JSON.stringify(result) + '\n')
-  process.exit(0)
-}
+export { emit, emitError } from './judge-result.mjs'
 
 // ── agent 输出收集（静态题）───────────────────────────────
 
@@ -105,13 +101,14 @@ export async function createProfile(profile, bundles) {
   const write = await localExec(`rm -rf '${dir}' && mkdir -p '${dir}' && base64 -d > '${dir}/package.json'`, {
     stdin: Buffer.from(JSON.stringify(pkg, null, 2) + '\n').toString('base64'),
   })
-  if (write.code !== 0) return { ok: false, detail: `profile 写入失败: ${write.stderr.trim()}` }
+  if (write.code !== 0) throw new Error(`profile creation failed: write: ${write.stderr.trim()}`)
   const seed = await localExec(
-    `cp /root/.dsh/profiles/headless/pnpm-workspace.yaml '${dir}/' 2>/dev/null || printf 'packages:\\n  - .\\n\\nnodeLinker: hoisted\\nautoInstallPeers: false\\n' > '${dir}/pnpm-workspace.yaml'
+    `set -e
+cp /root/.dsh/profiles/headless/pnpm-workspace.yaml '${dir}/' 2>/dev/null || printf 'packages:\\n  - .\\n\\nnodeLinker: hoisted\\nautoInstallPeers: false\\n' > '${dir}/pnpm-workspace.yaml'
 printf '[]\\n' > '${dir}/cordis.patch.yml'
 printf '[]\\n' > '${dir}/cordis.yml'`,
   )
-  if (seed.code !== 0) return { ok: false, detail: `profile 种子文件失败: ${seed.stderr.trim()}` }
+  if (seed.code !== 0) throw new Error(`profile creation failed: seed: ${seed.stderr.trim()}`)
   return { ok: true, dir }
 }
 

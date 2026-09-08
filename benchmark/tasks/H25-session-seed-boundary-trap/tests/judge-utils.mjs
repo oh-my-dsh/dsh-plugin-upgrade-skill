@@ -284,3 +284,5 @@ export function assembleScore({ behavioral, runtime, source, packageJson, observ
   score = Math.max(0, Math.min(100, Math.round(score)))
   return { score, reasons }
 }
+
+export { emitError } from './judge-result.mjs'

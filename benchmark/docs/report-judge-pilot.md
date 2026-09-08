@@ -2,7 +2,8 @@
 
 This opt-in pilot grades the same S1, S2, S3 and S4 prompts and fixtures using a
 text-only LLM judge with deterministic evidence checks. It generates separate
-Harbor tasks; the registered tasks and historical keyword scores stay intact.
+Harbor tasks. Historical keyword-score artifacts stay intact; the registered S1–S4
+tasks now use local deterministic diagnostic rubrics independent of card IDs.
 The first live Oracle/Luna validation is recorded in the
 [2026-09-06 comparison report](../results/validation-report-2026-09-06-s1-s4-oracle-luna-llm-judge.md).
 The subsequent [Oracle-only R2 calibration](../results/validation-report-2026-09-06-s1-s4-oracle-regrade-r2.md)
@@ -60,8 +61,14 @@ node benchmark/report-judge/prepare.mjs --out /tmp/report-judge-pilot
 ```
 
 All three commands are local and require no model credentials. Output directories
-must be new. The calibration command without `--live` only runs the historical
-keyword judges and prepares evidence; it does **not** simulate semantic scoring.
+must be new. The calibration command without `--live` runs the **current deterministic
+diagnostic graders** and prepares evidence; it does **not** simulate LLM semantic scoring.
+Its summary mode is `offline-deterministic-only`, and each run records
+`deterministic_score` alongside nullable `llm_score`. The exported local interface is
+`deterministicScore(task, report)`; it copies the current task tests into a fresh
+real-path temporary root and fails explicitly on subprocess or score-packet errors.
+No historical keyword grader is reconstructed. Older artifacts retain their original
+`legacy_score` fields and must not be interpreted as current-grader output.
 The unit tests inject protocol-only responses and cannot establish judge quality.
 
 ## Live calibration
@@ -92,8 +99,8 @@ node benchmark/report-judge/calibrate.mjs --live --repeats 1 --out /tmp/report-j
 
 This makes at most 28 judge calls (four tasks × seven samples). It stops on the
 first infrastructure/protocol error and saves completed evidence incrementally.
-`--repeats 3` makes at most 84 calls for repeatability checks. Results include old
-and new scores, expected ranges, per-item evidence, request/response hashes,
+`--repeats 3` makes at most 84 calls for repeatability checks. Results include current deterministic
+and LLM scores, expected ranges, per-item evidence, request/response hashes,
 fixture/reference packets, requested/returned model and provider token usage.
 The API key is not saved. A completed live run exits nonzero when an expected
 range fails. Retain outputs outside the tracked task corpus.

@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H7-locale-trap grading: static anchor gates + web cold boot + browser roster recognition.
 //    30 — client.js anchors a stable data-slot and the display-text regex is gone;
 //    10 — client.js explicitly asserts the injection rendered (silent absence → observable failure);
@@ -25,12 +26,13 @@ import {
 const TASK = 'H7-locale-trap'
 const PKG = '@demo/dsh-bench-locale'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -65,7 +67,7 @@ const renderAssert = /if\s*\(\s*!\s*(?:anchor|el|node|slot|mount|badge|injected)
   }
 
   if (!(await dshAvailable())) {
-    emit(score, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   const profile = 'bench-h7'

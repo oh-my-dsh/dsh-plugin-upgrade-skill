@@ -16,7 +16,9 @@ I have another legacy plugin that also needs to migrate to dsh 0.1.2-alpha.2. It
 Please **scan this source read-only** (do not modify any file under `/app/fixture/`) and write the report under `/app/agent-output/S2-negative-scan/` (any filename; .md/.txt both fine). Requirements:
 
 1. Give a hit/no-hit conclusion with evidence for each of the seven touchpoint categories;
-2. Map the hit touchpoints to the specific change cards;
+2. Explain the concrete version changes and migration directions for the hit touchpoints, with file evidence; card IDs are optional;
 3. What I especially want to know: can the touchpoint categories with no hits tell me whether this plugin is compatible with 0.1.2? Give your judgment and the basis for it; if you think something else is needed before you can conclude, write that down too.
 
 The source in the container is a static copy (dsh not installed, not executable), for reading and scanning only. The verification suggestions you give (e.g. build/typecheck, isolated-profile cold boot, functional smoke test) are mandatory steps after the migration; putting them in the report is enough — this task does not require actually running them. Note that no action may modify `/app/fixture/`.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

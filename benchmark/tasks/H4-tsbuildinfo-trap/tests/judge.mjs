@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H4-tsbuildinfo-trap grading: src read-only gate + three false-positive attribution points + trap cap.
 // Points (migration-hygiene §1 + DSH-0.1.2-A1-21 field notes):
 //   - the error comes from stale build artifacts/incremental cache (resolveSessionPreset
@@ -10,7 +11,7 @@ import { emit, fixtureChanges, readAgentText } from './judge-utils.mjs'
 const TASK = 'H4-tsbuildinfo-trap'
 const TRAP = /resolveRecordedPreset|presets\//
 
-main().catch((error) => emit(0, ['judge error: ' + error.message]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -20,7 +21,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, ['src was modified; this task scores 0 (trap hit: the source never needed migration): ' + gate.detail])
   }
-  if (gate.changed === null) reasons.push('warning: ' + gate.detail)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('src was not modified (gate passed)')
 
   const { text, files } = readAgentText('', TASK)

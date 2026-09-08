@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M13-repository-plugins-removal grading: the legacy repository-plugin shape must be
 // converted to an npm package (bundle plugin) that installs and activates on
 // 0.1.2-alpha.2, and its browser half must be recognized by client-modules.
@@ -31,12 +32,13 @@ import {
 const TASK = 'M13-repository-plugins-removal'
 const PKG = '@demo/dsh-bench-repo'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -111,7 +113,7 @@ async function main() {
   }
 
   if (!(await dshAvailable())) {
-    emit(score, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   // 3. Runtime: add + web cold boot + boot entries.

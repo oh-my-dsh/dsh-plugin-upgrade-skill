@@ -1,5 +1,7 @@
+// Primary rubric: 95 non-citation points normalized to 100 before percentage caps.
+// Citation points are auxiliary metrics only; diagnosis checks remain lexical, not semantic validation.
 // H15-locale-pack grading: the native third-language API replaces the monkey-patch layer.
-//   15 — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-10 (3) + DSH-0.1.2-A1-25 (2);
+//   10 primary + 5 auxiliary — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-10 (3) + DSH-0.1.2-A1-25 (2);
 //   50 — static migration contract:
 //        LocaleRuntime lookup monkey-patch residue gone from the sources (10)
 //        + ctx.locale.addLanguage({ id, label, fallback }) catalog call present (10)
@@ -21,6 +23,7 @@
 // unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
+import { pathToFileURL } from 'node:url'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
@@ -30,6 +33,7 @@ import {
   createProfile,
   dshAvailable,
   emit,
+  emitError,
   FIXTURE_DIR,
   fixtureChanges,
   localExec,
@@ -54,12 +58,14 @@ const POST_PEERS = {
   '@deepseek-ai/dsh-invariants': '^0.1.2-alpha.1',
 }
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) main().catch((error) => emitError(error))
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error(`fixture change check failed: ${gate.detail}`))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -75,7 +81,7 @@ async function main() {
   reasons.push(...act2.reasons)
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable in the container'))
   }
 
   // Act 3: install + web cold boot + browser roster.
@@ -85,7 +91,7 @@ async function main() {
   try {
     const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
     if (!created.ok) {
-      reasons.push(created.detail)
+      throw new Error(`profile creation failed: ${created.detail}`)
     } else {
       const added = await addPlugin(profile, FIXTURE_DIR)
       if (!added.ok) {
@@ -124,7 +130,14 @@ async function main() {
   const act4 = await scoreRelease()
   reasons.push(...act4.reasons)
 
-  let score = act1.score + act2.score + act3 + act4.score
+  const graded = scoreComposite(act1, act2, act3, act4)
+  emit(graded.score, [...reasons, ...graded.reasons], { metrics: graded.metrics })
+}
+
+/** Normalize the existing 95 non-citation points, then apply percentage caps. */
+export function scoreComposite(act1, act2, act3, act4) {
+  const reasons = []
+  let score = (act1.score + act2.score + act3 + act4.score) * 100 / 95
   if (act2.monkeyPatched) {
     score = Math.min(score, 60)
     reasons.push("the LocaleRuntime lookup monkey-patch is retained alongside addLanguage (the memo's bait: double registration) — capped at 60 (M5 precedent)")
@@ -137,19 +150,29 @@ async function main() {
     score = Math.min(score, 20)
     reasons.push('dsh-client-runtime retained — the package was removed, the web tree cannot compose — capped at 20 (H14 precedent)')
   }
-  emit(score, reasons)
+  return { score, reasons, metrics: {
+    diagnosis: { score: act1.score, max: 10 },
+    staticContract: { score: act2.score, max: 50 },
+    runtime: { score: act3, max: 25 },
+    releaseHygiene: { score: act4.score, max: 10 },
+    citation: { score: act1.citationScore, max: 5, auxiliary: true },
+    composite: { rawScore: act1.score + act2.score + act3 + act4.score, rawMax: 95, normalizedMax: 100 },
+  } }
 }
 
-/** Act 1: the diagnosis exists, names the plugin, cites the cards. */
-function scoreDiagnosis(text) {
+/** Act 1: the diagnosis exists, names the plugin; citations are auxiliary. */
+export function scoreDiagnosis(text) {
+  const citations = text
+  text = text.replace(/\b(?:DSH-\d+\.\d+\.\d+-A\d+-\d+|R-\d+)\b/g, '')
   const reasons = []
+  let citationScore = 0
   let score = 0
   if (text.trim().length > 0) {
     score += 5
     reasons.push('diagnosis report exists (+5)')
   } else {
     reasons.push('no diagnosis report under /app/agent-output/H15-locale-pack/')
-    return { score, reasons }
+
   }
   if (text.includes('bench-locale-pack')) {
     score += 5
@@ -157,19 +180,19 @@ function scoreDiagnosis(text) {
   } else {
     reasons.push('diagnosis does not name the plugin')
   }
-  if (text.includes('DSH-0.1.2-A1-10')) {
-    score += 3
-    reasons.push('diagnosis cites DSH-0.1.2-A1-10 (third-party language registration) (+3)')
+  if (citations.includes('DSH-0.1.2-A1-10')) {
+    citationScore += 3
+    reasons.push('diagnosis cites DSH-0.1.2-A1-10 (third-party language registration) (auxiliary +3)')
   } else {
     reasons.push('diagnosis does not cite DSH-0.1.2-A1-10')
   }
-  if (text.includes('DSH-0.1.2-A1-25')) {
-    score += 2
-    reasons.push('diagnosis cites DSH-0.1.2-A1-25 (client-runtime removal) (+2)')
+  if (citations.includes('DSH-0.1.2-A1-25')) {
+    citationScore += 2
+    reasons.push('diagnosis cites DSH-0.1.2-A1-25 (client-runtime removal) (auxiliary +2)')
   } else {
     reasons.push('diagnosis does not cite DSH-0.1.2-A1-25')
   }
-  return { score, reasons }
+  return { score, reasons, citationScore, citationMax: 5 }
 }
 
 /** Act 2: the native-API migration contract (patch removal + register form + inject/peers). */

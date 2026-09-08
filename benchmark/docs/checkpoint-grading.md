@@ -138,3 +138,22 @@ bucket defaults its ratio to 1.0, matching DeepSWE's own edge behavior.
 4. **Pin the trap states** — the baseline-mismatch verdict turns fixture drift into
    a hard failure; run it occasionally against main's tasks to keep every trap
    honest.
+
+### Auxiliary citation measurements (2026-09-08)
+
+H8 retains its original checkpoint weights as a 100-point ledger, but marks
+`cites-cards` as `auxiliary: true` and declares `primaryMax: 95`. Only the other
+95 points enter the primary composite. Their sum is normalized to 100; declared
+caps remain percentages (20 and 60), converted to the 95-point scale before
+checkpoint evaluation. Auxiliary checkpoints cannot impose caps or be required
+by primary checkpoints. Citation credit appears in `metrics.citation`, outside
+the primary `checkpoints` ledger and reward.
+
+M6–M12 and H14–H19 likewise normalize the original non-citation 95 points:
+diagnosis 10, static contract 50, runtime 25, release hygiene 10. Their existing
+percentage caps are applied after normalization. Each component and the original
+5-point citation metric are exposed separately. Card identifiers are removed
+before diagnosis scoring, including the report-presence check, so adding only
+card identifiers does not create report evidence. These diagnosis checks remain
+lexical naming/presence checks (plus M8's existing attribution phrase); this
+change does not establish semantic diagnosis correctness or new runtime coverage.

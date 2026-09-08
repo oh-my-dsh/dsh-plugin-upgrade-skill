@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs'
+import { isExcludedMaterialLink } from './material-links.mjs'
 import { readFile, readdir } from 'node:fs/promises'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -86,6 +87,7 @@ for (const file of markdownFiles) {
       const rel = relative(overlay.target, resolved)
       if (existsSync(resolve(overlay.base, rel))) continue
     }
+    if (await isExcludedMaterialLink({root, file, target})) continue
     fail(file, `broken relative link: ${match[1]}`)
   }
 }

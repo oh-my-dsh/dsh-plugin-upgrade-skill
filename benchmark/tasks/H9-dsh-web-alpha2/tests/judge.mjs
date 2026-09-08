@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H9 real-repository verifier. It grades the five compatibility surfaces documented by
 // dsh-web v0.3.9 without requiring byte-identical agent formatting. The Oracle remains an
 // exact upstream target and the target manifest constrains unrelated edits.
@@ -13,12 +14,12 @@ const TEST_ROOT = dirname(fileURLToPath(import.meta.url))
 const targetManifest = JSON.parse(readFileSync(join(TEST_ROOT, 'target-manifest.json'), 'utf8'))
 const allowedPaths = new Set(targetManifest.files.map((entry) => entry.path))
 
-main().catch((error) => emit(0, [`judge异常: ${error.stack || error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
   const changes = await changedPaths()
-  if (!changes.ok) emit(0, [`无法读取fixture基线: ${changes.detail}`])
+  if (!changes.ok) emitError(new Error(`fixture baseline unavailable: ${changes.detail}`))
   if (changes.paths.length === 0) emit(0, ['fixture相对v0.3.8基线无改动'])
 
   const unrelated = changes.paths.filter((path) => !allowedPaths.has(path))

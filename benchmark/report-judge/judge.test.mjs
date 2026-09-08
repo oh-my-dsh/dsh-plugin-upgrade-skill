@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process'
 import { apiConfig, auditCitations, callJudge, collectFiles, grade, JudgeError, scoreDecisions, sha256, SubmissionError, SYSTEM, writeResult } from './judge.mjs'
 import { makePacket, prepare, REPO } from './prepare.mjs'
 import { RUBRICS } from './rubrics.mjs'
-import { legacyScore, samples } from './calibrate.mjs'
+import { deterministicScore, parseDeterministicScore, calibrate, samples } from './calibrate.mjs'
 
 function sandbox(t) {
   const root = mkdtempSync(join(tmpdir(), 'report-judge-test-'))
@@ -221,12 +221,40 @@ test('generated standalone entry executes through symlinked paths (including mac
   assert.equal(JSON.parse(readFileSync(join(logs, 'details.json'))).status, 'scored')
 })
 
-test('calibration includes adversarial and alternative cases; legacy keyword exploit remains reproducible', () => {
+test('calibration uses the current deterministic grader and rejects keyword stuffing', () => {
   for (const task of Object.keys(RUBRICS)) {
     const cases = samples(task)
     assert.equal(cases.length, 7)
     const keywords = cases.find(c => c.id === 'keywords')
-    assert.equal(legacyScore(task, keywords.report), 100)
+    assert.ok(deterministicScore(task, keywords.report) <= 10)
     assert.equal(cases.find(c => c.id === 'historical-oracle').expected, null)
+  }
+})
+
+
+test('current deterministic calibration executes from a symlinked temporary root', t => {
+  const root = sandbox(t)
+  const physical = join(root, 'physical'); mkdirSync(physical)
+  const alias = join(root, 'alias'); symlinkSync(physical, alias)
+  assert.equal(deterministicScore('S1-static-scan', '', {tempRoot:alias}), 0)
+})
+test('deterministic calibration output errors remain evaluator failures', () => {
+  assert.equal(parseDeterministicScore('{"score":42,"max":100}', {task:'S1'}), 42)
+  for (const output of ['', 'not JSON', '{"status":"verifier_error","error":{"message":"gate unavailable"}}', '{"score":null,"max":100}', '{"score":101,"max":100}']) {
+    assert.throws(() => parseDeterministicScore(output, {task:'S1'}), /deterministic grader.*S1/i)
+  }
+  assert.throws(() => parseDeterministicScore('{"score":0,"max":100}', {task:'S1',exitCode:1}), /exited.*1/)
+  assert.throws(() => deterministicScore('../../unknown', ''), /unknown calibration task/)
+})
+test('offline calibration names current deterministic scores explicitly', async t => {
+  const out=join(sandbox(t),'offline')
+  const summary=await calibrate({out,onProgress:()=>{}})
+  assert.equal(summary.mode,'offline-deterministic-only')
+  assert.equal(summary.runs.length,28)
+  for (const run of summary.runs) {
+    assert.equal(typeof run.deterministic_score,'number')
+    assert.equal(Object.hasOwn(run,'legacy_score'),false)
+    assert.equal(run.llm_score,null)
+    if (run.sample === 'keywords') assert.ok(run.deterministic_score <= 10)
   }
 })

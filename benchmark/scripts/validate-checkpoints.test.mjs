@@ -2,7 +2,7 @@
 // minimal synthetic benchmark tree in mkdtemp; real benchmark files are never touched.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { validateCheckpoints, FAILURE_PREFIX } from './validate-checkpoints.mjs'
@@ -105,4 +105,34 @@ test('requires referencing a later checkpoint fails', () => {
   rmSync(root, { recursive: true, force: true })
   assert.equal(result.ok, false)
   assert.match(result.failures.join('\n'), /must reference an earlier checkpoint/)
+})
+
+for (const primaryMax of [95, 100]) {
+  test(`auxiliary citation points require correct declared primaryMax (${primaryMax})`, () => {
+    const root = buildTree([
+      { id: 'a-pass', type: 'pass', points: 95 },
+      { id: 'citation', type: 'report', points: 5, auxiliary: true },
+    ])
+    const path = join(root, 'benchmark/tasks/T1-sample/tests/checkpoints.json')
+    const manifest = JSON.parse(readFileSync(path, 'utf8'))
+    manifest.primaryMax = primaryMax
+    writeFileSync(path, JSON.stringify(manifest))
+    const result = validateCheckpoints(root)
+    rmSync(root, { recursive: true, force: true })
+    assert.equal(result.ok, primaryMax === 95, result.failures.join('\n'))
+  })
+}
+test('primary cap conditions cannot depend on auxiliary evidence', () => {
+  const root = buildTree([
+    { id: 'citation', type: 'report', points: 5, auxiliary: true },
+    { id: 'a-pass', type: 'pass', points: 95, cap: { total: 60, when: ['citation'] } },
+  ])
+  const path = join(root, 'benchmark/tasks/T1-sample/tests/checkpoints.json')
+  const manifest = JSON.parse(readFileSync(path, 'utf8'))
+  manifest.primaryMax = 95
+  writeFileSync(path, JSON.stringify(manifest))
+  const result = validateCheckpoints(root)
+  rmSync(root, { recursive: true, force: true })
+  assert.equal(result.ok, false)
+  assert.match(result.failures.join('\n'), /cap.when cannot reference auxiliary/)
 })

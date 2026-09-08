@@ -1,0 +1,965 @@
+
+> test
+> npm run validate && npm run test:report-negation && npm run test:release && npm run test:audit && npm run test:dsh:cases
+
+
+> validate
+> npm run check:verifier-copies && npm run test:grading-validity && node --test scripts/material-links.test.mjs && node scripts/validate.mjs && node scripts/validate-manifests.mjs && node benchmark/scripts/validate-task-registry.mjs && node benchmark/scripts/validate-execution-contract.mjs && node --test benchmark/scripts/validate-task-registry.test.mjs && node benchmark/scripts/validate-evaluation-snapshots.mjs && node --test benchmark/scripts/validate-evaluation-snapshots.test.mjs && npm run check:paper-benchmark && node --test paper/scripts/generate-benchmark-table.test.mjs && node benchmark/scripts/validate-checkpoints.mjs && node --test benchmark/scripts/validate-checkpoints.test.mjs && node --test benchmark/scripts/export-deepswe-report.test.mjs && node benchmark/scripts/validate-task-toml.mjs && node --test benchmark/scripts/validate-task-toml.test.mjs && npm run test:h11-judge && node --test benchmark/tasks/H12-remote-result-boundary-trap/tests/parse-sections.test.mjs && node --test benchmark/tasks/H20-session-events-ledger/tests/judge-utils.test.mjs && npm run test:h23-judge && node --test benchmark/tasks/H24-invalid-record-salvage-trap/tests/judge-utils.test.mjs && node --test benchmark/tasks/H25-session-seed-boundary-trap/tests/judge-utils.test.mjs && node benchmark/scripts/validate-temporal-holdout.mjs && node --test benchmark/scripts/validate-temporal-holdout.test.mjs && node --test benchmark/scripts/summarize-runs.test.mjs && node --test benchmark/scripts/audit-skill-activation.test.mjs && node --test skills/plugin-upgrade/scripts/inject-lint.test.mjs && node skills/plugin-upgrade/scripts/verify-runtime.check.mjs && npm run test:smoke && npm run test:s17-judge && npm run test:report-judge && npm run test:composition && npm run test:ci-tooling
+
+
+> check:verifier-copies
+> node benchmark/scripts/sync-verifiers.mjs --check
+
+
+> test:grading-validity
+> node --test benchmark/scripts/verifier-contract.test.mjs benchmark/scripts/harbor-reward-contract.test.mjs benchmark/scripts/judge-error-paths.test.mjs benchmark/scripts/practical-citation-independence.test.mjs benchmark/tasks/S1-static-scan/tests/report-grading.test.mjs benchmark/tasks/S2-negative-scan/tests/report-grading.test.mjs benchmark/tasks/S3-snapshot-migration/tests/report-grading.test.mjs benchmark/tasks/S4-legacy-client-imports/tests/report-grading.test.mjs benchmark/tasks/S6-corridor-net-state/tests/report-grading.test.mjs benchmark/scripts/profile-creation.test.mjs
+
+✔ M5-token-auth-smoke: structured evidence cannot shadow Harbor's scalar reward (296.609375ms)
+✔ H8-fire-drill: structured evidence cannot shadow Harbor's scalar reward (286.485958ms)
+✔ S8-release-routing-trap: unavailable git baseline is evaluator error, not zero score (68.48375ms)
+✔ S17-external-ui-plugin-onboarding-trap: unavailable git baseline is evaluator error, not zero score (79.71875ms)
+✔ H9-dsh-web-alpha2: unavailable git baseline is evaluator error, not zero score (512.385708ms)
+✔ H13: absent provision is evaluator error (71.996291ms)
+✔ H23: missing protected verifier baseline is evaluator error (85.821833ms)
+✔ S8-release-routing-trap: valid empty/untouched candidate remains scored zero (85.780417ms)
+✔ S17-external-ui-plugin-onboarding-trap: valid empty/untouched candidate remains scored zero (89.941583ms)
+✔ M1-host-migration: valid empty/untouched candidate remains scored zero (82.162625ms)
+✔ M5: baseline restore prerequisite failure never becomes a candidate zero (63.1635ms)
+✔ M5: profile creation prerequisite failure never becomes a candidate zero (62.741625ms)
+✔ H14-mineru-api: real diagnosis scorer ignores oracle card deletion and insertion (4.342208ms)
+✔ H15-locale-pack: real diagnosis scorer ignores oracle card deletion and insertion (3.021666ms)
+✔ H16-history-dock: real diagnosis scorer ignores oracle card deletion and insertion (2.190042ms)
+✔ H17-merge-calls: real diagnosis scorer ignores oracle card deletion and insertion (1.6315ms)
+✔ H18-blame-bubbles: real diagnosis scorer ignores oracle card deletion and insertion (1.618958ms)
+✔ H19-workspace-ya: real diagnosis scorer ignores oracle card deletion and insertion (1.83275ms)
+✔ M10-tools-tree: real diagnosis scorer ignores oracle card deletion and insertion (1.09375ms)
+✔ M11-sidebar-spur: real diagnosis scorer ignores oracle card deletion and insertion (0.896584ms)
+✔ M12-interpreters-card: real diagnosis scorer ignores oracle card deletion and insertion (2.093959ms)
+✔ M6-sleep-tool: real diagnosis scorer ignores oracle card deletion and insertion (1.930458ms)
+✔ M7-d399-overlay: real diagnosis scorer ignores oracle card deletion and insertion (1.053791ms)
+✔ M8-brand-text: real diagnosis scorer ignores oracle card deletion and insertion (1.679291ms)
+✔ M9-mcpanel: real diagnosis scorer ignores oracle card deletion and insertion (1.657083ms)
+✔ H14-mineru-api: composite preserves non-citation components and percent caps (0.245375ms)
+✔ H15-locale-pack: composite preserves non-citation components and percent caps (0.106041ms)
+✔ H16-history-dock: composite preserves non-citation components and percent caps (0.1035ms)
+✔ H17-merge-calls: composite preserves non-citation components and percent caps (0.094ms)
+✔ H18-blame-bubbles: composite preserves non-citation components and percent caps (0.088708ms)
+✔ H19-workspace-ya: composite preserves non-citation components and percent caps (0.098375ms)
+✔ M10-tools-tree: composite preserves non-citation components and percent caps (0.086708ms)
+✔ M11-sidebar-spur: composite preserves non-citation components and percent caps (0.090166ms)
+✔ M12-interpreters-card: composite preserves non-citation components and percent caps (0.087458ms)
+✔ M6-sleep-tool: composite preserves non-citation components and percent caps (0.098417ms)
+✔ M7-d399-overlay: composite preserves non-citation components and percent caps (0.09025ms)
+✔ M8-brand-text: composite preserves non-citation components and percent caps (0.096167ms)
+✔ M9-mcpanel: composite preserves non-citation components and percent caps (0.082875ms)
+✔ H8: citation checkpoint changes auxiliary metric only, with percentage caps (1.682208ms)
+✔ H1-plane-trap: profile setup errors throw, successful setup remains valid (148.958541ms)
+✔ H10-browser-activation-trap: profile setup errors throw, successful setup remains valid (7.356166ms)
+✔ H12-remote-result-boundary-trap: profile setup errors throw, successful setup remains valid (132.837833ms)
+✔ H14-mineru-api: profile setup errors throw, successful setup remains valid (125.78875ms)
+✔ H15-locale-pack: profile setup errors throw, successful setup remains valid (124.043ms)
+✔ H16-history-dock: profile setup errors throw, successful setup remains valid (82.429875ms)
+✔ H17-merge-calls: profile setup errors throw, successful setup remains valid (70.70925ms)
+✔ H18-blame-bubbles: profile setup errors throw, successful setup remains valid (71.226834ms)
+✔ H19-workspace-ya: profile setup errors throw, successful setup remains valid (70.091458ms)
+✔ H2-baseline-trap: profile setup errors throw, successful setup remains valid (65.6135ms)
+✔ H3-client-plane: profile setup errors throw, successful setup remains valid (65.153833ms)
+✔ H4-tsbuildinfo-trap: profile setup errors throw, successful setup remains valid (66.081875ms)
+✔ H5-runtime-export-drift: profile setup errors throw, successful setup remains valid (65.659167ms)
+✔ H6-remote-error-trap: profile setup errors throw, successful setup remains valid (64.49675ms)
+✔ H7-locale-trap: profile setup errors throw, successful setup remains valid (64.580375ms)
+✔ H8-fire-drill: profile setup errors throw, successful setup remains valid (62.080834ms)
+✔ M1-host-migration: profile setup errors throw, successful setup remains valid (61.155291ms)
+✔ M10-tools-tree: profile setup errors throw, successful setup remains valid (62.553833ms)
+✔ M11-sidebar-spur: profile setup errors throw, successful setup remains valid (61.851709ms)
+✔ M12-interpreters-card: profile setup errors throw, successful setup remains valid (61.997584ms)
+✔ M13-repository-plugins-removal: profile setup errors throw, successful setup remains valid (61.754292ms)
+✔ M14-service-renames-0812: profile setup errors throw, successful setup remains valid (60.813667ms)
+✔ M2-optional-dep-trap: profile setup errors throw, successful setup remains valid (60.944583ms)
+✔ M3-session-projection: profile setup errors throw, successful setup remains valid (61.403584ms)
+✔ M4-peer-prerelease-range: profile setup errors throw, successful setup remains valid (61.534083ms)
+✔ M5-token-auth-smoke: profile setup errors throw, successful setup remains valid (60.622208ms)
+✔ M6-sleep-tool: profile setup errors throw, successful setup remains valid (61.779167ms)
+✔ M7-d399-overlay: profile setup errors throw, successful setup remains valid (60.985375ms)
+✔ M8-brand-text: profile setup errors throw, successful setup remains valid (61.502333ms)
+✔ M9-mcpanel: profile setup errors throw, successful setup remains valid (61.393ms)
+✔ S1-static-scan: profile setup errors throw, successful setup remains valid (60.930875ms)
+✔ S10-paste-rename-and-version-chip: profile setup errors throw, successful setup remains valid (60.0735ms)
+✔ S11-mermaid-lazyload-trap: profile setup errors throw, successful setup remains valid (61.080958ms)
+✔ S12-global-upgrade-ebusy-trap: profile setup errors throw, successful setup remains valid (62.201125ms)
+✔ S13-peer-range-vs-runtime: profile setup errors throw, successful setup remains valid (62.034292ms)
+✔ S14-link-install-lock-trap: profile setup errors throw, successful setup remains valid (61.039917ms)
+✔ S15-slot-error-boundary-crash: profile setup errors throw, successful setup remains valid (60.845917ms)
+✔ S16-self-host-upgrade-trap: profile setup errors throw, successful setup remains valid (60.583167ms)
+✔ S17-external-ui-plugin-onboarding-trap: profile setup errors throw, successful setup remains valid (61.029834ms)
+✔ S2-negative-scan: profile setup errors throw, successful setup remains valid (59.593125ms)
+✔ S3-snapshot-migration: profile setup errors throw, successful setup remains valid (60.489959ms)
+✔ S4-legacy-client-imports: profile setup errors throw, successful setup remains valid (60.6405ms)
+✔ S5-negative-naming: profile setup errors throw, successful setup remains valid (60.194208ms)
+✔ S6-corridor-net-state: profile setup errors throw, successful setup remains valid (60.9405ms)
+✔ S7-unpublished-cohort: profile setup errors throw, successful setup remains valid (60.564875ms)
+✔ S8-release-routing-trap: profile setup errors throw, successful setup remains valid (61.098625ms)
+✔ S9-composer-coordinate-trap: profile setup errors throw, successful setup remains valid (60.295625ms)
+✔ verifier rejects judge exit without reward (112.468959ms)
+✔ verifier rejects missing JSON without reward (114.813459ms)
+✔ verifier rejects malformed last packet without reward (98.466958ms)
+✔ verifier rejects trailing stdout log without reward (88.678917ms)
+✔ verifier rejects NaN without reward (97.832208ms)
+✔ verifier rejects Infinity without reward (68.757167ms)
+✔ verifier rejects invalid score null without reward (65.897125ms)
+✔ verifier rejects invalid score 0 without reward (64.584458ms)
+✔ verifier rejects invalid score -1 without reward (65.132334ms)
+✔ verifier rejects invalid score 101 without reward (63.226667ms)
+✔ verifier rejects invalid max undefined without reward (62.52725ms)
+✔ verifier rejects invalid max null without reward (61.815458ms)
+✔ verifier rejects invalid max 0 without reward (63.377417ms)
+✔ verifier rejects invalid max -1 without reward (62.027125ms)
+✔ verifier rejects invalid max 100 without reward (62.259ms)
+✔ verifier rejects infinite max without reward (60.877083ms)
+✔ verifier rejects malformed reasons without reward (61.455417ms)
+✔ verifier rejects legacy judge error without reward (59.689708ms)
+✔ verifier rejects explicit error without reward (58.802875ms)
+✔ valid zero remains zero:  (60.95375ms)
+✔ valid zero remains zero: no report (61.865ms)
+✔ valid zero remains zero: fixture unchanged (59.694958ms)
+✔ valid zero remains zero: candidate runtime failed (60.013416ms)
+✔ normalizes by declared max and tolerates preceding logs and stderr (63.570791ms)
+✔ all 56 standalone wrappers and helper copies match the source (5.171917ms)
+✔ emitError exits nonzero and ordinary emit preserves metadata (121.725458ms)
+✔ emit preserves fractional scores and rejects invalid values (304.434041ms)
+✔ unavailable fixture baseline fails explicitly for generic and H21 helpers (128.889709ms)
+✔ emit terminates immediately before subsequent judge code (62.002958ms)
+✔ emitError terminates immediately before subsequent judge code (62.508375ms)
+✔ every task wrapper executes independently for valid zero and judge failure (6271.94125ms)
+✔ emit does not default an explicitly invalid max to 100 (345.7555ms)
+✔ card list alone earns no diagnostic credit (46.607916ms)
+✔ removing all card IDs preserves full diagnosis credit (44.419166ms)
+✔ independent English diagnosis earns full credit without cards (89.837125ms)
+✔ independent Chinese diagnosis earns full credit without cards (105.182833ms)
+✔ empty and disconnected keyword lists earn zero (92.678125ms)
+✔ affirmative wrong migration loses credit, rejecting it does not (88.72375ms)
+✔ pure rubric agrees with judge and exposes bounded criterion evidence (44.656084ms)
+✔ a denied loopback authentication requirement earns no channel credit (0.478666ms)
+✔ card list alone earns no diagnostic credit (42.201791ms)
+✔ removing all card IDs preserves full diagnosis credit (40.696333ms)
+✔ independent English diagnosis earns full credit without cards (76.652833ms)
+✔ independent Chinese diagnosis earns full credit without cards (93.830958ms)
+✔ empty and disconnected keyword lists earn zero (86.3945ms)
+✔ affirmative wrong migration loses credit, rejecting it does not (92.201792ms)
+✔ pure rubric agrees with judge and exposes bounded criterion evidence (53.093417ms)
+✔ card list alone earns no diagnostic credit (50.5645ms)
+✔ removing all card IDs preserves full diagnosis credit (44.425625ms)
+✔ independent English diagnosis earns full credit without cards (91.618625ms)
+✔ independent Chinese diagnosis earns full credit without cards (83.873542ms)
+✔ empty and disconnected keyword lists earn zero (87.781708ms)
+✔ affirmative wrong migration loses credit, rejecting it does not (87.19925ms)
+✔ pure rubric agrees with judge and exposes bounded criterion evidence (48.349167ms)
+✔ card list alone earns no diagnostic credit (50.613209ms)
+✔ removing all card IDs preserves full diagnosis credit (37.235584ms)
+✔ independent English diagnosis earns full credit without cards (82.723125ms)
+✔ independent Chinese diagnosis earns full credit without cards (93.007917ms)
+✔ empty and disconnected keyword lists earn zero (88.892208ms)
+✔ affirmative wrong migration loses credit, rejecting it does not (84.328ms)
+✔ pure rubric agrees with judge and exposes bounded criterion evidence (50.314459ms)
+✔ negating the removed runtime diagnosis cannot borrow another paragraph removal (40.9325ms)
+✔ card list alone earns no diagnostic credit (48.706917ms)
+✔ removing all card IDs preserves full diagnosis credit (47.745625ms)
+✔ independent English diagnosis earns full credit without cards (81.174042ms)
+✔ independent Chinese diagnosis earns full credit without cards (88.030292ms)
+✔ empty and disconnected keyword lists earn zero (90.448792ms)
+✔ affirmative wrong migration loses credit, rejecting it does not (81.239583ms)
+✔ pure rubric agrees with judge and exposes bounded criterion evidence (38.781125ms)
+✔ reversed version history earns no corridor credit (0.451292ms)
+✔ denied version history earns no corridor credit (0.456334ms)
+✔ unrelated negations do not shield affirmative defense advice (120.605292ms)
+✔ explicit coordinated prohibitions retain their local negation (117.522333ms)
+ℹ tests 159
+ℹ suites 0
+ℹ pass 159
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9073.843333
+✔ allows archived excluded links in byte-identical manifested C and D references (6.797291ms)
+✔ rejects arbitrary broken links and non-condition documents (2.847417ms)
+✔ rejects runtime or archive content drift even if both copies drift together (3.093083ms)
+✔ rejects missing archive target and manifest exclusion drift (2.934834ms)
+✔ rejects lexical traversal and archive target symlink escape (2.913417ms)
+✔ allows directory links only when the archived directory has excluded manifest descendants (2.736334ms)
+✔ rejects archive target content drift and unreadable provenance (3.067584ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61.500542
+Validation OK: 9 skill, 10 card sets, 66 cards, 810 Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only migration and workflow planners, offline ghost-host classifier, offline naming validator, read-only registry v2 query
+Manifest validation passed: 4 manifests, version 0.1.0-alpha.2
+skills: dsh-benchmark-case, dsh-upgrade-audit, plugin-heavy-dep, plugin-release, plugin-runtime-debug, plugin-test, plugin-upgrade, plugin-workflow, plugin-write
+[task-registry] OK: 56 tasks, README/scoring registry consistent
+Execution-contract validation OK: 56 tasks use BENCHMARK-AUTH-v1
+✔ clean registry passes (2.563333ms)
+✔ stray validation report in benchmark/ root fails (1.736125ms)
+✔ validation report inside benchmark/results/ is accepted (1.693166ms)
+✔ stale README top task count fails with declared/actual (1.782167ms)
+✔ stale authorization count fails (1.478833ms)
+✔ stale "# all N tasks" count fails (1.500834ms)
+✔ stale "existing N tasks" count fails (1.553666ms)
+✔ task missing from the README table fails (1.544333ms)
+✔ unknown task in the README table fails (1.593167ms)
+✔ duplicate task in the README table fails (1.577625ms)
+✔ task missing from the scoring table fails (1.507709ms)
+✔ unknown task in the scoring table fails (1.473791ms)
+✔ wrong scoring total fails with declared/expected (1.383459ms)
+✔ instruction.md missing the BENCHMARK-AUTH-v1 marker fails (1.414083ms)
+✔ written/hands-on split mismatch fails (1.345917ms)
+✔ task directory missing instruction.md fails the inventory check (1.20625ms)
+✔ unknown Type value in the README table fails (1.499166ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65.727625
+[evaluation-snapshot] OK: 2 snapshot(s) valid
+✔ valid snapshot passes (132.563417ms)
+✔ invalid JSON fails (83.402833ms)
+✔ filename/id mismatch fails (129.620083ms)
+✔ malformed createdAt fails (129.329625ms)
+✔ createdAt not matching the id date prefix fails (129.817334ms)
+✔ short benchmark SHA fails (96.664417ms)
+✔ short skill SHA fails (115.295541ms)
+✔ taskCount mismatch fails (128.126833ms)
+✔ duplicate task IDs fail (129.09025ms)
+✔ invalid task ID format fails (103.430459ms)
+✔ task missing at the snapshot commit fails (129.603792ms)
+✔ task without instruction.md at the snapshot commit fails (131.840333ms)
+✔ missing skill path at the skill commit fails (132.0975ms)
+✔ skill missing entirely at the skill commit fails (129.4095ms)
+✔ unresolvable benchmark commit gives an actionable fetch message (96.541208ms)
+✔ unresolvable skill commit gives an actionable fetch message (121.579917ms)
+✔ invalid runsPerTask fails (266.857792ms)
+✔ empty conditions fail (128.241166ms)
+✔ duplicate conditions fail (128.83975ms)
+✔ unsupported aggregation fails (129.632333ms)
+✔ non-string notes fail (128.829792ms)
+✔ wrong repository fails (127.939333ms)
+✔ KEY: a snapshot pinned to commit A stays valid while the working tree sits at a later commit B (128.596375ms)
+✔ KEY: a task that only exists at the later commit fails when the snapshot points to the earlier commit (141.118792ms)
+✔ a snapshot pinned to the later commit passes and includes the new task (144.857ms)
+✔ a snapshot against a non-commit object id fails as unresolved (102.088041ms)
+✔ snapshots directory without any manifests fails (82.077667ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3466.816625
+
+> check:paper-benchmark
+> node paper/scripts/generate-benchmark-table.mjs benchmark/snapshots/2026-09-01-main-23.json --check
+
+paper benchmark metadata is up to date (snapshot 2026-09-01-main-23, 23 tasks)
+out of date: paper/generated/benchmark-metadata.tex
+Run: npm run generate:paper-benchmark
+✔ escapeLatex escapes LaTeX specials and transliterates unicode (0.435125ms)
+✔ generates frozen metadata at HEAD=B and ignores the current checkout (165.145834ms)
+✔ repeated generation is byte-identical (211.384917ms)
+✔ valid snapshot renders the expected macros (182.857167ms)
+✔ H-prefixed Static task is counted Static, never inferred Hands-on/Hybrid (169.179709ms)
+✔ snapshot task order is preserved in the table (not README order) (131.033375ms)
+✔ condition order is preserved (157.98525ms)
+✔ generated TeX is brace-balanced and starts with the AUTO-GENERATED banner (158.38425ms)
+✔ description special characters are escaped in the table (117.006041ms)
+✔ snapshot id and aggregation are escaped by the macro renderer (158.346958ms)
+✔ taskCount mismatch fails (166.611541ms)
+✔ duplicate task ID fails (156.459375ms)
+✔ referenced benchmark commit missing locally fails (118.903167ms)
+✔ task absent at the pinned commit fails even when it exists at HEAD (164.530791ms)
+✔ task row missing from the pinned README fails (131.0665ms)
+✔ duplicate README row fails (117.355417ms)
+✔ unknown registry Type fails (116.745792ms)
+✔ task ID prefix outside S/M/H fails (117.703833ms)
+✔ missing README task table at the pinned commit fails (117.024125ms)
+✔ loadPinnedBenchmarkTable reads git objects only (never the working tree) (164.639792ms)
+✔ CLI writes the two generated files and --check passes; drift fails --check (372.155542ms)
+✔ real frozen snapshot 2026-09-01-main-23 generates the documented metadata (328.069167ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3564.239791
+[checkpoints] OK: 2 checkpoint manifest(s) valid
+✔ valid manifest passes (1.886875ms)
+✔ tasks without a manifest are unaffected (1.605584ms)
+✔ points not summing to 100 fails (1.414542ms)
+✔ unknown checkpoint type fails (1.287083ms)
+✔ uncited card fails (1.41425ms)
+✔ cited card passes (1.23025ms)
+✔ checkpoint not implemented in judge.mjs fails (1.343875ms)
+✔ requires referencing a later checkpoint fails (1.444042ms)
+✔ auxiliary citation points require correct declared primaryMax (95) (1.333833ms)
+✔ auxiliary citation points require correct declared primaryMax (100) (1.262958ms)
+✔ primary cap conditions cannot depend on auxiliary evidence (1.203125ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.201042
+✔ full pass maps to binary reward 1 with all buckets passed (0.8415ms)
+✔ partial state maps to binary reward 0 with the graded score preserved (0.070375ms)
+✔ an empty p2p bucket defaults the p2p ratio to 1.0 (0.055042ms)
+✔ an empty ledger maps to zeroed buckets, not division errors (0.048583ms)
+✔ report and pass checkpoints are bucketed as f2p (0.06075ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37.491792
+Task-toml string-syntax validation OK: 56 task.toml files scanned
+✔ H7 regression: the shipped broken description fails, the #105 fix passes (0.935833ms)
+✔ all valid TOML 1.0 escapes are accepted (0.088917ms)
+✔ TOML 1.1-only escapes are rejected (Harbor parses with tomllib / TOML 1.0) (0.0595ms)
+✔ malformed hex escapes are reported (0.043583ms)
+✔ literal strings and comments never produce escape failures (0.042292ms)
+✔ multiline basic strings allow line-ending backslash but not bad escapes (0.064542ms)
+✔ unterminated single-line strings are reported with the opening line (0.039125ms)
+✔ the real benchmark/tasks tree passes clean (2.586ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40.790542
+
+> test:h11-judge
+> node --test benchmark/tasks/H11-dual-cohort-rpc/tests/judge-utils.test.mjs
+
+✔ channel comparison is order independent but still rejects duplicates (0.695542ms)
+✔ authority policy is matched by channel rather than as an ordered vector or multiset (0.075125ms)
+✔ branch scan covers nested source helpers and ignores explanatory comments (3.625458ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39.164583
+✔ ### sub-heading does not end the enclosing canonical section (0.446458ms)
+✔ #### sub-heading does not end the enclosing canonical section (0.058416ms)
+✔ the next ## canonical heading switches the section (0.067208ms)
+✔ an unrecognized ## heading switches to an unscored block deterministically (0.057209ms)
+✔ # level-1 heading does not end the enclosing section (0.058459ms)
+✔ a canonical heading spelled in Chinese alias switches sections (0.086084ms)
+✔ catchBodies matches nested blocks and honors rethrow-after-nested-block (0.15425ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38.674792
+✔ stripComments removes line and block comments but keeps strings (0.420167ms)
+✔ extractNamedFunctions handles function declarations and arrow consts (0.510541ms)
+✔ extractNamedFunctions captures inline arrow expressions (0.091416ms)
+✔ scanForbidden flags each trap form and nothing else (0.711917ms)
+✔ scanForbidden: console.log is not private access; own/snapshot APIs are not stale (0.069542ms)
+✔ scanForbidden: bracket field access and destructure count as stale/private (0.061667ms)
+✔ scoreCanonical: oracle earns full 15, alternatives earn 2s, traps earn 0s (0.446208ms)
+✔ scoreHygiene subtracts 3 per trap form (0.051791ms)
+✔ capFor picks the smallest triggered cap (0.058583ms)
+✔ control 1: untouched old fixture scores 0 behaviorally and carries stale+index flags (0.116083ms)
+✔ control 2: stale session.events read caps at 30 (0.06975ms)
+✔ control 3: invented getEvents() caps at 15 (0.056042ms)
+✔ control 4: ownEvents semantic misuse lands in 0.4–0.7 (0.047458ms)
+✔ control 5: seq-as-array-index caps at 70 (0.039958ms)
+✔ control 6: off-by-one window lands in 0.5–0.8 (0.0715ms)
+✔ control 7: internal/private workaround caps at 60 (0.065708ms)
+✔ control 8: oracle scores 100 (0.04175ms)
+✔ control 9: honest alternative implementation stays near-perfect (0.039333ms)
+✔ control 10: comments naming trap APIs do not penalize correct code (0.038709ms)
+✔ assembleScore clamps to 0..100 and reports reasons (0.079084ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40.894875
+
+> test:h23-judge
+> npm ci --prefix benchmark/tasks/H23-storage-domain-version-compat-trap/environment/fixture --ignore-scripts --no-audit --no-fund && node --test benchmark/tasks/H23-storage-domain-version-compat-trap/tests/judge-utils.test.mjs benchmark/tasks/H23-storage-domain-version-compat-trap/tests/judge.test.mjs
+
+
+added 9 packages in 273ms
+✔ dependency scan only flags alpha.4 in dependency values (0.525125ms)
+✔ compatibility validation uses actual values and the declared current version (0.090459ms)
+✔ runtime dependency contract fails closed for incomplete or invalid manifests (2.486625ms)
+✔ honest schema preserves valid records with optional pinned (0.225041ms)
+✔ schema probes reject any/unknown, missing fields, coercion, and record transforms (1.314625ms)
+✔ schema probes fail closed when parsing throws (0.061958ms)
+✔ migration points require an inspected schema even when module loading fails (0.054541ms)
+✔ score assembly awards the oracle 100 and caps schema bypasses at 70 (0.287166ms)
+✔ score assembly caps downgrades and pins at 20, invalid declarations at 30 (0.586791ms)
+✔ backup-and-skip cap uses the evaluated policy and compatibility declaration (0.435875ms)
+✔ capFor picks the smallest cap; clean runtime contracts have no cap (0.056541ms)
+✔ hygiene and score reasons are deterministic (0.488458ms)
+✔ oracle earns 100 against the real runtime (228.714875ms)
+✔ constant compatibility version earns 100 against the real runtime (167.948416ms)
+✔ computed compatibility version earns 100 against the real runtime (160.887667ms)
+✔ spread compatibility version earns 100 against the real runtime (164.218459ms)
+✔ removing id loses record-preservation points (158.23ms)
+✔ removing title loses record-preservation points (159.179292ms)
+✔ removing pinned loses record-preservation points (168.377042ms)
+✔ direct any cannot earn more than 70 (164.194459ms)
+✔ aliased any cannot earn more than 70 (167.063041ms)
+✔ imported any cannot earn more than 70 (164.399583ms)
+✔ aliased unknown cannot earn more than 70 (164.330167ms)
+✔ untouched retains its negative control (74.389625ms)
+✔ comment-only migration retains its negative control (152.387625ms)
+✔ version downgrade retains its negative control (161.45925ms)
+✔ backup-and-skip without compatibility retains its negative control (155.563708ms)
+✔ invalid current-version compatibility retains its negative control (133.219833ms)
+✔ invalid negative compatibility retains its negative control (127.460167ms)
+✔ alpha.4 dependency pin remains capped at 20 (167.623125ms)
+✔ editing sealed data/migration_summaries/summaries/A.json remains a flat zero (71.205291ms)
+✔ editing sealed node_modules/zod/index.js remains a flat zero (71.515083ms)
+✔ deleting a persisted record remains a flat zero (71.42875ms)
+✔ delete a foreign record at import is a flat zero (105.811667ms)
+✔ rewrite old stamps at import instead of declaring compatibility is a flat zero (124.925875ms)
+✔ patch an installed package at import is a flat zero (106.830916ms)
+✔ add a persisted record at import is a flat zero (110.850875ms)
+✔ delete during initial schema parsing is a flat zero (132.438917ms)
+✔ delete then throw during schema parsing is a flat zero (129.12925ms)
+✔ change the judge-written record on reopen is a flat zero (156.92075ms)
+✔ delete during final schema probes is a flat zero (159.322ms)
+✔ unavailable verifier baseline (null) fails closed (53.709333ms)
+✔ unavailable verifier baseline () fails closed (51.808208ms)
+✔ unavailable verifier baseline (not-a-sha) fails closed (55.197125ms)
+✔ unavailable verifier baseline (0000000000000000000000000000000000000000) fails closed (60.576833ms)
+✔ committed data deletion cannot reset the baseline (workspace anchor: false) (85.102208ms)
+✔ committed data deletion cannot reset the baseline (workspace anchor: true) (90.080166ms)
+✔ all runtime dependencies deleted cannot hide behind installed node_modules (157.80275ms)
+✔ required dependency deleted cannot hide behind installed node_modules (158.776584ms)
+✔ required dependency changed cannot hide behind installed node_modules (155.9735ms)
+✔ target version loosened cannot hide behind installed node_modules (158.220416ms)
+✔ runtime dependencies moved to devDependencies cannot hide behind installed node_modules (172.720334ms)
+✔ manifest description edits preserve the full score (162.094917ms)
+✔ candidate cannot remove dependencies after the manifest was inspected (96.34825ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6189.392583
+✔ stripComments removes line and block comments but keeps strings (0.452292ms)
+✔ scanSpecSource detects the policy, z.any, compat confusion, version (0.22325ms)
+✔ scanSrcForCatch detects a catch around the open (0.076583ms)
+✔ scanPackageJson detects the alpha.4 pin in dependency values only (0.095375ms)
+✔ scoreMigration: oracle 20, untouched 10, z.any 5, compat confusion 10 (0.104833ms)
+✔ control 12: oracle scores 100 (0.147125ms)
+✔ control 1: untouched (open still rejects) scores low — judge gate flattens to 0 (0.051791ms)
+✔ control 4: catch-and-empty caps at 30 (0.050417ms)
+✔ control 5: z.any schema caps at 40 (0.056167ms)
+✔ control 6: field-level schema loosening caps at 60 (0.400375ms)
+✔ control 7: backup deleted after salvage caps at 60 (0.071416ms)
+✔ control 8: manual backup without the runtime contract caps at 50 (0.050167ms)
+✔ control 9: policy globalized outside the domain spec caps at 70 (0.056917ms)
+✔ control 2: deleting the corrupt record with no salvage and no backup caps at 30 (0.046166ms)
+✔ control 13: compatibleVersions confusion does not fix schema failure (0.054375ms)
+✔ control 11: keyword/comment mention without the policy keeps the failure (0.054625ms)
+✔ control 3: alpha.4 pin caps at 20 (0.050292ms)
+✔ spec load failure caps at 30 (0.035958ms)
+✔ capFor picks the smallest triggered cap and null when clean (0.052333ms)
+✔ scoreHygiene subtracts for the alpha.4 pin only (0.023208ms)
+✔ assembleScore is byte-deterministic and reports reasons (0.320542ms)
+✔ backup filename glob accepts the runtime timestamp shape only (0.055417ms)
+✔ sealed-file gates: authoritative source / healthy records / data edits are flat 0 via judge gates (0.020667ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40.203791
+✔ stripComments removes line and block comments but keeps strings (0.431916ms)
+✔ extractNamedFunctions handles function declarations and arrow consts (0.34575ms)
+✔ scanSource detects stale seedLength, casts, brand placement, resume traps (0.254333ms)
+✔ scanPackageJson detects the alpha.3 pin in dependency values only (0.090917ms)
+✔ scoreMigration: oracle 25, untouched 0, swapped 15 (0.403708ms)
+✔ control 15: oracle scores 100 (0.188458ms)
+✔ control 1: untouched scores 0 (judge gates flat 0; assembler alone stays low) (0.087791ms)
+✔ control 14 (fresh-only): resume using the current log length caps at 65 (0.050292ms)
+✔ control 3/4: unsafe as-cast bypass caps at 30 (casts) / 40 (constructors bypassed) (0.0705ms)
+✔ control 5/6: swapped brand usage caps at 60 (0.076875ms)
+✔ control 13: alpha.3 dependency pin caps at 20 (0.072667ms)
+✔ control 11: stale seedLength kept caps at 70 (0.059958ms)
+✔ control 9: isSeeded true without the inherited count caps at 40 (0.044208ms)
+✔ control 10: inherited count without isSeeded caps at 40 (0.043959ms)
+✔ control 12: module load failure caps at 30 (0.1045ms)
+✔ capFor picks the smallest triggered cap and null when clean (0.08775ms)
+✔ scoreHygiene subtracts for the alpha.3 pin only (0.0285ms)
+✔ assembleScore is byte-deterministic and reports reasons (0.341709ms)
+✔ keyword/comment mention without real migration keeps the failure (0.054583ms)
+✔ sealed-file gates: node_modules/host edits are flat 0 via judge gates (0.022875ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.048583
+[temporal-holdout] OK: temporal-holdout-v1 valid — 52 candidates audited, 10 clean-holdout primary tasks at inventory commit d4f7e8c229bf
+✔ clean holdout definition validates end-to-end (393.960459ms)
+✔ task after freeze but with only pre-freeze card knowledge cannot be clean (373.464208ms)
+✔ clean candidate with equivalent frozen knowledge recorded present fails (370.353917ms)
+✔ clean candidate with a core card relativeToFreeze before fails (405.243208ms)
+✔ mixed multi-card task is allowed but requires exclusionReason (561.0385ms)
+✔ card first-commit detection: wrong firstCommit fails (367.793958ms)
+✔ card first-commit detection: card already present at parent fails (380.922167ms)
+✔ commit date mismatch fails (366.605166ms)
+✔ duplicate candidate fails (369.315625ms)
+✔ duplicate primary task fails (366.702583ms)
+✔ clean task missing rationale fails (366.599084ms)
+✔ excluded task missing reason fails (368.277583ms)
+✔ primary list including a mixed task fails (364.229834ms)
+✔ primary list omitting a clean task fails (375.843792ms)
+✔ post-freeze task omitted from the candidate universe fails (no silent omission) (439.622625ms)
+✔ task added after candidateInventoryCommit is ignored by the pinned universe (415.8585ms)
+✔ renumbered task identity (historicalTaskId) validates (390.40875ms)
+✔ missing freeze git object fails (179.176417ms)
+✔ missing candidateInventoryCommit fails (188.270583ms)
+✔ validation output is deterministic across repeated runs (561.314ms)
+✔ living main advancing does not mutate the pinned v1 universe (426.093625ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8071.053625
+✔ single result / single group summarizes correctly (1.202958ms)
+✔ two result files merge into one group (0.479292ms)
+✔ same task 3 runs aggregates with a correct median (0.79325ms)
+✔ even-length median averages the two middle values (0.052708ms)
+✔ reward 0 is scored, not treated as missing (0.27775ms)
+✔ perfect trials are counted (0.547417ms)
+✔ no-reward trial is an anomaly and never scored as 0 (0.435958ms)
+✔ scored trial with an execution exception keeps its reward and is flagged (0.295459ms)
+✔ reward below 0 fails loudly (0.443291ms)
+✔ reward above 1 fails loudly (0.341083ms)
+✔ malformed JSON fails with an actionable message (0.316667ms)
+✔ unsupported schema fails with an actionable message (0.328042ms)
+✔ the same input file listed twice is a hard error (0.3065ms)
+✔ the same trial id loaded from two different files is a hard error (0.456416ms)
+✔ two groups produce a paired comparison with deltas (0.790667ms)
+✔ a task present in only one group is excluded from deltas and listed as an anomaly (0.545875ms)
+✔ improvement/tie/regression counts are computed from deltas (0.791ms)
+✔ JSON output is deterministic and contains raw numbers (0.675083ms)
+✔ Markdown output is deterministic and lists the anomalies section (0.439583ms)
+✔ no groups at all is a hard error (0.064458ms)
+✔ job-level result.json expands into per-trial records from reward_stats (0.395666ms)
+✔ job-level cancelled trial count is reported as an anomaly (0.2675ms)
+✔ job-level exception without a reward is an anomaly (0.307791ms)
+✔ normalizeFile on a trial-level object yields one record with normalized task id (0.042875ms)
+✔ loadResultFile throws for a missing path (0.046333ms)
+✔ multiple reward keys without a canonical reward key fail loudly (0.305458ms)
+✔ empty rewards object fails loudly (0.274042ms)
+✔ a single non-canonical numeric reward key is still accepted (kept compatibility) (0.266458ms)
+✔ non-object eval entry in job-level stats fails loudly (0.369541ms)
+✔ non-array trial names in reward_stats fail loudly (0.314709ms)
+✔ non-object reward_stats entries fail loudly (0.305375ms)
+✔ non-object exception_stats fail loudly (0.286333ms)
+✔ non-array exception_stats names fail loudly (0.309792ms)
+✔ non-string trial names fail loudly (0.281291ms)
+✔ group labels with pipes are escaped in Markdown tables (0.314125ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.245541
+unknown option: --bogus
+error: ENOENT: no such file or directory, stat '/var/folders/qk/w30vtzdd6g180lktccvdkq040000gn/T/skill-audit-PINYWZ/nope'
+✔ normalizePath is lexical and resolves dot segments (0.801417ms)
+✔ shellWords honors quotes and escapes (0.301292ms)
+✔ stripShellComments removes line comments only (0.052958ms)
+✔ decodeJsonStringAt decodes escapes (0.093708ms)
+✔ extractExecCalls pairs cmd/workdir and flags mismatches (0.27925ms)
+✔ classifyShellCommand: content commands and operand extraction (0.261208ms)
+✔ classifyShellCommand: discovery, complex, interpreter, none (0.084292ms)
+✔ classifyShellCommand: grep -r recursive flag (0.045542ms)
+✔ parseSkillsInstructions extracts roots and the skill catalog (0.265583ms)
+✔ matchTargetFile: absolute, relative-with-workdir, references, root (0.131583ms)
+✔ resolveTargetRoots: union of explicit paths and auto runtime roots; hard error when unknown (0.26125ms)
+✔ valid structured SKILL.md read: opened with count, first event, normalized file (1.166875ms)
+✔ discovery only (ls/find/stat + listing output) is NOT an open — the key regression (0.640833ms)
+✔ prose mention alone is neither discovery evidence nor an open (0.521209ms)
+✔ target unavailable: no catalog entry, explicit target path, no reads (0.508166ms)
+✔ target supplied but unread: supplied=true, opened=false (0.49875ms)
+✔ reference-only access: opened stays false, referenceAccessed true, any content access true (0.50525ms)
+✔ repeated reads: openCount counts every read, firstOpenEvent is the first (0.506208ms)
+✔ partial reads count: sed and head are content access (0.92575ms)
+✔ other skill read: otherSkills.opened with the skill name, target untouched (0.49975ms)
+✔ baseline other-skill access is observational, reported only under the baseline condition label (0.558958ms)
+✔ unrelated SKILL.md with the same basename never counts (0.432125ms)
+✔ echo/printf of the path is not a read (0.464417ms)
+✔ shell comment mentioning the read never counts (0.459917ms)
+✔ find/stat/ls/glob false positives: discovered at most, never opened (1.827875ms)
+✔ assistant prose naming SKILL.md does not open; output mention marks discovery only (0.497958ms)
+✔ ambiguous complex shell mentioning the target warns and never opens (0.595417ms)
+✔ grep -r over the skill root opens; plain grep on the root dir does not (1.271542ms)
+✔ explicit target path resolves relative commands against workdir (0.586917ms)
+✔ unknown target path without explicit --target-path is a hard error (0.567083ms)
+✔ ATIF-only trial: supplied detectable, opened not auditable, explicit warning (0.51425ms)
+✔ malformed trajectory.json is a hard error (0.504334ms)
+✔ trajectory.json without a steps array is unsupported (0.51725ms)
+✔ unsupported trial layout (no agent artifacts) is a hard error (0.38925ms)
+✔ invalid trailing jsonl lines warn without killing the audit (0.599625ms)
+✔ exec pairing mismatch warns (0.531417ms)
+✔ job directory expands all trials and aggregates (0.981166ms)
+✔ condition grouping and baseline counts in the aggregate (5.552458ms)
+✔ first event index is the 0-based session-log ordinal (0.460416ms)
+✔ JSON output is byte-deterministic across repeated runs (0.5905ms)
+✔ Markdown output is byte-deterministic across repeated runs (0.687584ms)
+✔ paths are normalized skill-relative and no absolute/private path leaks into output (0.484458ms)
+✔ command text and output text never leak into the output (0.469959ms)
+✔ CLI: opened=false is exit 0; markdown renders; unknown option and bad input exit non-zero (108.978958ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.530125
+✔ a type-only renderer import needs its peer without creating a runtime inject edge (38.584542ms)
+✔ missing type-only peers fail the verdict (33.523125ms)
+✔ static-library value imports do not require an inferred inject edge (32.864334ms)
+✔ a missing peer for an imported and injected module cannot receive OK (31.8855ms)
+✔ declared runtime modules require peers even without source imports (31.853ms)
+✔ host inject is not mixed into the client module surface (30.98525ms)
+✔ removed runtime in dependencies fails without a source import (32.537375ms)
+✔ removed runtime in peerDependencies fails without a source import (31.8335ms)
+✔ removed runtime in dsh.client.inject fails without a source import (32.206334ms)
+✔ removed runtime in package-lock.json fails the verdict (31.451292ms)
+✔ removed runtime in npm-shrinkwrap.json fails the verdict (32.519042ms)
+✔ removed runtime in pnpm-lock.yaml fails the verdict (32.641875ms)
+✔ removed runtime in yarn.lock fails the verdict (33.543583ms)
+✔ removed runtime in bun.lock fails the verdict (37.351708ms)
+✔ removed runtime in dist/plugin-manifest.json fails the verdict (32.042959ms)
+✔ removed runtime in packages/nested/package.json fails the verdict (32.474209ms)
+✔ removed runtime in src/types.d.ts fails the verdict (31.709667ms)
+✔ guarded raw HTTP routes require auth review, not an automatic RPC rewrite (32.633292ms)
+✔ unguarded raw HTTP routes require auth review, not an automatic RPC rewrite (32.606916ms)
+✔ a guard elsewhere in a file does not prove protection for every route (32.283084ms)
+✔ commented imports/routes and similarly named packages do not create findings (31.091333ms)
+✔ dependency/git trees and symlinks are not traversed (32.389208ms)
+✔ the alpha.2 Cordis check still affects the verdict (31.480625ms)
+✔ malformed JSON exits nonzero instead of producing a successful report (25.810709ms)
+✔ invalid inject exits nonzero instead of producing a successful report (25.995416ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 846.956
+verify-runtime.check: all assertions passed
+
+> test:smoke
+> node --test skills/plugin-test/scripts/docker-release-smoke.test.mjs
+
+✔ validateConfig accepts a pinned smoke configuration (0.783583ms)
+✔ validateConfig rejects mutable and ranged targets (0.218083ms)
+✔ parseMemoryBytes handles Docker binary and decimal units (0.124458ms)
+✔ redactLogs removes common credential forms (0.641667ms)
+✔ classifyFailure maps setup, install, startup, probe, and infrastructure failures (0.083541ms)
+✔ buildReport and renderMarkdown include metrics but not command secrets (0.748916ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 42.419875
+
+> test:s17-judge
+> node --test benchmark/tasks/S17-external-ui-plugin-onboarding-trap/tests/judge.test.mjs
+
+✔ reference report earns 100; empty, wrong and keyword-only answers do not (8.4315ms)
+✔ a separately written complete report also earns full credit (0.1545ms)
+✔ correct or explicitly rejected advice stays valid: Do not register directly; use ctx.slots.inject to register after the declaration. (0.268458ms)
+✔ correct or explicitly rejected advice stays valid: Avoid direct registration. Use ctx.slots.inject to await the declaration. (0.225333ms)
+✔ correct or explicitly rejected advice stays valid: Do not skip the full host restart. (0.190541ms)
+✔ correct or explicitly rejected advice stays valid: Never remove ctx.slots.inject. (0.188583ms)
+✔ correct or explicitly rejected advice stays valid: Do not keep the top-level imports. (0.174583ms)
+✔ correct or explicitly rejected advice stays valid: Wrong advice: "no need to restart". (0.164375ms)
+✔ correct or explicitly rejected advice stays valid: "Restart is unnecessary" is incorrect. (0.219042ms)
+✔ correct or explicitly rejected advice stays valid: 不要直接注册，使用ctx.slots.inject等待声明。 (0.205334ms)
+✔ wrong final advice overrides keyword hits: Do
+NOT use slots.inject for the registration. (0.19175ms)
+✔ wrong final advice overrides keyword hits: Don't call ctx.slots.inject. (0.262333ms)
+✔ wrong final advice overrides keyword hits: Remove ctx.slots.inject. (0.102209ms)
+✔ wrong final advice overrides keyword hits: slots.inject is unnecessary. (0.094708ms)
+✔ wrong final advice overrides keyword hits: slots.inject must be removed. (0.09225ms)
+✔ wrong final advice overrides keyword hits: Call ctx.slots.register directly. (0.091333ms)
+✔ wrong final advice overrides keyword hits: There is no need to restart the host. (0.085834ms)
+✔ wrong final advice overrides keyword hits: Restart is unnecessary. (0.086334ms)
+✔ wrong final advice overrides keyword hits: The host restart is not required. (0.098625ms)
+✔ wrong final advice overrides keyword hits: Skip the full host restart. (0.096042ms)
+✔ wrong final advice overrides keyword hits: HMR rebuilds the bundle automatically. (0.195083ms)
+✔ wrong final advice overrides keyword hits: Keep the top-level imports. (0.1035ms)
+✔ wrong final advice overrides keyword hits: Registrants should set kind and scope themselves. (0.086167ms)
+✔ wrong final advice overrides keyword hits: 不要用slots.inject，无需重启。 (0.240708ms)
+✔ all required details are necessary, not interchangeable keyword alternatives (0.967625ms)
+✔ empty answer stays zero, solution present=false (117.806292ms)
+✔ wrong answer stays zero, solution present=false (111.804416ms)
+✔ empty answer stays zero, solution present=true (112.1535ms)
+✔ wrong answer stays zero, solution present=true (113.669833ms)
+✔ correct answer is preserved under allowed filename: report.md (121.328042ms)
+✔ correct answer is preserved under allowed filename: report-wrong.md (120.126709ms)
+✔ correct answer is preserved under allowed filename: nested/findings.log (120.03175ms)
+✔ read-only gate fails closed: modified (113.5425ms)
+✔ read-only gate fails closed: missingBaseline (110.019ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1094.189375
+
+> test:report-judge
+> node --test benchmark/report-judge/judge.test.mjs benchmark/report-judge/codex-judge.test.mjs
+
+✔ Codex judge rejects failed, repeated and tool-using turns (0.756291ms)
+✔ Codex transport preserves evidence scoring, records usage, isolates and removes copied auth (29.193625ms)
+✔ all four packets use exact source bytes, bounded excerpts and 100-point rubrics (37.099625ms)
+✔ aggregation is deterministic: full, half and missing; model totals ignored (29.717958ms)
+✔ declared caps require quoted claims and apply after aggregation (7.723292ms)
+✔ unknown, duplicate and omitted criteria/caps cannot produce a reward (7.319625ms)
+✔ judge cannot invent report quotes, fixture evidence or reference IDs (7.36975ms)
+✔ candidate citations are checked against real paths and line bounds (8.448167ms)
+✔ missing reports score zero without credentials or network (9.757167ms)
+✔ sealed hashes reject modified, deleted and untracked fixture files without trusting git (12.019709ms)
+✔ symlinks, special paths and oversized reports cannot escape or get silently truncated (9.610958ms)
+✔ transport sends a text-only blinded request and validates returned evidence (14.894042ms)
+✔ transport fails loudly for HTTP errors, refusals, truncation and malformed JSON (8.579875ms)
+✔ config has no implicit provider and never permits credentials in a URL (0.153834ms)
+✔ output distinguishes judge errors from genuine zeros and clears stale rewards (0.915458ms)
+✔ CLI failure produces details and nonzero exit, never a default-zero reward (38.861083ms)
+✔ pilot preparation keeps agent prompts/fixtures exact and puts references/keys only in verifier (76.081875ms)
+✔ generated standalone entry executes through symlinked paths (including macOS /tmp) (72.747084ms)
+✔ calibration uses the current deterministic grader and rejects keyword stuffing (317.680375ms)
+✔ current deterministic calibration executes from a symlinked temporary root (83.588ms)
+✔ deterministic calibration output errors remain evaluator failures (0.23825ms)
+✔ offline calibration names current deterministic scores explicitly (2243.519875ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3030.938667
+
+> test:composition
+> node --test benchmark/scripts/skill-composition.test.mjs
+
+✔ composition: read-only health check (0.874542ms)
+✔ composition: installed version update (0.09ms)
+✔ composition: Web Client source migration (0.079542ms)
+✔ composition: new plugin lifecycle (0.080583ms)
+✔ composition: runtime repair (0.066ms)
+✔ composition: heavy dependency integration (0.05825ms)
+✔ composition: explicit registry registration (0.058333ms)
+✔ composition: explicit publication (0.052416ms)
+✔ composition: test-only scope (0.07175ms)
+✔ every installed Skill has an exercised phase owner; new Skills require coverage (0.5155ms)
+✔ all eight owners compose without duplicating phases or silently publishing (0.113625ms)
+✔ Web-specific owners reject incompatible surfaces and missing proof (0.302709ms)
+✔ pairwise capability combinations preserve ownership, scope, gates and order in every workflow (7.9625ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50.280542
+
+> test:ci-tooling
+> node --test scripts/fetch-snapshot-commits.test.mjs benchmark/scripts/skill-evaluation.test.mjs benchmark/scripts/harbor-reward-contract.test.mjs benchmark/scripts/web-boot-probe.test.mjs
+
+✔ M5-token-auth-smoke: structured evidence cannot shadow Harbor's scalar reward (187.507958ms)
+✔ H8-fire-drill: structured evidence cannot shadow Harbor's scalar reward (173.628875ms)
+✔ comparison conditions change only supplied Skills, keeping tasks, model and attempts fixed (1.218209ms)
+✔ controls never invoke a model or inject Skills; invalid inputs fail before execution (0.242666ms)
+✔ controls reject a broken reference answer and a judge accepting untouched fixtures (0.155334ms)
+✔ missing, extra, duplicate and timeout trials cannot produce a complete evaluation (0.093833ms)
+✔ comparison identifies per-task degradation and refuses mismatched or incomplete runs (0.688417ms)
+✔ Harbor trial files produce complete evidence and usage; missing usage remains explicit (2.821333ms)
+✔ H8: generated Web probe is valid JavaScript and returns observed host evidence (32.429166ms)
+✔ M5: generated Web probe is valid JavaScript and returns observed host evidence (27.69225ms)
+✔ a snapshot pin outside branch history is fetched without changing the checkout or snapshot (243.874625ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 400.746292
+
+> test:report-negation
+> node --test benchmark/scripts/report-negation.test.mjs
+
+✔ standalone verifier copies use the same claim rules (0.651375ms)
+✔ each judge can load from an isolated tests directory as Harbor deploys it (116.735875ms)
+✔ S5: reference remains 100 and empty report remains 0 (0.928833ms)
+✔ S6: reference remains 100 and empty report remains 0 (2.308292ms)
+✔ S7: reference remains 100 and empty report remains 0 (0.401917ms)
+✔ S5: all four correct negative conclusions receive full credit (0.210375ms)
+✔ S5: warning preserves full score: greet不是error，也不是兼容错误。 (0.089542ms)
+✔ S5: warning preserves full score: greet is not an error. (0.067125ms)
+✔ S5: warning preserves full score: search is a warning, not an error. (0.194958ms)
+✔ S5: warning preserves full score: web-search/ready并非兼容错误。 (0.084708ms)
+✔ S5: warning preserves full score: 不能断言已保留或全局可用。 (0.093708ms)
+✔ S5: warning preserves full score: 不能因此断言全局可用。 (0.059ms)
+✔ S5: warning preserves full score: 不得断言“已保留/全局可用”。 (0.0965ms)
+✔ S5: warning preserves full score: 不能说全部通过，也不能说没有问题。 (0.045875ms)
+✔ S5: warning preserves full score: “全部通过”是错误的。 (0.042375ms)
+✔ S5: affirmative false claim still loses credit: greet是兼容错误。 (0.05625ms)
+✔ S5: affirmative false claim still loses credit: search是error。 (0.252666ms)
+✔ S5: affirmative false claim still loses credit: web-search/ready是兼容错误。 (0.054584ms)
+✔ S5: affirmative false claim still loses credit: 名称已保留且全局可用。 (0.042ms)
+✔ S5: affirmative false claim still loses credit: greet不是error，但greet确实是error。 (0.040542ms)
+✔ S5: affirmative false claim still loses credit: 不能断言已保留；实际上已保留。 (0.035ms)
+✔ S5: affirmative false claim still loses credit: 不能说全部通过，但是全部通过。 (0.03575ms)
+✔ S5: affirmative false claim still loses credit: 全部通过，没有问题。 (0.032875ms)
+✔ S6: warning does not trigger the cap: 不要保留防御。 (0.225584ms)
+✔ S6: warning does not trigger the cap: 不保留防御代码。 (0.1115ms)
+✔ S6: warning does not trigger the cap: 不应继续删除marker。 (0.115583ms)
+✔ S6: warning does not trigger the cap: 禁止继续删marker。 (0.115ms)
+✔ S6: warning does not trigger the cap: marker不要继续删除。 (0.10175ms)
+✔ S6: warning does not trigger the cap: 不要保留防御，也不要继续删除marker。 (0.096541ms)
+✔ S6: warning does not trigger the cap: 保留防御代码是错误的。 (0.167834ms)
+✔ S6: warning does not trigger the cap: 不要继续操作，但也不要保留防御代码。 (0.112791ms)
+✔ S6: affirmative bad advice still triggers the cap: 继续保留防御代码。 (0.140792ms)
+✔ S6: affirmative bad advice still triggers the cap: 仍应删除marker。 (0.103791ms)
+✔ S6: affirmative bad advice still triggers the cap: marker必须继续删除。 (0.270625ms)
+✔ S6: affirmative bad advice still triggers the cap: 不要保留防御，但仍应删除marker。 (0.124333ms)
+✔ S6: affirmative bad advice still triggers the cap: 不要保留防御。必须保留防御。 (0.106208ms)
+✔ S6: affirmative bad advice still triggers the cap: 不要不保留防御。 (0.09525ms)
+✔ S7: warning does not trigger the cap: 不要运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1。 (0.171208ms)
+✔ S7: warning does not trigger the cap: 禁止执行：`npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1`。 (0.059542ms)
+✔ S7: warning does not trigger the cap: 不能建议 **npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1**。 (0.035917ms)
+✔ S7: warning does not trigger the cap: Do not run npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1. (0.0415ms)
+✔ S7: warning does not trigger the cap: Never run npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1. (0.043292ms)
+✔ S7: warning does not trigger the cap: `npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1` 是错误的。 (0.04025ms)
+✔ S7: warning does not trigger the cap: 错误示例：
+```sh
+npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1
+``` (0.047875ms)
+✔ S7: warning does not trigger the cap: 不要执行以下命令：
+```sh
+npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1
+``` (0.035416ms)
+✔ S7: affirmative bad advice still triggers the cap: 直接运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1。 (0.041417ms)
+✔ S7: affirmative bad advice still triggers the cap: 运行npm i @deepseek-ai/dsh-llm@0.1.2-alpha.1。 (0.030208ms)
+✔ S7: affirmative bad advice still triggers the cap: 不要运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1，但建议运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1。 (0.031ms)
+✔ S7: affirmative bad advice still triggers the cap: 不要运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1。
+npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1 (0.030208ms)
+✔ S7: affirmative bad advice still triggers the cap: 不是不能运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1。 (0.028542ms)
+✔ S7: affirmative bad advice still triggers the cap: 不仅要运行 npm install @deepseek-ai/dsh-llm@0.1.2-alpha.1，还要继续发布。 (0.029083ms)
+✔ H8: reference release checklist remains accepted (0.596667ms)
+✔ H8: warning is not a release violation: Do not use pnpm publish --force; never skip verification. (0.043791ms)
+✔ H8: warning is not a release violation: Do not do so by running pnpm publish --force. (0.018375ms)
+✔ H8: warning is not a release violation: Do not skip the checks or skip verification. (0.019458ms)
+✔ H8: warning is not a release violation: Do not use pnpm publish --force or npm publish --force. (0.015791ms)
+✔ H8: warning is not a release violation: Don't use npm publish --access public --force. (0.014125ms)
+✔ H8: warning is not a release violation: Don’t skip gates. (0.01625ms)
+✔ H8: warning is not a release violation: 禁止执行pnpm publish --force，不要skip verification。 (0.016167ms)
+✔ H8: warning is not a release violation: `pnpm publish --force` is not recommended. (0.015542ms)
+✔ H8: warning is not a release violation: skip verification is forbidden. (0.015125ms)
+✔ H8: warning is not a release violation: Bad example:
+```sh
+pnpm publish --force
+``` (0.014917ms)
+✔ H8: affirmative unsafe prescription is still rejected: Run pnpm publish --force. (0.017916ms)
+✔ H8: affirmative unsafe prescription is still rejected: Use npm publish --access public --force. (0.019667ms)
+✔ H8: affirmative unsafe prescription is still rejected: Skip the checks. (0.025708ms)
+✔ H8: affirmative unsafe prescription is still rejected: Do not use pnpm publish --force; skip verification. (0.018ms)
+✔ H8: affirmative unsafe prescription is still rejected: Never skip verification, but use pnpm publish --force. (0.018167ms)
+✔ H8: affirmative unsafe prescription is still rejected: Do not skip checks.
+Use pnpm publish --force. (0.016291ms)
+✔ H8: affirmative unsafe prescription is still rejected: Not only skip verification, but also publish. (0.022541ms)
+✔ H8: affirmative unsafe prescription is still rejected: Do not not skip verification. (0.024625ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 70
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.867167
+
+> test:release
+> node --test skills/plugin-release/scripts/verify-release.test.mjs
+
+✔ parseSemver validates prerelease identifiers and ignores build metadata (0.496625ms)
+✔ compareSemver follows semver prerelease ordering (0.127291ms)
+✔ validateRelease accepts stable and prerelease publications (0.615042ms)
+✔ validateRelease rejects tag and prerelease mismatches (0.192375ms)
+✔ validateRelease rejects incorrect dist-tags (0.076167ms)
+✔ validateRelease refuses stable downgrades and invalid inputs (0.075167ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39.399167
+
+> test:audit
+> node skills/dsh-upgrade-audit/scripts/gen-artifacts.check.mjs
+
+gen-artifacts checks OK: impure corridors fail closed; pure corridors generate artifacts
+
+> test:dsh:cases
+> node benchmark/runtime/verify.mjs --check
+
+DSH case definitions OK: 1 case, 3 checks

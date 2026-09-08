@@ -1,6 +1,7 @@
 // H8-fire-drill grading — declarative checkpoints (tests/checkpoints.json), four acts.
 // Gate layer (environment health, scored before any checkpoint):
-//   fixture unchanged -> 0; dsh unavailable -> 0.
+//   fixture unchanged -> 0; dsh unavailable -> evaluation error.
+// Primary checkpoints total 95, normalized to 100; citations are auxiliary only.
 // Checkpoint layer: every checkpoint is measured against BOTH the pristine trap
 // fixture (restored from the git baseline) and the agent's patched fixture.
 //   fail-to-pass: patched must pass while the pristine baseline must not pass;
@@ -23,6 +24,7 @@ import {
   createProfile,
   dshAvailable,
   emit,
+  emitError,
   evaluateCheckpoints,
   FIXTURE_DIR,
   fixtureChanges,
@@ -42,7 +44,7 @@ const RELEASE_TRAP_RE = /\bpublish(?:[ \t]+[^\s,;|]+)*?[ \t]+--force\b|\bskip[ \
 const DECL = JSON.parse(readFileSync(join(import.meta.dirname, 'checkpoints.json'), 'utf8'))
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
-if (isMain) main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+if (isMain) main().catch((error) => emitError(error))
 
 export function hasReleaseTrap(text) {
   return hasAffirmativeMatch(text, RELEASE_TRAP_RE)
@@ -52,25 +54,26 @@ async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error(`fixture change check failed: ${gate.detail}`))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
   reasons.push('fixture was modified by the agent')
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable in the container'))
   }
 
   const agentText = readAgentText('/app/agent-output', TASK).text
   const pristine = await restorePristine(TASK)
   if (!pristine.ok) {
-    emit(0, [...reasons, `baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`])
+    emitError(new Error(`baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`))
   }
 
   // Pristine run — pins the documented trap state before anything is scored.
   const pristineOutcome = await measure(pristine.dir, 'bench-h8-pristine')
   if (!pristineOutcome.installOk) {
-    emit(0, [...reasons, `baseline mismatch: pristine trap plugins cannot be installed (${pristineOutcome.installDetail ?? 'unknown'})`])
+    emitError(new Error(`baseline mismatch: pristine trap plugins cannot be installed (${pristineOutcome.installDetail ?? 'unknown'})`))
   }
   // Version checkpoints: the pristine fixture IS the committed baseline, so its
   // versions are un-bumped by definition ('fail' = "not yet bumped").
@@ -93,7 +96,7 @@ async function main() {
   }
   for (const cp of DECL.checkpoints) {
     if (cp.type === 'fail-to-pass' && baseline[cp.id] === 'pass') {
-      emit(0, [...reasons, `baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`])
+      emitError(new Error(`baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`))
     }
   }
   reasons.push(`pristine baseline: install ${pristineOutcome.installOk ? 'ok' : 'failed'}, boot ${pristineOutcome.bootOk ? 'green' : 'failed'} (the documented trap), smoke ${pristineOutcome.noAuthStatus === null ? 'unmeasurable' : `${pristineOutcome.noAuthStatus}/${pristineOutcome.authedStatus}`}`)
@@ -101,10 +104,7 @@ async function main() {
   // Patched run.
   const patchedOutcome = await measure(FIXTURE_DIR, 'bench-h8-patched')
   const patched = {
-    'names-drill-host': agentText.includes('drill-host') ? 'pass' : 'fail',
-    'names-drill-web': agentText.includes('drill-web') ? 'pass' : 'fail',
-    'names-drill-tools': agentText.includes('drill-tools') ? 'pass' : 'fail',
-    'cites-cards': agentText.includes('DSH-0.1.2-A1-01') && agentText.includes('DSH-0.1.2-A1-08') && /\bR-01\b/.test(agentText) ? 'pass' : 'fail',
+    ...scoreReportCheckpoints(agentText),
     'host-apiproxy-removed': hasText(FIXTURE_DIR, 'drill-host', 'package.json', 'dsh-host-apiproxy') ? 'fail' : 'pass',
     'host-inject-llm': /inject\s*=\s*\[[^\]]*\bllm\b/.test(sourceOf(FIXTURE_DIR, 'drill-host')) ? 'pass' : 'fail',
     'host-no-remote': /inject\s*=\s*\[[^\]]*\bremote\b/.test(sourceOf(FIXTURE_DIR, 'drill-host')) ? 'fail' : 'pass',
@@ -127,8 +127,8 @@ async function main() {
   reasons.push(`patched runtime: install ${patchedOutcome.installOk ? 'ok' : `failed (${patchedOutcome.installDetail})`}, boot ${patchedOutcome.bootOk ? 'green' : 'failed'}, smoke ${patchedOutcome.noAuthStatus === null ? 'unmeasurable' : `${patchedOutcome.noAuthStatus}/${patchedOutcome.authedStatus}`}`)
   if (patchedOutcome.bootDetail) reasons.push(`patched runtime detail: ${patchedOutcome.bootDetail}`)
 
-  const graded = evaluateCheckpoints(DECL.checkpoints, patched, baseline)
-  emit(Math.min(100, graded.score), [...reasons, ...graded.reasons], { checkpoints: graded.checkpoints })
+  const graded = scoreCheckpointComposite(patched, baseline)
+  emit(Math.min(100, graded.score), [...reasons, ...graded.reasons], { checkpoints: graded.checkpoints, metrics: graded.metrics })
 }
 
 /** One runtime measurement: add all three plugins from `pluginDir` to an isolated
@@ -137,7 +137,7 @@ async function measure(pluginDir, profile) {
   const tmp = `/tmp/${profile}`
   try {
     const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
-    if (!created.ok) return { installOk: false, bootOk: false, noAuthStatus: null, authedStatus: null, installDetail: created.detail }
+    if (!created.ok) throw new Error(`profile creation failed: ${created.detail}`)
     let installOk = true
     for (const name of PLUGIN_NAMES) {
       const added = await addPlugin(profile, join(pluginDir, name))
@@ -261,4 +261,26 @@ console.log("__RESULT__" + JSON.stringify(outcome));
   } catch {
     return { noAuthStatus: null, authedStatus: null, error: 'failed to parse smoke result' }
   }
+}
+
+export function scoreReportCheckpoints(agentText) {
+  return {
+    'names-drill-host': agentText.includes('drill-host') ? 'pass' : 'fail',
+    'names-drill-web': agentText.includes('drill-web') ? 'pass' : 'fail',
+    'names-drill-tools': agentText.includes('drill-tools') ? 'pass' : 'fail',
+    'cites-cards': agentText.includes('DSH-0.1.2-A1-01') && agentText.includes('DSH-0.1.2-A1-08') && /\bR-01\b/.test(agentText) ? 'pass' : 'fail',
+  }
+}
+
+export function scoreCheckpointComposite(patched, baseline) {
+  const primary = DECL.checkpoints.filter(cp => !cp.auxiliary)
+  const auxiliary = evaluateCheckpoints(DECL.checkpoints.filter(cp => cp.auxiliary), patched, baseline)
+  // Caps retain their published percentage meaning after 95-point normalization.
+  const scaled = primary.map(cp => cp.cap ? { ...cp, cap: { ...cp.cap, total: cp.cap.total * DECL.primaryMax / 100 } } : cp)
+  const graded = evaluateCheckpoints(scaled, patched, baseline)
+  const rawScore = graded.checkpoints.reduce((sum, cp) => sum + cp.awarded, 0)
+  return { ...graded, reasons: graded.reasons.map(reason => reason.replace(/total capped at ([0-9.]+)/, (_, raw) => `total capped at ${Number(raw) * 100 / DECL.primaryMax}%`)), score: graded.score * 100 / DECL.primaryMax, metrics: {
+    citation: { score: auxiliary.score, max: 5, auxiliary: true, checkpoints: auxiliary.checkpoints },
+    composite: { rawScore, rawMax: DECL.primaryMax, normalizedMax: 100 },
+  } }
 }

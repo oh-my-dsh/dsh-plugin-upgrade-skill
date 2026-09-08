@@ -11,8 +11,10 @@ This is an unattended benchmark run in a disposable isolated container; there wi
 
 I maintain an MCP-server management panel plugin (working directory: `/app/fixture/`, i.e. the fixture directory inside the container) written in the 0.1.2-era style — its host half writes the `mcp-client` insert rows into the profile `cordis.patch.yml` (config HMR mounts the servers live), and its browser half registers the settings-page "MCP" panel tab through the `settings.section` slot. The host has already been upgraded to dsh 0.1.2-alpha.2. Run the upgrade as a three-act drill:
 
-1. **Diagnose** — inspect both planes (host half + browser half) against the 0.1.2-alpha.2 host, find every breakage (client inject list, locale namespace declaration, peer cohort, dead type sources), and write the diagnosis with the corresponding card IDs to `/app/agent-output/M9-mcpanel/diagnosis.md`;
+1. **Diagnose** — inspect both planes (host half + browser half) against the 0.1.2-alpha.2 host, find every breakage (client inject list, locale namespace declaration, peer cohort, dead type sources), and write the diagnosis with concrete file evidence and migration reasoning (card IDs are optional) to `/app/agent-output/M9-mcpanel/diagnosis.md`;
 2. **Fix** — migrate the plugin by editing the files under `/app/fixture/` directly;
 3. **Deploy** — create an isolated profile, install the plugin, cold-boot the web profile, and confirm the plugin tree activates and the browser roster actually lists the plugin's client entry.
 
 Bump the version in `package.json` as part of the release hygiene. dsh 0.1.2-alpha.2 and pnpm are installed globally; the fixture is git-committed as the baseline, and nothing outside `/app/fixture/` and your own `/app/agent-output/` is part of this task — leave it alone. There is no browser in this container: the browser-side acceptance anchor is the host's announced boot graph (the client entry must appear there).
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.
