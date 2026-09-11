@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H12-remote-result-boundary-trap grading: read-only gate + section-scoped Markdown scoring.
 //
 // This task grades the RemoteResult resolved-vs-rejected control-flow boundary.
@@ -57,7 +58,7 @@ const ALIASES = {
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
-if (isMain) main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+if (isMain) main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -66,7 +67,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

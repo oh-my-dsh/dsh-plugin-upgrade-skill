@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M4-peer-prerelease-range grading: rewrite the legacy peer bound, then install + cold boot.
 //    25 — peer and dev lower bounds rewritten to cover the 0.1.2-alpha.2 cohort;
 //    75 — isolated-profile cold boot activates (MISSING_CREDENTIAL without a key), only
@@ -30,12 +31,13 @@ const DEP = '@deepseek-ai/dsh-agent'
 const GOOD_RANGE = /^(\^|~)?0\.1\.2-alpha\.2$|^>=0\.1\.2-alpha\.2 <0\.2\.0/
 const WILDCARD = /^\*$|^>=0\.1\.0|^>=0\.0\.|^latest$|^$/
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -57,7 +59,7 @@ async function main() {
   if (wildcard) reasons.push('bound widened into a meaningless range — caps at 40')
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   let score = 0

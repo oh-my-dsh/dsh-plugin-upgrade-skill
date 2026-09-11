@@ -13,7 +13,9 @@ I am a DSH browser plugin maintainer. `/app/fixture/` in the container holds a b
 
 1. Point out every surface of this code that will break on 0.1.2-alpha.2, each tied to its source location;
 2. For each one, give the correct post-migration form (spell out the new API shape);
-3. Cite the full number of the corresponding upgrade card (e.g. `DSH-0.1.2-A1-xx`);
+3. Explain which version changes cause the located migration needs; card IDs may be included but are not required for correctness credit;
 4. Explain which fields can run first through a compatibility projection and which must switch to a new read path immediately.
 
-There are no traps in this brief; what is tested is whether the snapshot read-surface migration is complete, the card mapping is accurate, and read-only discipline is respected.
+There are no traps in this brief; what is tested is whether the snapshot read-surface migration is complete, the diagnosis and migration direction are correct, and read-only discipline is respected.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

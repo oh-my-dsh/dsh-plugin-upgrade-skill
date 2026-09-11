@@ -11,8 +11,10 @@ This is an unattended benchmark run in a disposable isolated container; there wi
 
 I maintain a client plugin (working directory: `/app/fixture/`, i.e. the fixture directory inside the container) written in the 0.1.1-era style — it shadows the shipped tool views in the chat flow (`tool.call.toolview` slot) and merges consecutive same-tool calls into one card with compact child rows. The host has already been upgraded to dsh 0.1.2-alpha.2. Run the upgrade as a three-act drill:
 
-1. **Diagnose** — inspect the plugin against the 0.1.2-alpha.2 host, find every breakage (the chat node package move, the card-derivation contract, the in-session read contract, the client inject list, the labels/override-dict contract, the peer cohort), and write the diagnosis with the corresponding card IDs to `/app/agent-output/H17-merge-calls/diagnosis.md`;
+1. **Diagnose** — inspect the plugin against the 0.1.2-alpha.2 host, find every breakage (the chat node package move, the card-derivation contract, the in-session read contract, the client inject list, the labels/override-dict contract, the peer cohort), and write the diagnosis with concrete file evidence and migration reasoning (card IDs are optional) to `/app/agent-output/H17-merge-calls/diagnosis.md`;
 2. **Fix** — migrate the plugin by editing the files under `/app/fixture/` directly;
 3. **Deploy** — create an isolated profile, install the plugin, cold-boot the web profile, and confirm the plugin tree activates and the browser roster actually lists the plugin's client entry.
 
 Bump the version in `package.json` as part of the release hygiene. dsh 0.1.2-alpha.2 and pnpm are installed globally; the fixture is git-committed as the baseline, and nothing outside `/app/fixture/` and your own `/app/agent-output/` is part of this task — leave it alone. There is no browser in this container: the browser-side acceptance anchor is the host's announced boot graph (the client entry must appear there).
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

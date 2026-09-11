@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M2-optional-dep-trap grading: fix the dependency contract, then a real cold boot.
 //   100 — the dependency moved to `dependencies` with a published range, the top-level
 //         import stays intact, and the isolated-profile cold boot activates;
@@ -26,12 +27,13 @@ import {
 const TASK = 'M2-optional-dep-trap'
 const DEP = '@deepseek-ai/dsh-util-time'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -64,7 +66,7 @@ async function main() {
   else reasons.push('top-level import removed or wrapped in try/catch / dynamic import — not the real fix (caps at 40)')
 
   if (!(await dshAvailable())) {
-    emit(score, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   const profile = PROFILE(TASK)

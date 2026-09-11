@@ -17,11 +17,7 @@ export const PROFILE = (taskId) => `bench-${taskId.toLowerCase()}`
 
 // ── Result output ──────────────────────────────────────
 
-export function emit(score, reasons) {
-  const result = { score: Math.max(0, Math.min(100, Math.round(score))), max: 100, reasons }
-  process.stdout.write(JSON.stringify(result) + '\n')
-  process.exit(0)
-}
+export { emit, emitError } from './judge-result.mjs'
 
 // ── Agent output collection (static tasks) ─────────────
 
@@ -61,7 +57,7 @@ function git(args, cwd) {
 /** Return the fixture paths relative to APP_ROOT (modified/added/deleted). Empty array = unchanged. */
 export async function fixtureChanges(relFixtureDir = 'fixture') {
   const result = await git(['status', '--porcelain', '--', relFixtureDir], APP_ROOT)
-  if (result.code !== 0) return { changed: null, detail: `git status failed: ${result.stderr.trim()}` }
+  if (result.code !== 0) throw new Error(`fixture baseline unavailable: git status failed: ${result.stderr.trim()}`)
   const lines = result.stdout.split('\n').filter(Boolean)
   return {
     changed: lines.length > 0 ? true : false,
@@ -105,13 +101,14 @@ export async function createProfile(profile, bundles) {
   const write = await localExec(`rm -rf '${dir}' && mkdir -p '${dir}' && base64 -d > '${dir}/package.json'`, {
     stdin: Buffer.from(JSON.stringify(pkg, null, 2) + '\n').toString('base64'),
   })
-  if (write.code !== 0) return { ok: false, detail: `profile write failed: ${write.stderr.trim()}` }
+  if (write.code !== 0) throw new Error(`profile creation failed: write: ${write.stderr.trim()}`)
   const seed = await localExec(
-    `cp /root/.dsh/profiles/headless/pnpm-workspace.yaml '${dir}/' 2>/dev/null || printf 'packages:\\n  - .\\n\\nnodeLinker: hoisted\\nautoInstallPeers: false\\n' > '${dir}/pnpm-workspace.yaml'
+    `set -e
+cp /root/.dsh/profiles/headless/pnpm-workspace.yaml '${dir}/' 2>/dev/null || printf 'packages:\\n  - .\\n\\nnodeLinker: hoisted\\nautoInstallPeers: false\\n' > '${dir}/pnpm-workspace.yaml'
 printf '[]\\n' > '${dir}/cordis.patch.yml'
 printf '[]\\n' > '${dir}/cordis.yml'`,
   )
-  if (seed.code !== 0) return { ok: false, detail: `profile seed files failed: ${seed.stderr.trim()}` }
+  if (seed.code !== 0) throw new Error(`profile creation failed: seed: ${seed.stderr.trim()}`)
   return { ok: true, dir }
 }
 

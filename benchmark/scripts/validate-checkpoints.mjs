@@ -52,6 +52,7 @@ export function validateCheckpoints(repoRoot) {
 
     const ids = new Set()
     let total = 0
+    let primaryTotal = 0
     for (const [index, cp] of manifest.checkpoints.entries()) {
       if (typeof cp.id !== 'string' || cp.id.length === 0) fail(manifestPath, `checkpoint #${index + 1}: id must be a non-empty string`)
       if (ids.has(cp.id)) fail(manifestPath, `duplicate checkpoint id: ${cp.id}`)
@@ -61,10 +62,14 @@ export function validateCheckpoints(repoRoot) {
         fail(manifestPath, `checkpoint ${cp.id}: points must be an integer in 1..99`)
       } else {
         total += cp.points
+        if (!cp.auxiliary) primaryTotal += cp.points
       }
+      if (cp.auxiliary !== undefined && typeof cp.auxiliary !== 'boolean') fail(manifestPath, `checkpoint ${cp.id}: auxiliary must be boolean`)
+      if (cp.auxiliary && cp.cap) fail(manifestPath, `checkpoint ${cp.id}: auxiliary checkpoints cannot cap primary scores`)
       for (const req of cp.requires ?? []) {
         const targetIndex = manifest.checkpoints.findIndex((c) => c.id === req)
         if (targetIndex < 0) fail(manifestPath, `checkpoint ${cp.id}: requires unknown id ${req}`)
+        else if (!cp.auxiliary && manifest.checkpoints[targetIndex].auxiliary) fail(manifestPath, `checkpoint ${cp.id}: primary cannot require auxiliary checkpoint (${req})`)
         else if (targetIndex >= index) fail(manifestPath, `checkpoint ${cp.id}: requires must reference an earlier checkpoint (${req})`)
       }
       if (cp.cap) {
@@ -74,11 +79,17 @@ export function validateCheckpoints(repoRoot) {
         if (cp.cap.when !== undefined) {
           if (!Array.isArray(cp.cap.when) || cp.cap.when.some((id) => !manifest.checkpoints.some((c) => c.id === id))) {
             fail(manifestPath, `checkpoint ${cp.id}: cap.when must reference existing checkpoint ids`)
+          } else if (cp.cap.when.some(id => manifest.checkpoints.find(c => c.id === id)?.auxiliary)) {
+            fail(manifestPath, `checkpoint ${cp.id}: cap.when cannot reference auxiliary checkpoints`)
           }
         }
       }
     }
     if (total !== 100) fail(manifestPath, `checkpoint points must sum to 100 (current sum: ${total})`)
+
+    if (!Number.isInteger(manifest.primaryMax ?? 100) || (manifest.primaryMax ?? 100) <= 0 || primaryTotal !== (manifest.primaryMax ?? 100)) {
+      fail(manifestPath, `primary checkpoint points must sum to primaryMax (declared: ${manifest.primaryMax ?? 100}, current sum: ${primaryTotal})`)
+    }
 
     for (const card of manifest.cards ?? []) {
       if (!referenceCorpus.includes(card)) fail(manifestPath, `card ${card} is not cited in skills/plugin-upgrade/references`)

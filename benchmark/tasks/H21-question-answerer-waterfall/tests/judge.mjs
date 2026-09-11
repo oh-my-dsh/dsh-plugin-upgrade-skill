@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H21 sealed judge: one interactive structured-question answerer across the
 // real rc.2 and alpha.2 user-questions services.
 //
@@ -58,7 +59,7 @@ const COHORTS = [
 
 const EXPORT_NAME = 'installQuestionAnswerer'
 
-main().catch((error) => emit(0, [`judge error: ${error instanceof Error ? error.stack : String(error)}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []

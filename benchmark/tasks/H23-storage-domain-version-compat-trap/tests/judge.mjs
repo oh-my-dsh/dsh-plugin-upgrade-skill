@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H23-storage-domain-version-compat-trap grading.
 //
 // A plugin upgrades alpha.4 → alpha.5, bumps its storage domain to version 5
@@ -19,7 +20,7 @@
 //        → 50; schema contract bypass (including any/unknown) → 70;
 //    0 — fixture untouched, persisted data / tests / node_modules modified,
 //        or the git baseline rewritten (all git-gated).
-// The judge always exits 0; the last stdout line is the {score, max, reasons} JSON.
+// Valid candidate outcomes emit a score packet; verifier failures exit nonzero.
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -32,7 +33,7 @@ function emit(score, reasons) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  grade().catch((error) => emit(0, [`judge error: ${error.message}`]))
+  grade().catch(emitError)
 }
 
 // Explicit paths let regression tests use disposable fixtures and a separate
@@ -57,7 +58,7 @@ export async function grade(APP = '/app', baselineFile = '/opt/h23-verifier/base
     baseline = readFileSync(baselineFile, 'utf8').trim()
     if (!/^[a-f0-9]{40}$/.test(baseline)) throw new Error('invalid baseline SHA')
     git('cat-file', '-e', `${baseline}^{commit}`)
-  } catch (error) { emit(0, [`trusted baseline unavailable: ${error.message}`]); return }
+  } catch (error) { emitError(error); return }
 
   // Recheck after candidate execution as well as before it. Only the judge's
   // own A write may alter sealed data; freeze its bytes before close/reopen and

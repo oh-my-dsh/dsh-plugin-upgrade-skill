@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S15-slot-error-boundary-crash grading: fixture read-only gate + five diagnosis aspects.
 // Expected (dangling identifier + short-circuit latency + slot error boundary):
 //   1. Root cause: the remove button's disabled: A || busy throws ReferenceError (busy
@@ -25,7 +26,7 @@ const ASPECTS = [
   { key: 'regression + process: data-present render smoke (empty state returns null early); node --check insufficient; no-undef', pattern: /(render smoke|mount)[\s\S]{0,280}(occurrence|chip|data|present|with data)|empty[\s\S]{0,200}(returns? null|early|cannot)|(no-undef|lint)[\s\S]{0,160}(catch|flag|free identifier)?/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, ['judge error: ' + error.message]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -33,7 +34,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, ['fixture was modified, 0 points for this task (read-only discipline): ' + gate.detail])
   }
-  if (gate.changed === null) reasons.push('warning: ' + gate.detail)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
   const { text, files } = readAgentText('', TASK)
   if (!text.trim()) {

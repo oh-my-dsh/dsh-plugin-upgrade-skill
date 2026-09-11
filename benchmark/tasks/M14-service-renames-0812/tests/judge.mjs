@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M14-service-renames-0812 grading: the migrated Node half must use the alpha.2
 // service names — `webServer` (was the pre-0812 `httpServer`), `jobs` (was
 // `tasks`), and the `onJobDone` completion listener (was `onTaskDone`) — and must
@@ -53,12 +54,13 @@ const OLD_TASK_USAGE = /ctx\.tasks\b/
 const OLD_EVENT_KEY = /onTaskDone/
 const NEW_EVENT_KEY = /\bonJobDone\b/
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -122,7 +124,7 @@ async function main() {
   }
 
   if (!(await dshAvailable())) {
-    emit(score, [...reasons, 'dsh unavailable; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   // 2. Runtime: add + web cold boot + route smoke.

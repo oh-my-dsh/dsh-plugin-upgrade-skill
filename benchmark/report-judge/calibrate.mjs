@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -35,8 +35,10 @@ export function samples(task) {
   ]
 }
 
-export function legacyScore(task, report) {
-  const temp = mkdtempSync(join(tmpdir(), 'report-judge-legacy-'))
+export function deterministicScore(task, report, {tempRoot = tmpdir()} = {}) {
+  if (!Object.hasOwn(RUBRICS, task)) throw new Error(`unknown calibration task: ${task}`)
+  // Node resolves module URLs to real paths; argv must match for the task's isMain guard.
+  const temp = realpathSync(mkdtempSync(join(tempRoot, 'report-judge-deterministic-')))
   try {
     const app = join(temp, 'app'); mkdirSync(app)
     cpSync(join(REPO, 'benchmark/tasks', task, 'environment/fixture'), join(app, 'fixture'), { recursive: true })
@@ -49,11 +51,30 @@ export function legacyScore(task, report) {
     cpSync(join(REPO, 'benchmark/tasks', task, 'tests'), tests, { recursive: true })
     const utils = join(tests, 'judge-utils.mjs')
     const original = readFileSync(utils, 'utf8')
-    if (!original.includes("export const APP_ROOT = '/app'")) throw new Error('legacy harness root format changed')
+    if (!original.includes("export const APP_ROOT = '/app'")) throw new Error('current deterministic harness root format changed')
     writeFileSync(utils, original.replace("export const APP_ROOT = '/app'", `export const APP_ROOT = ${JSON.stringify(app)}`))
-    const stdout = execFileSync(process.execPath, [join(tests, 'judge.mjs')], { encoding: 'utf8', timeout: 30000 })
-    return JSON.parse(stdout.trim().split('\n').at(-1)).score
+    let stdout
+    try {
+      stdout = execFileSync(process.execPath, [join(tests, 'judge.mjs')], { encoding: 'utf8', timeout: 30000 })
+    } catch (error) {
+      return parseDeterministicScore(String(error.stdout ?? ''), {task, exitCode:error.status ?? 'unknown'})
+    }
+    return parseDeterministicScore(stdout, {task})
   } finally { rmSync(temp, { recursive: true, force: true }) }
+}
+
+// Invalid/missing output and subprocess failures must never become candidate zeros.
+export function parseDeterministicScore(stdout, {task, exitCode = 0}) {
+  const label = `current deterministic grader for ${task}`
+  if (exitCode !== 0) throw new Error(`${label} exited with status ${exitCode}`)
+  let packet
+  try { packet = JSON.parse(stdout.trim().split('\n').at(-1)) }
+  catch { throw new Error(`${label} returned missing or invalid JSON`) }
+  if (packet?.status === 'verifier_error') throw new Error(`${label} failed: ${packet.error?.message ?? 'unspecified evaluator error'}`)
+  if (!Number.isFinite(packet?.score) || packet.max !== 100 || packet.score < 0 || packet.score > 100) {
+    throw new Error(`${label} returned an invalid score packet`)
+  }
+  return packet.score
 }
 
 export async function calibrate({ out, live = false, repeats = 1, env = process.env, onProgress = console.log }) {
@@ -61,21 +82,21 @@ export async function calibrate({ out, live = false, repeats = 1, env = process.
   if (existsSync(out)) throw new Error('calibration output already exists; choose a fresh directory')
   const config = live ? apiConfig(env) : null
   mkdirSync(out, { recursive: true })
-  const summary = { mode: live ? 'live-calibration' : 'offline-legacy-only', repeats, runs: [] }
+  const summary = { mode: live ? 'live-calibration' : 'offline-deterministic-only', repeats, runs: [] }
   for (const task of Object.keys(RUBRICS)) {
     const packet = makePacket(task)
     writeFileSync(join(out, `${task}.packet.json`), JSON.stringify(packet, null, 2) + '\n')
     for (const sample of samples(task)) {
       const reportFile = `${task}.${sample.id}.md`
       writeFileSync(join(out, reportFile), sample.report)
-      const legacy = legacyScore(task, sample.report)
+      const deterministic = deterministicScore(task, sample.report)
       for (let attempt = 1; attempt <= (live ? repeats : 1); attempt += 1) {
         let result = null, error = null
         if (live) {
           try { result = await callJudge(packet, { 'report.md': sample.report }, config) }
           catch (failure) { error = failure.message }
         }
-        const run = { task, sample: sample.id, attempt, legacy_score: legacy, llm_score: result?.score ?? null,
+        const run = { task, sample: sample.id, attempt, deterministic_score: deterministic, llm_score: result?.score ?? null,
           expected: sample.expected, in_expected_band: result && sample.expected
             ? result.score >= sample.expected[0] && result.score <= sample.expected[1] : null,
           error, report_sha256: sha256(sample.report), packet_sha256: sha256(JSON.stringify(packet)),
@@ -83,7 +104,7 @@ export async function calibrate({ out, live = false, repeats = 1, env = process.
         summary.runs.push(run)
         writeFileSync(join(out, `${task}.${sample.id}.${attempt}.json`), JSON.stringify({ ...run, result }, null, 2) + '\n')
         writeFileSync(join(out, 'summary.json'), JSON.stringify(summary, null, 2) + '\n')
-        onProgress(`${task}/${sample.id}/${attempt}: legacy=${legacy} llm=${run.llm_score ?? 'not scored'}${error ? ` (${error})` : ''}`)
+        onProgress(`${task}/${sample.id}/${attempt}: deterministic=${deterministic} llm=${run.llm_score ?? 'not scored'}${error ? ` (${error})` : ''}`)
         // Abort after an infrastructure failure; do not waste the remaining API calls.
         if (error) throw new Error(`calibration stopped; evidence saved to ${out}`)
       }

@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H11 grading uses two exact published HostConnectionService implementations.
 // Points: candidate import 10, unit regression 10, rc.2 real registration 20,
 // newer real registration 20, exact authority policy 30, branch-free source 10.
@@ -38,7 +39,7 @@ const COHORTS = [
   { name: 'alpha2', root: '/opt/dsh-cohorts/alpha2', version: '0.1.2-alpha.2' },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error instanceof Error ? error.stack : String(error)}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -193,7 +194,7 @@ async function cohortVersion(cohort) {
 
 async function fixtureChanged() {
   const result = await run('git', ['status', '--porcelain', '--', 'fixture'], '/app', 20000)
-  if (result.code !== 0) return { ok: false, detail: `git status failed: ${tail(result.stderr, 200)}` }
+  if (result.code !== 0) throw new Error(`fixture baseline unavailable: ${tail(result.stderr, 200)}`)
   const lines = result.stdout.trim().split('\n').filter(Boolean)
   return lines.length > 0
     ? { ok: true, detail: `fixture changed: ${lines.join('; ')}` }

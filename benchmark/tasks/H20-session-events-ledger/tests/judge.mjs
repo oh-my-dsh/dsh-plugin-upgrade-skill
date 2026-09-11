@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H20-session-events-ledger grading: migrate a plugin-internal session event
 // ledger module from alpha.3's removed `session.events` surface to alpha.4's
 // sequence/window API. Deterministic judge — no LLM:
@@ -13,7 +14,7 @@
 //    0 — fixture untouched, tracked files outside fixture/src/session-ledger.mjs
 //        modified, the git baseline rewritten (node_modules tampering), or the
 //        removed `events` surface patched back (runtime canary).
-// The judge always exits 0; the last stdout line is the {score, max, reasons} JSON.
+// Valid candidate outcomes emit a score packet; verifier failures exit nonzero.
 import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -28,7 +29,7 @@ function emit(score, reasons) {
   console.log(JSON.stringify({ score, max: 100, reasons }))
 }
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -40,7 +41,7 @@ async function main() {
   let status = ''
   try {
     status = execSync('git -C /app status --porcelain', { encoding: 'utf8' })
-  } catch (error) { emit(0, [`git baseline check failed to run: ${error.message}`]); return }
+  } catch (error) { emitError(error); return }
   const lines = status.split('\n').filter((l) => l.trim() !== '')
   const modified = lines.filter((l) => !l.startsWith('??')).map((l) => l.slice(3))
   const ledgerModified = modified.includes('fixture/src/session-ledger.mjs')

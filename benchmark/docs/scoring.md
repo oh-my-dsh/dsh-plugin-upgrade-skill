@@ -1,16 +1,30 @@
 # Scoring rules and checkpoint mapping
 
 Total 5600 (56 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
-Every judge: exit 0, with the last stdout line
-`{"score": 0-100, "max": 100, "reasons": [...]}`; `tests/test.sh` parses that last
-line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
+Valid grading exits 0 with the last stdout line
+`{"score": 0-100, "max": 100, "reasons": [...]}`. The shared verifier writes
+score/max to `reward.txt`, numeric reward metadata to `reward.json`, and the full
+packet to `grading.json` under `/logs/verifier` (or `VERIFIER_LOG_DIR`).
+Verifier/setup failures exit nonzero, write `verifier-error.json`, and leave no
+reward files. They are invalid evaluations to investigate/retry, not task failures
+to include as zero. Valid candidate failures can still receive zero.
+
+Current overrides (2026-09-08): S1/S2/S3/S4/S6 use local diagnostic rubrics grounded
+in fixture locations, migration direction, and required reasoning. Card IDs are
+auxiliary metadata only. M6–M12, H14–H19, and H8 exclude their 5 citation points
+from the primary score, normalize the remaining 95 points to 100, and preserve
+the original percentage caps. No primary score changes merely by adding/removing
+card IDs. Missing/corrupt trusted H23 setup is a verifier error; candidate
+tampering remains a scored failure. These overrides supersede affected entries
+in the historical table below; historical results are not automatically rescored.
+See the [fix evidence and limitations](../../paper/audit/main-56-grading-fix.zh.md).
 
 The opt-in [S1–S4 semantic report-judge pilot](report-judge-pilot.md) generates
 separate version-2 tasks. Its LLM criteria, evidence validation and evaluator-error
 handling are not part of the historical scoring table below; compare both skill
 conditions with the same pilot snapshot before reporting new scores.
 
-## Task → card / rollup recipe → score breakdown
+## Historical task → card / rollup recipe → score breakdown
 
 | Task | Checkpoint (cards / rollup recipes) | Score breakdown |
 |---|---|---|

@@ -64,3 +64,5 @@ function stripComments(source) {
     .replace(/^\s*\/\/.*$/gm, '')
     .replace(/\/\/.*$/gm, '')
 }
+
+export { emitError } from './judge-result.mjs'

@@ -5,14 +5,7 @@ import { join } from 'node:path'
 const APP_ROOT = '/app'
 export const FIXTURE_DIR = join(APP_ROOT, 'fixture')
 
-export function emit(score, reasons) {
-  process.stdout.write(JSON.stringify({
-    score: Math.max(0, Math.min(100, Math.round(score))),
-    max: 100,
-    reasons,
-  }) + '\n')
-  process.exit(0)
-}
+export { emit, emitError } from './judge-result.mjs'
 
 function run(file, args, { cwd, timeout = 60000 } = {}) {
   return new Promise((resolve) => {
@@ -26,7 +19,7 @@ function run(file, args, { cwd, timeout = 60000 } = {}) {
 
 export async function fixtureChanges(relFixtureDir = 'fixture') {
   const result = await run('git', ['status', '--porcelain', '--', relFixtureDir], { cwd: APP_ROOT, timeout: 20000 })
-  if (result.code !== 0) return { changed: null, detail: `git status failed: ${result.stderr.trim()}` }
+  if (result.code !== 0) throw new Error(`fixture baseline unavailable: git status failed: ${result.stderr.trim()}`)
   const lines = result.stdout.split('\n').filter(Boolean)
   return {
     changed: lines.length > 0,
@@ -54,7 +47,7 @@ export async function createProfile(profile, bundles) {
     writeFileSync(join(dir, 'cordis.yml'), '[]\n')
     return { ok: true }
   } catch (error) {
-    return { ok: false, detail: `profile setup failed: ${error.message}` }
+    throw new Error(`profile creation failed: ${error.message}`)
   }
 }
 

@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S8-release-routing-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected diagnosis (profile-dependency-management §8 version routing + §9 tag sync):
 //   1. Attempt-1: the README-pinned tag v0.9.5 does not exist on the public mirror
@@ -19,7 +20,7 @@ const ASPECTS = [
   { key: 'maintainer fix: push/sync tags to all mirrors', pattern: /--tags|tags? sync|sync[\s\S]{0,30}tags|push[\s\S]{0,30}tags|release tooling[\s\S]{0,40}tag/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -28,7 +29,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

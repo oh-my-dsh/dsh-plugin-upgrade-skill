@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S10-paste-rename-and-version-chip grading: fixture read-only gate + five design/diagnosis aspects.
 // Expected (post-release follow-ups on a lib-only attachment plugin):
 //   1. Rename scheme + numbering: images paste_image.<ext>, other pasted files paste_file.<ext>,
@@ -26,7 +27,7 @@ const ASPECTS = [
   { key: 'regression + release hygiene (same-name pastes coexist, version sync, hard refresh)', pattern: /(same[- ]name|two consecutive|second paste|repeated)[\s\S]{0,300}(coexist|assert|test|\(2\))|(PLUGIN_VERSION|hand-inlined|version constant)[\s\S]{0,240}(sync|package.json|in sync)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -35,7 +36,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

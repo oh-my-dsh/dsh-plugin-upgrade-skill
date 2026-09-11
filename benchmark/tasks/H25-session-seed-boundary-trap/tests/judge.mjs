@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // H25-session-seed-boundary-trap grading.
 //
 // A fork-aware session state helper migrates alpha.3 → alpha.4: the durable
@@ -24,7 +25,7 @@
 //        seedLength 70; alpha.3 pin 20;
 //    0 — fixture untouched, node_modules/host modified, or baseline
 //        rewritten (git-gated).
-// The judge always exits 0; the last stdout line is the {score, max, reasons} JSON.
+// Valid candidate outcomes emit a score packet; verifier failures exit nonzero.
 import { execSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -45,7 +46,7 @@ const TYPES = ['turn/start', 'session/title', 'todo/added', 'turn/end', 'session
 const FRESH_SEED = TYPES.slice(0, 3).map((t, i) => mkEvent(t, i))
 const RESUMED_SEED = TYPES.map((t, i) => mkEvent(t, i))
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -55,7 +56,7 @@ async function main() {
   let status = ''
   try {
     status = execSync('git -C /app status --porcelain', { encoding: 'utf8' })
-  } catch (error) { emit(0, [`git baseline check failed to run: ${error.message}`]); return }
+  } catch (error) { emitError(error); return }
   const lines = status.split('\n').filter((l) => l.trim() !== '')
   const modified = lines.filter((l) => !l.startsWith('??')).map((l) => l.slice(3))
   const allowed = (p) => p.startsWith('fixture/src/') || p === 'fixture/package.json'

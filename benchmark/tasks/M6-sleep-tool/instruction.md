@@ -11,8 +11,10 @@ This is an unattended benchmark run in a disposable isolated container; there wi
 
 I maintain a small tool plugin (working directory: `/app/fixture/`, i.e. the fixture directory inside the container) written in the 0.1.1-era style — it exposes a single `sleep` tool with cancellation support. The host has already been upgraded to dsh 0.1.2-alpha.2. Run the upgrade as a three-act drill:
 
-1. **Diagnose** — inspect the plugin against the 0.1.2-alpha.2 host, find every breakage (type sources, peer cohort, contract drift), and write the diagnosis with the corresponding card IDs to `/app/agent-output/M6-sleep-tool/diagnosis.md`;
+1. **Diagnose** — inspect the plugin against the 0.1.2-alpha.2 host, find every breakage (type sources, peer cohort, contract drift), and write the diagnosis with concrete file evidence and migration reasoning (card IDs are optional) to `/app/agent-output/M6-sleep-tool/diagnosis.md`;
 2. **Fix** — migrate the plugin by editing the files under `/app/fixture/` directly;
 3. **Deploy** — create an isolated profile, install the plugin, and cold-boot it headless (a profile without an API key is expected to reach `MISSING_CREDENTIAL` — that output is the activation proof). Confirm the plugin tree activates.
 
 Bump the version in `package.json` as part of the release hygiene. dsh 0.1.2-alpha.2 and pnpm are installed globally; the fixture is git-committed as the baseline, and nothing outside `/app/fixture/` and your own `/app/agent-output/` is part of this task — leave it alone.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

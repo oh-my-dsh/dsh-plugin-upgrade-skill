@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S16-self-host-upgrade-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected (self-host upgrade structural failure):
 //   1. Root cause: the session/tool worker IS the host process; npm removes/replaces the
@@ -24,7 +25,7 @@ const ASPECTS = [
   { key: 'prevention + checklist: guard detects self-upgrade intent; version marker, plugin verification, backup cleanup; zero-diff applied', pattern: /(guard|detect)[\s\S]{0,240}(self|host|intent|upgrad)|(checklist|verify)[\s\S]{0,240}(plugin|version|marker|brand|backup)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, ['judge error: ' + error.message]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -32,7 +33,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, ['fixture was modified, 0 points for this task (read-only discipline): ' + gate.detail])
   }
-  if (gate.changed === null) reasons.push('warning: ' + gate.detail)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
   const { text, files } = readAgentText('', TASK)
   if (!text.trim()) {

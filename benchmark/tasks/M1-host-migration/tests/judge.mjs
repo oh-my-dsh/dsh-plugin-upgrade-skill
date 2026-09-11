@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // M1-host-migration grading: install the agent-modified fixture into an isolated profile and do a real cold boot.
 //   100 — the plugin tree activates as a whole (no pending / plugin tree failed, and startup reaches the host application layer);
 //    40 — the fixture was changed but something is still pending / the plugin tree failed to load;
@@ -10,19 +11,20 @@ import { addPlugin, bootHeadless, cleanupProfile, createProfile, dshAvailable, e
 
 const TASK = 'M1-host-migration'
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}); treated as 0 points`])
   }
   reasons.push('fixture was modified by the agent')
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime judgment impossible, treated as 0 points'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   const profile = PROFILE(TASK)

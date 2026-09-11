@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -123,7 +123,14 @@ function runVerifier(t, { filename, report, solution = false, modified = false, 
   for (const [from, to] of [['/app', app], ['/tests', localTests], ['/solution', join(root, 'solution')], ['/logs', logs], ['/tmp/judge', join(root, 'judge')]]) shell = shell.replaceAll(from, to)
   writeFileSync(script, shell)
   const before = snapshot(output)
-  const result = spawnSync('bash', [script], { cwd: app, encoding: 'utf8', env: { ...process.env, PATH: dirname(process.execPath) + ':' + process.env.PATH }, timeout: 15000 })
+  const result = spawnSync('bash', [script], { cwd: app, encoding: 'utf8', env: { ...process.env, VERIFIER_LOG_DIR: join(logs, 'verifier'), PATH: dirname(process.execPath) + ':' + process.env.PATH }, timeout: 15000 })
+  if (missingBaseline) {
+    assert.notEqual(result.status, 0)
+    assert.equal(JSON.parse(readFileSync(join(logs, 'verifier/verifier-error.json'), 'utf8')).status, 'verifier_error')
+    assert.equal(existsSync(join(logs, 'verifier/reward.txt')), false)
+    assert.deepEqual(snapshot(output), before)
+    return 'verifier_error'
+  }
   assert.equal(result.status, 0, result.stdout + result.stderr)
   assert.deepEqual(snapshot(output), before, 'verifier must not create, replace, or delete agent artifacts')
   assert.doesNotMatch(result.stderr, /cp:|No such file/)
@@ -145,6 +152,6 @@ for (const filename of ['report.md', 'report-wrong.md', 'nested/findings.log']) 
 }
 for (const field of ['modified', 'missingBaseline']) {
   test('read-only gate fails closed: ' + field, (t) => {
-    assert.equal(runVerifier(t, { filename: 'report.md', report: oracle, [field]: true }), 0)
+    assert.equal(runVerifier(t, { filename: 'report.md', report: oracle, [field]: true }), field === 'missingBaseline' ? 'verifier_error' : 0)
   })
 }

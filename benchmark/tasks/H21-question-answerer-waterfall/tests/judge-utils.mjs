@@ -43,11 +43,7 @@ export function tail(text, size = 240) {
 }
 
 /** Emit the single-line judge result and exit 0 (the verifier normalizes it). */
-export function emit(rawScore, reasons) {
-  const score = Math.max(0, Math.min(100, Math.round(rawScore)))
-  process.stdout.write(`${JSON.stringify({ score, max: 100, reasons })}\n`)
-  process.exit(0)
-}
+export { emit, emitError } from './judge-result.mjs'
 
 /**
  * Detect whether the fixture working tree differs from the Docker baseline.
@@ -57,7 +53,7 @@ export function emit(rawScore, reasons) {
 export async function fixtureChanges(repoRoot, fixtureRel = 'fixture') {
   const result = await run('git', ['status', '--porcelain', '--', fixtureRel], repoRoot, 20000)
   if (result.code !== 0) {
-    return { ok: false, detail: `git status failed: ${tail(result.stderr, 200)}` }
+    throw new Error(`fixture baseline unavailable: git status failed: ${tail(result.stderr, 200)}`)
   }
   const lines = result.stdout.trim().split('\n').filter(Boolean)
   return lines.length > 0

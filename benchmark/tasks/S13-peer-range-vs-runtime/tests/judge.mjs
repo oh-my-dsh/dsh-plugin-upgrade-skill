@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S13-peer-range-vs-runtime grading: fixture read-only gate + five diagnosis aspects.
 // Expected diagnosis:
 //   1. dsh alpha.4 removed Session.events (the eagerly materialized array) and
@@ -36,7 +37,7 @@ const ASPECTS = [
     pattern: /(changelog|release.?note).{0,80}(between|from|alpha)|(grep|scan|search|check).{0,60}(source|code|API|type)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -45,7 +46,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

@@ -14,8 +14,10 @@ I am a DSH plugin maintainer. `/app/fixture/` in the container holds the source 
 
 Please **analyze this source read-only** (do not modify any file under `/app/fixture/`) and produce a migration touchpoint report, written under `/app/agent-output/S4-legacy-client-imports/` (any filename; .md/.txt both fine). Requirements:
 
-1. Find every touchpoint that will break on 0.1.2-alpha.2, and for each give: file/line, the affected plane (Host / Web Client / plugin), the full upgrade card ID (e.g. `DSH-0.1.2-A1-25`), and the migration action;
+1. Find every touchpoint that will break on 0.1.2-alpha.2, and for each give: file/line, the affected plane (Host / Web Client / plugin), the concrete version change and migration action, supported by file evidence (card IDs are optional);
 2. Do not fabricate change cards: every assertion must carry a source or be explicitly marked "unconfirmed";
 3. Do not build or create any reproduction environment, and do not modify anything outside the fixture.
 
-What is tested is whether the scan is complete, the card mapping is accurate, and read-only discipline is respected.
+What is tested is whether the scan is complete, the diagnosis and migration direction are correct, and read-only discipline is respected.
+
+Scoring note: correctness is assessed independently of card identifiers. Optional citations are recorded separately; a list of card IDs alone is not a diagnosis.

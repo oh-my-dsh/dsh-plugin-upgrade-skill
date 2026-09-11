@@ -1,3 +1,4 @@
+import { emitError } from './judge-result.mjs'
 // S9-composer-coordinate-trap grading: fixture read-only gate + five diagnosis aspects.
 // Expected diagnosis (one contract misread under two symptoms):
 //   1. The two projections named: the published draft/occurrence offsets are CLIPBOARD-text
@@ -27,7 +28,7 @@ const ASPECTS = [
   { key: 'regression: repeat interaction + removal clears every view', pattern: /(two|second|consecutive|repeat)[\s\S]{0,180}(paste|attachment|insert|chip)[\s\S]{0,260}(coexist|both|still|remain|assert|removed|cleared|disappear)/i, points: 20 },
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
@@ -36,7 +37,7 @@ async function main() {
   if (gate.changed === true) {
     emit(0, [`fixture was modified, 0 points for this task (read-only discipline): ${gate.detail}`])
   }
-  if (gate.changed === null) reasons.push(`warning: ${gate.detail}`)
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable: ' + gate.detail))
   else reasons.push('fixture unchanged (read-only discipline passed)')
 
   const { text, files } = readAgentText('', TASK)

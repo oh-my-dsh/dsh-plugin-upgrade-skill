@@ -1,7 +1,9 @@
+// Primary rubric: 95 non-citation points normalized to 100 before percentage caps.
+// Citation points are auxiliary metrics only; diagnosis checks remain lexical, not semantic validation.
 // H16-history-dock grading: the composer surface became a Lexical contenteditable
 // DIV (card DSH-0.1.2-A1-28) and the session view internals split (card
 // DSH-0.1.2-A1-03) — the whole exam is the client plane.
-//   15 — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-28 (3) + DSH-0.1.2-A1-03 (2);
+//   10 primary + 5 auxiliary — diagnosis.md exists (5), names the plugin (5), cites DSH-0.1.2-A1-28 (3) + DSH-0.1.2-A1-03 (2);
 //   50 — static migration contract:
 //        querySelector('textarea') gone from the sources (6)
 //        + keydown listener registered in the CAPTURE phase — third-arg true or
@@ -24,6 +26,7 @@
 // H14 precedent); static incomplete → cap 40; fixture unchanged → 0.
 // Boundary: there is no browser in this container — the browser-side verdict is the
 // boot graph entry only (DSH-0.1.2-A1-19). Results are emitted after try/finally.
+import { pathToFileURL } from 'node:url'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
@@ -33,6 +36,7 @@ import {
   createProfile,
   dshAvailable,
   emit,
+  emitError,
   FIXTURE_DIR,
   fixtureChanges,
   localExec,
@@ -57,12 +61,14 @@ const POST_INJECT = [
   '@deepseek-ai/dsh-client-ui-renderer',
 ]
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href
+if (isMain) main().catch((error) => emitError(error))
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error(`fixture change check failed: ${gate.detail}`))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
@@ -78,7 +84,7 @@ async function main() {
   reasons.push(...act2.reasons)
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable in the container'))
   }
 
   // Act 3: install + web cold boot + browser roster.
@@ -88,7 +94,7 @@ async function main() {
   try {
     const created = await createProfile(profile, ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])
     if (!created.ok) {
-      reasons.push(created.detail)
+      throw new Error(`profile creation failed: ${created.detail}`)
     } else {
       const added = await addPlugin(profile, FIXTURE_DIR)
       if (!added.ok) {
@@ -127,7 +133,14 @@ async function main() {
   const act4 = await scoreRelease()
   reasons.push(...act4.reasons)
 
-  let score = act1.score + act2.score + act3 + act4.score
+  const graded = scoreComposite(act1, act2, act3, act4)
+  emit(graded.score, [...reasons, ...graded.reasons], { metrics: graded.metrics })
+}
+
+/** Normalize the existing 95 non-citation points, then apply percentage caps. */
+export function scoreComposite(act1, act2, act3, act4) {
+  const reasons = []
+  let score = (act1.score + act2.score + act3 + act4.score) * 100 / 95
   if (act2.textareaRetained) {
     score = Math.min(score, 60)
     reasons.push("querySelector('textarea') retained (the memo's bait: the composer is still a textarea under the hood) — capped at 60")
@@ -144,19 +157,29 @@ async function main() {
     score = Math.min(score, 40)
     reasons.push('static migration incomplete — capped at 40')
   }
-  emit(score, reasons)
+  return { score, reasons, metrics: {
+    diagnosis: { score: act1.score, max: 10 },
+    staticContract: { score: act2.score, max: 50 },
+    runtime: { score: act3, max: 25 },
+    releaseHygiene: { score: act4.score, max: 10 },
+    citation: { score: act1.citationScore, max: 5, auxiliary: true },
+    composite: { rawScore: act1.score + act2.score + act3 + act4.score, rawMax: 95, normalizedMax: 100 },
+  } }
 }
 
-/** Act 1: the diagnosis exists, names the plugin, cites the cards. */
-function scoreDiagnosis(text) {
+/** Act 1: the diagnosis exists, names the plugin; citations are auxiliary. */
+export function scoreDiagnosis(text) {
+  const citations = text
+  text = text.replace(/\b(?:DSH-\d+\.\d+\.\d+-A\d+-\d+|R-\d+)\b/g, '')
   const reasons = []
+  let citationScore = 0
   let score = 0
   if (text.trim().length > 0) {
     score += 5
     reasons.push('diagnosis report exists (+5)')
   } else {
     reasons.push('no diagnosis report under /app/agent-output/H16-history-dock/')
-    return { score, reasons }
+
   }
   if (text.includes('bench-history-dock')) {
     score += 5
@@ -164,19 +187,19 @@ function scoreDiagnosis(text) {
   } else {
     reasons.push('diagnosis does not name the plugin')
   }
-  if (text.includes('DSH-0.1.2-A1-28')) {
-    score += 3
-    reasons.push('diagnosis cites DSH-0.1.2-A1-28 (composer surface: textarea -> Lexical contenteditable) (+3)')
+  if (citations.includes('DSH-0.1.2-A1-28')) {
+    citationScore += 3
+    reasons.push('diagnosis cites DSH-0.1.2-A1-28 (composer surface: textarea -> Lexical contenteditable) (auxiliary +3)')
   } else {
     reasons.push('diagnosis does not cite DSH-0.1.2-A1-28')
   }
-  if (text.includes('DSH-0.1.2-A1-03')) {
-    score += 2
-    reasons.push('diagnosis cites DSH-0.1.2-A1-03 (session view split) (+2)')
+  if (citations.includes('DSH-0.1.2-A1-03')) {
+    citationScore += 2
+    reasons.push('diagnosis cites DSH-0.1.2-A1-03 (session view split) (auxiliary +2)')
   } else {
     reasons.push('diagnosis does not cite DSH-0.1.2-A1-03')
   }
-  return { score, reasons }
+  return { score, reasons, citationScore, citationMax: 5 }
 }
 
 /** Act 2: the composer-surface migration contract on the client plane. */

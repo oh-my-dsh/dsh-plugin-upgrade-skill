@@ -1,6 +1,7 @@
+import { emitError } from './judge-result.mjs'
 // M5-token-auth-smoke grading — declarative checkpoints (tests/checkpoints.json).
 // Gate layer (environment health, scored before any checkpoint):
-//   fixture unchanged -> 0; dsh unavailable -> 0; dsh plugin add failed -> 30;
+//   fixture unchanged -> 0; dsh unavailable -> verifier error; dsh plugin add failed -> 30;
 //   web cold boot negative signal / no boot URL -> 40; smoke not measurable -> 40.
 // Checkpoint layer: every checkpoint is measured against BOTH the pristine trap
 // fixture (restored from the git baseline) and the agent's patched fixture.
@@ -34,30 +35,31 @@ const ENVELOPE = JSON.stringify({ type: 'client-request', rpcId: 'bench-m5-smoke
 const RAW_ROUTE_RE = /^\s*(?:ctx\.)?webServer\.register\s*\(/m
 const DECL = JSON.parse(readFileSync(join(import.meta.dirname, 'checkpoints.json'), 'utf8'))
 
-main().catch((error) => emit(0, [`judge error: ${error.message}`]))
+main().catch(emitError)
 
 async function main() {
   const reasons = []
 
   const gate = await fixtureChanges('fixture')
+  if (gate.changed === null) emitError(new Error('fixture baseline unavailable'))
   if (gate.changed !== true) {
     emit(0, [`fixture unchanged (${gate.detail}), graded as 0`])
   }
   reasons.push('fixture was modified by the agent')
 
   if (!(await dshAvailable())) {
-    emit(0, [...reasons, 'dsh unavailable in the container; runtime verification treated as failed'])
+    emitError(new Error('dsh unavailable: runtime verification cannot run'))
   }
 
   const pristine = await restorePristine(TASK)
   if (!pristine.ok) {
-    emit(0, [...reasons, `baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`])
+    emitError(new Error(`baseline mismatch: cannot restore the pristine fixture (${pristine.detail})`))
   }
 
   // Pristine run — pins the documented trap state before anything is scored.
   const pristineOutcome = await measure(pristine.dir, 'bench-m5-pristine')
   if (pristineOutcome.createFailed || !pristineOutcome.measurable) {
-    emit(0, [...reasons, `baseline mismatch: pristine trap state cannot be measured (${pristineOutcome.detail})`])
+    emitError(new Error(`baseline mismatch: pristine trap state cannot be measured (${pristineOutcome.detail})`))
   }
   const baseline = {
     'authed-200': pristineOutcome.authedStatus === 200 ? 'pass' : 'fail',
@@ -66,7 +68,7 @@ async function main() {
   }
   for (const cp of DECL.checkpoints) {
     if (cp.type === 'fail-to-pass' && baseline[cp.id] === 'pass') {
-      emit(0, [...reasons, `baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`])
+      emitError(new Error(`baseline mismatch: checkpoint ${cp.id} already passes on the pristine trap fixture — the task is broken; fix the fixture before scoring`))
     }
   }
   reasons.push(`pristine baseline: no-auth ${pristineOutcome.noAuthStatus}, authed ${pristineOutcome.authedStatus}, raw route ${rawRouteIn(pristine.dir) ? 'present' : 'absent'}`)
@@ -74,7 +76,7 @@ async function main() {
   // Patched run — gates first, then the declared checkpoints.
   const patchedOutcome = await measure(FIXTURE_DIR, 'bench-m5-patched')
   if (patchedOutcome.createFailed) {
-    emit(0, [...reasons, `profile creation failed: ${patchedOutcome.detail}`])
+    emitError(new Error(`profile creation failed: ${patchedOutcome.detail}`))
   }
   if (patchedOutcome.addFailed) {
     emit(30, [...reasons, `dsh plugin add failed: ${patchedOutcome.addDetail}`])
