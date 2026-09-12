@@ -25,6 +25,13 @@ No new model experiments have run. The proposed four conditions are
 [fix summary](../paper/audit/main-56-grading-fix.zh.md) for 20 static task probes,
 four runtime oracle/nop controls and remaining admission work.
 
+A first paired GLM-5.3-Flash solver run over both branches (2026-09-12,
+Harbor-protocol local replication, upgrade-only condition) is recorded in
+[validation-report-2026-09-12-main56-vs-main-glm53flash.md](results/validation-report-2026-09-12-main56-vs-main-glm53flash.md).
+It confirms the verifier-error separation (H9) but surfaces a grading
+compatibility defect that blocks adoption: H23's graders accept only their own
+branch's expected declaration shape and zero the other branch's perfect answer.
+
 Only aggregate evidence is versioned here. Detailed duplicate probe files remain
 in the local backup. The standalone
 [static probe script](../paper/audit/scripts/probe-static-graders.mjs) can regenerate
