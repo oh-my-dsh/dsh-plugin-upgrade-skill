@@ -1,0 +1,48 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"find /app/fixture -maxdepth 2 -type f -printf '%p\\\\n' | sort && echo '--- README.md ---' && sed -n '1,240p' /app/fixture/README.md && echo '--- boot-crash-log.txt ---' && sed -n '1,260p' /app/fixture/boot-crash-log.txt && echo '--- profile-patch-excerpt.txt ---' && sed -n '1,260p' /app/fixture/profile-patch-excerpt.txt && echo '--- web-app-patch-excerpt.txt ---' && sed -n '1,260p' /app/fixture/web-app-patch-excerpt.txt\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'mkdir -p /app/agent-output/S22-duplicate-insert-boot-crash-trap'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,280p' /app/agent-output/S22-duplicate-insert-boot-crash-trap/report.md && echo '--- fixture status ---' && find /app/fixture -maxdepth 1 -type f -printf '%f %s bytes\\\\n' | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"find /app/fixture -maxdepth 2 -type f -printf '%p\\\\n' | sort && echo '--- README.md ---' && sed -n '1,240p' /app/fixture/README.md && echo '--- boot-crash-log.txt ---' && sed -n '1,260p' /app/fixture/boot-crash-log.txt && echo '--- profile-patch-excerpt.txt ---' && sed -n '1,260p' /app/fixture/profile-patch-excerpt.txt && echo '--- web-app-patch-excerpt.txt ---' && sed -n '1,260p' /app/fixture/web-app-patch-excerpt.txt\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":20000});\ntext(r.output);"
+    },
+    {
+      "name": "exec",
+      "input": "const mk = await tools.exec_command({cmd:\"mkdir -p /app/agent-output/S22-duplicate-insert-boot-crash-trap\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":2000});\ntext(mk.output);\nconst patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S22-duplicate-insert-boot-crash-trap/report.md\\n+# S22 — Duplicate insert boot-crash report\\n+\\n+## 1. Root cause\\n+\\n+The collision is between these two declarations of the same loader-entry ID:\\n+\\n+- The profile’s manually added block in `profile-patch-excerpt.txt`:\\n+  `id: workspace-files`, `name: '@deepseek-ai/dsh-api-workspace-files'`.\\n+- The installed web-app bundle’s block in `web-app-patch-excerpt.txt`:\\n+  `id: workspace-files`, `name: '@deepseek-ai/dsh-api-workspace-files'` (identified as L110–111 in the installed tree).\\n+\\n+The duplicate is detected at the Cordis loader layer, specifically in\\n+`cordis-plugin-loader`’s `EntryGroup.update`, while `dsh-app-boot` applies the\\n+`cordis:include` loader entry. It is not a failure in the workspace-files\\n+plugin’s runtime or document-reading code.\\n+\\n+Loader-entry IDs are unique keys in the merged include/entry group. An `insert`\\n+is a declaration/addition, not a later-row override, so accepting the second\\n+row would make the composed loader tree ambiguous (including which declaration\\n+and metadata should win). Cordis therefore throws on the duplicate and aborts\\n+plugin-tree construction; no web boot can continue.\\n+\\n+## 2. Layering rules\\n+\\n+For a profile patch over a bundle-provided plugin:\\n+\\n+- Changing that plugin’s configuration by its existing ID is safe; it targets\\n+  the existing declaration rather than declaring a second one.\\n+- Inserting an ID that the bundle does not ship is safe as an additional\\n+  profile/plugin declaration.\\n+- Inserting an ID that the bundle already ships is fatal because it creates a\\n+  duplicate loader entry.\\n+\\n+The maintainer performed the third operation. The proof is the matching\\n+`workspace-files` row in the web-app bundle excerpt, alongside the identical\\n+manual row in the profile excerpt. The profile comment calling the row\\n+“冗余” is therefore correct about its redundancy, but retaining the row is not\\n+safe: redundancy in an `insert` is precisely the duplicate.\\n+\\n+## 3. Fix\\n+\\n+Delete the manually added `workspace-files` `- insert:` block from the profile’s\\n+`cordis.patch.yml` (the block at the end of `profile-patch-excerpt.txt`). Keep\\n+the bundle’s existing row. If the profile needs to adjust this plugin, change\\n+its configuration by the existing ID instead of inserting another loader row.\\n+\\n+The plugin’s own code is not at fault. The loader fails while composing the\\n+plugin tree, before the plugin can be initialized, so no plugin-side code\\n+change can resolve this boot failure. The required change is in the profile\\n+patch; changing or removing the bundle plugin itself would be the wrong fix.\\n+\\n+## 4. Prevention\\n+\\n+Before adding a loader row by hand, inspect the installed bundle’s\\n+`cordis.patch.yml` (and the installed package/tree it references) for the\\n+plugin ID. In this incident, checking the web-app bundle would have shown the\\n+`workspace-files` row already supplied at L110–111.\\n+\\n+At boot, dsh could make the diagnostic actionable by reporting both declaration\\n+owners and their sources, for example: profile\\n+`C:\\\\Users\\\\lhh\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml` and the web-app bundle’s\\n+`packages/bundle/web-app/cordis.patch.yml`, then explicitly advising:\\n+\\n+> Duplicate loader entry `workspace-files`: bundle already provides\\n+> `@deepseek-ai/dsh-api-workspace-files`; remove the profile’s manual `insert`\\n+> block from the profile patch.\\n+\\n+That identifies whom to blame (the profile-side duplicate), what is already\\n+provided (the bundle), and exactly what to delete.\\n*** End Patch\";\ntext(await tools.apply_patch(patch));"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"sed -n '1,280p' /app/agent-output/S22-duplicate-insert-boot-crash-trap/report.md && echo '--- fixture status ---' && find /app/fixture -maxdepth 1 -type f -printf '%f %s bytes\\\\n' | sort\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":12000});\ntext(r.output);"
+    }
+  ],
+  "skill_command_hits": [],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}

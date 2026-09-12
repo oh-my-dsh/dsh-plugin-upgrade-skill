@@ -1,0 +1,102 @@
+# S13 — Peer Range vs Runtime Reality
+
+## 1. Exact incompatibility
+
+The plugin expects `Session.events` to be an eagerly materialized iterable
+events array. Its source reads `liveAgent.session.events` and passes session
+`.events` to `replayEvents`; the excerpt shows 42 such references. At runtime
+that property is absent, so replay reaches `prepareReplayEvents` with a
+non-iterable value and fails with `TypeError: events is not iterable`.
+
+dsh removed `Session.events` in **v0.1.2-alpha.4**. The dsh changelog says:
+
+> **Replace `Session.events` with on-demand read APIs**: `seq`, `eventAt()`,
+> and `snapshotEvents()` - the eagerly materialized events array is removed
+> to reduce memory overhead in long sessions.
+
+Thus dsh `0.1.2-alpha.5` contains the post-alpha.4 API, while this plugin was
+written for the old API.
+
+## 2. Why npm emitted no peer warning
+
+`^0.1.2-alpha.2` is a package-metadata constraint. For this case, it permits
+versions from `0.1.2-alpha.2` up to (but not including) the next incompatible
+`0.2.0` line. The installed `0.1.2-alpha.5` is greater than
+`0.1.2-alpha.2` in semver ordering and is therefore in the declared range.
+
+The range does **not** prove that every API, property, type, signature, or
+behavior remains compatible across those versions. npm does not execute the
+plugin or inspect its 42 `.events` accesses to validate behavior. It only sees
+that the installed package version satisfies the declared range, so the peer
+check passes.
+
+## 3. The fundamental distinction
+
+- **Peer-range satisfaction** checks: does the installed dependency version
+  match the version expression in the consumer package's metadata?
+- **Runtime compatibility** checks: when the consumer's actual code executes
+  against that dependency, do all required APIs and behavioral contracts still
+  exist and work as expected?
+
+At least these breakages can pass peer-range validation and still crash:
+
+1. An API/property is removed or renamed, as with `Session.events`.
+2. An API's shape or type changes (for example, an array becomes an object or
+   a value becomes `undefined`), causing iteration, destructuring, or method
+   calls to fail.
+3. A function's signature, return value, or required initialization/config
+   contract changes, causing an invalid call or startup failure.
+
+Semver ranges are useful compatibility declarations, but they are not a
+behavioral proof or a substitute for testing.
+
+## 4. What the plugin author should have done
+
+Before publishing, the author should have run the plugin's startup and relevant
+transcript/replay tests against the actual supported dsh versions, including
+`@deepseek-ai/dsh@0.1.2-alpha.5` (or the corresponding bundled `dsh-*`
+packages). A test that creates a session and exercises channel creation/replay
+would have caught the missing property immediately. The author should then
+have migrated the 42 `.events` uses to the replacement APIs, or explicitly
+limited support to versions that still provide the old property.
+
+For users, the package metadata should encode the versions genuinely tested
+and supported. The peer range (and, where appropriate, an `engines` field)
+should be narrowed or bounded to exclude dsh releases after the breaking API
+change if the plugin has not been migrated. Metadata communicates the support
+envelope; it cannot encode every runtime feature assumption.
+
+The code also needs a runtime feature-detection guard at the boundary, for
+example checking that the needed session API exists before creating the
+channel. If the old API is missing, it should emit a clear “this plugin
+requires dsh version X or the new replay API” message, choose a compatible
+fallback when possible, or stop loading gracefully. A guard improves failure
+handling; it does not replace migration and versioned testing.
+
+## 5. A pre-install check the user can do now
+
+Inspect the package tarball without installing it, then compare its host-API
+references with the target dsh release notes/API. For example:
+
+```sh
+check_dir="$(mktemp -d)"
+npm pack @deepseek-harness-tui/dsh-tui@0.1.0-beta.4 \
+  --pack-destination "$check_dir"
+tar -xzf "$check_dir"/*.tgz -C "$check_dir"
+rg -n '\.events|Session\.events' "$check_dir/package"
+```
+
+Seeing those references, followed by the alpha.4 changelog entry stating that
+`Session.events` was removed, identifies the incompatibility before an
+install. As a quick metadata check, also inspect
+`npm view @deepseek-harness-tui/dsh-tui@0.1.0-beta.4 peerDependencies`; that
+reveals the broad `^0.1.2-alpha.2` declaration, but the tarball/source and
+target-version API comparison are what expose this runtime risk.
+
+## Evidence
+
+- `dsh-changelog-excerpt.md`: removal in `0.1.2-alpha.4` and replacement APIs.
+- `plugin-source-excerpt.js`: direct `.events` reads and replay use.
+- `crash-stack.txt`: startup failure, `TypeError: events is not iterable`.
+- `npm-install-output.txt`: installed dsh `0.1.2-alpha.5` satisfies the peer
+  range and npm emitted no peer warning.

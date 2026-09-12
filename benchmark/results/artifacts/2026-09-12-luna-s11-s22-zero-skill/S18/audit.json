@@ -1,0 +1,100 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"find /app/fixture -maxdepth 2 -type f -printf '%p\\\\n' | sort && printf '\\\\n--- output dir ---\\\\n' && find /app/agent-output -maxdepth 2 -type f -printf '%p\\\\n' 2>/dev/null | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/README.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/renderer-excerpt.ts'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/symptom-log.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/frames-digest-report.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/ci-hang-evidence.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"rg -n -S \\\"setTimeout|unmount|trim|erase|tail2|digest|renderSpriteRows|unref|CSI|\\\\\\\\x1b\\\" /app/fixture /app --glob '\"'!fixture/**'\"' --glob '\"'!agent-output/**'\"' 2>/dev/null | head -200\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'mkdir -p /app/agent-output/S18-terminal-sprite-render-trap'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,320p' /app/agent-output/S18-terminal-sprite-render-trap/report.md\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"find /app/fixture -type f -maxdepth 1 -printf '%f\\\\n' | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git -C /app status --short -- fixture /app/agent-output 2>/dev/null || true'",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"find /app/fixture -maxdepth 2 -type f -printf '%p\\\\n' | sort && printf '\\\\n--- output dir ---\\\\n' && find /app/agent-output -maxdepth 2 -type f -printf '%p\\\\n' 2>/dev/null | sort\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000}); text(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const files = [\"/app/fixture/README.md\",\"/app/fixture/renderer-excerpt.ts\",\"/app/fixture/symptom-log.txt\",\"/app/fixture/frames-digest-report.txt\",\"/app/fixture/ci-hang-evidence.txt\"];\nconst rs = await Promise.all(files.map(path => tools.exec_command({cmd:`sed -n '1,240p' '${path}'`,workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000})));\nfor (let i=0;i<rs.length;i++){ text(`\\n===== ${files[i]} =====\\n${rs[i].output}`); }\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"rg -n -S \\\"setTimeout|unmount|trim|erase|tail2|digest|renderSpriteRows|unref|CSI|\\\\\\\\x1b\\\" /app/fixture /app --glob '!fixture/**' --glob '!agent-output/**' 2>/dev/null | head -200\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000}); text(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"mkdir -p /app/agent-output/S18-terminal-sprite-render-trap\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:2000}); text(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S18-terminal-sprite-render-trap/report.md\\n+# S18 — Terminal Sprite Render Trap\\n+\\n+## Findings\\n+\\n+The symptoms are four different defects that happen to overlap visually:\\n+\\n+1. the ANSI background attribute is carried into a transparent half of a cell;\\n+2. a shorter row does not erase the longer row that preceded it;\\n+3. `tail2` contains hand-porting errors; and\\n+4. a self-rescheduling Node timer keeps some non-interactive CI processes alive.\\n+\\n+## 1. Phantom pixels\\n+\\n+The renderer relies on terminal SGR state persisting from one cell to the next. In\\n+the both-visible case it emits, in order:\\n+\\n+```text\\n+ESC[38;2;<upper-r>;<upper-g>;<upper-b>m ESC[48;2;<lower-r>;<lower-g>;<lower-b>m ▀\\n+```\\n+\\n+The `48;2;...m` sequence changes the terminal's current background color. It is\\n+not scoped to that glyph and is not cleared by the next cell unless another escape\\n+does so.\\n+\\n+The exposed cases are the half-filled cells:\\n+\\n+- `up !== undefined && lo === undefined` emits only `fg(up)` and `▀`. The lower,\\n+  empty half of `▀` is therefore painted with the previous cell's background.\\n+- `lo !== undefined && up === undefined` emits only `fg(lo)` and `▄`. The upper,\\n+  empty half of `▄` likewise uses the previous cell's background.\\n+\\n+At the right edge of the outline, the sleep-Z marks, and the heart, those branches\\n+can follow a cell that set a sprite-colored background. The result is a one-cell\\n+colored patch in a half that is `.` in the frame data. `current` only suppresses\\n+duplicate escape strings; it does not make SGR state local to a cell. The row-end\\n+`RESET` is too late to repair an artifact already painted in the row.\\n+\\n+If transparent means the terminal's default background, the exact minimal fix is\\n+to set that background explicitly in both one-sided branches:\\n+\\n+```ts\\n+} else if (up !== undefined) {\\n+  seq = fg(up) + '\\\\x1b[49m' // default background for the empty lower half\\n+  ch = '▀'\\n+} else if (lo !== undefined) {\\n+  seq = fg(lo) + '\\\\x1b[49m' // default background for the empty upper half\\n+  ch = '▄'\\n+```\\n+\\n+If the sprite has a defined canvas background rather than the terminal default,\\n+use `bg(canvasBackground)` instead of `\\\\x1b[49m`. The important contract is that\\n+every half-block specifies the background used by its empty half; it must not\\n+inherit `48;2;...m` from a neighboring cell.\\n+\\n+## 2. Ghost frames\\n+\\n+For each row the renderer emits a literal space for a fully transparent cell, then\\n+does:\\n+\\n+```ts\\n+out.replace(/[ ]+$/, '')\\n+```\\n+\\n+That drops every trailing blank cell after the last visible glyph. The later\\n+`RESET` is an escape sequence and has zero terminal-column width; it does not\\n+restore the dropped cells or clear their old contents. The text pipeline also\\n+normalizes/suppresses trailing whitespace when it handles the row text, so padding\\n+that is merely represented by spaces cannot be relied upon to reach the terminal.\\n+\\n+When the wide frame was drawn, its tail occupied real terminal cells. Rewriting\\n+the row with a narrower string changes only the columns present in the new write.\\n+Terminal output is not a replacement-string operation: columns beyond the new\\n+end retain the old glyphs and colors. Hence the wide tail survives a switch even\\n+though the narrow frame's own data and rendered prefix are correct.\\n+\\n+The clean-switch fix has two parts:\\n+\\n+1. Preserve the canvas geometry end to end. Render every row as exactly 40\\n+   terminal cells, including its right-side blank cells, remove the renderer's\\n+   trailing-space trim, and use a text path that preserves those cells (or emits\\n+   an equivalent control sequence rather than whitespace padding).\\n+2. Erase the old terminal row/rectangle as part of the frame write. For a cursor\\n+   positioned at the row start, `\\\\x1b[2K\\\\r` followed by the row is a robust row\\n+   operation; `\\\\x1b[K` is sufficient when the cursor is already at the start and\\n+   the intended erase is to end of line. Then write the row at the known origin.\\n+\\n+Fixed-width overwrite handles the known 40-column canvas, while explicit erase\\n+handles a previously wider write and remains correct even if an intermediate\\n+text layer strips whitespace. Both are part of the renderer contract; a final\\n+`RESET` only restores attributes and is not an erase operation.\\n+\\n+## 3. Frame data drift\\n+\\n+The digest report says every listed frame matches source art except `tail2`:\\n+`standard`, `blink`, `fin1`, `fin2`, `spout1`–`spout6`, `tail1`, `tail3`,\\n+`tail4`, `heart1`–`heart3`, and `sleep1`–`sleep5` are `OK`. `tail2` has 23\\n+different cells, all in the upper-right spout/tail-tip area. The report identifies\\n+the pattern as a one-column-left shift: row 2 has the ported `D` at column 26\\n+instead of source column 27; row 3 has an extra `D` at 25, a shifted `DBD` at\\n+26–28, and extra `DD` at 36–37; rows 4–6 continue the shifted upper-right\\n+cluster.\\n+\\n+The existing regression was per-excerpt and was added for a different frame. It\\n+therefore never compared the complete `tail2` 25-row frame with its source. A\\n+passing excerpt test could not detect an uncovered hand-copied region.\\n+\\n+The gate should maintain a canonical digest manifest (or equivalent canonical\\n+pixel fixtures) for every named frame and, in CI, hash/compare all 25 rows and\\n+the expected 40-column geometry. A port or art change must fail the gate unless\\n+the source art and the deliberately reviewed golden digest are changed together.\\n+`tail2` must first be corrected to source art; its bad digest must not be blessed\\n+as the new expected value.\\n+\\n+## 4. The hang\\n+\\n+The animation planner schedules the next tick with `setTimeout`, and each tick\\n+schedules another timeout while its component remains mounted. That creates one\\n+live Timeout handle at a time, but it never reaches a terminal state. The\\n+channel-ui scene/check hosts mount the header component and finish their checks\\n+without unmounting it, so PASS is printed while the planner's timer chain still\\n+pins the Node event loop. The runner eventually kills the otherwise idle process.\\n+\\n+The interactive terminal does not reveal this as a new hang because its process\\n+already has live TTY/stdin handles; those handles keep it alive regardless of the\\n+animation timer chain. That masks the timer lifecycle bug in normal interactive\\n+use; it does not make the timer safe for finite CI/test processes.\\n+\\n+For this specific “finished but does not exit” failure, the one-line Node fix is\\n+to unref each scheduled timeout:\\n+\\n+```ts\\n+setTimeout(tick, delay).unref()\\n+```\\n+\\n+The timer may still reschedule while mounted, but it no longer prevents a process\\n+with no other work from exiting. The complementary component contract should\\n+still retain the timeout handle and `clearTimeout` it on unmount, so unref is not\\n+used as a substitute for lifecycle cleanup.\\n+\\n+## 5. Prevention\\n+\\n+### Renderer contract checklist\\n+\\n+- Define the canvas as 25 pixel rows × 40 pixel columns; every frame must satisfy\\n+  that geometry, even when its visible content is narrower.\\n+- Define `.` as transparent and define what transparent means on the terminal\\n+  (default background or an explicit canvas background).\\n+- For each half-block, set the foreground and background attributes required by\\n+  both halves. In particular, never leave an empty half dependent on a previous\\n+  cell's SGR background.\\n+- Treat SGR state as persistent terminal state: use explicit transitions, keep\\n+  the `current` optimization semantically correct, and reset/restore state at a\\n+  row or frame boundary.\\n+- Emit rows at fixed width through the text pipeline. No renderer or formatter\\n+  may silently trim the trailing blank cells.\\n+- On a frame rewrite, draw at a known cursor origin and erase the old row/region\\n+  or overwrite its full maximum extent. `RESET` is not erasure.\\n+- Keep all frames in canonical source-art form and gate ports with a digest or\\n+  pixel-for-pixel comparison covering every frame, row, and column.\\n+- Start animation only for a mounted/active component, cancel its timer on\\n+  unmount, and make background timers non-pinning in Node test/CI hosts (for\\n+  example with `unref`).\\n+- Test neighboring-cell SGR carry-over, upper-only and lower-only cells, wide to\\n+  narrow and narrow to wide transitions, every frame digest, terminal cursor /\\n+  erase behavior, and clean process exit.\\n+\\n+### Audit before enabling animation by default\\n+\\n+1. Inventory every consumer and host, including scene tests, snapshot runners,\\n+   CLI checks, and the interactive terminal. Record who mounts the component,\\n+   who unmounts it, and whether the host has a TTY.\\n+2. Run the all-frame digest/geometry gate against source art and review any\\n+   hand-ported frame changes. Include the currently mismatching `tail2` case in\\n+   the test corpus.\\n+3. Capture raw ANSI output in a terminal emulator for all frame transitions,\\n+   especially wide → narrow. Assert that no colored pixel appears outside the\\n+   frame mask and that old rows are erased.\\n+4. Verify the complete output path, not just the renderer: check that row\\n+   padding survives formatting/logging and that the frame writer uses explicit\\n+   erase semantics.\\n+5. Run finite CI hosts with real/fake timers and assert that they exit after\\n+   PASS. Check timer cleanup on unmount and the Node timer `unref` behavior;\\n+   compare runtime and open handles with the pre-animation baseline.\\n+6. Roll the default-on change through a guarded/staged run, with the digest,\\n+   ANSI artifact, lifecycle, and process-exit checks required before removing\\n+   the flag.\\n+\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const rs = await Promise.all([\n  tools.exec_command({cmd:\"sed -n '1,320p' /app/agent-output/S18-terminal-sprite-render-trap/report.md\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:30000}),\n  tools.exec_command({cmd:\"git -C /app status --short -- fixture /app/agent-output 2>/dev/null || true\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:4000}),\n  tools.exec_command({cmd:\"find /app/fixture -type f -maxdepth 1 -printf '%f\\\\n' | sort\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:2000})\n]);\nfor (const r of rs) text(r.output);\n"
+    }
+  ],
+  "skill_command_hits": [],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}

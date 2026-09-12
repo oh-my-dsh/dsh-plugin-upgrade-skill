@@ -8,20 +8,33 @@ both the modal zoom and the pane's font sizing. The agent derives each mechanism
 evidence and produces fixes + regression coverage. 题面见 [instruction.md](instruction.md)，
 判分逻辑见 [tests/judge.mjs](tests/judge.mjs)。
 
-- **Environment**: `node:24-bookworm` + git (fixture baseline-committed for the read-only gate); no dsh (static task).
-- **Score**: 5 criteria × 20 points each (total 100), sealed fixture hash, separate semantic verifier.
-- **Verifier**: [LLM-as-judge by default](../../docs/report-judge-pilot.md), task version `3.0.0`.
-  A sealed fixture hash enforces read-only work. The separate verifier reads the report,
-  judges each criterion with quoted evidence, and deterministically aggregates the score.
-  Configure `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
-  only for the verifier. Missing reports score 0; evaluator failures leave no reward.
-- **Oracle**: `harbor run -p benchmark/tasks/S11-mermaid-lazyload-trap -a oracle`; inspect the semantic decisions (a reference answer has no assumed model score).
+- **Environment**: `node:24-bookworm` + git (fixture inspection; the verifier uses sealed hashes); no dsh (static task).
 
 ```
 environment/fixture/   # evidence pack: host route source, console captures, CI note
-tests/                 # judge.mjs + judge-utils.mjs + test.sh
+tests/                 # judge.mjs + packet.json + test.sh + Dockerfile
 solution/              # reference report + solve.sh
 ```
 
 Fixture provenance: trimmed from the real 2026-09-01 dsh-file-trace mermaid integration
 (v0.2.3/v0.2.4); companion skill `skills/plugin-heavy-dep/` (method-level checklist).
+
+## Semantic verifier
+
+- **Scoring**: split-chunk attribution, Windows containment attribution, safe route fix, modal event ownership, and incident regressions: 20 each; unsafe containment caps at 40.
+- **Boundary**: the separate verifier checks the complete fixture against sealed
+  hashes; any edit, addition or deletion scores zero. Judge configuration, API or
+  response failures exit nonzero with no reward, never a keyword fallback.
+- **Oracle**: `harbor run -p benchmark/tasks/S11-mermaid-lazyload-trap -a oracle`
+  requires judge configuration and grades the original reference report through
+  the same LLM. Its score is not hardcoded.
+
+Task version **4.1.0**, protocol `report-judge-v2`. Each criterion receives
+100%/50%/0%/0% for pass/partial/fail/missing; code sums points and applies caps.
+Set `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
+for the verifier. The agent receives neither these credentials nor the sealed packet.
+
+See the [rubric explanation](../../docs/diagnosis-rubrics.md) and
+[setup/maintenance guide](../../docs/report-judge-pilot.md). Edit
+`benchmark/report-judge/diagnosis-rubrics.mjs`, run `npm run sync:report-judge`,
+then `npm run test:report-judge`. Historical keyword scores remain historical.

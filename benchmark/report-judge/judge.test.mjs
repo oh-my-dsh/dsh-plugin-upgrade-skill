@@ -194,13 +194,13 @@ test('CLI failure produces details and nonzero exit, never a default-zero reward
 test('preparation keeps agent prompts/fixtures exact and puts references/keys only in verifier', t => {
   const dir = sandbox(t); const out = join(dir, 'pilot')
   const manifest = prepare(out)
-  assert.equal(manifest.tasks.length, 22)
+  assert.equal(manifest.tasks.length, 25)
   for (const { task } of manifest.tasks) {
     assert.equal(readFileSync(join(out, task, 'instruction.md'), 'utf8'), readFileSync(join(REPO, 'benchmark/tasks', task, 'instruction.md'), 'utf8'))
     assert.deepEqual(collectFiles(join(out, task, 'environment/fixture')), makePacket(task).fixture)
     const toml = readFileSync(join(out, task, 'task.toml'), 'utf8')
     assert.match(toml, /environment_mode = "separate"/)
-    assert.match(toml, /version = "4.0.0"/)
+    assert.ok(toml.includes(`version = "${RUBRICS[task].taskVersion ?? '4.0.0'}"`))
     assert.match(toml, /\[verifier.env\]/)
     assert.doesNotMatch(toml, /source = "\/app\/\.git"/)
     assert.doesNotMatch(readFileSync(join(out, task, 'environment/Dockerfile'), 'utf8'), /REPORT_JUDGE|packet.json|COPY .*tests/)

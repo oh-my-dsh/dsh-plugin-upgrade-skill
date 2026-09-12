@@ -1,8 +1,9 @@
 schema_version = "1.4"
+artifacts = [{ source = "/app/fixture" }, { source = "/app/agent-output" }]
 # Harbor task config: dsh plugin link-install file-lock trap task S14 (static, read-only)
 [task]
 name = "dsh-plugin-upgrade/s14-link-install-lock-trap"
-version = "1.1.0"
+version = "4.1.0"
 description = "Diagnose why repo edits to a link-installed plugin never reach the GUI, why copying into the profile hits EBUSY, and derive the correct activation procedure"
 keywords = ["dsh", "plugin-runtime", "link-install", "file-lock", "harbor"]
 
@@ -16,7 +17,14 @@ execution_contract = "BENCHMARK-AUTH-v1"
 timeout_sec = 300.0
 
 [verifier]
-timeout_sec = 120.0
+timeout_sec = 240.0
+environment_mode = "separate"
+network_mode = "public"
+
+[verifier.env]
+REPORT_JUDGE_BASE_URL = "${REPORT_JUDGE_BASE_URL}"
+REPORT_JUDGE_MODEL = "${REPORT_JUDGE_MODEL}"
+REPORT_JUDGE_API_KEY = "${REPORT_JUDGE_API_KEY}"
 
 [environment]
 network_mode = "public"

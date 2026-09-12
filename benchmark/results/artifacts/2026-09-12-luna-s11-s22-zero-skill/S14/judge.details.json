@@ -1,0 +1,86 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Correctly cites Junction/Target and the link marker, explains both paths resolve to the repo tree, and rejects copying through the junction.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Grounds the EBUSY diagnosis in the session, attributes locks and stale module state to the running DSH host, distinguishes browser caching, and requires host restart plus cache-bypassing refresh.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains that the junction rename affected the sole source files and gives the required stop, restore, syntax-check, and activation recovery.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Provides the correct sequence: stop host, restore/check files, restart the host, hard-refresh the browser, and verify both host and client changes.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Requires inspecting LinkType/Target and cordis.patch.yml before file operations and explains why generic copying is harmful for linked installs.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The report explicitly rejects copying or deleting the surviving .old2 files and treats the paths as one tree.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "It explicitly requires fully stopping and restarting the DSH host; browser refresh is only a later cache-bypass step.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 6976,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 673,
+      "reasoning_output_tokens": 358
+    },
+    "request_id": "01a095bf-633b-7270-bbb4-696e04eccdb6",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "e68c7179d0d0aca0c4183893ce4c583deb5d68e968a0d311f96e6647a002950c",
+    "response_sha256": "39e65c8e4658eb421b9e03d542b94010a84d1d5c4a245623fa9668e4dfd8db1f"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "13ec959774ce58b650e7f245c2c2b59706967337f83778361cc3d47c29b6acea"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "992a5dece3a1a15cfaff888e0cccd344ac0ef33ab7b4a6adffe5a1e794290f61",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}

@@ -1,0 +1,86 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Correctly connects the session and worker to the live global dsh installation, explains the host/GUI dying during replacement, and preserves the tool result as unknown rather than claiming install success or blaming networking.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Correctly identifies present rc.1 content alongside missing dsh and dsh.cmd and stale dsh.ps1, and rejects manual directory or shim repair as unsafe and incomplete.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Accurately reports the external pinned npm reinstall, regenerated shims, rc.1 version verification, and matching source-tag alignment, while distinguishing recorded repair from proposed checks.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Requires stopping the host before an exact-version external install, then verification, restart, browser refresh, and smoke testing; it correctly distinguishes established upgrade rules from the self-host execution boundary.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Proposes a runtime-path guard, checks exact version, shims, startup and plugin loading, delays backup cleanup until verification, and correctly notes that alpha.5-to-rc.1 requires no plugin API migration.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The report explicitly rejects executing the global install from the live target session and requires an external process after the host stops.",
+      "total": 20
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and shim patching are explicitly rejected; the recommended fix is the formal external pinned npm installation.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 7019,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 673,
+      "reasoning_output_tokens": 308
+    },
+    "request_id": "01a095be-3bc7-7600-9a09-9a3a8e5081d8",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "e94503d920332381d34a5026673bd4f9b342692c693b77d4319072aabfece0e7",
+    "response_sha256": "afb00648182d53f122a3ee04b9b38058cbea2d0c596d5fd5d35a7ab8d2246aaa"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "1ddd9aa6e05efd2a07cfe788df1daf5fc5157c60a7be6163faa567d612b7d733"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "8b1b614fc93b7d28facb15d6b026dd0d865a184c2710046ca433106551cfb17e",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}

@@ -1,0 +1,61 @@
+# S21 — The Resource Service That “Unavailable”
+
+## 1. Attribution
+
+The failure is in the document-preview tab’s resource-provider/read path, specifically the handoff through the `api-workspace-files` Remote. It is not a failure to create the tab, choose its title, or read the file from disk in general.
+
+The two readers of the same session-scoped file separate the layers:
+
+- `file-trace` reads the file through its own HTTP/RPC face and displays both 原文 and 阅读. This rules out a missing file, a generic Windows filesystem/permission problem, and the session-workspace location as the cause. It does not prove that the shared `api-workspace-files` Remote is healthy, because it uses a different transport.
+- The document-preview tab is created and titled correctly, but its `api-workspace-files` read fails. The host row is present, and the host notes explicitly allow files outside the session workspace, so this is evidence for a provider/Remote registration, initialization, or request/response-chain problem rather than a tab-registration or path-policy problem.
+
+The failed tab’s `meta.status` remains `none`. That means the read stalls before resource metadata is delivered—before content retrieval can be presented or parsed by the viewer. It is not a successfully completed read followed by a rendering or syntax-decoding failure.
+
+The outside-workspace click is a separate, earlier gate: in alpha.2 the replacement document tab accepts only `parseFileAddress(address)?.scope === 'session'`, so an absolute-scope address has no claimant. That explains the “no registered tab type claims” dialog. It does not explain why an accepted session-scoped address later has no content.
+
+## 2. Probe discipline
+
+The valid static-artifact measurement is Probe 1 and, especially, Probe 3: request the manifest’s module URLs individually. The sweep fetched all 62 entries one by one and got 62/62 HTTP 200 responses with zero 404s. This is the request shape used by the loader.
+
+Probe 2 is not a valid missing-module test. It invents one approximately 4–5 KB URL by comma-joining all 62 module specifications. Its 404 only says that this aggregate URL is not accepted by the combo route (for example, because it violates that route’s request grammar/limits); it says nothing about whether any of the individual artifacts exist. It must never be cited as “the modules are missing,” particularly when the exact individual requests all return 200.
+
+The real loader first obtains the same-origin `__DSH_BOOT__` roster and then fetches the roster’s listed module URLs in the manifest’s intended per-entry form, retaining each module’s `id`, path, and revision. It does not synthesize a giant all-entry URL. Thus static serving is healthy on the evidence available, while the later resource read remains unhealthy.
+
+## 3. Distractor separation
+
+The repeated `dsh-paste-input: fold skipped (parse failed)` warnings are unrelated. They are client-side folding failures while parsing historical paste-attachment message text. There are no document-preview/sidebar red errors, and those warnings do not participate in the file-resource read or its metadata response.
+
+The relevant alpha.2 roster change is the replacement of `ui-sidebar-textpreview` by `ui-sidebar-documentpreview`. The old package is absent; the new package registers a document tab whose claimant is restricted to session-scoped resource addresses. The sidebar-right and workspace-files rows are present, and the external plugins, including `dsh-file-trace`, remain present.
+
+That rename/replacement explains the absolute-scope “no registered tab type” result, because the old text claimant is gone and the new claimant rejects that scope. It does not explain the session-scoped content failure: the new tab does claim the address and render its title, while the workspace-files read remains stuck at metadata status `none`.
+
+The alpha.1 roster/combo inconsistency described in discussion #5999 is useful prior art, but it is not evidence that the alpha.2 modules are missing. In alpha.2 the individual artifact checks are 62/62 successful.
+
+## 4. Mitigation decision
+
+The plugin should not work around this by rewriting resource addresses, retrying indefinitely, or substituting its own file-read fallback. The independent `file-trace` RPC is a diagnostic contrast, not proof that every plugin should bypass the host resource service. A workaround would hide a host contract/initialization regression and could change scope or security semantics.
+
+Recommended order:
+
+1. Perform the cheap operational check once: verify the active version, do a clean dsh host restart/fresh page or session, and retest with the same in-workspace file. A restart can repair stale roster/combo state, as the prior alpha.1 incident showed. In this case a restart has already occurred and the metadata read still fails, so repeated retries are not a mitigation.
+2. Use the verified escape hatch if the service is needed immediately: roll back to the previous published version, `@deepseek-ai/dsh@0.1.3-alpha.2`, and confirm the result on a fresh boot.
+3. Send this upstream as a host/resource-service regression, tied to the existing #5999 history. The fix belongs in host boot/provider wiring, package/manifest handling, or the Remote contract—not in the client plugin.
+
+## 5. Prevention and upstream forensics
+
+A complete upstream report should include:
+
+- exact before/after dsh versions, install commands and npm-global paths, OS, upgrade/restart sequence, and profile provenance (created under 0.1.2/0.1.3);
+- the Windows workspace/session identifiers, effective `cwd`/workspace root, both resource addresses, and the fact that the same session file was tested by both readers;
+- the full or machine-readable `__DSH_BOOT__` roster, package census, module revisions, installed package/artifact hashes or paths, and the six junction-linked plugin targets;
+- exact network traces for the manifest-listed individual module requests and the resource Remote request, including status/body/headers and timing, plus host-side registration/provider/Remote startup logs;
+- the contrast result: `file-trace` succeeds, document-preview fails, and `meta.status` remains `none`;
+- the console excerpt showing no document-preview/resource error, with the paste-input fold warnings explicitly marked as an unrelated distractor;
+- the invalid aggregate probe only as a probe-shape warning, never as proof of missing modules; and
+- the alpha.1/#5999 comparison and rollback result.
+
+At boot, the host could make this class of failure loud with a readiness check that verifies the whole chain:
+
+`manifest entry → individual asset serves → module evaluates/registers → resource provider is registered → Remote handshake/metadata read succeeds`
+
+The check should use the exact per-entry URLs from `__DSH_BOOT__`, compare the roster with the installed package artifacts, and assert that a document-preview claimant has a reachable workspace-files provider. For a live session it can read a tiny known-safe file under the resolved workspace root and require a metadata response. If any assertion fails, boot should log the module id, revision, provider, route, and package path and disable the tab or show an actionable startup error. It should not expose a normal-looking titled tab that only reports `文件资源服务不可用。`.

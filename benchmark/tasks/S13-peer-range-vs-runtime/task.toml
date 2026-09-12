@@ -1,8 +1,9 @@
 schema_version = "1.4"
+artifacts = [{ source = "/app/fixture" }, { source = "/app/agent-output" }]
 # Harbor task config: peer range vs runtime compatibility (static, read-only)
 [task]
 name = "dsh-plugin-upgrade/s13-peer-range-vs-runtime"
-version = "1.1.0"
+version = "4.1.0"
 description = "A TUI plugin's peerDependencies claim ^0.1.2-alpha.2 compatibility (npm installs without warnings) but crashes at runtime because dsh alpha.4 removed Session.events — diagnose why peer satisfaction is not runtime compatibility"
 keywords = ["dsh", "plugin-runtime", "peer-dependencies", "semver", "harbor"]
 
@@ -16,7 +17,14 @@ execution_contract = "BENCHMARK-AUTH-v1"
 timeout_sec = 300.0
 
 [verifier]
-timeout_sec = 120.0
+timeout_sec = 240.0
+environment_mode = "separate"
+network_mode = "public"
+
+[verifier.env]
+REPORT_JUDGE_BASE_URL = "${REPORT_JUDGE_BASE_URL}"
+REPORT_JUDGE_MODEL = "${REPORT_JUDGE_MODEL}"
+REPORT_JUDGE_API_KEY = "${REPORT_JUDGE_API_KEY}"
 
 [environment]
 network_mode = "public"

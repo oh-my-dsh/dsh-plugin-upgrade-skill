@@ -1,4 +1,5 @@
 // Human-readable calibration hypotheses, not deterministic semantic test doubles.
+import { diagnosisSamples } from './diagnosis.mjs'
 // Keep counterexamples to the retired S5-S9 keyword graders in the live corpus.
 const paraphrases = {
   'S5-negative-naming': '我只读检查了package.json和dsh-plugin.naming.json。清单中的pluginNames greet是题目基线认可的官方短名，包名dsh-greet和坐标acme/greet是另外两个表面，不能把缺少前缀当成兼容错误。services search是裸服务名，存在碰撞风险，应给建议而非API错误。events web-search/ready是共享事件通道，同名本身不是冲突，要看发布者schema是否相容和已有注册信息。其余loaderIds acme-greet、tools acme_greet_hi、commands acme-greet-hi、skills greet、skillProviders acme-greet-filesystem、settingsNamespaces acme-greet及路由/api/plugins/acme-greet/hi在本地没有足以认定兼容错误的证据；带作用域的名称可以减少碰撞，但这些表面的全局占用都需要注册表上下文，裸技能名也应核查。我没有查询注册表，所有保留或可用状态都是未检查，后续应逐项核验并比较事件schema、路由重叠。不能说已保留、全局可用或全部通过。private:true只是测试材料标记，不是命名错误。',
@@ -44,7 +45,7 @@ const probes = {
 }
 
 export function focusedSamples(task, complete) {
-  if (!probes[task]) return []
+  if (!probes[task]) return diagnosisSamples(task, complete)
   const equivalentCode = task === 'H12-remote-result-boundary-trap' ? [{
     id: 'equivalent-success-first',
     report: complete.replace(/```ts[\s\S]*?```/, '```ts\nconst response = await ctx.remote.session.rename({ sessionId, title })\nif (response.ok) return response.value\nhandleRemoteFailure(response.error)\nreturn\n```'),

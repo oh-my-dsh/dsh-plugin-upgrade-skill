@@ -50,8 +50,13 @@
     "test:h23-judge": "npm ci --prefix benchmark/tasks/H23-storage-domain-version-compat-trap/environment/fixture --ignore-scripts --no-audit --no-fund && node --test benchmark/tasks/H23-storage-domain-version-compat-trap/tests/judge-utils.test.mjs benchmark/tasks/H23-storage-domain-version-compat-trap/tests/judge.test.mjs",
     "test:h24-judge": "npm ci --prefix benchmark/tasks/H24-invalid-record-salvage-trap/environment/fixture --ignore-scripts --no-audit --no-fund && node --test benchmark/tasks/H24-invalid-record-salvage-trap/tests/judge-utils.test.mjs benchmark/tasks/H24-invalid-record-salvage-trap/tests/judge.test.mjs",
     "test:h25-judge": "npm ci --prefix benchmark/tasks/H25-session-seed-boundary-trap/environment/fixture --ignore-scripts --no-audit --no-fund && node --test benchmark/tasks/H25-session-seed-boundary-trap/tests/judge-utils.test.mjs benchmark/tasks/H25-session-seed-boundary-trap/tests/judge.test.mjs",
-    "test:report-judge": "npm run check:report-judge && node --test benchmark/report-judge/judge.test.mjs benchmark/report-judge/codex-judge.test.mjs benchmark/report-judge/defaults.test.mjs",
+    "test:report-judge": "npm run check:report-judge && node --test benchmark/report-judge/judge.test.mjs benchmark/report-judge/codex-judge.test.mjs benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs",
     "sync:report-judge": "node benchmark/report-judge/prepare.mjs --sync",
-    "check:report-judge": "node benchmark/report-judge/prepare.mjs --check"
+    "check:report-judge": "node benchmark/report-judge/prepare.mjs --check",
+    "test:s17-judge": "node --test --test-name-pattern=S17- benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs",
+    "test:s18-judge": "node --test --test-name-pattern=S18- benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs",
+    "test:s19-judge": "node --test --test-name-pattern=S19- benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs",
+    "test:s21-judge": "node --test --test-name-pattern=S21- benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs",
+    "test:s22-judge": "node --test --test-name-pattern=S22- benchmark/report-judge/defaults.test.mjs benchmark/report-judge/diagnosis.test.mjs"
   }
 }

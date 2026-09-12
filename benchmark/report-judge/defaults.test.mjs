@@ -15,11 +15,11 @@ function sandbox(t) {
 }
 
 test('registered default tasks are self-contained semantic verifiers with separate secrets and artifacts', () => {
-  assert.equal(Object.keys(RUBRICS).length, 22)
+  assert.equal(Object.keys(RUBRICS).length, 25)
   assert.deepEqual(syncDefaults({ check: true }).changed, [])
   for (const task of Object.keys(RUBRICS)) {
     const files = defaultFiles(task)
-    assert.equal(semanticToml(files.get('task.toml')), files.get('task.toml'), 'configuration generation is idempotent')
+    assert.equal(semanticToml(files.get('task.toml'), RUBRICS[task].taskVersion), files.get('task.toml'), 'configuration generation is idempotent')
     assert.match(files.get('task.toml'), /environment_mode = "separate"/)
     assert.match(files.get('task.toml'), /\[verifier.env\][\s\S]*REPORT_JUDGE_MODEL = "\$\{REPORT_JUDGE_MODEL\}"/)
     assert.match(files.get('task.toml'), /artifacts = .*\/app\/fixture.*\/app\/agent-output/)
@@ -28,7 +28,7 @@ test('registered default tasks are self-contained semantic verifiers with separa
     assert.doesNotMatch(files.get('tests/test.sh'), /score\s*=\s*0|catch|reward\.txt/)
     assert.match(files.get('tests/judge.mjs'), /await callJudge/)
     assert.equal(JSON.parse(files.get('tests/packet.json')).source_commit, null)
-    for (const name of ['judge-utils.mjs', 'report-claims.mjs', 'report-grading.mjs']) {
+    for (const name of ['judge-utils.mjs', 'report-claims.mjs', 'report-grading.mjs', 'judge.test.mjs']) {
       assert.equal(existsSync(join(REPO, 'benchmark/tasks', task, 'tests', name)), false, `${task}: retired ${name}`)
     }
   }

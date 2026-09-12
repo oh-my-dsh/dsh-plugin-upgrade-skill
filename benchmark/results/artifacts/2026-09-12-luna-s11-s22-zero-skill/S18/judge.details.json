@@ -1,0 +1,80 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Correctly locates the one-sided branches, explains persistent background SGR leakage, identifies affected edge cells, and prescribes ESC[49m per half-filled cell.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Correctly explains trailing-space trimming and stale wider-frame columns, and gives fixed-width output plus explicit erase semantics.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Identifies tail2's 23-cell mismatch and shifted cluster, explains the uncovered excerpt test, and requires trusted all-frame digest or exact-row validation.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Correctly identifies mounted hosts without unmount, recursively rearmed setTimeout handles, TTY masking, and the per-timeout unref fix.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Provides a comprehensive renderer contract and a rollout audit covering SGR state, clearing, frame integrity, host lifecycles, timer cleanup, and exit regression.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The report consistently recommends background resets, explicit clearing, source-backed frame checks, and unref'ed planner timers.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 7579,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 909,
+      "reasoning_output_tokens": 628
+    },
+    "request_id": "01a095c3-6723-7aa3-8ad7-fea562dabb42",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "893189e8601d097d22076d441101928f754db53a451c0cd9d475433d7d4507e1",
+    "response_sha256": "2718ab669b0fc61d5569a6ba3fb1854c65614ef98f6414d0cc351f6fa3fae22c"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "4c9522de6d0065caba5dbd757065daf072f60352f6daded8a8183ea8a370c0f9"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "953c5bb48270513f4fbe73e1dedd06429e81b01d1a377cde1fb0c3b3404f2b1a",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}
