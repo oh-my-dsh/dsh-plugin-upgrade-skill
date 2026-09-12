@@ -1,0 +1,148 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"pwd && rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/browser-error.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/plugin-apply-error.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/host-boot-log.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/restart-notes.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/working-plugin-excerpt.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/README.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/profile/cordis.patch.yml'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/plugin/lib/client.js'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'find /app -maxdepth 4 -type f ! -name '\"'SKILL.md' \"'! -path '\"'*/skills/*' -print | sort && find /app -maxdepth 3 -type d \"'! -path '\"'*/skills*' -print | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git log --oneline --all --decorate && git status --short && git show --stat --oneline HEAD'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"rg -n --hidden -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' 'settings\\\\.section|children table|__ModuleLoader__|slots\\\\.register|slots\\\\.inject' /app /usr/local/share /opt 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'mkdir -p /app/agent-output/S17-external-ui-plugin-onboarding-trap && test ! -e /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md && printf '\"'output directory ready\\\\n'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,280p' /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git diff --exit-code -- fixture && git status --short'",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"pwd && rg --files -g '!**/SKILL.md' -g '!**/skills/**' /app/fixture /app 2>/dev/null | sed -n '1,240p'\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const paths = [\n  \"/app/fixture/README.md\",\n  \"/app/fixture/browser-error.txt\",\n  \"/app/fixture/plugin-apply-error.txt\",\n  \"/app/fixture/host-boot-log.txt\",\n  \"/app/fixture/restart-notes.txt\",\n  \"/app/fixture/working-plugin-excerpt.txt\",\n  \"/app/fixture/profile/cordis.patch.yml\",\n  \"/app/fixture/plugin/lib/client.js\"\n];\nconst rs = await Promise.all(paths.map(path => tools.exec_command({cmd:`sed -n '1,260p' '${path}'`,workdir:\"/app\",yield_time_ms:10000,max_output_tokens:12000})));\nfor (let i=0;i<rs.length;i++) {\n  text(`===== ${paths[i]} =====\\n${rs[i].output}`);\n}\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"find /app -maxdepth 4 -type f ! -name 'SKILL.md' ! -path '*/skills/*' -print | sort && find /app -maxdepth 3 -type d ! -path '*/skills*' -print | sort\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:12000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"git log --oneline --all --decorate && git status --short && git show --stat --oneline HEAD\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:12000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"rg -n --hidden -g '!**/SKILL.md' -g '!**/skills/**' 'settings\\\\.section|children table|__ModuleLoader__|slots\\\\.register|slots\\\\.inject' /app /usr/local/share /opt 2>/dev/null | sed -n '1,240p'\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:16000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"mkdir -p /app/agent-output/S17-external-ui-plugin-onboarding-trap && test ! -e /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md && printf 'output directory ready\\\\n'\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:2000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md\\n+# S17 — External UI plugin onboarding trap\\n+\\n+## 1. Failure 1: one bad client bundle disables the whole plugin set\\n+\\n+The `insert` rows are resolved first, but the browser does not receive three\\n+independent ES modules. At boot the host reads the installed client files and\\n+assembles all 53 loader entries into one 4.5 MB **classic-script** combo. The\\n+entries are expected to be loader records of the form shown by the working\\n+plugin:\\n+\\n+```js\\n+window.__ModuleLoader__.load({\\n+  id: \\\"@some/plugin\\\",\\n+  factory: (require) => {\\n+    var module = { exports: {} };\\n+    var exports = module.exports;\\n+    // transpiled CommonJS body, using require(...)\\n+    return module.exports;\\n+  },\\n+});\\n+```\\n+\\n+The new `client.js` begins with a static ESM import and also contains an ESM\\n+`export`. Those tokens cannot be parsed in the classic combo (`import React`\\n+is at position 1:1). The combo therefore fails before the loader can complete\\n+registration. This is why the stock entries disappear too: registration is\\n+being attempted from one assembled script, and its compile failure aborts the\\n+whole load, rather than merely rejecting `dsh-profiles`.\\n+\\n+`@deepseek-ai/dsh-typert-registry` is a misleading reporting context, not the\\n+culprit. The loader error names the entry whose import/await path observed the\\n+rejected combo. The error's bundle path points to the actual failing source:\\n+`@lhh010/dsh-profiles/lib/client.js`. The stock package was not modified.\\n+\\n+## 2. Diagnosis and the required client format\\n+\\n+The first useful distinction is **compile-time combo failure** versus\\n**apply-time plugin failure**. For a compile failure, inspect or bisect the\\n*set of client bundles*, not the entry named in the rejection. Disable half of\\n+the inserted/installed client entries, restart (because assembly is boot-time),\\n+and repeat; with this fixture, comparing the baseline with the\\n+`dsh-profiles` row is the shortest bisect.\\n+\\n+A cheap preflight is a static scan of every external client file for\\n+top-level `import` or `export` declarations, for example:\\n+\\n+```sh\\n+rg -n '^[[:space:]]*(import|export)[[:space:]]' plugin-root\\n+```\\n+\\n+It should also verify that the first executable form is the host loader\\n+wrapper and that the factory returns `module.exports`. A parser check against\\n+classic-script grammar is a stronger version of the same test. Dynamic\\n+application code and React itself are not the problem; the untransformed ESM\\n+packaging is.\\n+\\n+An external plugin must ship the host's loader-compatible classic wrapper,\\n+not bare ESM. Its build should transform the body to CommonJS-like code inside\\n+`window.__ModuleLoader__.load({ id, factory })`, create the factory-local\\n+`module`/`exports`, and return `module.exports`. React and React DOM are host\\n+dependencies obtained through the injected resolver, for example\\n+`require(\\\"react\\\")`, `require(\\\"react-dom\\\")`, or the host-supported\\n+`require(\\\"react/jsx-runtime\\\")`; they should not be bare browser imports (nor\\n+an incompatible private React copy). The returned exports object must expose\\n+the plugin entry point, in particular `apply` (for example, transpiled\\n+`exports.apply = apply`).\\n+\\n+## 3. Failure 2: the slot path is not a declaration\\n+\\n+This second error proves that the bundle now parses and the plugin's `apply`\\n+function is running. `settings.section` is a slot in the host settings\\n+hierarchy. Slots are declared by the entry that owns the UI hierarchy: the\\n+parent entry's children table must contain the `section` child. A consumer\\n+cannot create such a slot merely by passing the dotted path as a top-level\\n+`name`. A bare registration is rejected when the registry looks up the\\n+declaration and finds no declared child (or the owner has not been declared\\n+yet).\\n+\\n+The registration must retain the parent/child shape, with `section` nested\\n+under its declared parent:\\n+\\n+```js\\n+ctx.slots.register(\\n+  {\\n+    name: 'settings',\\n+    children: {\\n+      section: {\\n+        id: 'profiles-manager',\\n+        order: 5,\\n+      },\\n+    },\\n+  },\\n+  ProfilesSection,\\n+)\\n+```\\n+\\n+In other words, the child key represents `settings.section`; it must not be\\n+flattened to `{ name: 'settings.section', ... }`. The host/settings entry must\\n+already declare that child and be applied before this registration.\\n+\\n+The registrant supplies its identity and placement (`id` and `order`) and the\\n+component supplied as the registration's second argument. The parent owns the\\n+slot's declaration metadata, including its name/path, `kind` (`section`), and\\n+`scope` (`settings`); the registrant must not invent or override those fields\\n+with the failed call's top-level `name`, `kind`, or `scope`. If the host does\\n+not expose `settings.section`, the external plugin cannot fix that by changing\\n+its own registration—the host must declare a supported slot.\\n+\\n+## 4. Dev-loop discipline\\n+\\n+The host assembles and serves the combo once during host boot. It does not\\n+watch plugin files and rebuild that combo after an edit. Consequently, neither\\n+a file edit nor a browser hard refresh sees a changed client bundle until the\\n+host process is restarted.\\n+\\n+The safe iteration is: stop the existing host and its child processes, verify\\n+that its listening port is free, start exactly one host so it assembles a new\\n+combo, wait for the boot line, then hard-refresh the browser and check\\n+Settings → Plugins. An empty plugin list means the combo failed again.\\n+\\n+On Windows, closing the launching terminal can leave the Node child/process\\n+tree alive. Starting a second host then fails with `EADDRINUSE` because the\\n+orphan still owns the port; that is a process-lifecycle failure, not evidence\\n+of another plugin bug. Gracefully stop it, or use the documented fallback\\n+`taskkill /PID <pid> /T /F` to terminate the whole tree, then restart.\\n+\\n+## 5. Prevention\\n+\\n+Host-side safeguards:\\n+\\n+- Validate each source bundle as a classic script, and validate the loader\\n+  wrapper/returned `apply`, before concatenating the combo. Report the bundle\\n+  path, plugin id, and line/column of the bad ESM token.\\n+- Keep an entry-to-byte-range/source-map manifest for the combo, or compile\\n+  entries independently on failure. Never use the first awaited entry as the\\n+  presumed source of a combo-wide parse error.\\n+- At apply time, report the missing slot, its owning parent, the plugin making\\n+  the registration, and the parent's available declared children. Check the\\n+  declaration before invoking external code.\\n+- Optionally quarantine one invalid entry and continue loading known-good\\n+  entries, while making the quarantined plugin visible in the plugin UI/log.\\n+\\n+An external-plugin template/checklist should include:\\n+\\n+1. Build with the host's client-bundle tool: loader `load` wrapper, classic\\n+   script, factory-local CommonJS `module`/`exports`, shared React dependencies\\n+   through `require`, and an exported `apply`.\\n+2. Run a no-top-level-ESM/static-wrapper preflight and a smoke test against the\\n+   host loader.\\n+3. Look up the host-owned slot declaration first. Register through the\\n+   parent/`children` wrapper, pass only registrant fields such as `id` and\\n+   `order`, and do not claim `name`, `kind`, or `scope`.\\n+4. Document that the patch `insert` only installs the package; every client\\n+   edit requires a full host restart, one live process tree, a free port, and a\\n+   browser hard refresh followed by a non-empty plugin-list check.\\n+\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md\\n+# S17 — External UI plugin onboarding trap\\n+\\n+## 1. Failure 1: one bad client bundle disables the whole plugin set\\n+\\n+The `insert` rows are resolved first, but the browser does not receive three\\n+independent ES modules. At boot the host reads the installed client files and\\n+assembles all 53 loader entries into one 4.5 MB **classic-script** combo. The\\n+entries are expected to be loader records of the form shown by the working\\n+plugin:\\n+\\n+```js\\n+window.__ModuleLoader__.load({\\n+  id: \\\"@some/plugin\\\",\\n+  factory: (require) => {\\n+    var module = { exports: {} };\\n+    var exports = module.exports;\\n+    // transpiled CommonJS body, using require(...)\\n+    return module.exports;\\n+  },\\n+});\\n+```\\n+\\n+The new `client.js` begins with a static ESM import and also contains an ESM\\n+`export`. Those tokens cannot be parsed in the classic combo (`import React`\\n+is at position 1:1). The combo therefore fails before the loader can complete\\n+registration. This is why the stock entries disappear too: registration is\\n+being attempted from one assembled script, and its compile failure aborts the\\n+whole load, rather than merely rejecting `dsh-profiles`.\\n+\\n+`@deepseek-ai/dsh-typert-registry` is a misleading reporting context, not the\\n+culprit. The loader error names the entry whose import/await path observed the\\n+rejected combo. The error's bundle path points to the actual failing source:\\n+`@lhh010/dsh-profiles/lib/client.js`. The stock package was not modified.\\n+\\n+## 2. Diagnosis and the required client format\\n+\\n+The first useful distinction is **compile-time combo failure** versus\\n+**apply-time plugin failure**. For a compile failure, inspect or bisect the\\n+*set of client bundles*, not the entry named in the rejection. Disable half of\\n+the inserted/installed client entries, restart (because assembly is boot-time),\\n+and repeat; with this fixture, comparing the baseline with the\\n+`dsh-profiles` row is the shortest bisect.\\n+\\n+A cheap preflight is a static scan of every external client file for\\n+top-level `import` or `export` declarations, for example:\\n+\\n+```sh\\n+rg -n '^[[:space:]]*(import|export)[[:space:]]' plugin-root\\n+```\\n+\\n+It should also verify that the first executable form is the host loader\\n+wrapper and that the factory returns `module.exports`. A parser check against\\n+classic-script grammar is a stronger version of the same test. Dynamic\\n+application code and React itself are not the problem; the untransformed ESM\\n+packaging is.\\n+\\n+An external plugin must ship the host's loader-compatible classic wrapper,\\n+not bare ESM. Its build should transform the body to CommonJS-like code inside\\n+`window.__ModuleLoader__.load({ id, factory })`, create the factory-local\\n+`module`/`exports`, and return `module.exports`. React and React DOM are host\\n+dependencies obtained through the injected resolver, for example\\n+`require(\\\"react\\\")`, `require(\\\"react-dom\\\")`, or the host-supported\\n+`require(\\\"react/jsx-runtime\\\")`; they should not be bare browser imports (nor\\n+an incompatible private React copy). The returned exports object must expose\\n+the plugin entry point, in particular `apply` (for example, transpiled\\n+`exports.apply = apply`).\\n+\\n+## 3. Failure 2: the slot path is not a declaration\\n+\\n+This second error proves that the bundle now parses and the plugin's `apply`\\n+function is running. `settings.section` is a slot in the host settings\\n+hierarchy. Slots are declared by the entry that owns the UI hierarchy: the\\n+parent entry's children table must contain the `section` child. A consumer\\n+cannot create such a slot merely by passing the dotted path as a top-level\\n+`name`. A bare registration is rejected when the registry looks up the\\n+declaration and finds no declared child (or the owner has not been declared\\n+yet).\\n+\\n+The registration must retain the parent/child shape, with `section` nested\\n+under its declared parent:\\n+\\n+```js\\n+ctx.slots.register(\\n+  {\\n+    name: 'settings',\\n+    children: {\\n+      section: {\\n+        id: 'profiles-manager',\\n+        order: 5,\\n+      },\\n+    },\\n+  },\\n+  ProfilesSection,\\n+)\\n+```\\n+\\n+In other words, the child key represents `settings.section`; it must not be\\n+flattened to `{ name: 'settings.section', ... }`. The host/settings entry must\\n+already declare that child and be applied before this registration.\\n+\\n+The registrant supplies its identity and placement (`id` and `order`) and the\\n+component supplied as the registration's second argument. The parent owns the\\n+slot's declaration metadata, including its name/path, `kind` (`section`), and\\n+`scope` (`settings`); the registrant must not invent or override those fields\\n+with the failed call's top-level `name`, `kind`, or `scope`. If the host does\\n+not expose `settings.section`, the external plugin cannot fix that by changing\\n+its own registration—the host must declare a supported slot.\\n+\\n+## 4. Dev-loop discipline\\n+\\n+The host assembles and serves the combo once during host boot. It does not\\n+watch plugin files and rebuild that combo after an edit. Consequently, neither\\n+a file edit nor a browser hard refresh sees a changed client bundle until the\\n+host process is restarted.\\n+\\n+The safe iteration is: stop the existing host and its child processes, verify\\n+that its listening port is free, start exactly one host so it assembles a new\\n+combo, wait for the boot line, then hard-refresh the browser and check\\n+Settings → Plugins. An empty plugin list means the combo failed again.\\n+\\n+On Windows, closing the launching terminal can leave the Node child/process\\n+tree alive. Starting a second host then fails with `EADDRINUSE` because the\\n+orphan still owns the port; that is a process-lifecycle failure, not evidence\\n+of another plugin bug. Gracefully stop it, or use the documented fallback\\n+`taskkill /PID <pid> /T /F` to terminate the whole tree, then restart.\\n+\\n+## 5. Prevention\\n+\\n+Host-side safeguards:\\n+\\n+- Validate each source bundle as a classic script, and validate the loader\\n+  wrapper/returned `apply`, before concatenating the combo. Report the bundle\\n+  path, plugin id, and line/column of the bad ESM token.\\n+- Keep an entry-to-byte-range/source-map manifest for the combo, or compile\\n+  entries independently on failure. Never use the first awaited entry as the\\n+  presumed source of a combo-wide parse error.\\n+- At apply time, report the missing slot, its owning parent, the plugin making\\n+  the registration, and the parent's available declared children. Check the\\n+  declaration before invoking external code.\\n+- Optionally quarantine one invalid entry and continue loading known-good\\n+  entries, while making the quarantined plugin visible in the plugin UI/log.\\n+\\n+An external-plugin template/checklist should include:\\n+\\n+1. Build with the host's client-bundle tool: loader `load` wrapper, classic\\n+   script, factory-local CommonJS `module`/`exports`, shared React dependencies\\n+   through `require`, and an exported `apply`.\\n+2. Run a no-top-level-ESM/static-wrapper preflight and a smoke test against the\\n+   host loader.\\n+3. Look up the host-owned slot declaration first. Register through the\\n+   parent/`children` wrapper, pass only registrant fields such as `id` and\\n+   `order`, and do not claim `name`, `kind`, or `scope`.\\n+4. Document that the patch `insert` only installs the package; every client\\n+   edit requires a full host restart, one live process tree, a free port, and a\\n+   browser hard refresh followed by a non-empty plugin-list check.\\n+\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const rs = await Promise.all([\n  tools.exec_command({cmd:\"sed -n '1,280p' /app/agent-output/S17-external-ui-plugin-onboarding-trap/report.md\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000}),\n  tools.exec_command({cmd:\"git diff --exit-code -- fixture && git status --short\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:4000})\n]);\ntext(rs[0].output);\ntext(\"===== integrity/status =====\\n\"+rs[1].output);\n"
+    }
+  ],
+  "skill_command_hits": [
+    {
+      "command": "/bin/bash -lc \"pwd && rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'find /app -maxdepth 4 -type f ! -name '\"'SKILL.md' \"'! -path '\"'*/skills/*' -print | sort && find /app -maxdepth 3 -type d \"'! -path '\"'*/skills*' -print | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"rg -n --hidden -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' 'settings\\\\.section|children table|__ModuleLoader__|slots\\\\.register|slots\\\\.inject' /app /usr/local/share /opt 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}

@@ -9,3 +9,5 @@ COPY fixture /app/fixture
 
 # Baseline commit: the judge uses `git status --porcelain -- fixture` to check whether the agent kept read-only discipline
 RUN git init -q && git add -A && git -c user.email=bench@local -c user.name=bench commit -q -m "baseline"
+
+RUN mkdir -p /app/agent-output

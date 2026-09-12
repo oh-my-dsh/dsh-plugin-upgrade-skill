@@ -158,7 +158,7 @@ for (const [taskId, mode] of expectedModes) {
   if (count(taskToml, 'execution_contract = "BENCHMARK-AUTH-v1"') !== 1) {
     fail(taskFile, 'must declare execution_contract = "BENCHMARK-AUTH-v1" exactly once')
   }
-  const expectedVersion = Object.hasOwn(RUBRICS, taskId) ? '4.0.0' : '1.1.0'
+  const expectedVersion = Object.hasOwn(RUBRICS, taskId) ? (RUBRICS[taskId].taskVersion ?? '4.0.0') : '1.1.0'
   if (taskToml.match(/^version = "([^"]+)"$/m)?.[1] !== expectedVersion) {
     fail(taskFile, `task version must be ${expectedVersion} for its current verifier; execution authorization remains BENCHMARK-AUTH-v1`)
   }

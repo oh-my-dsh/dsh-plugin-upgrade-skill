@@ -20,13 +20,25 @@ Derived from a real 2026-09-09/10 session on this deployment. The trap has three
    unavailable service — the decision order is restart → rollback → report upstream.
 
 - Type: static / read-only report
-- **Score**: 5 criteria × 20 points each (100 total). Blaming the plugin's own code for
-  the host-side failure, citing the invalid all-in-one combo join as missing modules, or
-  proposing plugin-side workarounds zeroes the affected criteria.
-- **Verifier**: [LLM-as-judge by default](../../docs/report-judge-pilot.md), task version `3.0.0`.
-  A sealed fixture hash enforces read-only work. The separate verifier reads the report,
-  judges each criterion with quoted evidence, and deterministically aggregates the score.
-  Configure `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
-  only for the verifier. Missing reports score 0; evaluator failures leave no reward.
-- **Oracle**: `harbor run -p benchmark/tasks/S21-resource-service-unavailable-trap -a oracle`; inspect the semantic decisions (a reference answer has no assumed model score).
+
 - See `instruction.md` for the brief, `solution/report.md` for the reference answer.
+
+## Semantic verifier
+
+- **Scoring**: metadata-chain attribution, valid probes/partitioning, distractors/tab scope, ordered mitigation, and upstream forensics/fail-loud diagnostics: 20 each; invalid probe attribution or plugin workaround/duplicate insertion caps at 40.
+- **Boundary**: the separate verifier checks the complete fixture against sealed
+  hashes; any edit, addition or deletion scores zero. Judge configuration, API or
+  response failures exit nonzero with no reward, never a keyword fallback.
+- **Oracle**: `harbor run -p benchmark/tasks/S21-resource-service-unavailable-trap -a oracle`
+  requires judge configuration and grades the original reference report through
+  the same LLM. Its score is not hardcoded.
+
+Task version **4.1.0**, protocol `report-judge-v2`. Each criterion receives
+100%/50%/0%/0% for pass/partial/fail/missing; code sums points and applies caps.
+Set `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
+for the verifier. The agent receives neither these credentials nor the sealed packet.
+
+See the [rubric explanation](../../docs/diagnosis-rubrics.md) and
+[setup/maintenance guide](../../docs/report-judge-pilot.md). Edit
+`benchmark/report-judge/diagnosis-rubrics.mjs`, run `npm run sync:report-judge`,
+then `npm run test:report-judge`. Historical keyword scores remain historical.

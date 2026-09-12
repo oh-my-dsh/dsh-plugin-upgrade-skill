@@ -13,19 +13,32 @@ Tests "install-channel root-cause diagnosis + platform lock-path evidence +
 patch-mechanism fix planning". See [instruction.md](instruction.md) for the task
 statement and [tests/judge.mjs](tests/judge.mjs) for the grading logic.
 
-- **Environment**: `node:24-bookworm` + git (read-only discipline gate); no dsh
+- **Environment**: `node:24-bookworm` + git (fixture inspection); no dsh
   needed — this is a static report task.
-- **Verifier**: report-content checkpoints (root cause 20, static-import trap 20,
-  Windows lock path 20, pnpm-patch recipe 25, no-VS + card citation 15); plans
-  that rely on installing Visual Studio are capped at 50, plans that rely on
-  `--ignore-scripts` alone at 40; fixture modified → flat 0. The reward is
-  normalized into `/logs/verifier/reward.txt`.
-- **Oracle**: `harbor run -p benchmark/tasks/S20-msvc-flock-trap -a oracle`,
-  expected reward 1.0.
 
 ```
-environment/Dockerfile   # image: git baseline only (static task)
+environment/Dockerfile   # static evidence image with a Git baseline for inspection
 environment/fixture/     # evidence kit: error log, manifest, lock-source excerpts
-tests/                   # judge.mjs + judge-utils.mjs + test.sh
+tests/                   # judge.mjs + packet.json + test.sh + Dockerfile
 solution/                # reference report + SOLUTION.md + solve.sh
 ```
+
+## Semantic verifier
+
+- **Scoring**: native install failure 20; static-import trap 20; platform lock contract 20; reproducible local patch 25; machine/upstream boundaries 10; justified corridor mapping 5. Caps: VS requirement 50, ignore-scripts-only or upstream editing 40, real lock bypass 20.
+- **Boundary**: the separate verifier checks the complete fixture against sealed
+  hashes; any edit, addition or deletion scores zero. Judge configuration, API or
+  response failures exit nonzero with no reward, never a keyword fallback.
+- **Oracle**: `harbor run -p benchmark/tasks/S20-msvc-flock-trap -a oracle`
+  requires judge configuration and grades the original reference report through
+  the same LLM. Its score is not hardcoded.
+
+Task version **4.1.0**, protocol `report-judge-v2`. Each criterion receives
+100%/50%/0%/0% for pass/partial/fail/missing; code sums points and applies caps.
+Set `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
+for the verifier. The agent receives neither these credentials nor the sealed packet.
+
+See the [rubric explanation](../../docs/diagnosis-rubrics.md) and
+[setup/maintenance guide](../../docs/report-judge-pilot.md). Edit
+`benchmark/report-judge/diagnosis-rubrics.mjs`, run `npm run sync:report-judge`,
+then `npm run test:report-judge`. Historical keyword scores remain historical.

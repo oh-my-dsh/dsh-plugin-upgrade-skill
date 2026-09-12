@@ -35,14 +35,14 @@ export function makePacket(task, root = REPO) {
     fixture: collectFiles(join(taskRoot, 'environment/fixture')) }
 }
 
-export function semanticToml(original) {
+export function semanticToml(original, taskVersion = '4.0.0') {
   // Keep task identity, agent limits and resources; only the verifier changes.
   const artifacts = 'artifacts = [{ source = "/app/fixture" }, { source = "/app/agent-output" }]'
   const withArtifacts = /^artifacts = /m.test(original)
     ? original.replace(/^artifacts = .*$/m, artifacts)
     : original.replace('schema_version = "1.4"', `schema_version = "1.4"\n${artifacts}`)
   return withArtifacts
-    .replace(/^version = "[^"]+"$/m, 'version = "4.0.0"')
+    .replace(/^version = "[^"]+"$/m, `version = "${taskVersion}"`)
     .replace(/\[verifier\][\s\S]*?(?=\n\[environment\])/, `[verifier]
 timeout_sec = 240.0
 environment_mode = "separate"
@@ -66,7 +66,7 @@ export function defaultFiles(task, root = REPO) {
     ['tests/judge.mjs', readFileSync(join(root, 'benchmark/report-judge/judge.mjs'), 'utf8')],
     ['tests/test.sh', '#!/bin/bash\nset -euo pipefail\nexec node "$(dirname "$0")/judge.mjs" "$@"\n'],
     ['tests/Dockerfile', 'FROM node:24-bookworm\nWORKDIR /tests\nCOPY . /tests\nRUN chmod +x /tests/test.sh\n'],
-    ['task.toml', semanticToml(readFileSync(join(source, 'task.toml'), 'utf8'))],
+    ['task.toml', semanticToml(readFileSync(join(source, 'task.toml'), 'utf8'), RUBRICS[task].taskVersion)],
     ['environment/Dockerfile', dockerfile.includes('RUN mkdir -p /app/agent-output')
       ? dockerfile : dockerfile.trimEnd() + '\n\nRUN mkdir -p /app/agent-output\n'],
   ])
@@ -82,7 +82,7 @@ export function syncDefaults({ root = REPO, check = false } = {}) {
     if (!check) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, text) }
   }
   for (const task of Object.keys(RUBRICS)) {
-    for (const name of ['judge-utils.mjs', 'report-claims.mjs', 'report-grading.mjs', 'report-grading-utils.mjs', 'prompt.txt']) {
+    for (const name of ['judge-utils.mjs', 'report-claims.mjs', 'report-grading.mjs', 'report-grading-utils.mjs', 'judge.test.mjs', 'prompt.txt']) {
       const path = join(root, 'benchmark/tasks', task, 'tests', name)
       if (!existsSync(path)) continue
       stale.push(relative(root, path))

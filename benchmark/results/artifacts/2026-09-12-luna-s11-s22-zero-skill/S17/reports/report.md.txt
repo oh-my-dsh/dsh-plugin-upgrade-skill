@@ -1,0 +1,156 @@
+# S17 — External UI plugin onboarding trap
+
+## 1. Failure 1: one bad client bundle disables the whole plugin set
+
+The `insert` rows are resolved first, but the browser does not receive three
+independent ES modules. At boot the host reads the installed client files and
+assembles all 53 loader entries into one 4.5 MB **classic-script** combo. The
+entries are expected to be loader records of the form shown by the working
+plugin:
+
+```js
+window.__ModuleLoader__.load({
+  id: "@some/plugin",
+  factory: (require) => {
+    var module = { exports: {} };
+    var exports = module.exports;
+    // transpiled CommonJS body, using require(...)
+    return module.exports;
+  },
+});
+```
+
+The new `client.js` begins with a static ESM import and also contains an ESM
+`export`. Those tokens cannot be parsed in the classic combo (`import React`
+is at position 1:1). The combo therefore fails before the loader can complete
+registration. This is why the stock entries disappear too: registration is
+being attempted from one assembled script, and its compile failure aborts the
+whole load, rather than merely rejecting `dsh-profiles`.
+
+`@deepseek-ai/dsh-typert-registry` is a misleading reporting context, not the
+culprit. The loader error names the entry whose import/await path observed the
+rejected combo. The error's bundle path points to the actual failing source:
+`@lhh010/dsh-profiles/lib/client.js`. The stock package was not modified.
+
+## 2. Diagnosis and the required client format
+
+The first useful distinction is **compile-time combo failure** versus
+**apply-time plugin failure**. For a compile failure, inspect or bisect the
+*set of client bundles*, not the entry named in the rejection. Disable half of
+the inserted/installed client entries, restart (because assembly is boot-time),
+and repeat; with this fixture, comparing the baseline with the
+`dsh-profiles` row is the shortest bisect.
+
+A cheap preflight is a static scan of every external client file for
+top-level `import` or `export` declarations, for example:
+
+```sh
+rg -n '^[[:space:]]*(import|export)[[:space:]]' plugin-root
+```
+
+It should also verify that the first executable form is the host loader
+wrapper and that the factory returns `module.exports`. A parser check against
+classic-script grammar is a stronger version of the same test. Dynamic
+application code and React itself are not the problem; the untransformed ESM
+packaging is.
+
+An external plugin must ship the host's loader-compatible classic wrapper,
+not bare ESM. Its build should transform the body to CommonJS-like code inside
+`window.__ModuleLoader__.load({ id, factory })`, create the factory-local
+`module`/`exports`, and return `module.exports`. React and React DOM are host
+dependencies obtained through the injected resolver, for example
+`require("react")`, `require("react-dom")`, or the host-supported
+`require("react/jsx-runtime")`; they should not be bare browser imports (nor
+an incompatible private React copy). The returned exports object must expose
+the plugin entry point, in particular `apply` (for example, transpiled
+`exports.apply = apply`).
+
+## 3. Failure 2: the slot path is not a declaration
+
+This second error proves that the bundle now parses and the plugin's `apply`
+function is running. `settings.section` is a slot in the host settings
+hierarchy. Slots are declared by the entry that owns the UI hierarchy: the
+parent entry's children table must contain the `section` child. A consumer
+cannot create such a slot merely by passing the dotted path as a top-level
+`name`. A bare registration is rejected when the registry looks up the
+declaration and finds no declared child (or the owner has not been declared
+yet).
+
+The registration must retain the parent/child shape, with `section` nested
+under its declared parent:
+
+```js
+ctx.slots.register(
+  {
+    name: 'settings',
+    children: {
+      section: {
+        id: 'profiles-manager',
+        order: 5,
+      },
+    },
+  },
+  ProfilesSection,
+)
+```
+
+In other words, the child key represents `settings.section`; it must not be
+flattened to `{ name: 'settings.section', ... }`. The host/settings entry must
+already declare that child and be applied before this registration.
+
+The registrant supplies its identity and placement (`id` and `order`) and the
+component supplied as the registration's second argument. The parent owns the
+slot's declaration metadata, including its name/path, `kind` (`section`), and
+`scope` (`settings`); the registrant must not invent or override those fields
+with the failed call's top-level `name`, `kind`, or `scope`. If the host does
+not expose `settings.section`, the external plugin cannot fix that by changing
+its own registration—the host must declare a supported slot.
+
+## 4. Dev-loop discipline
+
+The host assembles and serves the combo once during host boot. It does not
+watch plugin files and rebuild that combo after an edit. Consequently, neither
+a file edit nor a browser hard refresh sees a changed client bundle until the
+host process is restarted.
+
+The safe iteration is: stop the existing host and its child processes, verify
+that its listening port is free, start exactly one host so it assembles a new
+combo, wait for the boot line, then hard-refresh the browser and check
+Settings → Plugins. An empty plugin list means the combo failed again.
+
+On Windows, closing the launching terminal can leave the Node child/process
+tree alive. Starting a second host then fails with `EADDRINUSE` because the
+orphan still owns the port; that is a process-lifecycle failure, not evidence
+of another plugin bug. Gracefully stop it, or use the documented fallback
+`taskkill /PID <pid> /T /F` to terminate the whole tree, then restart.
+
+## 5. Prevention
+
+Host-side safeguards:
+
+- Validate each source bundle as a classic script, and validate the loader
+  wrapper/returned `apply`, before concatenating the combo. Report the bundle
+  path, plugin id, and line/column of the bad ESM token.
+- Keep an entry-to-byte-range/source-map manifest for the combo, or compile
+  entries independently on failure. Never use the first awaited entry as the
+  presumed source of a combo-wide parse error.
+- At apply time, report the missing slot, its owning parent, the plugin making
+  the registration, and the parent's available declared children. Check the
+  declaration before invoking external code.
+- Optionally quarantine one invalid entry and continue loading known-good
+  entries, while making the quarantined plugin visible in the plugin UI/log.
+
+An external-plugin template/checklist should include:
+
+1. Build with the host's client-bundle tool: loader `load` wrapper, classic
+   script, factory-local CommonJS `module`/`exports`, shared React dependencies
+   through `require`, and an exported `apply`.
+2. Run a no-top-level-ESM/static-wrapper preflight and a smoke test against the
+   host loader.
+3. Look up the host-owned slot declaration first. Register through the
+   parent/`children` wrapper, pass only registrant fields such as `id` and
+   `order`, and do not claim `name`, `kind`, or `scope`.
+4. Document that the patch `insert` only installs the package; every client
+   edit requires a full host restart, one live process tree, a free port, and a
+   browser hard refresh followed by a non-empty plugin-list check.
+

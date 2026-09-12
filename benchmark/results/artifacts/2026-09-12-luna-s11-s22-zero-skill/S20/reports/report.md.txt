@@ -1,0 +1,88 @@
+# S20 diagnosis and fix plan
+
+Corridor card: `DSH-0.1.3-A1-S20` — a Windows install-time native build for a
+module whose runtime branch is not used.
+
+## Finding
+
+The failing package is `fs-ext@2.1.1`. It is a runtime dependency of
+`@deepseek-ai/dsh-session-persistence-jsonl@0.1.3-alpha.1`, not merely a type
+package: the manifest declares `fs-ext: 2.1.1` under `dependencies`
+(`fixture/manifest-excerpt.json:2-8`). During `pnpm install`, its lifecycle
+install command is `node-gyp configure build` (`fixture/install-error.log:1-3`).
+
+`node-gyp` cannot configure a Windows native build because the machine has no
+Visual Studio/Build Tools installation. The transcript reports that
+`VCINSTALLDIR` is absent, Visual Studio discovery failed, and no usable VS
+installation exists (`fixture/install-error.log:4-12`). The lifecycle failure
+propagates as `pnpm install` exit code 1 (`fixture/install-error.log:13-14`).
+
+## Why `--ignore-scripts` is not the fix
+
+`pnpm install --ignore-scripts` could suppress the failing `fs-ext` lifecycle
+script, but it would leave the package's native binding unbuilt. It also does
+not remove or rewrite the dependency or the application import. `src/lease.ts`
+has a top-level static `import { flock } from 'fs-ext'`
+(`fixture/lease-excerpt.md:10-12,17-19`), so the loader still has to resolve
+and load `fs-ext` when the service starts. Skipping installation scripts can
+therefore turn the install into a superficial success while boot still fails
+when the unbuilt native entry is loaded. It does not provide the JavaScript
+module shape needed by that static import.
+
+## Windows runtime path
+
+The `flock(2)` path is POSIX-only: it takes a non-blocking `flock` through
+`fs-ext` on `session.lock` (`fixture/lease-excerpt.md:3-8`). Windows instead
+calls `acquireLockHandleWin32`/`releaseLockHandleWin32`; those bindings use a
+named kernel semaphore derived from the path, with
+`CreateSemaphoreW`, `WaitForSingleObject`, `ReleaseSemaphore`, and
+`CloseHandle` (`fixture/lease-excerpt.md:6-8,12`; `fixture/win32-excerpt.ts:8-24`).
+The Windows durable-namespace operation is also represented by `MoveFileExW`
+(`fixture/win32-excerpt.ts:3-8`). There is no Windows lock file and no
+`flock(2)` call (`fixture/lease-excerpt.md:15-19`; `fixture/win32-excerpt.ts:23-24`).
+
+Thus `fs-ext` is dead code at Windows lock-operation time, but not at module
+load time: its `flock` export is imported statically before the OS-specific
+branch is selected. The native package is being required for its load-time
+module shape, not because Windows needs its native locking implementation.
+
+## Least-invasive fix plan
+
+Use the repository's established pnpm patch mechanism. Do not change the
+upstream dependency declaration, replace the dependency version, install
+Visual Studio, or use `--ignore-scripts` as a workaround.
+
+1. Create a version-pinned patch for `fs-ext@2.1.1`, following the existing
+   `patches/node-pty@*.patch` precedent mentioned in
+   `fixture/README.md:7-10`.
+2. In the patched package manifest, make the install command platform-aware:
+   skip the native `node-gyp configure build` on `win32`, while retaining the
+   original build on non-Windows platforms. This prevents Windows from
+   looking for MSVC and keeps the POSIX implementation intact.
+3. Patch the package's declared entry file into a platform gate. On Windows,
+   expose a JavaScript `flock` export without requiring any `.node` binding;
+   the function should throw a clear POSIX-only error if called unexpectedly.
+   On non-Windows, delegate to the original native entry so POSIX locking is
+   unchanged. The explicit `flock` export is required because `lease.ts` has
+   a static named import even though normal Windows execution never invokes it.
+4. Register the patch in the workspace configuration, for example:
+
+   ```yaml
+   patchedDependencies:
+     fs-ext@2.1.1: patches/fs-ext@2.1.1.patch
+   ```
+
+   Regenerate the lockfile through pnpm so the exact patched package and patch
+   hash are recorded. The application manifest should continue to declare
+   `fs-ext` at `2.1.1`; only the local pnpm patch is changed.
+5. Verify on a clean Windows 11 profile with no `vswhere.exe`, Visual Studio,
+   or Build Tools: run ordinary `pnpm install` (without
+   `--ignore-scripts`), then boot dsh. Confirm that the service loads the
+   patched JavaScript export, acquires/releases the Windows named semaphore
+   across two processes, and creates no `session.lock` file. Also run the
+   repository's POSIX checks to confirm the native `flock` build and behavior
+   remain available there.
+
+This makes the normal install complete on the constrained machine and lets
+the service boot while preserving the actual Windows lock implementation and
+leaving upstream dependencies untouched.

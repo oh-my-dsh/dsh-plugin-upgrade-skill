@@ -1,0 +1,134 @@
+# S16 — The Self-Host Upgrade Trap
+
+## 1. Structural root cause
+
+This was a self-upgrade of the running control plane. The web session was hosted by a
+Node process whose code came from the global
+`node_modules/@deepseek-ai/dsh/` tree. The agent's tool worker was running inside that
+host process. The command it launched was therefore not an independent maintenance
+process: it was a child/worker operation controlled by the very dsh installation that
+`npm install -g` was removing and replacing.
+
+The log shows the characteristic interrupted-install sequence: npm warned while
+cleaning the old tree, removed the old package, fetched rc.1, and began `linkStuff`.
+That means the old contents had already been disturbed and the new package had begun
+to land, but completion of linking and shim generation was not durable. Once npm
+started changing the live package tree, the dsh host/session lost
+the code it was executing or otherwise became unloadable. The first user-visible death
+was the dsh web session/GUI (connection lost). That kills the worker/control channel
+before the npm child can report its final status. Consequently the tool call has no
+durable result; its success or failure is not evidence that the install completed.
+
+This is structural, not a flaky network or browser failure: the process issuing the
+upgrade depends on the files being replaced. A running process may retain some already
+loaded code, but it cannot provide a reliable upgrade transaction while its own module
+tree and process supervision are being torn down.
+
+## 2. State after the interrupted install
+
+The package directory is not the command. On this Windows installation, npm's global
+install also creates the command shims in `%APPDATA%\\npm`. The before/after evidence
+shows that after the interruption:
+
+- rc.1 package content existed in `node_modules\\@deepseek-ai\\dsh`, but the tree was
+  partial/non-standard and had also been manually swapped in places;
+- `dsh` and `dsh.cmd` were missing, while `dsh.ps1` was stale and still pointed into
+  the old tree;
+- an old backup directory remained.
+
+Thus PowerShell could not resolve `dsh` at all, even though files bearing rc.1 content
+were present. The missing generated shims, especially `dsh.cmd` and the main `dsh`
+entrypoint, severed the PATH-facing command.
+
+Hand-swapping or patching package directories would compound the problem. It does not
+recreate npm's bin/shim outputs or complete the package-manager lifecycle, and it can
+leave a mixture of alpha, rc, stale paths, and incomplete dependencies that npm no
+longer recognizes as a standard install. It also risks changing files while another
+dsh process is using them. The package directory's presence is therefore not a safe
+repair criterion.
+
+## 3. Repair actually applied
+
+An independent agent CLI, run outside dsh, re-ran the formal registry install:
+
+```text
+npm install -g @deepseek-ai/dsh@0.1.2-rc.1
+```
+
+That completed with an external process no longer hosted by the package being replaced.
+The formal install rebuilt the package installation and regenerated all three shims:
+`dsh`, `dsh.cmd`, and `dsh.ps1`. The direct verification recorded in the repair notes
+was:
+
+```text
+dsh --version  ->  0.1.2-rc.1
+```
+
+The source checkout used for host-source reference was also aligned from the
+`dsh-v0.1.2-alpha.5` tag to `dsh-v0.1.2-rc.1`, with no local-modification conflict.
+That alignment is separate from regenerating the global command, but keeps the source
+reference consistent with the installed release.
+
+## 4. Protocol the agent should have followed
+
+The agent should have recognized that the requested package is its own runtime and that
+the current session is not an external administrator shell. It should not execute the
+global dsh install from that session at all. It should explain the self-hosting hazard
+and hand the user this externally executed procedure:
+
+1. From a separate shell or external agent CLI, stop/exit the dsh web host and end the
+   dsh session. Ensure no dsh host process is still running before npm starts. Closing
+   the browser tab alone is not sufficient if the host process remains alive.
+2. In that independent shell, run the exact formal global registry install:
+
+   ```text
+   npm install -g @deepseek-ai/dsh@0.1.2-rc.1
+   ```
+
+   The `-g` targets the global installation and the explicit package version selects
+   rc.1; using npm's formal install is what reinstalls the package and generates its
+   platform command shims. Do not replace the directory by hand.
+3. Verify the command and version, including that the shims resolve from the expected
+   global npm bin directory. At minimum run `dsh --version` and require
+   `0.1.2-rc.1`.
+4. If the source checkout is used for host-source reference, align it to
+   `dsh-v0.1.2-rc.1` after checking for local modifications.
+5. Start the web profile with `dsh --profile web`, hard-refresh the browser, and smoke
+   test the GUI, session, tools, and plugins.
+
+The established upgrade rules reflected by the repair are to use the package manager's
+formal, exact-version install, avoid manual tree surgery, keep the source checkout on
+the matching release tag, and verify the installed version and runtime afterward. The
+incident-specific addition is the execution boundary: because dsh is self-hosting,
+the host must be stopped before npm runs and the install must be performed by a
+separate external process. That boundary is the part the in-session agent failed to
+apply.
+
+## 5. Prevention and post-upgrade checklist
+
+An agent-side guard should inspect any package-manager command before execution. If it
+targets `@deepseek-ai/dsh` globally (install, update, uninstall, or an equivalent
+directory replacement), compare it with the current process/module path and host
+identity. If the target is the current dsh runtime, the guard must block the tool call,
+state that the control plane would be replacing itself, and emit the external procedure
+above. A confirmation inside the same session cannot make this safe; the required
+condition is an independent process after the host has stopped.
+
+For this alpha.5 to rc.1 upgrade, the post-upgrade checklist should cover:
+
+- `dsh --version` reports exactly `0.1.2-rc.1`;
+- `dsh`, `dsh.cmd`, and `dsh.ps1` all exist in the global npm bin directory and resolve
+  to the current installation;
+- the global package tree is a standard npm install, not a hand-swapped or mixed tree;
+- the source checkout, if used, is on `dsh-v0.1.2-rc.1` and has no unintended local
+  modifications;
+- `dsh --profile web` starts, the browser is hard-refreshed, and the GUI reconnects;
+- a real session can execute tools and the whale, progress, and other expected plugins
+  load;
+- stale `dsh-old-*` backup directories are cleaned up only after the new install and
+  runtime have been confirmed.
+
+The repair notes report that the alpha.5-to-rc.1 diff contains 252 files, all package
+version bumps, with no API or feature changes. Therefore migrated plugins do not need
+re-migration; they still need the runtime smoke test above to catch installation,
+shim, or startup problems.

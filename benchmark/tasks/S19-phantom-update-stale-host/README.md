@@ -27,15 +27,29 @@ v0.3.7/v0.3.8 on Windows (bump-after-build phantom badge → amended re-release;
 session's concatenated-zstd generation file).
 
 - Type: static / read-only report
-- Score: 5 criteria × 20 points each, sealed fixture hash, separate semantic verifier
-- **Verifier**: [LLM-as-judge by default](../../docs/report-judge-pilot.md), task version `3.0.0`.
-  A sealed fixture hash enforces read-only work. The separate verifier reads the report,
-  judges each criterion with quoted evidence, and deterministically aggregates the score.
-  Configure `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
-  only for the verifier. Missing reports score 0; evaluator failures leave no reward.
-- **Oracle**: `harbor run -p benchmark/tasks/S19-phantom-update-stale-host -a oracle`; inspect the semantic decisions (a reference answer has no assumed model score).
-- See `instruction.md` for the brief, `solution/SOLUTION.md` for the reference answer.
 
-Run `npm run test:s19-judge` for the isolated judge and verifier regressions. The
+- See `instruction.md` for the brief, `solution/report.md` for the reference answer.
+
+Run `npm run test:s19-judge` for the task-specific model-free verifier protocol checks. The
 verifier only reads agent artifacts; it never installs counter-example or oracle reports
 into the answer directory and does not require `/solution/`.
+
+## Semantic verifier
+
+- **Scoring**: baked version/release order, client-host asymmetry, payload corruption, validated render fallbacks, and forensics/prevention: 20 each; affirmative unsafe release/render advice caps at 0.
+- **Boundary**: the separate verifier checks the complete fixture against sealed
+  hashes; any edit, addition or deletion scores zero. Judge configuration, API or
+  response failures exit nonzero with no reward, never a keyword fallback.
+- **Oracle**: `harbor run -p benchmark/tasks/S19-phantom-update-stale-host -a oracle`
+  requires judge configuration and grades the original reference report through
+  the same LLM. Its score is not hardcoded.
+
+Task version **4.1.0**, protocol `report-judge-v2`. Each criterion receives
+100%/50%/0%/0% for pass/partial/fail/missing; code sums points and applies caps.
+Set `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY`
+for the verifier. The agent receives neither these credentials nor the sealed packet.
+
+See the [rubric explanation](../../docs/diagnosis-rubrics.md) and
+[setup/maintenance guide](../../docs/report-judge-pilot.md). Edit
+`benchmark/report-judge/diagnosis-rubrics.mjs`, run `npm run sync:report-judge`,
+then `npm run test:report-judge`. Historical keyword scores remain historical.

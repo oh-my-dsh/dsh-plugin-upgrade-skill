@@ -1,0 +1,117 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"pwd; rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/.git/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/README.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/package.json'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/release-log.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/git-tags.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/client-bundle-excerpt.js'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/lib-index-excerpt.js'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/asset-route-probe.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/session-log-excerpt.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'find /app -maxdepth 3 -type f ! -path '\"'/app/fixture/*' \"'! -name '\"'SKILL.md' -print | sort; command -v zstd || true; command -v unzstd || true; command -v python3 || true; command -v node || true; ls -la /app /app/fixture /app/agent-output 2>/dev/null || true\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,320p' /app/agent-output/S19-phantom-update-stale-host/report.md\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git status --short; git diff --check; git diff -- /app/fixture'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'sha256sum /app/fixture/*'",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"pwd; rg --files -g '!**/SKILL.md' -g '!**/.git/**' /app/fixture /app 2>/dev/null | sed -n '1,240p'\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":20000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const files = [\n  \"/app/fixture/README.md\",\n  \"/app/fixture/package.json\",\n  \"/app/fixture/release-log.md\",\n  \"/app/fixture/git-tags.txt\",\n  \"/app/fixture/client-bundle-excerpt.js\",\n  \"/app/fixture/lib-index-excerpt.js\",\n  \"/app/fixture/asset-route-probe.txt\",\n  \"/app/fixture/session-log-excerpt.txt\"\n];\nconst rs = await Promise.all(files.map(cmd => tools.exec_command({cmd:`sed -n '1,260p' '${cmd}'`,workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000})));\nfor (let i=0;i<rs.length;i++) { text(`\\n===== ${files[i]} =====\\n${rs[i].output}`); }\n"
+    },
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"find /app -maxdepth 3 -type f ! -path '/app/fixture/*' ! -name 'SKILL.md' -print | sort; command -v zstd || true; command -v unzstd || true; command -v python3 || true; command -v node || true; ls -la /app /app/fixture /app/agent-output 2>/dev/null || true\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":20000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S19-phantom-update-stale-host/report.md\\n+# S19 — Phantom update, stale host half, and corrupted payload\\n+\\n+## Conclusion\\n+\\n+The evidence shows three independent boundaries, not one bad release artifact:\\n+\\n+1. The v0.3.7 client bundle was built while the manifest still said `0.3.6`, so\\n+   it permanently contains `PLUGIN_VERSION = \\\"0.3.6\\\"`. The update check compares\\n+   that baked value with the mirror tag and consequently treats `v0.3.7` as newer.\\n+2. The browser obtained the refreshed client bundle, but the host process was not\\n+   restarted. Its in-memory asset-route registration still had the old extension\\n+   whitelist, even though the installed `lib/index.js` on disk already contains\\n+   the SVG entry.\\n+3. The disk SVG is valid. The malformed value is the text assembled and persisted\\n+   as the session result. The plugin must therefore reject that result as an\\n+   untrusted rendering input and report the upstream result-text corruption.\\n+\\n+## 1. Phantom self-update\\n+\\n+The version used by the self-update check is a build-time value. The shipped\\n+`lib/client.js` says:\\n+\\n+```js\\n+export const PLUGIN_VERSION = \\\"0.3.6\\\";\\n+```\\n+\\n+The bundle excerpt also states that tsdown inlined this value from `package.json`\\n+when the bundle was built; the running client does not read the manifest at\\n+runtime. The release log gives the causality:\\n+\\n+```text\\n+16:22 build\\n+16:23 package.json 0.3.6 -> 0.3.7\\n+```\\n+\\n+Thus the operation-order mistake was bumping the manifest after generating the\\n+artifact. The subsequent commit and tag included that already-built stale\\n+`lib/client.js`. The tag and all three mirrors were consistent with one another,\\n+but they consistently delivered an artifact whose embedded version was wrong.\\n+\\n+At the v0.3.7 symptom point, the mirror's `v0.3.7` tag is greater than the\\n+bundle's `0.3.6`, so `compareSemver(\\\"v0.3.7\\\", PLUGIN_VERSION) > 0` returns true\\n+and the badge says `新版本 v0.3.7 可用`. The later evidence listing also shows\\n+that the v0.3.7 and v0.3.8 tag SHAs are identical across `origin`, `public`, and\\n+`omdsh`; that verifies mirror/tag integrity, not the semantic correctness of a\\n+generated constant.\\n+\\n+The safe release order is:\\n+\\n+1. Make the source change and tests.\\n+2. Bump the manifest to the target version **before** building, and update any\\n+   release references.\\n+3. Build and test the generated artifacts.\\n+4. Inspect the artifact before pushing. For v0.3.7, a check such as\\n+   `rg -n 'PLUGIN_VERSION|0\\\\.3\\\\.6|0\\\\.3\\\\.7' lib/client.js` must show the target\\n+   value (`\\\"0.3.7\\\"`) and must not show the old baked value in the version\\n+   constant. More robustly, a release check should extract the shipped constant\\n+   and compare it with the manifest version.\\n+5. Commit source, manifest, and generated files together; tag that commit; then\\n+   verify the tag object/commit SHA independently on every mirror.\\n+\\n+That shipped-bundle check would have caught the phantom update before any push.\\n+The mirror SHA check remains valuable, but it is a distribution-integrity check,\\n+not a build-content check.\\n+\\n+## 2. Client plane versus host plane\\n+\\n+The two halves have different lifecycles:\\n+\\n+| Plane | Evidence/code | Load point | Effect of the v0.3.8 update |\\n+|---|---|---|---|\\n+| Client | shipped `lib/client.js`, including the render toggle | The plugin frontend fetches/reloads the client bundle in the browser | The browser refreshed, so the new toggle appeared and was clickable |\\n+| Host | `lib/index.js`, including `CONTENT_TYPES` and the asset route registration | The running host loads the host module at boot and keeps the route handler/whitelist in memory | No host restart occurred, so the old route behavior remained active |\\n+\\n+The probes isolate the failure to the running host process. The PNG request gets\\n+`200 image/png`, proving that the route is registered and alive. The SVG request\\n+gets the route's `404 \\\"unsupported image type\\\"`, which is an extension-whitelist\\n+decision rather than a missing route. At the same time, the disk copy of the\\n+v0.3.8 `lib/index.js` contains `svg: 'image/svg+xml'`. Therefore the file on disk\\n+and the code in the release are ahead of the code already loaded by the host.\\n+\\n+A host-plane change becomes effective only after the host process is restarted,\\n+or after an explicit host/plugin reload mechanism that unloads the old module and\\n+runs route registration again. A client hot refresh changes browser code; it does\\n+not mutate JavaScript objects, route tables, or module state in a separately\\n+running host. This is the exception to the usual “plugins hot-update” expectation:\\n+that rule covers the client plane here, while route registration is boot-time host\\n+state and needs a host restart/reload.\\n+\\n+## 3. Broken-image attribution\\n+\\n+The source and payload disagree in a directly testable way. The source's line 232\\n+ends with a normal `stroke-width=\\\"6.5\\\"`; the stored payload has that line ending\\n+in the partial attribute text `stro`, followed by line 247's arc tail beginning\\n+`0,1 821,730`. The real source lines 233–247 are absent. This produces the parser\\n+error at the corrupted `stro0` attribute. The source passes `System.Xml`\\n+well-formedness, and a later read is clean.\\n+\\n+The corruption therefore occurred while the read-result text was being assembled\\n+and persisted in the session-log/result layer upstream of the plugin. It did not\\n+occur in the SVG file, in the host asset route, or in the plugin's renderer. The\\n+read tool's separate TYPE result being clean is consistent with a corruption of\\n+the model-visible text block rather than the underlying file-read operation.\\n+\\n+The plugin must treat session result text as untrusted input: a successful tool\\n+call or a clean type field is not proof that the returned text is intact. It must\\n+validate the SVG before creating a render source and surface the validation error\\n+with enough context to diagnose the result pipeline.\\n+\\n+Editing or “repairing” the traced file would have been the wrong response. The\\n+file on disk is already well-formed, and the missing source lines cannot be safely\\n+recovered by modifying the canonical asset based on a corrupted observation.\\n+That would risk damaging good user data and would conceal the upstream\\n+non-deterministic text-corruption bug. The correct action is to use a clean\\n+source/read and report the result-text assembly defect upstream.\\n+\\n+## 4. Defensive SVG render chain\\n+\\n+Use the following ordered sources. A failed level should fall through with a\\n+diagnostic reason; it should not leave a broken `<img>` as the apparent result.\\n+\\n+1. **Disk-bytes asset route.** Request the host asset route for the original path\\n+   and, on a successful response with the expected SVG content type, render the\\n+   response bytes (for example through a Blob/object URL). This is canonical,\\n+   avoids a text round-trip through the session log, preserves the exact file,\\n+   and allows the host to apply its path and content-type policy. In this\\n+   incident it will fail until the stale host is restarted, which is an expected\\n+   diagnosable fallback condition.\\n+2. **Validated session payload.** Only if the route is unavailable, and only if a\\n+   session payload is present, parse it as SVG XML before rendering it. In a\\n+   browser this can be:\\n+\\n+   ```js\\n+   const doc = new DOMParser().parseFromString(payload, \\\"image/svg+xml\\\");\\n+   const invalid = doc.querySelector(\\\"parsererror\\\");\\n+   if (invalid || doc.documentElement?.localName !== \\\"svg\\\") {\\n+     throw new Error(\\\"session SVG is not well-formed\\\");\\n+   }\\n+   ```\\n+\\n+   The exact DOMParser error handling should also account for the target browser,\\n+   but the essential gate is rejecting a `parsererror` (and a non-`svg` root).\\n+   Only the validated text/bytes may then be used for an image/object URL. The\\n+   incident payload fails this gate at `stro0`, so it must not be handed to the\\n+   image decoder.\\n+3. **Sandboxed iframe as the last render fallback.** For a valid SVG that cannot\\n+   be displayed through the normal image path, load it in an iframe with a\\n+   restrictive sandbox, such as `sandbox=\\\"\\\"`, without `allow-scripts` or\\n+   `allow-same-origin` (and apply an appropriate restrictive CSP). The sandbox\\n+   blocks SVG script execution while declarative SMIL animations can still run.\\n+   This gives animated SVGs a document context without granting the untrusted\\n+   document the plugin page's script or origin privileges. A malformed session\\n+   payload does not bypass the XML gate merely because an iframe is available.\\n+4. **Explicit error state.** If the asset route fails, the payload is absent or\\n+   fails XML validation, and no safe fallback renders, show a deliberate error\\n+   state such as “SVG preview unavailable: asset route unavailable and session\\n+   payload is malformed,” with retry/re-read diagnostics. Remove or replace the\\n+   broken image element so the user is not given a silent generic broken-image\\n+   icon.\\n+\\n+The order prioritizes the authoritative byte source, permits the session source\\n+only when its syntax proves intact, limits the capabilities of the document-level\\n+fallback, and makes data loss visible instead of silently displaying corrupted\\n+content.\\n+\\n+## 5. Forensics and prevention\\n+\\n+### Decoding the concatenated-Zstandard log\\n+\\n+The raw generation file should be copied to a separate temporary working path and\\n+hashed first; the evidence directory remains read-only. Decode it as a sequence of\\n+Zstandard frames, preserving bytes and boundaries:\\n+\\n+1. Open the file in binary mode and initialize a Zstandard streaming decompressor.\\n+   A frame starts with the Zstandard magic bytes `28 b5 2f fd`, but magic-byte\\n+   searching alone must not be used to split frames because those bytes can occur\\n+   inside compressed data.\\n+2. Give the decoder the remaining input and retain both its output bytes and the\\n+   input position it reports as consumed. Continue until it reports end-of-frame\\n+   (`ret == 0` in the libzstd streaming API). Record the input offset/length,\\n+   output offset/length, and hashes for that frame.\\n+3. Advance by the decoder-reported consumed count and repeat for the next frame\\n+   until EOF. If using a language binding, use its one-frame/`unused_data` or\\n+   `bytes_consumed` facility; do not rely only on a CLI invocation that silently\\n+   concatenates all decompressed output and loses frame provenance.\\n+4. Concatenate the decompressed bytes in frame order, then parse the resulting\\n+   log records. Preserve UTF-8 bytes, line endings, and whitespace while extracting\\n+   the read-result text. Save the raw frame map and hashes alongside the decoded\\n+   excerpt so another investigator can reproduce the exact stored value.\\n+5. Compare the stored result with an independent fresh read only as an attribution\\n+   check. Do not fill missing lines from that fresh read when reporting what the\\n+   session log actually stored. In this case the exact stored payload includes the\\n+   `stro` + line-247-tail splice and is not well-formed XML; the clean re-read is\\n+   separate evidence that the source was not damaged.\\n+\\n+The fixture provides the decoded excerpt, not the raw generation file, so the\\n+procedure above is the reproducible frame-level method for the underlying artifact\\n+rather than a mutation of the evidence pack.\\n+\\n+### Checklist additions\\n+\\n+- Bump the version before building; make the manifest, source, and generated\\n+  artifacts part of the same reviewable change.\\n+- Grep or programmatically inspect the shipped bundle for the baked version and\\n+  fail the release if it differs from the manifest/tag target.\\n+- Verify the tag's commit/object SHA on every mirror, retaining the per-mirror\\n+  evidence. Keep this as a distribution check in addition to the bundle-content\\n+  check.\\n+- After host-plane changes, record a host restart/reload and probe a changed route\\n+  or content type from the running process; a client refresh alone is insufficient.\\n+- Treat session-log read-result text as untrusted: perform XML well-formedness\\n+  validation before SVG rendering and retain the original failure diagnostics.\\n+- Report the upstream session/result-text corruption bug with the exact frame,\\n+  offsets/record, malformed splice, and clean re-read comparison. Do not paper it\\n+  over by editing or “repairing” a valid traced file in the plugin.\\n+\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const rs = await Promise.all([\n  tools.exec_command({cmd:\"sed -n '1,320p' /app/agent-output/S19-phantom-update-stale-host/report.md\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":30000}),\n  tools.exec_command({cmd:\"git status --short; git diff --check; git diff -- /app/fixture\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":10000}),\n  tools.exec_command({cmd:\"sha256sum /app/fixture/*\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":10000})\n]);\ntext(`===== report =====\\n${rs[0].output}\\n===== verification =====\\n${rs[1].output}\\n===== fixture hashes =====\\n${rs[2].output}`);\n"
+    }
+  ],
+  "skill_command_hits": [
+    {
+      "command": "/bin/bash -lc \"pwd; rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/.git/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'find /app -maxdepth 3 -type f ! -path '\"'/app/fixture/*' \"'! -name '\"'SKILL.md' -print | sort; command -v zstd || true; command -v unzstd || true; command -v python3 || true; command -v node || true; ls -la /app /app/fixture /app/agent-output 2>/dev/null || true\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}

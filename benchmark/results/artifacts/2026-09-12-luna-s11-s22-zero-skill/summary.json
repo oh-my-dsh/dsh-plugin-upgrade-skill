@@ -1,0 +1,1460 @@
+{
+  "generated_at": "2026-09-12T13:23:11.389025+00:00",
+  "solver_model": "gpt-5.6-luna",
+  "solver_effort": "xhigh",
+  "judge_model": "gpt-5.6-luna",
+  "judge_effort": "high",
+  "codex_version": "0.153.4",
+  "harbor_version": "0.22.0",
+  "selected_attempts_per_task": 1,
+  "solver_attempts": {
+    "S13": 1,
+    "other_requested_tasks": 2
+  },
+  "retry_reason": "Initial batch DNS/network outage; original S13 answer retained and only judge retried",
+  "solver_concurrency": 3,
+  "judge_concurrency": 2,
+  "skill_condition": "no injected/native/bundled skills; native trajectory audited",
+  "transport": "Harbor Docker solver; independent host-side Codex judge; Docker HTTP verifier not exercised",
+  "network_condition": "original task network policy retained (public); provider web search disabled",
+  "snapshot_changes": [],
+  "rows": [
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "exception": null,
+      "solver_seconds": 195.015092,
+      "agent_result": {
+        "n_input_tokens": 134852,
+        "n_cache_tokens": 81408,
+        "n_output_tokens": 8327,
+        "cost_usd": 0.02230936,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/*skill*/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,200p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "command": "/bin/bash -lc \"node - <<'NODE'\nconst path=require('node:path');\nfor (const p of ['/x/dsh/lib/','/x/dsh/lib','E:\\\\\\\\dsh\\\\\\\\lib\\\\\\\\','E:\\\\\\\\dsh\\\\\\\\lib']) {\n  console.log(JSON.stringify(p), 'posix.normalize=', JSON.stringify(path.posix.normalize(p)), 'win32.normalize=', JSON.stringify(path.win32.normalize(p)));\n}\nfor (const [lib, abs, sep] of [['/x/dsh/lib/','/x/dsh/lib/mermaid.js','/'], ['E:\\\\\\\\dsh\\\\\\\\lib\\\\\\\\','E:\\\\\\\\dsh\\\\\\\\lib\\\\\\\\mermaid.js','\\\\\\\\']]) console.log({lib,abs,guard:abs.startsWith(lib+sep)});\nNODE\nrg -n \\\"realpath|normalize\\\\(|startsWith|addEventListener|wheel|font|mermaid|dynamic import|code splitting|preserve\\\" /app --glob '\"'!fixture/**'\"' --glob '\"'!**/SKILL.md'\"' 2>/dev/null | sed -n '1,240p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 90,
+        "max": 100,
+        "passed": false,
+        "decisions": [
+          {
+            "id": "split-chunk-attribution",
+            "verdict": "pass",
+            "reason": "Correctly explains relative sibling resolution, missing shipped files causing 404 after entry 200, and recommends a self-contained no-splitting bundle or shipping the full graph.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "windows-containment-attribution",
+            "verdict": "pass",
+            "reason": "Precisely identifies the case-sensitive startsWith failure: configured E: versus realpath e:. It correctly explains Linux and matching-spelling control hosts.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "safe-route-fix",
+            "verdict": "pass",
+            "reason": "Uses canonical paths with platform-aware relative containment, rejects traversal and outside or symlink-resolved targets, and preserves a successful JavaScript MIME response.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "modal-event-ownership",
+            "verdict": "pass",
+            "reason": "Correctly attributes both actions to the same bubbling Ctrl+wheel event, distinguishes preventDefault from propagation control, and assigns exclusive modal ownership with pane arbitration.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "incident-regressions",
+            "verdict": "partial",
+            "reason": "Provides meaningful bundle, containment, and modal ownership tests, but does not explicitly assert that an import failure preserves the code-block fallback.",
+            "points": 20,
+            "awarded": 10
+          }
+        ],
+        "caps": [
+          {
+            "id": "unsafe-containment",
+            "triggered": false,
+            "reason": "The report recommends canonical relative containment and explicitly rejects outside and symlink-escaped paths.",
+            "total": 40
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 6543,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 913,
+            "reasoning_output_tokens": 635
+          },
+          "request_id": "01a095bf-28cf-7b80-9064-e2844e817171",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "54aab7c09eeff90a902ee2f2260134768b45438c35ab7bb4d9d6ddd59ec032fc",
+          "response_sha256": "868bc93b3caa57b5c1affdfc3c40b922b6642759645daf0782f0687864577e3a"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "69360600004c5b3f71e155b63680ee351ea2656de4d6d63c387105b63f2d3ce1"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "692d3ff3b63eb0f209687494b322befa20c89afb8c95f4eef3c1caad326a8ba4",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S11/reports/report.md.txt",
+          "sha256": "69360600004c5b3f71e155b63680ee351ea2656de4d6d63c387105b63f2d3ce1"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "exception": null,
+      "solver_seconds": 80.975176,
+      "agent_result": {
+        "n_input_tokens": 59382,
+        "n_cache_tokens": 34816,
+        "n_output_tokens": 2939,
+        "cost_usd": 0.00913632,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 100,
+        "max": 100,
+        "passed": true,
+        "decisions": [
+          {
+            "id": "removed-api-and-crash",
+            "verdict": "pass",
+            "reason": "Correctly ties the plugin's session.events reads to the non-iterable crash and cites removal in alpha.4 with seq, eventAt(), and snapshotEvents() as replacements.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "peer-check-boundary",
+            "verdict": "pass",
+            "reason": "Correctly explains that alpha.5 satisfies the declared peer semver range while npm checks metadata only, not API existence, behavior, or testing.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "distinct-breakage-categories",
+            "verdict": "pass",
+            "reason": "Identifies distinct runtime-failure classes including removed APIs, changed value shapes/types, and changed signatures or return contracts.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "author-prevention",
+            "verdict": "pass",
+            "reason": "Requires testing actual supported versions and gives compatible policies: narrow metadata ranges or migrate/guard with runtime capability handling; it correctly distinguishes metadata from runtime guards.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "user-preinstall-check",
+            "verdict": "pass",
+            "reason": "Provides a concrete tarball/source inspection and changelog/API comparison that would detect Session.events removal before installation.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "peers-prove-runtime",
+            "triggered": false,
+            "reason": "The report explicitly states that peer-range satisfaction and warning-free installation do not prove runtime compatibility.",
+            "total": 20
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 5905,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 756,
+            "reasoning_output_tokens": 485
+          },
+          "request_id": "01a095ba-d1e6-7120-a68a-b5e373a2bb45",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "bd702a4250fa76e2436609f7821116e6a53439dc55e3568ac8901b5e1354c675",
+          "response_sha256": "2915e7decd56234d8b1a58994142e6db6741b06fb865a1f09c75d82c3a95cea3"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "20df3965dc17934e95de6e25c8936b0028d80c771ebc6be1a30648af8bc1f1dc"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "c88da29da8f9034a57645a0a81b2adb050ba1eeb870279ca8c6a80b57a8b1275",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S13/reports/report.md.txt",
+          "sha256": "20df3965dc17934e95de6e25c8936b0028d80c771ebc6be1a30648af8bc1f1dc"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "exception": null,
+      "solver_seconds": 138.843264,
+      "agent_result": {
+        "n_input_tokens": 92022,
+        "n_cache_tokens": 62208,
+        "n_output_tokens": 6634,
+        "cost_usd": 0.01516776,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,200p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 100,
+        "max": 100,
+        "passed": true,
+        "decisions": [
+          {
+            "id": "junction-deployment",
+            "verdict": "pass",
+            "reason": "Correctly cites Junction/Target and the link marker, explains both paths resolve to the repo tree, and rejects copying through the junction.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "host-lock-and-client-cache",
+            "verdict": "pass",
+            "reason": "Grounds the EBUSY diagnosis in the session, attributes locks and stale module state to the running DSH host, distinguishes browser caching, and requires host restart plus cache-bypassing refresh.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "rename-recovery",
+            "verdict": "pass",
+            "reason": "Explains that the junction rename affected the sole source files and gives the required stop, restore, syntax-check, and activation recovery.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "ordered-activation",
+            "verdict": "pass",
+            "reason": "Provides the correct sequence: stop host, restore/check files, restart the host, hard-refresh the browser, and verify both host and client changes.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "install-mode-preflight",
+            "verdict": "pass",
+            "reason": "Requires inspecting LinkType/Target and cordis.patch.yml before file operations and explains why generic copying is harmful for linked installs.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "copy-through-junction",
+            "triggered": false,
+            "reason": "The report explicitly rejects copying or deleting the surviving .old2 files and treats the paths as one tree.",
+            "total": 40
+          },
+          {
+            "id": "browser-only-activation",
+            "triggered": false,
+            "reason": "It explicitly requires fully stopping and restarting the DSH host; browser refresh is only a later cache-bypass step.",
+            "total": 40
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 6976,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 673,
+            "reasoning_output_tokens": 358
+          },
+          "request_id": "01a095bf-633b-7270-bbb4-696e04eccdb6",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "e68c7179d0d0aca0c4183893ce4c583deb5d68e968a0d311f96e6647a002950c",
+          "response_sha256": "39e65c8e4658eb421b9e03d542b94010a84d1d5c4a245623fa9668e4dfd8db1f"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "13ec959774ce58b650e7f245c2c2b59706967337f83778361cc3d47c29b6acea"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "992a5dece3a1a15cfaff888e0cccd344ac0ef33ab7b4a6adffe5a1e794290f61",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S14/reports/report.md.txt",
+          "sha256": "13ec959774ce58b650e7f245c2c2b59706967337f83778361cc3d47c29b6acea"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "exception": null,
+      "solver_seconds": 128.543315,
+      "agent_result": {
+        "n_input_tokens": 85016,
+        "n_cache_tokens": 49920,
+        "n_output_tokens": 5982,
+        "cost_usd": 0.015196,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,200p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 100,
+        "max": 100,
+        "passed": true,
+        "decisions": [
+          {
+            "id": "self-host-failure",
+            "verdict": "pass",
+            "reason": "Correctly connects the session and worker to the live global dsh installation, explains the host/GUI dying during replacement, and preserves the tool result as unknown rather than claiming install success or blaming networking.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "interrupted-install-signature",
+            "verdict": "pass",
+            "reason": "Correctly identifies present rc.1 content alongside missing dsh and dsh.cmd and stale dsh.ps1, and rejects manual directory or shim repair as unsafe and incomplete.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "external-pinned-repair",
+            "verdict": "pass",
+            "reason": "Accurately reports the external pinned npm reinstall, regenerated shims, rc.1 version verification, and matching source-tag alignment, while distinguishing recorded repair from proposed checks.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "handoff-protocol",
+            "verdict": "pass",
+            "reason": "Requires stopping the host before an exact-version external install, then verification, restart, browser refresh, and smoke testing; it correctly distinguishes established upgrade rules from the self-host execution boundary.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "guard-and-postupgrade-checks",
+            "verdict": "pass",
+            "reason": "Proposes a runtime-path guard, checks exact version, shims, startup and plugin loading, delays backup cleanup until verification, and correctly notes that alpha.5-to-rc.1 requires no plugin API migration.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "execute-inside-target",
+            "triggered": false,
+            "reason": "The report explicitly rejects executing the global install from the live target session and requires an external process after the host stops.",
+            "total": 20
+          },
+          {
+            "id": "manual-shim-repair",
+            "triggered": false,
+            "reason": "Manual directory swaps and shim patching are explicitly rejected; the recommended fix is the formal external pinned npm installation.",
+            "total": 40
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 7019,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 673,
+            "reasoning_output_tokens": 308
+          },
+          "request_id": "01a095be-3bc7-7600-9a09-9a3a8e5081d8",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "e94503d920332381d34a5026673bd4f9b342692c693b77d4319072aabfece0e7",
+          "response_sha256": "afb00648182d53f122a3ee04b9b38058cbea2d0c596d5fd5d35a7ab8d2246aaa"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "1ddd9aa6e05efd2a07cfe788df1daf5fc5157c60a7be6163faa567d612b7d733"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "8b1b614fc93b7d28facb15d6b026dd0d865a184c2710046ca433106551cfb17e",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S16/reports/report.md.txt",
+          "sha256": "1ddd9aa6e05efd2a07cfe788df1daf5fc5157c60a7be6163faa567d612b7d733"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "exception": {
+        "exception_type": "AgentTimeoutError",
+        "exception_message": "Agent execution timed out after 300.0 seconds",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/tasks.py\", line 507, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/agents/installed/base.py\", line 179, in wrapper\n    return await fn(self, instruction, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/agents/installed/codex.py\", line 1435, in run\n    await self.exec_as_agent(\n    ...<17 lines>...\n    )\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/agents/installed/base.py\", line 898, in exec_as_agent\n    return await self._exec(\n           ^^^^^^^^^^^^^^^^^\n        environment, command, env=env, cwd=cwd, timeout_sec=timeout_sec\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/agents/installed/base.py\", line 849, in _exec\n    result = await environment.exec(\n             ^^^^^^^^^^^^^^^^^^^^^^^\n    ...<5 lines>...\n    )\n    ^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1101, in exec\n    return await self._compose_exec(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 1178, in _compose_exec\n    return await self._run_docker_compose_command(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<4 lines>...\n    )\n    ^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 649, in _run_docker_compose_command\n    result = await self._collect_buffered_output(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/environments/docker/docker.py\", line 679, in _collect_buffered_output\n    stdout_bytes, stderr_bytes = await process.communicate(input=stdin_data)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/subprocess.py\", line 201, in communicate\n    stdin, stdout, stderr = await tasks.gather(stdin, stdout, stderr)\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/subprocess.py\", line 181, in _read_stream\n    output = await stream.read()\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/streams.py\", line 723, in read\n    block = await self.read(self._limit)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/streams.py\", line 730, in read\n    await self._wait_for_data('read')\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/streams.py\", line 539, in _wait_for_data\n    await self._waiter\nasyncio.exceptions.CancelledError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/trial/trial.py\", line 545, in _run_agent_phase\n    await asyncio.wait_for(\n    ...<6 lines>...\n    )\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/tasks.py\", line 506, in wait_for\n    async with timeouts.timeout(timeout):\n               ~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/Users/yejiming/miniconda3/lib/python3.13/asyncio/timeouts.py\", line 116, in __aexit__\n    raise TimeoutError from exc_val\nTimeoutError\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/trial/single_step.py\", line 77, in _run_agent\n    await self._run_agent_phase(\n    ...<5 lines>...\n    )\n  File \"/Users/yejiming/.cache/uv/archive-v0/9kPHnivjeCp6DsoyGFOkM/lib/python3.13/site-packages/harbor/trial/trial.py\", line 554, in _run_agent_phase\n    raise AgentTimeoutError(\n        f\"Agent execution timed out after {timeout_sec} seconds\"\n    ) from exc\nharbor.trial.errors.AgentTimeoutError: Agent execution timed out after 300.0 seconds\n",
+        "occurred_at": "2026-09-12T13:17:07.845695Z"
+      },
+      "solver_seconds": 300.147369,
+      "agent_result": {
+        "n_input_tokens": 131685,
+        "n_cache_tokens": 80128,
+        "n_output_tokens": 14427,
+        "cost_usd": 0.029226359999999996,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"pwd && rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "command": "/bin/bash -lc 'find /app -maxdepth 4 -type f ! -name '\"'SKILL.md' \"'! -path '\"'*/skills/*' -print | sort && find /app -maxdepth 3 -type d \"'! -path '\"'*/skills*' -print | sort\"",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "command": "/bin/bash -lc \"rg -n --hidden -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' 'settings\\\\.section|children table|__ModuleLoader__|slots\\\\.register|slots\\\\.inject' /app /usr/local/share /opt 2>/dev/null | sed -n '1,240p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 0,
+        "max": 100,
+        "passed": false,
+        "decisions": [
+          {
+            "id": "whole-combo-attribution",
+            "verdict": "pass",
+            "reason": "Correctly ties the plugin's top-level ESM to the boot-assembled classic combo, explains whole-combo compilation failure, and identifies typert-registry as the first reported victim rather than the culprit.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "diagnosis-and-packaging",
+            "verdict": "pass",
+            "reason": "Prescribes bisecting installed bundles, a classic-script/static check, and describes the loader factory, package identity, host-provided React via require, and exported apply function.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "cross-entry-slot-registration",
+            "verdict": "partial",
+            "reason": "Correctly explains parent-owned declarations and registrant-owned fields, but gives an immediate parent/children registration instead of the required deferred slots.inject(\"settings.section\", () => register(...)) form.",
+            "points": 20,
+            "awarded": 10
+          },
+          {
+            "id": "boot-restart-discipline",
+            "verdict": "pass",
+            "reason": "Accurately explains boot-only combo assembly, full host/process-tree restart, browser verification, and EADDRINUSE from an orphaned process retaining the port.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "host-and-author-prevention",
+            "verdict": "partial",
+            "reason": "Provides strong bundle attribution, validation, apply diagnostics, and restart guidance, but its author checklist repeats the incorrect immediate parent/children registration and omits deferred cross-entry slot injection.",
+            "points": 20,
+            "awarded": 10
+          }
+        ],
+        "caps": [
+          {
+            "id": "contradictory-operational-advice",
+            "triggered": true,
+            "reason": "The report affirmatively recommends parent/children registration without slots.inject for the cross-entry slot, effectively endorsing immediate registration instead of the required deferred form.",
+            "total": 0
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 7369,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1136,
+            "reasoning_output_tokens": 805
+          },
+          "request_id": "01a095c3-e390-7922-bbb5-b6d43f5fc6e1",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "6d7db77dfcac4e765c2ca4f0e4f00d56587a599c283b2520e418cfd9795e5f2a",
+          "response_sha256": "ab3a932db592964d0e521a4ebf1b97bf94f66e2213b2ca1c8bea4584c2aa7022"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "f4f58ffa5fefa20df5acc8cc564326d6cb78c494a2f0526adedfbc8386bd85f6"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "c64101e573c8a79aa969c4d1a9a43b60cbdd5eed3a621d1b811f5f997de2884c",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S17/reports/report.md.txt",
+          "sha256": "f4f58ffa5fefa20df5acc8cc564326d6cb78c494a2f0526adedfbc8386bd85f6"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "exception": null,
+      "solver_seconds": 205.028913,
+      "agent_result": {
+        "n_input_tokens": 94784,
+        "n_cache_tokens": 75008,
+        "n_output_tokens": 10442,
+        "cost_usd": 0.01798576,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 100,
+        "max": 100,
+        "passed": true,
+        "decisions": [
+          {
+            "id": "half-cell-background",
+            "verdict": "pass",
+            "reason": "Correctly locates the one-sided branches, explains persistent background SGR leakage, identifies affected edge cells, and prescribes ESC[49m per half-filled cell.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "frame-clearing",
+            "verdict": "pass",
+            "reason": "Correctly explains trailing-space trimming and stale wider-frame columns, and gives fixed-width output plus explicit erase semantics.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "frame-data-integrity",
+            "verdict": "pass",
+            "reason": "Identifies tail2's 23-cell mismatch and shifted cluster, explains the uncovered excerpt test, and requires trusted all-frame digest or exact-row validation.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "timer-liveness",
+            "verdict": "pass",
+            "reason": "Correctly identifies mounted hosts without unmount, recursively rearmed setTimeout handles, TTY masking, and the per-timeout unref fix.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "renderer-and-rollout-prevention",
+            "verdict": "pass",
+            "reason": "Provides a comprehensive renderer contract and a rollout audit covering SGR state, clearing, frame integrity, host lifecycles, timer cleanup, and exit regression.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "contradictory-render-advice",
+            "triggered": false,
+            "reason": "The report consistently recommends background resets, explicit clearing, source-backed frame checks, and unref'ed planner timers.",
+            "total": 0
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 7579,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 909,
+            "reasoning_output_tokens": 628
+          },
+          "request_id": "01a095c3-6723-7aa3-8ad7-fea562dabb42",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "893189e8601d097d22076d441101928f754db53a451c0cd9d475433d7d4507e1",
+          "response_sha256": "2718ab669b0fc61d5569a6ba3fb1854c65614ef98f6414d0cc351f6fa3fae22c"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "4c9522de6d0065caba5dbd757065daf072f60352f6daded8a8183ea8a370c0f9"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "953c5bb48270513f4fbe73e1dedd06429e81b01d1a377cde1fb0c3b3404f2b1a",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S18/reports/report.md.txt",
+          "sha256": "4c9522de6d0065caba5dbd757065daf072f60352f6daded8a8183ea8a370c0f9"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "exception": null,
+      "solver_seconds": 187.826709,
+      "agent_result": {
+        "n_input_tokens": 82088,
+        "n_cache_tokens": 45056,
+        "n_output_tokens": 8630,
+        "cost_usd": 0.018663520000000003,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"pwd; rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/.git/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,240p'\"",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "command": "/bin/bash -lc 'find /app -maxdepth 3 -type f ! -path '\"'/app/fixture/*' \"'! -name '\"'SKILL.md' -print | sort; command -v zstd || true; command -v unzstd || true; command -v python3 || true; command -v node || true; ls -la /app /app/fixture /app/agent-output 2>/dev/null || true\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 100,
+        "max": 100,
+        "passed": true,
+        "decisions": [
+          {
+            "id": "baked-version-release-order",
+            "verdict": "pass",
+            "reason": "Correctly grounds the self-update in the build-time 0.3.6 constant, identifies the bump-after-build error, preserves mirror SHA verification, and requires pre-release bundle inspection.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "client-host-update-asymmetry",
+            "verdict": "pass",
+            "reason": "Uses the probe and host bundle evidence to distinguish refreshed client code from stale boot-loaded host route state, correctly requiring host restart or equivalent reload.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "payload-corruption-attribution",
+            "verdict": "pass",
+            "reason": "Locates corruption in upstream session result-text assembly using the splice, clean disk source, clean reread, and type-result contrast; treats payloads as untrusted and rejects editing the source.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "validated-render-fallbacks",
+            "verdict": "pass",
+            "reason": "Provides the required ordered disk-route, XML-validated payload, sandboxed iframe, and explicit-error chain, including blocked scripts and no iframe bypass of validation.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "forensics-and-prevention",
+            "verdict": "pass",
+            "reason": "Describes frame-by-frame concatenated-Zstandard decoding with order and provenance preservation, exact payload comparison, upstream reporting, and the required release/runtime checklist items.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "contradictory-release-render-advice",
+            "triggered": false,
+            "reason": "The report explicitly rejects bump-after-build, mirror-only repair, browser-refresh host updates, source editing, unvalidated payload rendering, and script-enabled fallback.",
+            "total": 0
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 9555,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1129,
+            "reasoning_output_tokens": 812
+          },
+          "request_id": "01a095c3-d4e6-7282-aae1-e274c6bc1d92",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "5d8c6e7e4348256199abc47efcef709c51b72d5532aea99ef64adf43ad067959",
+          "response_sha256": "0f9abb79cae01e0338d831f5a3ecb43c25c66c09ab2ceefa1bfac287a98105dd"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "712b09a26c9f5165bbddc69deed835aa743b390de19ef9b88e3a918b7a794c85"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "84ebd605289bd27405c1c50cd4979e7c5c3eb8f0ebf688a3ba154a9f0749201a",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S19/reports/report.md.txt",
+          "sha256": "712b09a26c9f5165bbddc69deed835aa743b390de19ef9b88e3a918b7a794c85"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "exception": null,
+      "solver_seconds": 170.211993,
+      "agent_result": {
+        "n_input_tokens": 100566,
+        "n_cache_tokens": 68096,
+        "n_output_tokens": 7268,
+        "cost_usd": 0.01657752,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [
+        {
+          "command": "/bin/bash -lc \"find /app -maxdepth 3 -type f -not -path '/app/fixture/*' -not -path '/app/agent-output/*' -not -path '*/SKILL.md' -printf '%p\\\\n' | sort | head -200 && echo '--- corridor references ---' && rg -n --hidden --glob '\"'!fixture/**'\"' --glob '\"'!agent-output/**'\"' --glob '\"'!**/SKILL.md'\"' 'DSH-0\\\\.1\\\\.3|corridor|native depend|fs-ext|node-pty|patchedDependencies|MSVC|Visual Studio' /app 2>/dev/null | head -240\"",
+          "exit_code": 0,
+          "status": "completed"
+        }
+      ],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 82.5,
+        "max": 100,
+        "passed": false,
+        "decisions": [
+          {
+            "id": "native-install-failure",
+            "verdict": "pass",
+            "reason": "Correctly identifies fs-ext@2.1.1, its node-gyp install phase, the manifest parent dependency, and missing MSVC/Visual Studio as the cause.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "static-import-trap",
+            "verdict": "pass",
+            "reason": "Correctly explains that the top-level fs-ext import still loads at boot, so ignoring scripts alone only hides the build failure and does not make the module loadable.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "platform-lock-contract",
+            "verdict": "pass",
+            "reason": "Correctly distinguishes the Windows named-semaphore path from POSIX flock and preserves the semaphore while treating fs-ext as load-time-only on Windows.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "reproducible-local-patch",
+            "verdict": "partial",
+            "reason": "Provides the right local pnpm patch strategy and verification plan, but omits the required build-permission handling and proposes a throwing fallback rather than the compatible warning/no-op callback fallback.",
+            "points": 25,
+            "awarded": 12.5
+          },
+          {
+            "id": "machine-and-upstream-boundaries",
+            "verdict": "pass",
+            "reason": "Respects the no-Visual-Studio constraint and explicitly keeps the dependency declaration and upstream repository unchanged.",
+            "points": 10,
+            "awarded": 10
+          },
+          {
+            "id": "corridor-mapping",
+            "verdict": "fail",
+            "reason": "Names DSH-0.1.3-A1-S20 rather than the required full card ID DSH-0.1.3-A1-03.",
+            "points": 5,
+            "awarded": 0
+          }
+        ],
+        "caps": [
+          {
+            "id": "requires-visual-studio",
+            "triggered": false,
+            "reason": "The plan explicitly rejects installing Visual Studio or Build Tools.",
+            "total": 50
+          },
+          {
+            "id": "ignore-scripts-only",
+            "triggered": false,
+            "reason": "The report rejects --ignore-scripts as a standalone solution and includes an import-safe patch.",
+            "total": 40
+          },
+          {
+            "id": "upstream-edit-required",
+            "triggered": false,
+            "reason": "The proposed fix uses the repository-managed pnpm patch mechanism rather than requiring upstream edits.",
+            "total": 40
+          },
+          {
+            "id": "lock-bypass",
+            "triggered": false,
+            "reason": "The plan preserves the Windows named semaphore and POSIX native flock behavior.",
+            "total": 20
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 7157,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1455,
+            "reasoning_output_tokens": 1034
+          },
+          "request_id": "01a095c7-6463-7d81-8836-27996681542c",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "71492b9bc398452a8d9f6c5dbf1b0b6d5fbc063d9be665d38dd0c7040f229edb",
+          "response_sha256": "97e85d26bc2368f36715c8fa0f46c30f2a4c025ea2b74c927386db2910962de8"
+        },
+        "citation_audit": [
+          {
+            "report": "report.md",
+            "citation": "fixture/manifest-excerpt.json:2-8",
+            "path": "manifest-excerpt.json",
+            "start": 2,
+            "end": 8,
+            "valid": true
+          },
+          {
+            "report": "report.md",
+            "citation": "fixture/win32-excerpt.ts:8-24",
+            "path": "win32-excerpt.ts",
+            "start": 8,
+            "end": 24,
+            "valid": true
+          },
+          {
+            "report": "report.md",
+            "citation": "fixture/win32-excerpt.ts:3-8",
+            "path": "win32-excerpt.ts",
+            "start": 3,
+            "end": 8,
+            "valid": true
+          },
+          {
+            "report": "report.md",
+            "citation": "fixture/win32-excerpt.ts:23-24",
+            "path": "win32-excerpt.ts",
+            "start": 23,
+            "end": 24,
+            "valid": true
+          }
+        ],
+        "reports": {
+          "report.md": "f5abec31c663ac8584a68ebc6fcbb5ac2167a9a87c7d3b31b25aef9af0f3645a"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "16602aec8cf4819e728e92243f7c5a3f9293cf9f3ae20f59eaaaa89a61650334",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S20/reports/report.md.txt",
+          "sha256": "f5abec31c663ac8584a68ebc6fcbb5ac2167a9a87c7d3b31b25aef9af0f3645a"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "exception": null,
+      "solver_seconds": 124.863058,
+      "agent_result": {
+        "n_input_tokens": 65365,
+        "n_cache_tokens": 46080,
+        "n_output_tokens": 5477,
+        "cost_usd": 0.011350999999999998,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 80,
+        "max": 100,
+        "passed": false,
+        "decisions": [
+          {
+            "id": "metadata-chain-attribution",
+            "verdict": "pass",
+            "reason": "Correctly localizes the failure to workspace-files Remote/provider metadata delivery, using the successful file-trace contrast and meta.status none; it separates this from disk, tab creation, and scope policy.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "valid-probes-and-partitioning",
+            "verdict": "partial",
+            "reason": "Correctly rejects the oversized joined 404 and recognizes the 62/62 evidence and boot roster, but incorrectly characterizes the loader as using individual requests rather than bounded combo partitioning.",
+            "points": 20,
+            "awarded": 10
+          },
+          {
+            "id": "distractors-and-tab-scope",
+            "verdict": "pass",
+            "reason": "Separates paste-input warnings from the resource failure and correctly explains the textpreview-to-documentpreview replacement and session-only canOpen scope.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "ordered-mitigation",
+            "verdict": "partial",
+            "reason": "Provides the required restart, rollback to 0.1.3-alpha.2, and upstream order and rejects plugin workarounds, but does not explicitly reject duplicate workspace-files service insertion.",
+            "points": 20,
+            "awarded": 10
+          },
+          {
+            "id": "upstream-forensics-and-fail-loud",
+            "verdict": "pass",
+            "reason": "Includes the required version, profile, address, roster, probe, contrast, status, and invalid-probe caveats, and proposes boot checks covering registration, provider readiness, and metadata reads.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "invalid-probe-as-missing-bytes",
+            "triggered": false,
+            "reason": "The report explicitly rejects treating the oversized aggregate 404 as evidence of missing modules.",
+            "total": 40
+          },
+          {
+            "id": "plugin-workaround-or-duplicate-insert",
+            "triggered": false,
+            "reason": "The report rejects plugin rewrites, retries, and fallbacks and recommends fixing the host chain; it does not affirmatively recommend duplicate insertion.",
+            "total": 40
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 8137,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1088,
+            "reasoning_output_tokens": 720
+          },
+          "request_id": "01a095c7-ba2f-7591-bcb6-ae2c41d68e68",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "42dae7d0932d76bc2ab7e374f64f9b9e823bd212093c0b1d7da590f30368fb10",
+          "response_sha256": "780d09a1bd216ea5ed2f3db89e7210a43b3e7bc604b58441109d568664f8198b"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "7477420462ff540d8e65f45b789e34cb1415a9844db329470972d361ba47ec59"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "c55df9802e52247de0d01d444e8e366984769d2b288623a04da4c2bdb05fc32c",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S21/reports/report.md.txt",
+          "sha256": "7477420462ff540d8e65f45b789e34cb1415a9844db329470972d361ba47ec59"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "exception": null,
+      "solver_seconds": 59.2432,
+      "agent_result": {
+        "n_input_tokens": 40287,
+        "n_cache_tokens": 15872,
+        "n_output_tokens": 2226,
+        "cost_usd": 0.00787164,
+        "rollout_details": null,
+        "metadata": null
+      },
+      "contexts": [
+        {
+          "model": "gpt-5.6-luna",
+          "effort": "xhigh",
+          "cwd": "/app"
+        }
+      ],
+      "skill_instruction_blocks": 0,
+      "skill_command_hits": [],
+      "fixture_changes": {
+        "removed": [],
+        "added": [],
+        "modified": [],
+        "allowed": true
+      },
+      "grade": {
+        "status": "scored",
+        "score": 90,
+        "max": 100,
+        "passed": false,
+        "decisions": [
+          {
+            "id": "duplicate-loader-attribution",
+            "verdict": "pass",
+            "reason": "Correctly identifies the two workspace-files inserts and locates the fatal duplicate at EntryGroup.update during Cordis include composition.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "three-layering-cases",
+            "verdict": "pass",
+            "reason": "Correctly distinguishes safe config override, safe new insertion, and fatal insertion of an already bundle-provided ID, with evidence-based classification.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "minimal-profile-fix",
+            "verdict": "pass",
+            "reason": "Prescribes removing only the profile’s redundant workspace-files insert, retaining the bundle declaration and using configuration override if needed.",
+            "points": 20,
+            "awarded": 20
+          },
+          {
+            "id": "plugin-and-failure-boundary",
+            "verdict": "partial",
+            "reason": "Correctly states the failure occurs before plugin execution and cannot be fixed in plugin code, but does not explicitly separate the earlier resource-read failure as still requiring verification.",
+            "points": 20,
+            "awarded": 10
+          },
+          {
+            "id": "author-and-host-prevention",
+            "verdict": "pass",
+            "reason": "Recommends inspecting the installed bundle patch and proposes an actionable diagnostic naming both sources and directing removal of the profile block.",
+            "points": 20,
+            "awarded": 20
+          }
+        ],
+        "caps": [
+          {
+            "id": "retain-or-add-duplicate",
+            "triggered": false,
+            "reason": "The report explicitly rejects retaining the duplicate and does not recommend plugin edits as the remedy.",
+            "total": 20
+          }
+        ],
+        "model": {
+          "requested": "gpt-5.6-luna",
+          "returned": null,
+          "resolved": "gpt-5.6-luna",
+          "endpoint": "codex://chatgpt-login",
+          "transport": "codex-exec-v1",
+          "cli_version": "codex-cli 0.153.4",
+          "reasoning_effort": "high",
+          "usage": {
+            "input_tokens": 5770,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 628,
+            "reasoning_output_tokens": 364
+          },
+          "request_id": "01a095c6-d72a-7be2-bc11-d0d0210dcc2e",
+          "tool_calls": 0,
+          "diagnostics": [],
+          "request_sha256": "9f0c993e30acf435ca9e0ff9ff2c632546d6378ad75cb2e127fcafd8e1c7ea2b",
+          "response_sha256": "04cea10448bab6ae3803183a64217fcdddb9468bc035f073ff67a1d76df651ef"
+        },
+        "citation_audit": [],
+        "reports": {
+          "report.md": "636e8dfa905e6809d56249ea645fadcfa2c2993039d7fc4d8768c094e6340e74"
+        },
+        "protocol": "report-judge-v2",
+        "packet_sha256": "f920b1ef85fe90d26bf940c37251e6e6dc8e672b3fc87122d8e6def6a0ef0afa",
+        "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+        "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+      },
+      "reports": [
+        {
+          "original_path": "report.md",
+          "archived_path": "S22/reports/report.md.txt",
+          "sha256": "636e8dfa905e6809d56249ea645fadcfa2c2993039d7fc4d8768c094e6340e74"
+        }
+      ],
+      "skill_reads_observed": false,
+      "skill_read_audit": "manual review of native tool calls and completed shell commands"
+    }
+  ],
+  "solver_outcomes": {
+    "completed": 9,
+    "timeout_with_report": 1
+  },
+  "aggregate": {
+    "scored": 10,
+    "requested": 10,
+    "sum": 842.5,
+    "max_scored": 1000,
+    "mean": 84.25,
+    "perfect": 5
+  },
+  "selection_note": "S13 keeps the first completed solver answer. Other tasks use unchanged network-recovery runs. S17 timeout, if present, is disclosed separately; a preserved report can receive a semantic score without being a completed solver turn.",
+  "interrupted_attempts": [
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "solver_error": "AgentTimeoutError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "solver_error": null,
+      "judge_status": "scored",
+      "raw_score": 100,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "solver_error": "AgentTimeoutError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "solver_error": "NonZeroAgentExitCodeError",
+      "judge_status": "scored",
+      "raw_score": 0,
+      "excluded_from_selected_aggregate": true
+    }
+  ],
+  "skill_audit_note": "All ten selected solver traces have zero skill instruction blocks. All 10 skill-path command matches were manually reviewed: they exclude SKILL.md/skill directories and do not read skills. All fixtures are byte-identical. All judges have zero tool calls.",
+  "judge_attempts": {
+    "S13": 2,
+    "other_requested_tasks": 1
+  },
+  "judge_attempts_note": "Counts model-based judge attempts; nine initial no-report integrity results never called a model.",
+  "usage_selected_solver": {
+    "n_input_tokens": 886047,
+    "n_cache_tokens": 558592,
+    "n_output_tokens": 72352,
+    "cost_usd": 0.16348524
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "trials": 10,
+      "harbor_job_started_at": "2026-09-12T19:44:37.088587",
+      "harbor_job_finished_at": "2026-09-12T20:24:11.585646",
+      "job_wall_seconds": 2374.497059,
+      "sum_trial_seconds": 6319.814083,
+      "usage_records": 3,
+      "usage": {
+        "n_input_tokens": 133425,
+        "n_cache_tokens": 67584,
+        "n_output_tokens": 6495,
+        "cost_usd": 0.022313879999999998
+      }
+    },
+    {
+      "round": 2,
+      "trials": 9,
+      "harbor_job_started_at": "2026-09-12T21:06:52.575227",
+      "harbor_job_finished_at": "2026-09-12T21:21:25.082119",
+      "job_wall_seconds": 872.506892,
+      "sum_trial_seconds": 2541.410024,
+      "usage_records": 9,
+      "usage": {
+        "n_input_tokens": 826665,
+        "n_cache_tokens": 523776,
+        "n_output_tokens": 69413,
+        "cost_usd": 0.15434892
+      }
+    }
+  ],
+  "integration_note": "PR based on a43afbe; target task metadata advances to 4.1.0 to distinguish refined rubrics from merged #212. All ten checked-in judge packets remain byte-identical to this run."
+}

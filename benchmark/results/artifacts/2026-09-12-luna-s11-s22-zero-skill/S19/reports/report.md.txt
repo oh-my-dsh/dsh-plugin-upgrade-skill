@@ -1,0 +1,216 @@
+# S19 — Phantom update, stale host half, and corrupted payload
+
+## Conclusion
+
+The evidence shows three independent boundaries, not one bad release artifact:
+
+1. The v0.3.7 client bundle was built while the manifest still said `0.3.6`, so
+   it permanently contains `PLUGIN_VERSION = "0.3.6"`. The update check compares
+   that baked value with the mirror tag and consequently treats `v0.3.7` as newer.
+2. The browser obtained the refreshed client bundle, but the host process was not
+   restarted. Its in-memory asset-route registration still had the old extension
+   whitelist, even though the installed `lib/index.js` on disk already contains
+   the SVG entry.
+3. The disk SVG is valid. The malformed value is the text assembled and persisted
+   as the session result. The plugin must therefore reject that result as an
+   untrusted rendering input and report the upstream result-text corruption.
+
+## 1. Phantom self-update
+
+The version used by the self-update check is a build-time value. The shipped
+`lib/client.js` says:
+
+```js
+export const PLUGIN_VERSION = "0.3.6";
+```
+
+The bundle excerpt also states that tsdown inlined this value from `package.json`
+when the bundle was built; the running client does not read the manifest at
+runtime. The release log gives the causality:
+
+```text
+16:22 build
+16:23 package.json 0.3.6 -> 0.3.7
+```
+
+Thus the operation-order mistake was bumping the manifest after generating the
+artifact. The subsequent commit and tag included that already-built stale
+`lib/client.js`. The tag and all three mirrors were consistent with one another,
+but they consistently delivered an artifact whose embedded version was wrong.
+
+At the v0.3.7 symptom point, the mirror's `v0.3.7` tag is greater than the
+bundle's `0.3.6`, so `compareSemver("v0.3.7", PLUGIN_VERSION) > 0` returns true
+and the badge says `新版本 v0.3.7 可用`. The later evidence listing also shows
+that the v0.3.7 and v0.3.8 tag SHAs are identical across `origin`, `public`, and
+`omdsh`; that verifies mirror/tag integrity, not the semantic correctness of a
+generated constant.
+
+The safe release order is:
+
+1. Make the source change and tests.
+2. Bump the manifest to the target version **before** building, and update any
+   release references.
+3. Build and test the generated artifacts.
+4. Inspect the artifact before pushing. For v0.3.7, a check such as
+   `rg -n 'PLUGIN_VERSION|0\.3\.6|0\.3\.7' lib/client.js` must show the target
+   value (`"0.3.7"`) and must not show the old baked value in the version
+   constant. More robustly, a release check should extract the shipped constant
+   and compare it with the manifest version.
+5. Commit source, manifest, and generated files together; tag that commit; then
+   verify the tag object/commit SHA independently on every mirror.
+
+That shipped-bundle check would have caught the phantom update before any push.
+The mirror SHA check remains valuable, but it is a distribution-integrity check,
+not a build-content check.
+
+## 2. Client plane versus host plane
+
+The two halves have different lifecycles:
+
+| Plane | Evidence/code | Load point | Effect of the v0.3.8 update |
+|---|---|---|---|
+| Client | shipped `lib/client.js`, including the render toggle | The plugin frontend fetches/reloads the client bundle in the browser | The browser refreshed, so the new toggle appeared and was clickable |
+| Host | `lib/index.js`, including `CONTENT_TYPES` and the asset route registration | The running host loads the host module at boot and keeps the route handler/whitelist in memory | No host restart occurred, so the old route behavior remained active |
+
+The probes isolate the failure to the running host process. The PNG request gets
+`200 image/png`, proving that the route is registered and alive. The SVG request
+gets the route's `404 "unsupported image type"`, which is an extension-whitelist
+decision rather than a missing route. At the same time, the disk copy of the
+v0.3.8 `lib/index.js` contains `svg: 'image/svg+xml'`. Therefore the file on disk
+and the code in the release are ahead of the code already loaded by the host.
+
+A host-plane change becomes effective only after the host process is restarted,
+or after an explicit host/plugin reload mechanism that unloads the old module and
+runs route registration again. A client hot refresh changes browser code; it does
+not mutate JavaScript objects, route tables, or module state in a separately
+running host. This is the exception to the usual “plugins hot-update” expectation:
+that rule covers the client plane here, while route registration is boot-time host
+state and needs a host restart/reload.
+
+## 3. Broken-image attribution
+
+The source and payload disagree in a directly testable way. The source's line 232
+ends with a normal `stroke-width="6.5"`; the stored payload has that line ending
+in the partial attribute text `stro`, followed by line 247's arc tail beginning
+`0,1 821,730`. The real source lines 233–247 are absent. This produces the parser
+error at the corrupted `stro0` attribute. The source passes `System.Xml`
+well-formedness, and a later read is clean.
+
+The corruption therefore occurred while the read-result text was being assembled
+and persisted in the session-log/result layer upstream of the plugin. It did not
+occur in the SVG file, in the host asset route, or in the plugin's renderer. The
+read tool's separate TYPE result being clean is consistent with a corruption of
+the model-visible text block rather than the underlying file-read operation.
+
+The plugin must treat session result text as untrusted input: a successful tool
+call or a clean type field is not proof that the returned text is intact. It must
+validate the SVG before creating a render source and surface the validation error
+with enough context to diagnose the result pipeline.
+
+Editing or “repairing” the traced file would have been the wrong response. The
+file on disk is already well-formed, and the missing source lines cannot be safely
+recovered by modifying the canonical asset based on a corrupted observation.
+That would risk damaging good user data and would conceal the upstream
+non-deterministic text-corruption bug. The correct action is to use a clean
+source/read and report the result-text assembly defect upstream.
+
+## 4. Defensive SVG render chain
+
+Use the following ordered sources. A failed level should fall through with a
+diagnostic reason; it should not leave a broken `<img>` as the apparent result.
+
+1. **Disk-bytes asset route.** Request the host asset route for the original path
+   and, on a successful response with the expected SVG content type, render the
+   response bytes (for example through a Blob/object URL). This is canonical,
+   avoids a text round-trip through the session log, preserves the exact file,
+   and allows the host to apply its path and content-type policy. In this
+   incident it will fail until the stale host is restarted, which is an expected
+   diagnosable fallback condition.
+2. **Validated session payload.** Only if the route is unavailable, and only if a
+   session payload is present, parse it as SVG XML before rendering it. In a
+   browser this can be:
+
+   ```js
+   const doc = new DOMParser().parseFromString(payload, "image/svg+xml");
+   const invalid = doc.querySelector("parsererror");
+   if (invalid || doc.documentElement?.localName !== "svg") {
+     throw new Error("session SVG is not well-formed");
+   }
+   ```
+
+   The exact DOMParser error handling should also account for the target browser,
+   but the essential gate is rejecting a `parsererror` (and a non-`svg` root).
+   Only the validated text/bytes may then be used for an image/object URL. The
+   incident payload fails this gate at `stro0`, so it must not be handed to the
+   image decoder.
+3. **Sandboxed iframe as the last render fallback.** For a valid SVG that cannot
+   be displayed through the normal image path, load it in an iframe with a
+   restrictive sandbox, such as `sandbox=""`, without `allow-scripts` or
+   `allow-same-origin` (and apply an appropriate restrictive CSP). The sandbox
+   blocks SVG script execution while declarative SMIL animations can still run.
+   This gives animated SVGs a document context without granting the untrusted
+   document the plugin page's script or origin privileges. A malformed session
+   payload does not bypass the XML gate merely because an iframe is available.
+4. **Explicit error state.** If the asset route fails, the payload is absent or
+   fails XML validation, and no safe fallback renders, show a deliberate error
+   state such as “SVG preview unavailable: asset route unavailable and session
+   payload is malformed,” with retry/re-read diagnostics. Remove or replace the
+   broken image element so the user is not given a silent generic broken-image
+   icon.
+
+The order prioritizes the authoritative byte source, permits the session source
+only when its syntax proves intact, limits the capabilities of the document-level
+fallback, and makes data loss visible instead of silently displaying corrupted
+content.
+
+## 5. Forensics and prevention
+
+### Decoding the concatenated-Zstandard log
+
+The raw generation file should be copied to a separate temporary working path and
+hashed first; the evidence directory remains read-only. Decode it as a sequence of
+Zstandard frames, preserving bytes and boundaries:
+
+1. Open the file in binary mode and initialize a Zstandard streaming decompressor.
+   A frame starts with the Zstandard magic bytes `28 b5 2f fd`, but magic-byte
+   searching alone must not be used to split frames because those bytes can occur
+   inside compressed data.
+2. Give the decoder the remaining input and retain both its output bytes and the
+   input position it reports as consumed. Continue until it reports end-of-frame
+   (`ret == 0` in the libzstd streaming API). Record the input offset/length,
+   output offset/length, and hashes for that frame.
+3. Advance by the decoder-reported consumed count and repeat for the next frame
+   until EOF. If using a language binding, use its one-frame/`unused_data` or
+   `bytes_consumed` facility; do not rely only on a CLI invocation that silently
+   concatenates all decompressed output and loses frame provenance.
+4. Concatenate the decompressed bytes in frame order, then parse the resulting
+   log records. Preserve UTF-8 bytes, line endings, and whitespace while extracting
+   the read-result text. Save the raw frame map and hashes alongside the decoded
+   excerpt so another investigator can reproduce the exact stored value.
+5. Compare the stored result with an independent fresh read only as an attribution
+   check. Do not fill missing lines from that fresh read when reporting what the
+   session log actually stored. In this case the exact stored payload includes the
+   `stro` + line-247-tail splice and is not well-formed XML; the clean re-read is
+   separate evidence that the source was not damaged.
+
+The fixture provides the decoded excerpt, not the raw generation file, so the
+procedure above is the reproducible frame-level method for the underlying artifact
+rather than a mutation of the evidence pack.
+
+### Checklist additions
+
+- Bump the version before building; make the manifest, source, and generated
+  artifacts part of the same reviewable change.
+- Grep or programmatically inspect the shipped bundle for the baked version and
+  fail the release if it differs from the manifest/tag target.
+- Verify the tag's commit/object SHA on every mirror, retaining the per-mirror
+  evidence. Keep this as a distribution check in addition to the bundle-content
+  check.
+- After host-plane changes, record a host restart/reload and probe a changed route
+  or content type from the running process; a client refresh alone is insufficient.
+- Treat session-log read-result text as untrusted: perform XML well-formedness
+  validation before SVG rendering and retain the original failure diagnostics.
+- Report the upstream session/result-text corruption bug with the exact frame,
+  offsets/record, malformed splice, and clean re-read comparison. Do not paper it
+  over by editing or “repairing” a valid traced file in the plugin.
+

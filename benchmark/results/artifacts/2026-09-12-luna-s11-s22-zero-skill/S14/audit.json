@@ -1,0 +1,111 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,200p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/README.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/copy-session.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/profile-introspection.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' '/app/fixture/maintainer-thread.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"nl -ba '/app/fixture/profile-introspection.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"nl -ba '/app/fixture/copy-session.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"nl -ba '/app/fixture/maintainer-thread.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'mkdir -p /app/agent-output/S14-link-install-lock-trap'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,280p' /app/agent-output/S14-link-install-lock-trap/report.md\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git -C /app/fixture status --short 2>&1; git -C /app diff --check -- /app/fixture 2>&1'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"test -s /app/agent-output/S14-link-install-lock-trap/report.md && echo 'report present and non-empty'\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"rg --files -g '!**/SKILL.md' -g '!**/skills/**' /app/fixture /app 2>/dev/null | sed -n '1,200p'\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":12000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const paths = [\"/app/fixture/README.md\",\"/app/fixture/profile-introspection.txt\",\"/app/fixture/copy-session.txt\",\"/app/fixture/maintainer-thread.md\"];\nconst rs = await Promise.all(paths.map(p => tools.exec_command({cmd:`sed -n '1,260p' '${p}'`,workdir:\"/app\",yield_time_ms:10000,max_output_tokens:20000})));\nfor (let i=0;i<rs.length;i++){ text(`\\n===== ${paths[i]} =====\\n`); text(rs[i].output); }\n"
+    },
+    {
+      "name": "exec",
+      "input": "const paths = [\"/app/fixture/profile-introspection.txt\",\"/app/fixture/copy-session.txt\",\"/app/fixture/maintainer-thread.md\"];\nconst rs = await Promise.all(paths.map(p => tools.exec_command({cmd:`nl -ba '${p}'`,workdir:\"/app\",yield_time_ms:10000,max_output_tokens:16000})));\nfor (let i=0;i<rs.length;i++){ text(`\\n===== ${paths[i]} =====\\n`); text(rs[i].output); }\n"
+    },
+    {
+      "name": "exec",
+      "input": "const d = await tools.exec_command({cmd:\"mkdir -p /app/agent-output/S14-link-install-lock-trap\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":2000});\ntext(d.output);\nconst patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S14-link-install-lock-trap/report.md\\n+# S14 — Link-install file-lock trap\\n+\\n+## Finding\\n+\\n+This is a linked installation, not a copied dependency. The profile entry\\n+`C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input` is a\\n+Windows directory Junction:\\n+\\n+```text\\n+LinkType : Junction\\n+Target   : {E:\\\\dev\\\\dsh-attach-input}\\n+```\\n+\\n+That is recorded in `profile-introspection.txt:3-5`. The source path itself has\\n+no link target (`profile-introspection.txt:9-11`), and the profile patch also\\n+records `# link:E:\\\\dev\\\\dsh-attach-input` (`profile-introspection.txt:13-14`).\\n+\\n+A Junction makes the profile path and the repo path two names for the same\\n+directory tree. Consequently, the repo's `lib/client.js` and `lib/index.js`\\n+were already the files visible to the profile. There was never a separate\\n+profile copy to deploy to. Editing the repo was the deployment step; the\\n+running host still had to be restarted to load the edits.\\n+\\n+## The locks and the stale browser result\\n+\\n+There are two relevant loaded files, `lib/client.js` and `lib/index.js`, and\\n+the owner of both file handles in this incident is the running dsh web host,\\n+not the browser:\\n+\\n+- The host loads `index.js` as the server-side plugin entry and keeps the\\n+  plugin/runtime files in use.\\n+- The same running host serves the browser-side `client.js` bundle. A browser\\n+  tab refresh does not restart that host or make it reload the already loaded\\n+  plugin, so it can continue serving the old client bundle.\\n+\\n+The first copy reports that `client.js` is being used by another process\\n+(`copy-session.txt:1-4`). Retrying after closing the browser still reports the\\n+same `EBUSY`, now for `client.js`, `index.js`, and `package.json`\\n+(`copy-session.txt:6-8`). Closing a tab cannot release handles owned by the\\n+still-running dsh host. The browser can also retain a cached response, but it\\n+is not the process holding these source files open in this case.\\n+\\n+## Why the rename removed the source entries\\n+\\n+`$dst` was the `lib` directory reached through the Junction\\n+(`copy-session.txt:11`). Therefore these commands:\\n+\\n+```powershell\\n+Rename-Item ($dst + '\\\\client.js') 'client.js.old2'\\n+Rename-Item ($dst + '\\\\index.js') 'index.js.old2'\\n+```\\n+\\n+renamed the actual files in `E:\\\\dev\\\\dsh-attach-input\\\\lib`, not files in an\\n+independent profile directory. The subsequent copy used the source path, but\\n+`lib\\\\client.js` had just been renamed away, so it correctly failed with\\n+“source does not exist” (`copy-session.txt:12-15`). Both path spellings then\\n+showed only `client.js.old2` and `index.js.old2`\\n+(`copy-session.txt:16-22`).\\n+\\n+### Exact recovery from the current state\\n+\\n+First fully stop the dsh web host and wait for it to exit; this releases its\\n+handles before any recovery operation. Do not copy from the repo to the\\n+profile path. With the evidence-confirmed current state (the two `.old2`\\n+files exist and the original names do not), restore the names in the repo:\\n+\\n+```powershell\\n+$repo = 'E:\\\\dev\\\\dsh-attach-input'\\n+$lib  = Join-Path $repo 'lib'\\n+\\n+Rename-Item (Join-Path $lib 'client.js.old2') 'client.js'\\n+Rename-Item (Join-Path $lib 'index.js.old2')  'index.js'\\n+\\n+Get-ChildItem $lib client.js,index.js\\n+node --check (Join-Path $lib 'client.js')\\n+node --check (Join-Path $lib 'index.js')\\n+```\\n+\\n+The `.old2` files are the original edited entry files, so restoring their\\n+names recovers the hover-preview and host-route edits. The profile Junction\\n+will show the restored names automatically.\\n+\\n+## Ordered activation procedure\\n+\\n+After the syntax checks pass:\\n+\\n+1. Fully stop the dsh web host, including any child/worker process that loads\\n+   the plugin. A browser-tab close is not a substitute for this and is not\\n+   needed to deploy a Junction.\\n+2. Restore `client.js` and `index.js` as above while the host is stopped. Do\\n+   not run an install or `Copy-Item` into `node_modules`.\\n+3. Run `node --check` on both shipped files. Confirm the two original entry\\n+   names exist and the `.old2` names are no longer the active names.\\n+4. Start/restart the dsh web host and wait until the web service is ready.\\n+   This makes the host load the new `index.js`, register the new read-only\\n+   route, and serve the new `client.js`.\\n+5. In the browser, perform a hard refresh (`Ctrl+Shift+R` or `Ctrl+F5`). A\\n+   normal refresh can reuse a cached `client.js` response even after the host\\n+   has restarted; the hard refresh requests the new client bundle. If needed,\\n+   keep DevTools Network open with “Disable cache” enabled for the reload.\\n+6. Verify the host-side and browser-side changes independently: exercise the\\n+   new host route and check the host startup/plugin log, then use DevTools’\\n+   Network response (or Sources) for `client.js` to confirm the response\\n+   contains the hover-preview code and that the image-attachment preview\\n+   appears. This proves the new files were loaded rather than merely that the\\n+   tab rendered.\\n+\\n+The host must be stopped and restarted because it owns the loaded plugin and\\n+the file handles. The browser does not need a full process restart; it needs\\n+a cache-bypassing reload after the host is serving the new bundle.\\n+\\n+## Pre-flight install-mode check\\n+\\n+Before touching any file, inspect the profile entry and its patch marker:\\n+\\n+```powershell\\n+$entry = 'C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input'\\n+Get-Item $entry | Select-Object FullName,LinkType,Target\\n+Get-Content 'C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml' |\\n+  Select-String 'dsh-attach-input'\\n+```\\n+\\n+Interpret the result as follows:\\n+\\n+- `LinkType : Junction` plus a `Target` pointing to the working tree, and a\\n+  `# link:<repo>` marker in `cordis.patch.yml`, means link install. Edit the\\n+  target repo and restart the host; do not copy into the profile entry.\\n+- A normal directory with blank `LinkType`/empty `Target`, and no link marker,\\n+  means a copied dependency. Only that mode has a distinct profile tree that\\n+  might require a deliberate copy/install update.\\n+\\n+Generic “copy the files into `node_modules`” advice is actively harmful for a\\n+Junction: source and destination resolve to the same directory. With the host\\n+running, the self-copy encounters its open handles and returns `EBUSY`; a\\n+rename-aside workaround mutates the repo itself and can leave the shared\\n+installation with no entry files.\\n+\\n+Evidence cited: `/app/fixture/profile-introspection.txt`,\\n+`/app/fixture/copy-session.txt`, and `/app/fixture/maintainer-thread.md`.\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const rs = await Promise.all([\n  tools.exec_command({cmd:\"sed -n '1,280p' /app/agent-output/S14-link-install-lock-trap/report.md\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":20000}),\n  tools.exec_command({cmd:\"git -C /app/fixture status --short 2>&1; git -C /app diff --check -- /app/fixture 2>&1\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":4000}),\n  tools.exec_command({cmd:\"test -s /app/agent-output/S14-link-install-lock-trap/report.md && echo 'report present and non-empty'\",\"workdir\":\"/app\",\"yield_time_ms\":10000,\"max_output_tokens\":2000})\n]);\ntext(\"===== report =====\\n\"+rs[0].output);\ntext(\"\\n===== fixture status/check =====\\n\"+rs[1].output);\ntext(\"\\n===== output check =====\\n\"+rs[2].output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Update File: /app/agent-output/S14-link-install-lock-trap/report.md\\n@@\\n-Get-ChildItem $lib client.js,index.js\\n+Get-Item (Join-Path $lib 'client.js'), (Join-Path $lib 'index.js')\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    }
+  ],
+  "skill_command_hits": [
+    {
+      "command": "/bin/bash -lc \"rg --files -g '\"'!**/SKILL.md'\"' -g '\"'!**/skills/**'\"' /app/fixture /app 2>/dev/null | sed -n '1,200p'\"",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}

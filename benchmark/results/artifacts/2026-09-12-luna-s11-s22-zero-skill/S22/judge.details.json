@@ -1,0 +1,80 @@
+{
+  "status": "scored",
+  "score": 90,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Correctly identifies the two workspace-files inserts and locates the fatal duplicate at EntryGroup.update during Cordis include composition.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Correctly distinguishes safe config override, safe new insertion, and fatal insertion of an already bundle-provided ID, with evidence-based classification.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes removing only the profile’s redundant workspace-files insert, retaining the bundle declaration and using configuration override if needed.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "partial",
+      "reason": "Correctly states the failure occurs before plugin execution and cannot be fixed in plugin code, but does not explicitly separate the earlier resource-read failure as still requiring verification.",
+      "points": 20,
+      "awarded": 10
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Recommends inspecting the installed bundle patch and proposes an actionable diagnostic naming both sources and directing removal of the profile block.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The report explicitly rejects retaining the duplicate and does not recommend plugin edits as the remedy.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 5770,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 628,
+      "reasoning_output_tokens": 364
+    },
+    "request_id": "01a095c6-d72a-7be2-bc11-d0d0210dcc2e",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "9f0c993e30acf435ca9e0ff9ff2c632546d6378ad75cb2e127fcafd8e1c7ea2b",
+    "response_sha256": "04cea10448bab6ae3803183a64217fcdddb9468bc035f073ff67a1d76df651ef"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "636e8dfa905e6809d56249ea645fadcfa2c2993039d7fc4d8768c094e6340e74"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "f920b1ef85fe90d26bf940c37251e6e6dc8e672b3fc87122d8e6def6a0ef0afa",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}

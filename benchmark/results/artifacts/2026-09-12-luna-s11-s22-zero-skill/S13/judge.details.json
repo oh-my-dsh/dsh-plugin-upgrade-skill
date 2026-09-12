@@ -1,0 +1,80 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Correctly ties the plugin's session.events reads to the non-iterable crash and cites removal in alpha.4 with seq, eventAt(), and snapshotEvents() as replacements.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Correctly explains that alpha.5 satisfies the declared peer semver range while npm checks metadata only, not API existence, behavior, or testing.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Identifies distinct runtime-failure classes including removed APIs, changed value shapes/types, and changed signatures or return contracts.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing actual supported versions and gives compatible policies: narrow metadata ranges or migrate/guard with runtime capability handling; it correctly distinguishes metadata from runtime guards.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Provides a concrete tarball/source inspection and changelog/API comparison that would detect Session.events removal before installation.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report explicitly states that peer-range satisfaction and warning-free installation do not prove runtime compatibility.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 5905,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 756,
+      "reasoning_output_tokens": 485
+    },
+    "request_id": "01a095ba-d1e6-7120-a68a-b5e373a2bb45",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "bd702a4250fa76e2436609f7821116e6a53439dc55e3568ac8901b5e1354c675",
+    "response_sha256": "2915e7decd56234d8b1a58994142e6db6741b06fb865a1f09c75d82c3a95cea3"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "20df3965dc17934e95de6e25c8936b0028d80c771ebc6be1a30648af8bc1f1dc"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "c88da29da8f9034a57645a0a81b2adb050ba1eeb870279ca8c6a80b57a8b1275",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}

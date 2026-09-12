@@ -1,0 +1,111 @@
+# S11 — Mermaid lazy-load trap
+
+## 1. Split-chunk failure
+
+The first request succeeded, but that only fetched the entry module. The bundled
+`mermaid-chunk.js` still contained relative imports for Mermaid's other generated
+modules. The browser resolved those specifiers relative to the resource URL and
+requested `src-BfvxrPJe.js`, `pie-WAS4IAKB-CQHCQWWM.js`, and the other siblings.
+Those files were not in the shipped `lib/`, so the requests returned 404 and
+evaluation of the entry import rejected with `Failed to fetch dynamically imported
+module`. The fallback was therefore expected.
+
+The build must either ship the entire emitted module graph at the same relative
+URLs, or, for this plugin's resource, build the lazy entry as one self-contained
+bundle (`bundle: true`, with code splitting/splitting disabled). The latter keeps
+the initial Mermaid load lazy while removing the unshipped sibling dependency.
+
+## 2. Windows 403
+
+The flawed check is the string-prefix check after `realpathSync`:
+
+```ts
+file = normalize(realpathSync(abs))
+if (!file.startsWith(LIB_DIR + sep)) reject()
+```
+
+`fileURLToPath(new URL('.', import.meta.url))` returns a native filesystem path
+using the drive-letter spelling in the file URL/path used to initialize the
+plugin. `normalize` performs lexical separator and dot cleanup; it does not
+canonicalize case. Thus the production value of `LIB_DIR` starts with `E:`.
+
+`realpathSync(abs)` resolves the filesystem path and, on that Windows host,
+returns the same location with a lowercase drive prefix, `e:`. The second
+`normalize` does not change that case. JavaScript `String.prototype.startsWith`
+is an exact, case-sensitive string comparison, so `e:\\dsh\\...` does not start
+with `E:\\dsh\\...`, even though Windows filesystem resolution treats them as
+the same drive/path. The evidence shows exactly this pair of values. Linux has
+no drive-letter case change and its absolute path spelling remains consistent,
+so the comparison passes there; the C: machines passed only because their
+spellings happened to line up.
+
+## 3. Guard and serving fix
+
+Compare paths with the platform-aware path operation `relative`, after
+canonicalizing both sides, rather than comparing strings. For example:
+
+```ts
+const root = normalize(realpathSync(LIB_DIR))
+const file = normalize(realpathSync(abs))
+const fromRoot = relative(root, file)
+const outside = isAbsolute(fromRoot) ||
+  fromRoot === '..' || fromRoot.startsWith('..' + sep)
+if (outside) reject()
+```
+
+(`root` can be computed once at route setup.) `path.relative` uses Windows path
+semantics, including its case-insensitive drive comparison, while on POSIX it
+keeps the required case-sensitive semantics. Checking for `..` as a complete
+segment also avoids the usual prefix mistake such as accepting `lib2` as a
+child of `lib`. Canonicalizing the candidate with `realpathSync` before this
+check preserves the protection against a symlink escaping the plugin directory.
+
+A dynamic import also requires every requested module URL to be actually
+fetchable: the route must return the exact JavaScript file with a successful
+response and a JavaScript MIME type (for example, `200` and
+`application/javascript`). If splitting is retained, that requirement applies
+to every sibling chunk too, not only `mermaid-chunk.js`.
+
+## 4. Ctrl+scroll ownership
+
+The wheel event originates in the diagram in the modal and bubbles through its
+ancestors, so both the modal zoom handler and the pane font-size handler can
+observe it. `preventDefault()` only suppresses the browser's native default
+action; it does not stop another JavaScript listener. Likewise, propagation and
+listener placement matter: `stopPropagation()` does not prevent another
+listener on the same `EventTarget`, and registration order can make either
+handler run first.
+
+The ownership rule should be explicit: the nearest active surface owns the
+event. While the modal is open, a Ctrl+wheel whose composed path is inside the
+modal belongs exclusively to the modal. The modal handles zoom and prevents the
+native default; the pane handler must return for that target/state. If both
+handlers are necessarily on the same target, use the ownership gate (or
+`stopImmediatePropagation()` where appropriate), rather than relying on
+listener registration order. When the modal is closed, the pane may own the
+event.
+
+## 5. Regression coverage
+
+1. **Bundle graph test (incident 1).** Build the Mermaid lazy entry in release
+   mode, inspect the publish artifact, and assert that either the entry has no
+   unresolved relative chunk imports or every referenced sibling exists under
+   the shipped `lib/` path. Serve only the package artifact and load at least a
+   pie diagram through the real resource URL; fail on any 404 or rejected module
+   import.
+
+2. **Route containment matrix (incident 2).** Exercise an in-root file where the
+   configured Windows root is `E:\\...` but canonical `realpathSync` returns
+   `e:\\...`; it must return 200. Run the same test on Windows and POSIX, and
+   include `..`, a sibling such as `lib2`, and an in-root symlink to an outside
+   file, which must be rejected. This directly tests the path API behavior that
+   the old `startsWith` guard missed.
+
+3. **Modal wheel ownership test (incident 3).** Dispatch a bubbling, cancelable
+   Ctrl+wheel targeted at a diagram inside an open modal and assert exactly one
+   zoom action, zero pane font-size actions, and the intended cancellation.
+   Repeat with the modal closed and expect the pane action instead. Register the
+   listeners in both orders (or run the browser integration test with both
+   placements) to ensure ownership, not event-listener ordering, determines the
+   result.
+

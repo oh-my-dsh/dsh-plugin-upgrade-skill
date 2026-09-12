@@ -1,0 +1,138 @@
+{
+  "status": "scored",
+  "score": 82.5,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly identifies fs-ext@2.1.1, its node-gyp install phase, the manifest parent dependency, and missing MSVC/Visual Studio as the cause.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Correctly explains that the top-level fs-ext import still loads at boot, so ignoring scripts alone only hides the build failure and does not make the module loadable.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Correctly distinguishes the Windows named-semaphore path from POSIX flock and preserves the semaphore while treating fs-ext as load-time-only on Windows.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "partial",
+      "reason": "Provides the right local pnpm patch strategy and verification plan, but omits the required build-permission handling and proposes a throwing fallback rather than the compatible warning/no-op callback fallback.",
+      "points": 25,
+      "awarded": 12.5
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Respects the no-Visual-Studio constraint and explicitly keeps the dependency declaration and upstream repository unchanged.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "fail",
+      "reason": "Names DSH-0.1.3-A1-S20 rather than the required full card ID DSH-0.1.3-A1-03.",
+      "points": 5,
+      "awarded": 0
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan explicitly rejects installing Visual Studio or Build Tools.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as a standalone solution and includes an import-safe patch.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The proposed fix uses the repository-managed pnpm patch mechanism rather than requiring upstream edits.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "The plan preserves the Windows named semaphore and POSIX native flock behavior.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "gpt-5.6-luna",
+    "returned": null,
+    "resolved": "gpt-5.6-luna",
+    "endpoint": "codex://chatgpt-login",
+    "transport": "codex-exec-v1",
+    "cli_version": "codex-cli 0.153.4",
+    "reasoning_effort": "high",
+    "usage": {
+      "input_tokens": 7157,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 1455,
+      "reasoning_output_tokens": 1034
+    },
+    "request_id": "01a095c7-6463-7d81-8836-27996681542c",
+    "tool_calls": 0,
+    "diagnostics": [],
+    "request_sha256": "71492b9bc398452a8d9f6c5dbf1b0b6d5fbc063d9be665d38dd0c7040f229edb",
+    "response_sha256": "97e85d26bc2368f36715c8fa0f46c30f2a4c025ea2b74c927386db2910962de8"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "fixture/manifest-excerpt.json:2-8",
+      "path": "manifest-excerpt.json",
+      "start": 2,
+      "end": 8,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/win32-excerpt.ts:8-24",
+      "path": "win32-excerpt.ts",
+      "start": 8,
+      "end": 24,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/win32-excerpt.ts:3-8",
+      "path": "win32-excerpt.ts",
+      "start": 3,
+      "end": 8,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/win32-excerpt.ts:23-24",
+      "path": "win32-excerpt.ts",
+      "start": 23,
+      "end": 24,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "f5abec31c663ac8584a68ebc6fcbb5ac2167a9a87c7d3b31b25aef9af0f3645a"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "16602aec8cf4819e728e92243f7c5a3f9293cf9f3ae20f59eaaaa89a61650334",
+  "judge_sha256": "be5a6b2464f2fc875b42db2cc579da9d62367cbdddd6b6373e673993e43a9cfa",
+  "adapter_sha256": "e10886300f85ccd814ee56f4ad590ed129e12ca7818fe704c0296df7f01120f7"
+}

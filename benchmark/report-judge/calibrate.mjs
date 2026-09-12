@@ -5,9 +5,11 @@ import { makePacket, REPO } from './prepare.mjs'
 import { RUBRICS } from './rubrics.mjs'
 import { apiConfig, callJudge, isMain, sha256 } from './judge.mjs'
 import { focusedSamples } from './calibration/focused.mjs'
+import { DIAGNOSIS_PROBES } from './calibration/diagnosis.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const keywordReports = {
+  ...Object.fromEntries(Object.entries(DIAGNOSIS_PROBES).map(([task, probe]) => [task, probe.keywords])),
   'H4-tsbuildinfo-trap': 'tsbuildinfo clean no source changes needed resolveSessionPreset',
   'H6-remote-error-trap': 'gateway/cancelled gateway/internal catch instanceof RemoteError namespace',
   'H12-remote-result-boundary-trap': 'result.ok result.value result.error resolved catch isRemoteFailure',
@@ -24,15 +26,9 @@ const keywordReports = {
   'S10-paste-rename-and-version-chip': 'paste_image paste_file occurrences records Map CDN latest PLUGIN_VERSION node --check hard refresh',
   'S12-global-upgrade-ebusy-trap': 'koffi.node EBUSY node.exe latest alpha.5 rc.2 README pin version',
   'S15-slot-error-boundary-crash': 'busy AttachButton AttachmentChips plain ReferenceError boundary console rollback node --check',
-  "S11-mermaid-lazyload-trap": "split chunk sibling import realpath Windows 403 path.relative startsWith JS mime modal wheel capture regression",
-  "S16-self-host-upgrade-trap": "self host npm install shim dsh.cmd stale package external pinned refuse stop version marker",
-  "S17-external-ui-plugin-onboarding-trap": "combo classic script ESM ModuleLoader factory slots.inject declaration restart taskkill EADDRINUSE bisect",
-  "S18-terminal-sprite-render-trap": "SGR 49m background reset trailing trim ghost erase-to-EOL ESC[K frame digest hand-ported unref timer event loop",
-  "S19-phantom-update-stale-host": "PLUGIN_VERSION baked build order stale chip mirror tag route restart svg mime validation session log zstandard",
-  "S21-resource-service-unavailable-trap": "useResource workspace-files stat meta.status none claim tab combo URL cap per-module sweep restart rollback",
-  "S22-duplicate-insert-boot-crash-trap": "duplicate loader entry id EntryGroup workspace-files profile patch bundle insert fatal config override remove grep",
 }
 const wrongClaims = {
+  ...Object.fromEntries(Object.entries(DIAGNOSIS_PROBES).map(([task, probe]) => [task, probe.wrong])),
   'H4-tsbuildinfo-trap': "This is not a stale build cache problem. Do not clean. Reject the claim 'no source changes needed'. The source must be migrated.",
   'H6-remote-error-trap': 'Keep the old cancelled/internal strings. Retry cancellation as a generic error. Silently return for internal and unknown codes. Keep the blanket catch and use instanceof RemoteError across realms.',
   'H12-remote-result-boundary-trap': 'All ordinary unary remote failures reject into catch. Read result.value directly because a resolved promise proves success. Retry every assembly fault and discriminate with instanceof RemoteError.',
@@ -49,13 +45,6 @@ const wrongClaims = {
   'S10-paste-rename-and-version-chip': 'Trust only the records Map; live occurrences do not matter. Rename every file inside add, including drops and picker. Always show the fetched remote tag even if older. Syntax checks and behavioral tests are unnecessary.',
   'S12-global-upgrade-ebusy-trap': 'A browser refresh releases the native module lock while dsh keeps running. Unpinned npm install preserves the installed alpha version and ignores latest. README authors should keep the unpinned command.',
   'S15-slot-error-boundary-crash': 'busy is a global variable visible to sibling functions. The empty state evaluates every chip. Keep the undeclared busy reference; only the remove button disappears. Testing an empty dock with node --check proves rendering is safe.',
-  "S11-mermaid-lazyload-trap": "The 403 is just unreliable Windows path handling, so the plugin should avoid Windows. Bundle the Mermaid chunk into one file and the sibling request disappears. path.relative alone already proves containment and the JS MIME check is optional. The wheel conflict comes from browser zoom and passive listeners, so the modal should call stopPropagation harder.",
-  "S16-self-host-upgrade-trap": "Run npm install -g @deepseek-ai/dsh@latest from inside the session and retry until it finishes. Missing shims can be hand-copied from the package directory because content on disk is enough. If the install dies, re-run it immediately without stopping the host, and skip version pinning so the newest release is picked automatically.",
-  "S17-external-ui-plugin-onboarding-trap": "The first-awaited typert-registry entry is the culprit and should be patched. Keep the raw top-level ESM imports; only the crashing plugin needs changes. slots.register can be called directly without slots.inject, and registrants should pass kind and scope. HMR rebuilds the combo automatically, restarting is unnecessary, and on Windows a plain process kill is always enough.",
-  "S18-terminal-sprite-render-trap": "Phantom and ghost pixels are terminal-emulator bugs, so no renderer fix is needed and no background reset is required. Keeping the trailing trim is fine; do not unref the animation timer and frame digests are optional. No renderer checklist is needed.",
-  "S19-phantom-update-stale-host": "The stale version chip is a mirror or CDN problem; re-verifying the mirrors or re-pushing the tag fixes the badge. Refreshing the browser updates the host route, so a host restart is unnecessary. The traced source file is corrupted, so repair it in place. Render payloads without validation because the asset route is unnecessary, and let the controlled failure appear as a broken image. Skip the upstream report.",
-  "S21-resource-service-unavailable-trap": "The resource failure comes from the plugin render code, so rewrite the client with retry and fallback; the file itself is missing from disk. The all-in-one combo join 404 proves modules are missing, and the alpha.2 roster rename explains the empty tab. The paste-input fold warnings are the same bug; no restart, rollback, or upstream report is needed.",
-  "S22-duplicate-insert-boot-crash-trap": "The workspace-files plugin is defective and must be patched to tolerate duplicate registration; alternatively edit the web-app bundle patch so it stops providing the id. Cordis silently merges duplicate inserts, so the later row wins. Config override by id is fatal, inserting a brand-new id is fatal, and no bundle grep is needed before hand-adding rows.",
 }
 
 export function samples(task) {

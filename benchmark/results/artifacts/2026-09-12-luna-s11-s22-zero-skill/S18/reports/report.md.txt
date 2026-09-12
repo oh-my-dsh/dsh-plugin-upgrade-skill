@@ -1,0 +1,187 @@
+# S18 — Terminal Sprite Render Trap
+
+## Findings
+
+The symptoms are four different defects that happen to overlap visually:
+
+1. the ANSI background attribute is carried into a transparent half of a cell;
+2. a shorter row does not erase the longer row that preceded it;
+3. `tail2` contains hand-porting errors; and
+4. a self-rescheduling Node timer keeps some non-interactive CI processes alive.
+
+## 1. Phantom pixels
+
+The renderer relies on terminal SGR state persisting from one cell to the next. In
+the both-visible case it emits, in order:
+
+```text
+ESC[38;2;<upper-r>;<upper-g>;<upper-b>m ESC[48;2;<lower-r>;<lower-g>;<lower-b>m ▀
+```
+
+The `48;2;...m` sequence changes the terminal's current background color. It is
+not scoped to that glyph and is not cleared by the next cell unless another escape
+does so.
+
+The exposed cases are the half-filled cells:
+
+- `up !== undefined && lo === undefined` emits only `fg(up)` and `▀`. The lower,
+  empty half of `▀` is therefore painted with the previous cell's background.
+- `lo !== undefined && up === undefined` emits only `fg(lo)` and `▄`. The upper,
+  empty half of `▄` likewise uses the previous cell's background.
+
+At the right edge of the outline, the sleep-Z marks, and the heart, those branches
+can follow a cell that set a sprite-colored background. The result is a one-cell
+colored patch in a half that is `.` in the frame data. `current` only suppresses
+duplicate escape strings; it does not make SGR state local to a cell. The row-end
+`RESET` is too late to repair an artifact already painted in the row.
+
+If transparent means the terminal's default background, the exact minimal fix is
+to set that background explicitly in both one-sided branches:
+
+```ts
+} else if (up !== undefined) {
+  seq = fg(up) + '\x1b[49m' // default background for the empty lower half
+  ch = '▀'
+} else if (lo !== undefined) {
+  seq = fg(lo) + '\x1b[49m' // default background for the empty upper half
+  ch = '▄'
+```
+
+If the sprite has a defined canvas background rather than the terminal default,
+use `bg(canvasBackground)` instead of `\x1b[49m`. The important contract is that
+every half-block specifies the background used by its empty half; it must not
+inherit `48;2;...m` from a neighboring cell.
+
+## 2. Ghost frames
+
+For each row the renderer emits a literal space for a fully transparent cell, then
+does:
+
+```ts
+out.replace(/[ ]+$/, '')
+```
+
+That drops every trailing blank cell after the last visible glyph. The later
+`RESET` is an escape sequence and has zero terminal-column width; it does not
+restore the dropped cells or clear their old contents. The text pipeline also
+normalizes/suppresses trailing whitespace when it handles the row text, so padding
+that is merely represented by spaces cannot be relied upon to reach the terminal.
+
+When the wide frame was drawn, its tail occupied real terminal cells. Rewriting
+the row with a narrower string changes only the columns present in the new write.
+Terminal output is not a replacement-string operation: columns beyond the new
+end retain the old glyphs and colors. Hence the wide tail survives a switch even
+though the narrow frame's own data and rendered prefix are correct.
+
+The clean-switch fix has two parts:
+
+1. Preserve the canvas geometry end to end. Render every row as exactly 40
+   terminal cells, including its right-side blank cells, remove the renderer's
+   trailing-space trim, and use a text path that preserves those cells (or emits
+   an equivalent control sequence rather than whitespace padding).
+2. Erase the old terminal row/rectangle as part of the frame write. For a cursor
+   positioned at the row start, `\x1b[2K\r` followed by the row is a robust row
+   operation; `\x1b[K` is sufficient when the cursor is already at the start and
+   the intended erase is to end of line. Then write the row at the known origin.
+
+Fixed-width overwrite handles the known 40-column canvas, while explicit erase
+handles a previously wider write and remains correct even if an intermediate
+text layer strips whitespace. Both are part of the renderer contract; a final
+`RESET` only restores attributes and is not an erase operation.
+
+## 3. Frame data drift
+
+The digest report says every listed frame matches source art except `tail2`:
+`standard`, `blink`, `fin1`, `fin2`, `spout1`–`spout6`, `tail1`, `tail3`,
+`tail4`, `heart1`–`heart3`, and `sleep1`–`sleep5` are `OK`. `tail2` has 23
+different cells, all in the upper-right spout/tail-tip area. The report identifies
+the pattern as a one-column-left shift: row 2 has the ported `D` at column 26
+instead of source column 27; row 3 has an extra `D` at 25, a shifted `DBD` at
+26–28, and extra `DD` at 36–37; rows 4–6 continue the shifted upper-right
+cluster.
+
+The existing regression was per-excerpt and was added for a different frame. It
+therefore never compared the complete `tail2` 25-row frame with its source. A
+passing excerpt test could not detect an uncovered hand-copied region.
+
+The gate should maintain a canonical digest manifest (or equivalent canonical
+pixel fixtures) for every named frame and, in CI, hash/compare all 25 rows and
+the expected 40-column geometry. A port or art change must fail the gate unless
+the source art and the deliberately reviewed golden digest are changed together.
+`tail2` must first be corrected to source art; its bad digest must not be blessed
+as the new expected value.
+
+## 4. The hang
+
+The animation planner schedules the next tick with `setTimeout`, and each tick
+schedules another timeout while its component remains mounted. That creates one
+live Timeout handle at a time, but it never reaches a terminal state. The
+channel-ui scene/check hosts mount the header component and finish their checks
+without unmounting it, so PASS is printed while the planner's timer chain still
+pins the Node event loop. The runner eventually kills the otherwise idle process.
+
+The interactive terminal does not reveal this as a new hang because its process
+already has live TTY/stdin handles; those handles keep it alive regardless of the
+animation timer chain. That masks the timer lifecycle bug in normal interactive
+use; it does not make the timer safe for finite CI/test processes.
+
+For this specific “finished but does not exit” failure, the one-line Node fix is
+to unref each scheduled timeout:
+
+```ts
+setTimeout(tick, delay).unref()
+```
+
+The timer may still reschedule while mounted, but it no longer prevents a process
+with no other work from exiting. The complementary component contract should
+still retain the timeout handle and `clearTimeout` it on unmount, so unref is not
+used as a substitute for lifecycle cleanup.
+
+## 5. Prevention
+
+### Renderer contract checklist
+
+- Define the canvas as 25 pixel rows × 40 pixel columns; every frame must satisfy
+  that geometry, even when its visible content is narrower.
+- Define `.` as transparent and define what transparent means on the terminal
+  (default background or an explicit canvas background).
+- For each half-block, set the foreground and background attributes required by
+  both halves. In particular, never leave an empty half dependent on a previous
+  cell's SGR background.
+- Treat SGR state as persistent terminal state: use explicit transitions, keep
+  the `current` optimization semantically correct, and reset/restore state at a
+  row or frame boundary.
+- Emit rows at fixed width through the text pipeline. No renderer or formatter
+  may silently trim the trailing blank cells.
+- On a frame rewrite, draw at a known cursor origin and erase the old row/region
+  or overwrite its full maximum extent. `RESET` is not erasure.
+- Keep all frames in canonical source-art form and gate ports with a digest or
+  pixel-for-pixel comparison covering every frame, row, and column.
+- Start animation only for a mounted/active component, cancel its timer on
+  unmount, and make background timers non-pinning in Node test/CI hosts (for
+  example with `unref`).
+- Test neighboring-cell SGR carry-over, upper-only and lower-only cells, wide to
+  narrow and narrow to wide transitions, every frame digest, terminal cursor /
+  erase behavior, and clean process exit.
+
+### Audit before enabling animation by default
+
+1. Inventory every consumer and host, including scene tests, snapshot runners,
+   CLI checks, and the interactive terminal. Record who mounts the component,
+   who unmounts it, and whether the host has a TTY.
+2. Run the all-frame digest/geometry gate against source art and review any
+   hand-ported frame changes. Include the currently mismatching `tail2` case in
+   the test corpus.
+3. Capture raw ANSI output in a terminal emulator for all frame transitions,
+   especially wide → narrow. Assert that no colored pixel appears outside the
+   frame mask and that old rows are erased.
+4. Verify the complete output path, not just the renderer: check that row
+   padding survives formatting/logging and that the frame writer uses explicit
+   erase semantics.
+5. Run finite CI hosts with real/fake timers and assert that they exit after
+   PASS. Check timer cleanup on unmount and the Node timer `unref` behavior;
+   compare runtime and open handles with the pre-animation baseline.
+6. Roll the default-on change through a guarded/staged run, with the digest,
+   ANSI artifact, lifecycle, and process-exit checks required before removing
+   the flag.
+

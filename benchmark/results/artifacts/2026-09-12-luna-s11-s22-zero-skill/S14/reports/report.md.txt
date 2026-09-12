@@ -1,0 +1,139 @@
+# S14 — Link-install file-lock trap
+
+## Finding
+
+This is a linked installation, not a copied dependency. The profile entry
+`C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input` is a
+Windows directory Junction:
+
+```text
+LinkType : Junction
+Target   : {E:\dev\dsh-attach-input}
+```
+
+That is recorded in `profile-introspection.txt:3-5`. The source path itself has
+no link target (`profile-introspection.txt:9-11`), and the profile patch also
+records `# link:E:\dev\dsh-attach-input` (`profile-introspection.txt:13-14`).
+
+A Junction makes the profile path and the repo path two names for the same
+directory tree. Consequently, the repo's `lib/client.js` and `lib/index.js`
+were already the files visible to the profile. There was never a separate
+profile copy to deploy to. Editing the repo was the deployment step; the
+running host still had to be restarted to load the edits.
+
+## The locks and the stale browser result
+
+There are two relevant loaded files, `lib/client.js` and `lib/index.js`, and
+the owner of both file handles in this incident is the running dsh web host,
+not the browser:
+
+- The host loads `index.js` as the server-side plugin entry and keeps the
+  plugin/runtime files in use.
+- The same running host serves the browser-side `client.js` bundle. A browser
+  tab refresh does not restart that host or make it reload the already loaded
+  plugin, so it can continue serving the old client bundle.
+
+The first copy reports that `client.js` is being used by another process
+(`copy-session.txt:1-4`). Retrying after closing the browser still reports the
+same `EBUSY`, now for `client.js`, `index.js`, and `package.json`
+(`copy-session.txt:6-8`). Closing a tab cannot release handles owned by the
+still-running dsh host. The browser can also retain a cached response, but it
+is not the process holding these source files open in this case.
+
+## Why the rename removed the source entries
+
+`$dst` was the `lib` directory reached through the Junction
+(`copy-session.txt:11`). Therefore these commands:
+
+```powershell
+Rename-Item ($dst + '\client.js') 'client.js.old2'
+Rename-Item ($dst + '\index.js') 'index.js.old2'
+```
+
+renamed the actual files in `E:\dev\dsh-attach-input\lib`, not files in an
+independent profile directory. The subsequent copy used the source path, but
+`lib\client.js` had just been renamed away, so it correctly failed with
+“source does not exist” (`copy-session.txt:12-15`). Both path spellings then
+showed only `client.js.old2` and `index.js.old2`
+(`copy-session.txt:16-22`).
+
+### Exact recovery from the current state
+
+First fully stop the dsh web host and wait for it to exit; this releases its
+handles before any recovery operation. Do not copy from the repo to the
+profile path. With the evidence-confirmed current state (the two `.old2`
+files exist and the original names do not), restore the names in the repo:
+
+```powershell
+$repo = 'E:\dev\dsh-attach-input'
+$lib  = Join-Path $repo 'lib'
+
+Rename-Item (Join-Path $lib 'client.js.old2') 'client.js'
+Rename-Item (Join-Path $lib 'index.js.old2')  'index.js'
+
+Get-Item (Join-Path $lib 'client.js'), (Join-Path $lib 'index.js')
+node --check (Join-Path $lib 'client.js')
+node --check (Join-Path $lib 'index.js')
+```
+
+The `.old2` files are the original edited entry files, so restoring their
+names recovers the hover-preview and host-route edits. The profile Junction
+will show the restored names automatically.
+
+## Ordered activation procedure
+
+After the syntax checks pass:
+
+1. Fully stop the dsh web host, including any child/worker process that loads
+   the plugin. A browser-tab close is not a substitute for this and is not
+   needed to deploy a Junction.
+2. Restore `client.js` and `index.js` as above while the host is stopped. Do
+   not run an install or `Copy-Item` into `node_modules`.
+3. Run `node --check` on both shipped files. Confirm the two original entry
+   names exist and the `.old2` names are no longer the active names.
+4. Start/restart the dsh web host and wait until the web service is ready.
+   This makes the host load the new `index.js`, register the new read-only
+   route, and serve the new `client.js`.
+5. In the browser, perform a hard refresh (`Ctrl+Shift+R` or `Ctrl+F5`). A
+   normal refresh can reuse a cached `client.js` response even after the host
+   has restarted; the hard refresh requests the new client bundle. If needed,
+   keep DevTools Network open with “Disable cache” enabled for the reload.
+6. Verify the host-side and browser-side changes independently: exercise the
+   new host route and check the host startup/plugin log, then use DevTools’
+   Network response (or Sources) for `client.js` to confirm the response
+   contains the hover-preview code and that the image-attachment preview
+   appears. This proves the new files were loaded rather than merely that the
+   tab rendered.
+
+The host must be stopped and restarted because it owns the loaded plugin and
+the file handles. The browser does not need a full process restart; it needs
+a cache-bypassing reload after the host is serving the new bundle.
+
+## Pre-flight install-mode check
+
+Before touching any file, inspect the profile entry and its patch marker:
+
+```powershell
+$entry = 'C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input'
+Get-Item $entry | Select-Object FullName,LinkType,Target
+Get-Content 'C:\Users\me\.dsh\profiles\web\cordis.patch.yml' |
+  Select-String 'dsh-attach-input'
+```
+
+Interpret the result as follows:
+
+- `LinkType : Junction` plus a `Target` pointing to the working tree, and a
+  `# link:<repo>` marker in `cordis.patch.yml`, means link install. Edit the
+  target repo and restart the host; do not copy into the profile entry.
+- A normal directory with blank `LinkType`/empty `Target`, and no link marker,
+  means a copied dependency. Only that mode has a distinct profile tree that
+  might require a deliberate copy/install update.
+
+Generic “copy the files into `node_modules`” advice is actively harmful for a
+Junction: source and destination resolve to the same directory. With the host
+running, the self-copy encounters its open handles and returns `EBUSY`; a
+rename-aside workaround mutates the repo itself and can leave the shared
+installation with no entry files.
+
+Evidence cited: `/app/fixture/profile-introspection.txt`,
+`/app/fixture/copy-session.txt`, and `/app/fixture/maintainer-thread.md`.

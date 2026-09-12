@@ -1,0 +1,92 @@
+{
+  "job_name": "codex-luna-s11-s22-zero-skill-recovery",
+  "jobs_dir": "<local-run>/jobs",
+  "agent_setup_timeout_multiplier": 4.0,
+  "n_concurrent_trials": 3,
+  "n_attempts": 1,
+  "environment": {
+    "type": "docker",
+    "force_build": true
+  },
+  "agents": [
+    {
+      "name": "harbor_codex_node24:CodexNode24",
+      "model_name": "openai/gpt-5.6-luna",
+      "n_concurrent": 3,
+      "skills": [],
+      "extra_allowed_hosts": [
+        "chatgpt.com"
+      ],
+      "kwargs": {
+        "version": "0.153.4",
+        "reasoning_effort": "xhigh",
+        "web_search": "disabled",
+        "config": {
+          "skills": {
+            "include_instructions": false,
+            "bundled": {
+              "enabled": false
+            }
+          },
+          "features": {
+            "skip_host_skill_discovery": true,
+            "skill_search": false,
+            "skill_mcp_dependency_install": false,
+            "memories": false,
+            "apps": false,
+            "plugins": false,
+            "remote_plugin": false,
+            "multi_agent": false,
+            "multi_agent_v2": false
+          }
+        }
+      },
+      "env": {
+        "CODEX_AUTH_JSON_PATH": "<local-codex-auth.json>"
+      }
+    }
+  ],
+  "skills": [],
+  "extra_instructions": [
+    "This is a literal zero-skill evaluation. Do not search for, open, read, quote, or follow any SKILL.md file or any skill directory. Do not use Codex-native or bundled skills. Use only the task prompt, /app/fixture, and non-skill local documentation and tools. Skip any skill file if encountered."
+  ],
+  "artifacts": [
+    "/app/agent-output",
+    "/app/fixture"
+  ],
+  "verifier": {
+    "disable": true
+  },
+  "retry": {
+    "max_retries": 0
+  },
+  "tasks": [
+    {
+      "path": "<local-run>/tasks/S11-mermaid-lazyload-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S14-link-install-lock-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S16-self-host-upgrade-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S17-external-ui-plugin-onboarding-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S18-terminal-sprite-render-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S19-phantom-update-stale-host"
+    },
+    {
+      "path": "<local-run>/tasks/S20-msvc-flock-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S21-resource-service-unavailable-trap"
+    },
+    {
+      "path": "<local-run>/tasks/S22-duplicate-insert-boot-crash-trap"
+    }
+  ]
+}

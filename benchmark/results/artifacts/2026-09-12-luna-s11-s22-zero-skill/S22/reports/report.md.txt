@@ -1,0 +1,69 @@
+# S22 — Duplicate insert boot-crash report
+
+## 1. Root cause
+
+The collision is between these two declarations of the same loader-entry ID:
+
+- The profile’s manually added block in `profile-patch-excerpt.txt`:
+  `id: workspace-files`, `name: '@deepseek-ai/dsh-api-workspace-files'`.
+- The installed web-app bundle’s block in `web-app-patch-excerpt.txt`:
+  `id: workspace-files`, `name: '@deepseek-ai/dsh-api-workspace-files'` (identified as L110–111 in the installed tree).
+
+The duplicate is detected at the Cordis loader layer, specifically in
+`cordis-plugin-loader`’s `EntryGroup.update`, while `dsh-app-boot` applies the
+`cordis:include` loader entry. It is not a failure in the workspace-files
+plugin’s runtime or document-reading code.
+
+Loader-entry IDs are unique keys in the merged include/entry group. An `insert`
+is a declaration/addition, not a later-row override, so accepting the second
+row would make the composed loader tree ambiguous (including which declaration
+and metadata should win). Cordis therefore throws on the duplicate and aborts
+plugin-tree construction; no web boot can continue.
+
+## 2. Layering rules
+
+For a profile patch over a bundle-provided plugin:
+
+- Changing that plugin’s configuration by its existing ID is safe; it targets
+  the existing declaration rather than declaring a second one.
+- Inserting an ID that the bundle does not ship is safe as an additional
+  profile/plugin declaration.
+- Inserting an ID that the bundle already ships is fatal because it creates a
+  duplicate loader entry.
+
+The maintainer performed the third operation. The proof is the matching
+`workspace-files` row in the web-app bundle excerpt, alongside the identical
+manual row in the profile excerpt. The profile comment calling the row
+“冗余” is therefore correct about its redundancy, but retaining the row is not
+safe: redundancy in an `insert` is precisely the duplicate.
+
+## 3. Fix
+
+Delete the manually added `workspace-files` `- insert:` block from the profile’s
+`cordis.patch.yml` (the block at the end of `profile-patch-excerpt.txt`). Keep
+the bundle’s existing row. If the profile needs to adjust this plugin, change
+its configuration by the existing ID instead of inserting another loader row.
+
+The plugin’s own code is not at fault. The loader fails while composing the
+plugin tree, before the plugin can be initialized, so no plugin-side code
+change can resolve this boot failure. The required change is in the profile
+patch; changing or removing the bundle plugin itself would be the wrong fix.
+
+## 4. Prevention
+
+Before adding a loader row by hand, inspect the installed bundle’s
+`cordis.patch.yml` (and the installed package/tree it references) for the
+plugin ID. In this incident, checking the web-app bundle would have shown the
+`workspace-files` row already supplied at L110–111.
+
+At boot, dsh could make the diagnostic actionable by reporting both declaration
+owners and their sources, for example: profile
+`C:\Users\lhh\.dsh\profiles\web\cordis.patch.yml` and the web-app bundle’s
+`packages/bundle/web-app/cordis.patch.yml`, then explicitly advising:
+
+> Duplicate loader entry `workspace-files`: bundle already provides
+> `@deepseek-ai/dsh-api-workspace-files`; remove the profile’s manual `insert`
+> block from the profile patch.
+
+That identifies whom to blame (the profile-side duplicate), what is already
+provided (the bundle), and exactly what to delete.

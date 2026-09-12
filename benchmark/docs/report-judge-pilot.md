@@ -1,7 +1,9 @@
-# Semantic report judging: default for H4, H6, H12, S1–S10, S12 and S15
+# Semantic report judging: default for H4, H6, H12 and S1–S22
 
-The registered `benchmark/tasks/` entries for these fifteen tasks now use
-**LLM-as-judge by default**, at task version `4.0.0`, protocol `report-judge-v2`.
+The registered `benchmark/tasks/` entries for these twenty-five tasks now use
+**LLM-as-judge by default**, using protocol `report-judge-v2`. The ten incident tasks described in
+[diagnosis-rubrics.md](diagnosis-rubrics.md) are at task version `4.1.0`; the other
+fifteen remain at `4.0.0`.
 No generated pilot directory or extra enable flag is needed. This document keeps
 its original filename so existing links remain valid.
 
@@ -52,10 +54,10 @@ candidate reports. It gets no reference answer or out-of-band solver identity or
 skill-condition label. Candidate text can identify its author, so this alone does
 not guarantee complete blinding.
 
-The model-free `skill-evaluation` CI controls run the four deterministic tasks in
-that suite. S1, S5 and S9 remain in the seven-task model suite; the control manifest
+The model-free `skill-evaluation` CI controls run the three deterministic tasks in
+that suite. S1, S5, S9 and S11 remain in the seven-task model suite; the control manifest
 lists them separately under `semanticProtocolTasks`. The same CI job runs
-`test:report-judge` for all fifteen semantic verifiers, with mocked responses and no
+`test:report-judge` for all twenty-five semantic verifiers, with mocked responses and no
 model credentials. This validates their protocol, not reference-answer quality.
 The manual Actions model job has not been wired to a report-judge credential;
 without explicit verifier configuration Harbor rejects it before any trial.
@@ -80,6 +82,19 @@ Use a separately authorized local API or Codex run for actual report grading.
 | S10 | Paste naming/scope, live conflict state, stale-tag display, regressions, release hygiene: 20 each |
 | S12 | Native-module owner, browser/host sequence, dist-tag resolution, exact alpha.5/TUI commands, README prevention: 20 each |
 | S15 | Busy scope/trigger, slot boundary, attribution/isolation, fix/hardening, data-present regression: 20 each |
+| S11 | Split-chunk attribution, Windows containment attribution, safe route fix, modal event ownership, and incident regressions: 20 each; unsafe containment caps at 40 |
+| S13 | Removed API/crash, peer-check boundary, two distinct breakage categories, author prevention, and pre-install checks: 20 each; claiming peers prove runtime compatibility caps at 20 |
+| S14 | Junction deployment, host locks/client cache, rename recovery, ordered activation, and install-mode preflight: 20 each; copying onto the junction or browser-only host activation caps at 40 |
+| S16 | Self-host failure, interrupted-install signature, external pinned repair, handoff protocol, and guard/post-upgrade checks: 20 each; self-host execution caps at 20 and manual shim repair at 40 |
+| S17 | Whole-combo attribution, diagnosis/packaging, cross-entry slot registration, boot/restart discipline, and host/author prevention: 20 each; affirmative contradictory core operational advice caps at 0 |
+| S18 | Half-cell background, frame clearing, frame-data integrity, timer liveness, and renderer/rollout prevention: 20 each; affirmative contradictory renderer/timer advice caps at 0 |
+| S19 | Baked version/release order, client-host asymmetry, payload corruption, validated render fallbacks, and forensics/prevention: 20 each; affirmative unsafe release/render advice caps at 0 |
+| S20 | Native install failure 20; static-import trap 20; platform lock contract 20; reproducible local patch 25; machine/upstream boundaries 10; justified corridor mapping 5. Caps: VS requirement 50, ignore-scripts-only or upstream editing 40, real lock bypass 20 |
+| S21 | Metadata-chain attribution, valid probes/partitioning, distractors/tab scope, ordered mitigation, and upstream forensics/fail-loud diagnostics: 20 each; invalid probe attribution or plugin workaround/duplicate insertion caps at 40 |
+| S22 | Duplicate-loader attribution, three layering cases, minimal profile fix, plugin/failure boundary, and author/host prevention: 20 each; retaining/adding the duplicate or fixing this crash in plugin code caps at 20 |
+
+See the [incident-rubric guide](diagnosis-rubrics.md) for the ten incident
+S tasks, their cap semantics and evidence boundaries.
 
 The LLM returns `pass`, `partial`, `fail` or `missing` for every criterion.
 Deterministic code awards 100%, 50%, 0% or 0% of its weight and applies declared
@@ -130,14 +145,15 @@ responses and hashes remain available for human review.
 
 ## Maintain and freeze the verifiers
 
-Edit `benchmark/report-judge/rubrics.mjs` and shared `judge.mjs`, then run:
+Edit `benchmark/report-judge/rubrics.mjs` (the ten incident rubrics live in
+`diagnosis-rubrics.mjs`) and shared `judge.mjs`, then run:
 
 ```sh
 npm run sync:report-judge
 npm run test:report-judge
 ```
 
-Synchronization materializes fifteen standalone judges, sealed packets, shell
+Synchronization materializes twenty-five standalone judges, sealed packets, shell
 entries, verifier Dockerfiles and task configurations. It removes superseded
 keyword helpers. CI runs `--check` and rejects drift in the implementation,
 fixture, instruction or referenced source bytes. Checked-in packets omit HEAD,
@@ -161,8 +177,11 @@ node benchmark/report-judge/calibrate.mjs --live --repeats 1 --out /tmp/report-j
 
 The first command only prepares samples and inputs; it does not call a model or
 simulate semantic scores. The live command uses explicit API configuration and
-makes 142 calls (fifteen tasks × eight base samples, three focused samples
-for each of S5–S9, two for each of H4/H6/H12, and an equivalent H12 code sample) at one repeat; three repeats make up to 426 calls. It stops at the first infrastructure/protocol failure, saving
+prepares/evaluates every registered task and its base/focused samples. The ten
+incident tasks each add bilingual, correct-negation, contradictory-final-advice
+and partial-answer cases. The generated `summary.json` records the exact task/sample
+count; `--repeats` controls repeated live calls. It stops at the first
+infrastructure/protocol failure, saving
 completed evidence incrementally.
 
 Samples cover complete/reordered answers, bare keywords, wrong claims, injection,

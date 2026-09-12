@@ -1,0 +1,86 @@
+{
+  "contexts": [
+    {
+      "model": "gpt-5.6-luna",
+      "effort": "xhigh",
+      "cwd": "/app"
+    }
+  ],
+  "skill_instruction_blocks": 0,
+  "commands": [
+    {
+      "command": "/bin/bash -lc \"find /app/fixture -maxdepth 3 -type f -printf '%p\\\\n' | sort\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/npm-install-output.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/crash-stack.txt'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/plugin-source-excerpt.js'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/dsh-changelog-excerpt.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,240p' '/app/fixture/README.md'\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'mkdir -p /app/agent-output/S13-peer-range-vs-runtime'",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc \"sed -n '1,260p' /app/agent-output/S13-peer-range-vs-runtime/report.md\"",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "command": "/bin/bash -lc 'git status --short -- /app/fixture /app/agent-output/S13-peer-range-vs-runtime && git diff -- /app/fixture'",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "tools": [
+    {
+      "name": "exec",
+      "input": "const r = await tools.exec_command({cmd:\"find /app/fixture -maxdepth 3 -type f -printf '%p\\\\n' | sort\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:2000});\ntext(r.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const files = [\n  \"/app/fixture/README.md\",\n  \"/app/fixture/npm-install-output.txt\",\n  \"/app/fixture/crash-stack.txt\",\n  \"/app/fixture/plugin-source-excerpt.js\",\n  \"/app/fixture/dsh-changelog-excerpt.md\"\n];\nconst rs = await Promise.all(files.map(path => tools.exec_command({\n  cmd:`sed -n '1,240p' '${path}'`,\n  workdir:\"/app\",yield_time_ms:10000,max_output_tokens:4000\n})));\nrs.forEach((r,i)=>{ text(`--- ${files[i]} ---\\n${r.output}`); });\n"
+    },
+    {
+      "name": "exec",
+      "input": "const m = await tools.exec_command({cmd:\"mkdir -p /app/agent-output/S13-peer-range-vs-runtime\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:1000});\ntext(m.output);\n"
+    },
+    {
+      "name": "exec",
+      "input": "const patch = \"*** Begin Patch\\n*** Add File: /app/agent-output/S13-peer-range-vs-runtime/report.md\\n+# S13 — Peer Range vs Runtime Reality\\n+\\n+## 1. Exact incompatibility\\n+\\n+The plugin expects `Session.events` to be an eagerly materialized iterable\\n+events array. Its source reads `liveAgent.session.events` and passes session\\n+`.events` to `replayEvents`; the excerpt shows 42 such references. At runtime\\n+that property is absent, so replay reaches `prepareReplayEvents` with a\\n+non-iterable value and fails with `TypeError: events is not iterable`.\\n+\\n+dsh removed `Session.events` in **v0.1.2-alpha.4**. The dsh changelog says:\\n+\\n+> **Replace `Session.events` with on-demand read APIs**: `seq`, `eventAt()`,\\n+> and `snapshotEvents()` - the eagerly materialized events array is removed\\n+> to reduce memory overhead in long sessions.\\n+\\n+Thus dsh `0.1.2-alpha.5` contains the post-alpha.4 API, while this plugin was\\n+written for the old API.\\n+\\n+## 2. Why npm emitted no peer warning\\n+\\n+`^0.1.2-alpha.2` is a package-metadata constraint. For this case, it permits\\n+versions from `0.1.2-alpha.2` up to (but not including) the next incompatible\\n+`0.2.0` line. The installed `0.1.2-alpha.5` is greater than\\n+`0.1.2-alpha.2` in semver ordering and is therefore in the declared range.\\n+\\n+The range does **not** prove that every API, property, type, signature, or\\n+behavior remains compatible across those versions. npm does not execute the\\n+plugin or inspect its 42 `.events` accesses to validate behavior. It only sees\\n+that the installed package version satisfies the declared range, so the peer\\n+check passes.\\n+\\n+## 3. The fundamental distinction\\n+\\n+- **Peer-range satisfaction** checks: does the installed dependency version\\n+  match the version expression in the consumer package's metadata?\\n+- **Runtime compatibility** checks: when the consumer's actual code executes\\n+  against that dependency, do all required APIs and behavioral contracts still\\n+  exist and work as expected?\\n+\\n+At least these breakages can pass peer-range validation and still crash:\\n+\\n+1. An API/property is removed or renamed, as with `Session.events`.\\n+2. An API's shape or type changes (for example, an array becomes an object or\\n+   a value becomes `undefined`), causing iteration, destructuring, or method\\n+   calls to fail.\\n+3. A function's signature, return value, or required initialization/config\\n+   contract changes, causing an invalid call or startup failure.\\n+\\n+Semver ranges are useful compatibility declarations, but they are not a\\n+behavioral proof or a substitute for testing.\\n+\\n+## 4. What the plugin author should have done\\n+\\n+Before publishing, the author should have run the plugin's startup and relevant\\n+transcript/replay tests against the actual supported dsh versions, including\\n+`@deepseek-ai/dsh@0.1.2-alpha.5` (or the corresponding bundled `dsh-*`\\n+packages). A test that creates a session and exercises channel creation/replay\\n+would have caught the missing property immediately. The author should then\\n+have migrated the 42 `.events` uses to the replacement APIs, or explicitly\\n+limited support to versions that still provide the old property.\\n+\\n+For users, the package metadata should encode the versions genuinely tested\\n+and supported. The peer range (and, where appropriate, an `engines` field)\\n+should be narrowed or bounded to exclude dsh releases after the breaking API\\n+change if the plugin has not been migrated. Metadata communicates the support\\n+envelope; it cannot encode every runtime feature assumption.\\n+\\n+The code also needs a runtime feature-detection guard at the boundary, for\\n+example checking that the needed session API exists before creating the\\n+channel. If the old API is missing, it should emit a clear “this plugin\\n+requires dsh version X or the new replay API” message, choose a compatible\\n+fallback when possible, or stop loading gracefully. A guard improves failure\\n+handling; it does not replace migration and versioned testing.\\n+\\n+## 5. A pre-install check the user can do now\\n+\\n+Inspect the package tarball without installing it, then compare its host-API\\n+references with the target dsh release notes/API. For example:\\n+\\n+```sh\\n+check_dir=\\\"$(mktemp -d)\\\"\\n+npm pack @deepseek-harness-tui/dsh-tui@0.1.0-beta.4 \\\\\\n+  --pack-destination \\\"$check_dir\\\"\\n+tar -xzf \\\"$check_dir\\\"/*.tgz -C \\\"$check_dir\\\"\\n+rg -n '\\\\.events|Session\\\\.events' \\\"$check_dir/package\\\"\\n+```\\n+\\n+Seeing those references, followed by the alpha.4 changelog entry stating that\\n+`Session.events` was removed, identifies the incompatibility before an\\n+install. As a quick metadata check, also inspect\\n+`npm view @deepseek-harness-tui/dsh-tui@0.1.0-beta.4 peerDependencies`; that\\n+reveals the broad `^0.1.2-alpha.2` declaration, but the tarball/source and\\n+target-version API comparison are what expose this runtime risk.\\n+\\n+## Evidence\\n+\\n+- `dsh-changelog-excerpt.md`: removal in `0.1.2-alpha.4` and replacement APIs.\\n+- `plugin-source-excerpt.js`: direct `.events` reads and replay use.\\n+- `crash-stack.txt`: startup failure, `TypeError: events is not iterable`.\\n+- `npm-install-output.txt`: installed dsh `0.1.2-alpha.5` satisfies the peer\\n+  range and npm emitted no peer warning.\\n*** End Patch\";\ntext(await tools.apply_patch(patch));\n"
+    },
+    {
+      "name": "exec",
+      "input": "const rs = await Promise.all([\n  tools.exec_command({cmd:\"sed -n '1,260p' /app/agent-output/S13-peer-range-vs-runtime/report.md\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:6000}),\n  tools.exec_command({cmd:\"git status --short -- /app/fixture /app/agent-output/S13-peer-range-vs-runtime && git diff -- /app/fixture\",workdir:\"/app\",yield_time_ms:10000,max_output_tokens:2000})\n]);\ntext(rs[0].output);\ntext(\"--- fixture status/diff ---\\n\"+rs[1].output);\n"
+    }
+  ],
+  "skill_command_hits": [],
+  "fixture_changes": {
+    "removed": [],
+    "added": [],
+    "modified": [],
+    "allowed": true
+  }
+}
