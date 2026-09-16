@@ -1,0 +1,278 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates the patch declaration, the surface target (SessionView.ts), and the apply script with valid citations; explicitly separates real source patching from ordinary profile composition rows and explains the patch targets a host session-view internal that the alpha.1 split breaks.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Finds the ignorable:true producer and the ctx.on consumer by line, explains alpha.1 removal and alpha.2 restoration with correct corridor folding (keep the marker, A1-02 folded), contrasts omission-safe informational events with fail-closed required events, and explicitly denies that public Session.append can write the marker.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites and the session.rename/llm.providers operations, explains the service-key/package removal, and correctly separates host-plane direct domain-service injection (llm/listProviders) from the client-plane ctx.remote face without prescribing a nonexistent Host remote service.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded homedir()/~/.dsh/profiles/default write, prescribes runtime DSH_HOME/profile as the source of truth, and explicitly notes --profile already existed in rc.2 rather than claiming it was new in alpha.1.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the /internal SessionView import and the registerCommand constructing it, and explains exact-tag owner-module rebuild with pending-confirmation for capabilities lacking a stable public seam, also noting the undeclared dependency owner.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the raw loopback HTTP server, states that loopback-only listening does not exempt it from authentication, and distinguishes Connection-gated official /api routes (bootstrap token/cookie, Host/Origin fence) from raw routes that inherit nothing, flagging the unauthenticated route as a security hole.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh subprocess calls and their stdout JSON.parse sites, explains stdout final text vs stderr reasoning/errors and exit-code judging, and correctly identifies the JSONL assumption as already wrong in rc.2 instead of inventing an alpha.2 stdout change.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps each grounded hit to the required cards: A1-03 for #1/#5, A2-01 as final-net with A1-02 explicitly folded for #2, A1-01 for #3, A1-04 for #4, A1-08 for #6, plus valid A1-05 for #7, with an explicit folding table and per-hit reasoning rather than a bare card list.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "Correctly reports all seven categories hit with no no-hit category, states scan limits (curated card set, heuristic patterns, static-only scope), and proposes target-version compile/typecheck, isolated cold boot, cold-load persistence and functional headless coverage as future verification without executing anything.",
+      "points": 10,
+      "awarded": 10
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:5-6",
+      "path": "cordis.patch.yml",
+      "start": 5,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "patch.yml:2-7",
+      "path": "patch.yml",
+      "start": 2,
+      "end": 7,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:5-19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 5,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:15-19",
+      "path": "src/index.ts",
+      "start": 15,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:26-27",
+      "path": "src/index.ts",
+      "start": 26,
+      "end": 27,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:36-37",
+      "path": "src/index.ts",
+      "start": 36,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:47-54",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:57-67",
+      "path": "src/index.ts",
+      "start": 57,
+      "end": 67,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:11-19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 11,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/cordis.patch.yml:5-6",
+      "path": "cordis.patch.yml",
+      "start": 5,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/patch.yml:2-7",
+      "path": "patch.yml",
+      "start": 2,
+      "end": 7,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/scripts/apply-patch.mjs:5-6",
+      "path": "scripts/apply-patch.mjs",
+      "start": 5,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:15-19",
+      "path": "src/index.ts",
+      "start": 15,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:20-22",
+      "path": "src/index.ts",
+      "start": 20,
+      "end": 22,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:25-28",
+      "path": "src/index.ts",
+      "start": 25,
+      "end": 28,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:29-32",
+      "path": "src/index.ts",
+      "start": 29,
+      "end": 32,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:35-38",
+      "path": "src/index.ts",
+      "start": 35,
+      "end": 38,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:40-43",
+      "path": "src/index.ts",
+      "start": 40,
+      "end": 43,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:47-54",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/index.ts:57-67",
+      "path": "src/index.ts",
+      "start": 57,
+      "end": 67,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/scripts/apply-patch.mjs:11-19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 11,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "packages/bundle/headless/src/index.ts:129",
+      "path": "packages/bundle/headless/src/index.ts",
+      "start": 129,
+      "end": 129,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "0757513d4543a0bfdca985180e1a66874fdab17a7d42adf1320e0e50f7b0053b"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+  "judge_input_sha256": "34294fc062b59a94240dc146924205ac38f97b340d5a19492bf4d0c0c6dc3e78"
+}

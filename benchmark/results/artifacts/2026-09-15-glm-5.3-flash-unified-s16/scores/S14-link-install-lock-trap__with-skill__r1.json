@@ -1,0 +1,61 @@
+{
+  "task": "S14-link-install-lock-trap",
+  "arm": "with-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T03:15:59.437Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan never copies repo files through the junction, renames the .old2 files back instead of deleting them, and repeatedly states both paths are one directory; copy advice appears only as the rejected bad example.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires a full host stop and restart before a hard refresh, explicitly stating a browser refresh is not a host stop and that tab closure released no lock; browser-only claims appear only as the rejected mistake.",
+      "total": 40
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

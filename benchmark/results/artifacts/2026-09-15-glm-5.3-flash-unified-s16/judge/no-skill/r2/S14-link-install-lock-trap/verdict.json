@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Quotes the introspection (LinkType Junction, Target E:\\dev\\dsh-attach-input) and the cordis.patch.yml link marker, concludes the repo tree is the installed copy so copying is never needed, and contrasts with a real copied dependency (empty LinkType)."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes both locks to the running dsh host (module cache plus open handles serving client.js), ties the EBUSY to copy-session.txt including the failed retry after tab closure, and treats browser caching as a separate HTTP-cache issue fixed by host restart plus cache-bypassing refresh, without conflating the two or overgeneralizing."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains renames through the junction hit the repo's own files and made the copy fail because the source was renamed away; recovery stops the host as a precaution, renames both .old2 files back to their original names preserving contents, runs node --check on both, then activates, without deleting or recreating files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the host, restart it, hard-refresh the browser to bypass cache, then verify the host route, fresh client.js fetch, and absence of load errors; explicitly notes syntax checks alone are not activation and browser-only action is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Provides a read-only pre-flight using Get-Item LinkType/Target and the cordis.patch.yml link marker, branches on linked vs copied installs, and explains the copy advice is a no-op through the junction, invites EBUSY-driven risky workarounds, and could detach the link."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan skips any copy for link installs and restores by renaming the .old2 files back to their original names; copying appears only as an explicitly rejected bad example, and the two paths are treated as the same directory throughout."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The report affirms the opposite: the host process must be fully stopped and restarted for the lock to release and host-side edits to take effect; it explicitly states closing browser tabs or refreshing alone does nothing for the host lock."
+    }
+  ]
+}

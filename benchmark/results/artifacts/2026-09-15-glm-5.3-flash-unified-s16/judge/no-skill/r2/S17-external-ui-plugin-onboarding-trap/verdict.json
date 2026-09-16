@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Correctly ties the top-level ESM import in client.js to the single concatenated classic-script combo failing compilation as a whole, so no loader entry registers and even the stock plugins vanish; reads the named typert-registry entry as the first awaited victim blamed at the await point while position 1:1 identifies the real bundle, and keeps ESM illegality scoped to classic scripts only."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "partial",
+      "reason": "Bisecting the profile insert rows and the full packaging contract (ModuleLoader.load({id, factory}) with package-name id, host React obtained via require inside the factory, module.exports apply plus inject declaration) are correct, but the cheap static check relies on node --check, which the sealed contract deems insufficient because it can accept ESM, and only a grep heuristic is offered instead of a vm.Script-style classic-goal parse."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "Correctly assigns slot declaration to the owning parent entry, bars declaration-owned kind/scope from registrants, and gives a concrete slots.inject-based fix, but shows inject(slot, component) directly rather than the required deferred callback form whose registration waits for the declaration, never addresses that apply ordering is not guaranteed, and treats a descriptor-style name as forbidden even though registrants may supply name/id/order."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in the boot log and restart notes: the combo is composed once per boot so file edits and hard refresh have no effect, each iteration needs a full stop/start with port release verified, taskkill /PID <pid> /T /F for orphaned Windows processes, then refresh and plugin-list verification, and EADDRINUSE is explained as the old process retaining the port rather than a plugin packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes concrete host-side prevention: per-bundle classic-script dry-run parsing at composition/combo-failure time with attribution to the owning plugin id, insert row, path and line:column, plus per-entry error re-attribution instead of blaming the first awaited entry; the authoring template and checklist cover the loader factory, host-provided React, apply/inject exports, cross-entry slot contribution rules, and host restart with Windows tree cleanup."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report's affirmative advice forbids top-level ESM in the classic combo, keeps and centers slots.inject for slot contribution, explicitly instructs registrants not to set kind/scope, and insists on full host restarts rather than HMR or browser refresh; no contradicting recommendation is endorsed."
+    }
+  ]
+}

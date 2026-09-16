@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Correctly reads the shipped bundle's baked PLUGIN_VERSION=0.3.6, cites release-log.md showing build at 16:22 before the 16:23 bump, explains the constant is a build-time snapshot not reread at runtime, shows compareSemver(v0.3.7 > 0.3.6) produces the self-badge, dismisses mirror/tag integrity using identical SHAs in git-tags.txt, gives the corrected bump-then-build order plus a pre-push grep gate, and keeps the 0.3.8 manifest distinct from the earlier build.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js exactly: PNG 200 proves the route is alive, SVG 404 'unsupported image type' shows the running whitelist lacks svg, while the disk lib whitelists it — pinning staleness to the running host process, not the release. Explains boot-time route registration in the host process vs browser re-fetch for the client, concludes a host restart is required, and correctly limits the hot-update exception to this host lifecycle.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in session-log-excerpt.txt: source file well-formed per XmlDocument, persisted model-visible payload NOT well-formed with the splice at the shared prefix 'stro' (lines 233-247 dropped, line 247's tail spliced), clean re-read showing non-determinism. Attributes corruption to upstream result-text assembly since the tool's delivered result was clean, declares the payload untrusted rendering input requiring validation, and argues editing the innocent well-formed file would introduce corruption, destroy evidence, and paper over the upstream bug.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the full ordered chain with per-level justification: disk-bytes asset route first, session payload only after DOMParser with parsererror rejection (failing validation falls through to the error state, never unchecked onward), sandboxed iframe without allow-scripts that explicitly preserves SMIL animations, and a visible explicit error state instead of a silent broken image. Appropriate as a plan with equivalent implementation detail.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding concatenated Zstandard frames in order via equivalent methods (plain zstd -d across frames, per-frame loop, stream_reader) without mandating magic bytes, records frame offsets to recover the exact stored splice text and compares it with the clean on-disk file to prove persistence-time corruption. Checklist covers bump before build, grepping the shipped constant, per-mirror tag SHA verification, plane-specific restart-and-reprobe runtime checks, and reporting the upstream bug.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice is consistent throughout: bump before build, mirror verification retained but explicitly not a fix for the baked constant, host restart required for the route, the clean SVG must not be edited, and every payload render path requires XML validation with a script-blocked sandbox fallback.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "5c668ede180d3e9eeabd1aeaf5a82d90f73b9bf1b6385057b124e9ee121559ec"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "84ebd605289bd27405c1c50cd4979e7c5c3eb8f0ebf688a3ba154a9f0749201a",
+  "judge_input_sha256": "6b5de56cc54da3512b178a8f2c385d423ffa933152be7fdc0536486dd2ef3a8f"
+}

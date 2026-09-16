@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry chunk returned 200 while sibling imports (src-*, pie-*) 404ed because specifiers resolve against the fetched chunk URL and siblings were never shipped; proposes the self-contained single-file bundle with inlineDynamicImports, plus shipping the full dist as an alternative.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Compares ci-note.md's uppercase E: LIB_DIR with the lowercase e: realpath and pins the case-sensitive startsWith on the post-realpath check; explains per-API casing (fileURLToPath preserves, realpathSync returns volume casing), why Linux and the Windows 11 laptop agreed byte-for-byte, and explicitly rejects the 'Windows paths are unreliable' folklore and any always-lowercases claim.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes path.relative-based containment rejecting empty, '..'-prefixed, and absolute results with platform-appropriate semantics (win32 case-insensitive, posix byte-exact), keeps realpathSync applied to both checks so resolved symlink escapes are caught, rejects unconditional lowercasing, and requires keeping the JavaScript MIME type for module imports; grounded in the quoted chunk-route.ts guard.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both the pane font handler and modal zoom handler firing on one Ctrl+wheel via the bubbling propagation path, assigns exclusive ownership to the modal (preventDefault plus stopPropagation on the modal element) so the pane handler stands down, and correctly notes a capture-phase/ancestor host listener cannot be undone by later stopPropagation, offering host-side target/composedPath filtering instead.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned checks with expected outcomes for all three incidents: build-output/pack/route round-trip tests ensuring the dependency set is deployable and no code-block fallback occurs, the literal case-differing Windows pair plus stubbed-realpath, traversal/encoding negatives and a platform matrix, and Playwright assertions that modal Ctrl+wheel zooms the diagram while pane font size is unchanged; symlink-escape refusal is only implicit via realpathSync retention but the matrix is otherwise complete.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final proposed fix strengthens containment (path.relative guard, realpathSync kept, traversal and escapes rejected); the unconditional-lowercasing shortcut is explicitly rejected, not endorsed.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "28307bfc1f8286fe480595a5b8530a3302e68d75c8dd07ca9b009940170aaa03"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "692d3ff3b63eb0f209687494b322befa20c89afb8c95f4eef3c1caad326a8ba4",
+  "judge_input_sha256": "23f85084455300fd128111f764a34d8dc18d2b98e659d3fa37855a713f7a531e"
+}

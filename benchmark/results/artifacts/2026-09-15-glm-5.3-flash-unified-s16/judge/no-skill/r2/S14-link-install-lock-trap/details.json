@@ -1,0 +1,70 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Quotes the introspection (LinkType Junction, Target E:\\dev\\dsh-attach-input) and the cordis.patch.yml link marker, concludes the repo tree is the installed copy so copying is never needed, and contrasts with a real copied dependency (empty LinkType).",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes both locks to the running dsh host (module cache plus open handles serving client.js), ties the EBUSY to copy-session.txt including the failed retry after tab closure, and treats browser caching as a separate HTTP-cache issue fixed by host restart plus cache-bypassing refresh, without conflating the two or overgeneralizing.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains renames through the junction hit the repo's own files and made the copy fail because the source was renamed away; recovery stops the host as a precaution, renames both .old2 files back to their original names preserving contents, runs node --check on both, then activates, without deleting or recreating files.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the host, restart it, hard-refresh the browser to bypass cache, then verify the host route, fresh client.js fetch, and absence of load errors; explicitly notes syntax checks alone are not activation and browser-only action is insufficient.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Provides a read-only pre-flight using Get-Item LinkType/Target and the cordis.patch.yml link marker, branches on linked vs copied installs, and explains the copy advice is a no-op through the junction, invites EBUSY-driven risky workarounds, and could detach the link.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan skips any copy for link installs and restores by renaming the .old2 files back to their original names; copying appears only as an explicitly rejected bad example, and the two paths are treated as the same directory throughout.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The report affirms the opposite: the host process must be fully stopped and restarted for the lock to release and host-side edits to take effect; it explicitly states closing browser tabs or refreshing alone does nothing for the host lock.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "29d20c880f979a1c2bba20c5d12f01ef7b31bf96eabf38bcf3847c9cb9d7c7d2"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "992a5dece3a1a15cfaff888e0cccd344ac0ef33ab7b4a6adffe5a1e794290f61",
+  "judge_input_sha256": "565a1d5c5645816f59f52f2928cd80129cac297bf58051a0eadda02c42903db9"
+}

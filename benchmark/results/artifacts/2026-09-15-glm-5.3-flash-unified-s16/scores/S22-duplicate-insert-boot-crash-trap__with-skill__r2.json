@@ -1,0 +1,55 @@
+{
+  "task": "S22-duplicate-insert-boot-crash-trap",
+  "arm": "with-skill",
+  "repeat": 2,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T04:07:59.124Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is to delete the profile-side duplicate block; the retain-as-redundancy comment is quoted only to be rejected as the trap, silent merging is explicitly denied (fatal, not last-wins), and plugin-side fixes are explicitly ruled out, so no affirmative bad advice appears.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

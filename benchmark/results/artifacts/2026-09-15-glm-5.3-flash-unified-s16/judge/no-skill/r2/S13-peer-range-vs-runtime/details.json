@@ -1,0 +1,73 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates the .events reads in plugin-source-excerpt.js (lines 734, 6685, 657, 42 references), ties the 'events is not iterable' failure in crash-stack.txt to iterating undefined reads of the removed property, and cites the changelog for removal at 0.1.2-alpha.4 with seq/eventAt()/snapshotEvents() as replacements.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt to show alpha.5 falls inside ^0.1.2-alpha.2 via same-base prerelease ordering, and explains npm's check is a static metadata comparison of declared versions that never inspects code; correctly frames the peer declaration as an author's claim of intent, not verified testing.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives genuinely distinct classes: API removal/rename (the Session.events case) and signature/return-shape/semantics change including sync-to-async and the SessionSeq/SessionLogOffset strong-typing split, plus an additional behavioral-changes class.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires real smoke testing against the concrete target version plus a matrix and API-surface tests, and gives an actionable policy: narrow the peer range to exclude alpha.4+, notes engines is still static, and provides a correct feature-detection guard with both old and new code paths.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives a concrete pre-install investigation: npm pack the plugin without installing, read host changelogs within the range for the alpha.4 Session.events removal, and grep the unpacked code for .events, tied explicitly to this incident's compatibility boundary.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's final conclusion is the opposite claim: it explicitly states a silent npm install is not a compatibility verdict and affirms the documented Session.events removal at alpha.4.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "channel.js:623",
+      "path": "channel.js",
+      "start": 623,
+      "end": 623,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "f5dbcb29a8b077d04a250daa72e3209e39188d01dbf6c95fae0a5354d49f97ff"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "c88da29da8f9034a57645a0a81b2adb050ba1eeb870279ca8c6a80b57a8b1275",
+  "judge_input_sha256": "92318ad0e8b0d22ad92c98d6954fbd6693d699527ee4f0046235d5291f035bf0"
+}

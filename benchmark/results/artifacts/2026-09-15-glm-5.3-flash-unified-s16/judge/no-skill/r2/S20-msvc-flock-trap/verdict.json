@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes the failure to fs-ext@2.1.1 pulled by @deepseek-ai/dsh-session-persistence-jsonl, whose node-gyp configure build install script fails at Visual Studio/MSVC discovery, grounded in install-error.log and manifest-excerpt.json rather than blaming pnpm or the network."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Grounds the statically imported top-level flock in lease-excerpt.md and explains that with scripts skipped the unbuilt binding.node leaves the entry unloadable, moving the crash from install to boot, so --ignore-scripts cannot meet the goal."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Uses both excerpts to show Windows locks via acquireLockHandleWin32 named kernel semaphores with no flock(2) and no lock file, making fs-ext's flock dead code on Windows, while concluding POSIX must keep the real flock and Windows must keep the semaphore path."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the node-pty patchedDependencies precedent: a win32-guarded install script skips node-gyp, the entry gains an import-safe callable pure-JS stub while non-Windows keeps the native build, the patch is registered in pnpm-workspace.yaml, and reinstall, module-load, and service-boot checks are proposed."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly honors the no-Visual-Studio constraint and keeps all changes in the repository-managed patch mechanism, explicitly rejecting upstream dependency edits while correctly treating the local pnpm patch as allowed."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "partial",
+      "reason": "Connects the right card content (Windows fs-ext node-gyp install blocker fixed by a repo patch) to this failure, but cites the invented slug DSH-0.1.3-A1-msvc-flock-trap instead of the full correct id DSH-0.1.3-A1-03."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan explicitly avoids installing Visual Studio and makes the Windows build a no-op; VS is only mentioned as the missing toolchain diagnosis and as a rejected path."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as insufficient and its plan both skips the build and makes the statically imported entry loadable via the stub."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses only the repository-managed patchedDependencies mechanism and explicitly lists upstream edits and dynamic-import refactors as forbidden rejected alternatives."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking stays on the named semaphore and POSIX keeps real flock; the win32-only throwing stub never weakens actual write ownership on either platform."
+    }
+  ]
+}

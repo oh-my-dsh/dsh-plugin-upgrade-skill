@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "unified-targeted-ai-review-v1",
+  "sourceCommit": "e1bd71ca263f25aa6d8ea9dec24d186e90ae2927",
+  "reviewer": "Codex assistant; independent of original GLM judge, not human review",
+  "blinded": false,
+  "selection": "Purposive: S1 r1 both arms (largest gain); S17 no-skill r1 (slot failure); S11 with-skill r1 and S18 with-skill r2 (negative-task answers). Prior scores/reasons had been seen; no blind or representative-sample claim.",
+  "scope": "Five complete reports; 33 rubric decisions. Original scores retained. No solver or API judge reruns.",
+  "cases": [
+    {
+      "task": "S1-static-scan",
+      "arm": "no-skill",
+      "repeat": 1,
+      "report": "reports/no-skill/r1/S1-static-scan/report.md",
+      "reportSha256": "032f4cc064b2bf19260e8e9277fef19fa3cbfb0fd87b825072de1ad18afd002e",
+      "packetSha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+      "originalScore": 55,
+      "reviewScore": 55.0,
+      "decisions": [
+        {
+          "id": "source-patch",
+          "verdict": "pass",
+          "reason": "Identifies the patch declaration, target and applier separately and the SessionView coupling; invented schema-change claims are not credited.",
+          "evidenceLine": 29,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "events",
+          "verdict": "partial",
+          "reason": "Identifies producer/consumer and correctly keeps the restored marker, but does not establish omission-safe semantics or required-event limits.",
+          "evidenceLine": 62,
+          "points": 10,
+          "awarded": 5.0
+        },
+        {
+          "id": "host-services",
+          "verdict": "partial",
+          "reason": "Identifies both apiProxy calls but a generic public facade does not establish Host injection versus Web Client Remote.",
+          "evidenceLine": 87,
+          "points": 10,
+          "awarded": 5.0
+        },
+        {
+          "id": "host-path",
+          "verdict": "pass",
+          "reason": "Identifies the hardcoded profile path and proposes Host-provided resolution; does not assert that --profile is new.",
+          "evidenceLine": 110,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "ui",
+          "verdict": "partial",
+          "reason": "Locates import and command but invents command/constructor changes instead of establishing the supported owner/seam.",
+          "evidenceLine": 131,
+          "points": 10,
+          "awarded": 5.0
+        },
+        {
+          "id": "channel",
+          "verdict": "pass",
+          "reason": "Identifies dormant unauthenticated loopback listener and its separation from Host Gateway auth.",
+          "evidenceLine": 160,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "subprocess",
+          "verdict": "partial",
+          "reason": "Finds both stdout JSON parsers and final text, but omits stderr and mislabels this as a new output-contract change.",
+          "evidenceLine": 187,
+          "points": 10,
+          "awarded": 5.0
+        },
+        {
+          "id": "mapping",
+          "verdict": "fail",
+          "reason": "Invents touchpoint-based card IDs and meanings; this is not substantively correct incomplete mapping.",
+          "evidenceLine": 25,
+          "points": 20,
+          "awarded": 0
+        },
+        {
+          "id": "limits",
+          "verdict": "partial",
+          "reason": "All seven categories and static limits are covered; target build/typecheck, isolated boot and functional-path validation are absent.",
+          "evidenceLine": 231,
+          "points": 10,
+          "awarded": 5.0
+        }
+      ],
+      "caps": []
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "with-skill",
+      "repeat": 1,
+      "report": "reports/with-skill/r1/S1-static-scan/report.md",
+      "reportSha256": "49d7e892d0511bfff8f61995f6b3ec8471ac2c11558ef184c6041b2de73dd5f3",
+      "packetSha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+      "originalScore": 100,
+      "reviewScore": 100,
+      "decisions": [
+        {
+          "id": "source-patch",
+          "verdict": "pass",
+          "reason": "Locates composition-attached source patch, target and applier; explicitly distinguishes filename from actual patch surface.",
+          "evidenceLine": 29,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "events",
+          "verdict": "pass",
+          "reason": "Explains removal/restoration, omission-safe informational events and the Session.append limitation, with producer and observer locations.",
+          "evidenceLine": 39,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "host-services",
+          "verdict": "pass",
+          "reason": "Distinguishes host domain injection from client Remote and names llm/listProviders without prescribing host remote injection.",
+          "evidenceLine": 51,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "host-path",
+          "verdict": "pass",
+          "reason": "Locates the fixed path and runtime DSH_HOME/profile replacement.",
+          "evidenceLine": 62,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "ui",
+          "verdict": "pass",
+          "reason": "Locates private import and command; requires exact-tag public owner/seam checks without guessing replacements.",
+          "evidenceLine": 69,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "channel",
+          "verdict": "pass",
+          "reason": "Locates the raw loopback server and explicitly requires auth wiring distinct from Host-managed channels.",
+          "evidenceLine": 76,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "subprocess",
+          "verdict": "pass",
+          "reason": "Locates both calls/parsers, says stdout was already plain final text, and distinguishes stderr/exit status.",
+          "evidenceLine": 83,
+          "points": 10,
+          "awarded": 10
+        },
+        {
+          "id": "mapping",
+          "verdict": "pass",
+          "reason": "Maps actual sites to all mandatory card IDs, including the folded A1-02/A2-01 pair.",
+          "evidenceLine": 13,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "limits",
+          "verdict": "pass",
+          "reason": "Accounts for all seven hits and static limits; proposes build/typecheck, isolated cold boot and functional-path checks.",
+          "evidenceLine": 133,
+          "points": 10,
+          "awarded": 10
+        }
+      ],
+      "caps": []
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "report": "reports/no-skill/r1/S17-external-ui-plugin-onboarding-trap/report.md",
+      "reportSha256": "567b73e4598c4a69254d61e17ed216af33aa392e74ceda83e9f7da3f6c02ad6f",
+      "packetSha256": "c64101e573c8a79aa969c4d1a9a43b60cbdd5eed3a621d1b811f5f997de2884c",
+      "originalScore": 80,
+      "reviewScore": 80.0,
+      "decisions": [
+        {
+          "id": "whole-combo-attribution",
+          "verdict": "pass",
+          "reason": "Links the classic combo, top-level import and parse error to zero registrations and identifies the named stock plugin as the awaited victim; context limits the broad ESM wording.",
+          "evidenceLine": 11,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "diagnosis-and-packaging",
+          "verdict": "pass",
+          "reason": "Gives insert-row bisection, a script-goal parse, loader factory/package identity and host React; prose explicitly requires exports even though the illustrative shell elides their assignment.",
+          "evidenceLine": 61,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "cross-entry-slot-registration",
+          "verdict": "partial",
+          "reason": "Owner and descriptor fields are discussed, but the shown inject({descriptor}, Component) is not the required deferred inject(name, callback) and ordering is unexplained.",
+          "evidenceLine": 157,
+          "points": 20,
+          "awarded": 10.0
+        },
+        {
+          "id": "boot-restart-discipline",
+          "verdict": "pass",
+          "reason": "Boot snapshot, restart, Windows process-tree cleanup and EADDRINUSE are grounded in the logs.",
+          "evidenceLine": 181,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "host-and-author-prevention",
+          "verdict": "partial",
+          "reason": "Pre-validation and culprit isolation are substantive, but the author checklist repeats the unsupported slot form and lacks deferred registration.",
+          "evidenceLine": 212,
+          "points": 20,
+          "awarded": 10.0
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-operational-advice",
+          "triggered": false,
+          "reason": "No affirmative advice meeting the explicit cap trigger; incomplete or erroneous details are assessed under the criteria."
+        }
+      ]
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "report": "reports/with-skill/r1/S11-mermaid-lazyload-trap/report.md",
+      "reportSha256": "fbd79b7325825107869b1c1fda520cd1a6c619b5f6cca6b37fdc8b7d8f4c4b5f",
+      "packetSha256": "692d3ff3b63eb0f209687494b322befa20c89afb8c95f4eef3c1caad326a8ba4",
+      "originalScore": 90,
+      "reviewScore": 80.0,
+      "decisions": [
+        {
+          "id": "split-chunk-attribution",
+          "verdict": "pass",
+          "reason": "Explains missing sibling chunks, URL-relative resolution, whole graph failure and complete single-file or all-chunk deployment.",
+          "evidenceLine": 21,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "windows-containment-attribution",
+          "verdict": "pass",
+          "reason": "Uses the E:/e: evidence and explains the case-sensitive comparison and control systems; does not say realpath always lowercases.",
+          "evidenceLine": 62,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "safe-route-fix",
+          "verdict": "partial",
+          "reason": "The proposed helper accepts rel === \"..\" because it rejects only \"..\" plus separator and absolute paths; confirmed on posix and win32. It also leaves the base uncanonicalized. Realpath, MIME and other traversal checks merit partial credit. This is a helper correctness counterexample, not proof that the full route serves a parent directory.",
+          "evidenceLine": 111,
+          "points": 20,
+          "awarded": 10.0
+        },
+        {
+          "id": "modal-event-ownership",
+          "verdict": "pass",
+          "reason": "Includes modal cancellation plus pane target/composedPath exclusion, which supplies arbitration even for an ancestor listener; modal stopping alone would not suffice.",
+          "evidenceLine": 151,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "incident-regressions",
+          "verdict": "partial",
+          "reason": "Pack, serving and gesture matrices are meaningful, but no planned import-failure check asserts preservation of the code-block fallback.",
+          "evidenceLine": 180,
+          "points": 20,
+          "awarded": 10.0
+        }
+      ],
+      "caps": [
+        {
+          "id": "unsafe-containment",
+          "triggered": false,
+          "reason": "No affirmative advice meeting the explicit cap trigger; incomplete or erroneous details are assessed under the criteria."
+        }
+      ]
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "report": "reports/with-skill/r2/S18-terminal-sprite-render-trap/report.md",
+      "reportSha256": "91e0e5e8ccd4fbbc311495c473e22266c80bda912ea379e43548e636b43a5742",
+      "packetSha256": "953c5bb48270513f4fbe73e1dedd06429e81b01d1a377cde1fb0c3b3404f2b1a",
+      "originalScore": 90,
+      "reviewScore": 90.0,
+      "decisions": [
+        {
+          "id": "half-cell-background",
+          "verdict": "pass",
+          "reason": "Identifies both half-filled branches and sticky background; gives per-cell SGR 49 rather than row-end-only reset.",
+          "evidenceLine": 15,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-clearing",
+          "verdict": "pass",
+          "reason": "Explains renderer and downstream trimming; primary fix RESET+EL plus previous-bound erasure is an explicit clearing alternative. Padding alone would not suffice.",
+          "evidenceLine": 83,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-data-integrity",
+          "verdict": "pass",
+          "reason": "Uses tail2 and 23 differing cells, distinguishes drift from rendering, and proposes source-art-backed full-frame checks for all frames.",
+          "evidenceLine": 126,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "timer-liveness",
+          "verdict": "partial",
+          "reason": "Correctly diagnoses referenced rearming timers and mounts without unmount; proposes teardown instead of unref on every scheduled handle, missing the specified liveness contract.",
+          "evidenceLine": 162,
+          "points": 20,
+          "awarded": 10.0
+        },
+        {
+          "id": "renderer-and-rollout-prevention",
+          "verdict": "pass",
+          "reason": "Checklist covers background, clearing, SGR and source-backed frames; audits mounting hosts and proposes actual process-exit regression.",
+          "evidenceLine": 202,
+          "points": 20,
+          "awarded": 20
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-render-advice",
+          "triggered": false,
+          "reason": "No affirmative advice meeting the explicit cap trigger; incomplete or erroneous details are assessed under the criteria."
+        }
+      ]
+    }
+  ]
+}

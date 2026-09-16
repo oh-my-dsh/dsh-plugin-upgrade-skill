@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report identifies both declarations of id workspace-files (bundle patch L110-111 and the manual profile block, quoting both inserts), locates rejection at EntryGroup.update via Include._apply during include/compose per the crash stack, argues duplicate insert is fatal with no merge semantics rather than last-write-wins, and its fatal classification plus delete prescription rejects the profile comment's keep-as-redundant advice."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes all three operations: config-by-id override safe, insert of a genuinely unprovided id safe (illustrated by dsh-file-trace/dsh-profiles rows), insert of an already bundle-shipped id fatal. Classifies the maintainer's row as the third case, grounded in the web-app excerpt's workspace-files row matching the crash-log id."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting exactly the manual comment-plus-insert block from the profile's cordis.patch.yml, explicitly preserves the bundle's row and the unrelated external plugin rows, and states any config adjustment must use config-by-id override rather than a second insert; no renaming or bundle deletion proposed."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "States the crash is a composition-apply failure before any plugin code loads, so no plugin-side change can remove the duplicate id, and the residual follow-up keeps the original file-resource read failure separate, still unverified and needing attribution after the boot is restored."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping the installed tree and dumping the composed config for the id before inserting, distinguishing config override from insert, and proposes a boot diagnostic naming workspace-files with file:line of both declarations plus a remedy to delete the profile insert, blaming the profile author and even suggesting a preflight lint."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice deletes the duplicate and calls duplicate inserts fatal with no silent merge; plugin-side fixes are explicitly rejected. The profile comment appears only inside the delete block being removed, which is quotation, not endorsement."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "The report explicitly separates the two projections: clipboardText/InputState.draft where chips expand to their clipboard form and Occurrence.offset/length live, versus detectText where each chip is one U+FFFC and which insertReference/consumeToken splice, grounding this in the contract types and the facade's detectText.slice and $replaceDetectSpanWith* calls; it also notes plain text and the separating space count normally, so a chip-free document makes the spaces coincide.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "It pins snapshot.draft.length in add() as the clipboard-space span sent to insertReference, explains paste #1 succeeds only because 0 is valid in both spaces on an empty composer, and paste #2 sends 29 against a 2-character detect document so the splice fails (revision CAS passes due to re-snapshot), turning the false return into the changed-composer toast; it explicitly rejects a real concurrent edit and derives the first-works/later-fails signature from the projections diverging by length-1 after the first chip.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "It traces remove() passing clipboard-space occurrence.offset/length as a [0,28) span to consumeToken's detect-space guard, notes the false return is never inspected and records.delete runs unconditionally, so the chip stays while the renderer's record===undefined branch prints 'unavailable'; it ties both symptoms to the same coordinate mismatch rather than an upload failure, and flags the ?? 1 default as a detect-space misread.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "It derives detectPos(p) = p − Σ(o.length − 1) from the host sources and applies concrete code at both call sites: insertion at draft end reduces over all occurrences (29−27=2 checked against the capture), and removal maps occurrence.offset then uses a one-detect-character span (end = start + 1); both spans keep draftRev, records are retired only after a true consumption result (early return keeps the record on false), and the insert path keeps its transactional cleanup.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "The plan asserts two successive pastes with both chips present (occurrences, records, draft and detect text), then removal steps where a chip with preceding chips is deleted and composer occurrence, dock chip and record disappear together while the other chip's label is unchanged, plus valid extras: declined-consumption bookkeeping, last-chip/empty-again and reset-by-removal variants, order independence, text-adjacent removal, and unit invariants on span bounds and return-value checks.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:29–31",
+      "path": "plugin-client.js",
+      "start": 29,
+      "end": 31,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:49–58",
+      "path": "plugin-client.js",
+      "start": 49,
+      "end": 58,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "24a514e2d8eed0a7766fd3451e74595f9ae84d10378e9c64f13b41980e37ff7d"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eca3984f1c94f3ff5770c686ae84e515e2364834e15b4ebcd21467077efb85a3",
+  "judge_input_sha256": "d4b4a325759dea04ce13dea20c807f75793db7e128c7e54801115bb7204324e6"
+}
