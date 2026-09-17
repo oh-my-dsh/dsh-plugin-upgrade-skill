@@ -108,3 +108,7 @@ Harbor trial durations and are additive across concurrent jobs.
 - No benchmark task, grader, fixture, skill or formal-run flag was modified by this analysis.
 - Numbers for a subgroup are only comparable within the same paired run and the same source commit
   (`74af446`).
+- A separate deterministic analysis of this same run quantifies the timeout/termination taxonomy and
+  the missing-score sensitivity (including the single unscored trial): see
+  [`qwen-paired-sensitivity.json`](./qwen-paired-sensitivity.json) and
+  `benchmark/scripts/analyze-qwen-paired-sensitivity.mjs`. It changes none of the numbers above.

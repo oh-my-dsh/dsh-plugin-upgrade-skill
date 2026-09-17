@@ -1,0 +1,2543 @@
+{
+  "schemaVersion": 1,
+  "id": "qwen-paired-sensitivity-v1",
+  "analysisKind": "derived-secondary-analysis",
+  "modelCalls": 0,
+  "source": {
+    "report": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.json",
+    "companionCsv": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.csv",
+    "reportMarkdown": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.md",
+    "sourceHashes": [
+      {
+        "path": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.json",
+        "sha256": "d50def90658bba061edd167565cf78ba7e1d9fbbb9aa3e0bcf5c10ebed0a99cd"
+      },
+      {
+        "path": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.csv",
+        "sha256": "bbe4c6f8369df24c62f8a83a943db49a59e3d793a752325c6a49f2d884504fd6"
+      }
+    ],
+    "sourceHashDigest": "de8410e112cd6d4ec2757508327ca0d447f253641450e2875f96437a9005b813",
+    "sourceProtocol": {
+      "agent": "codex CLI 0.153.4",
+      "model": "qwen3.8-27b (local, BF16)",
+      "serving": "vLLM 0.28.0, max_model_len=262144, 1x NVIDIA H20 96GB",
+      "harbor": "0.22.0",
+      "reasoningEffort": "medium",
+      "attemptsPerCondition": 3,
+      "taskSourceSnapshot": "74af446 (anti-cheat stripped, CRLF normalized, digest FROM rewritten)"
+    }
+  },
+  "claimBoundary": {
+    "allowed": "the historical Qwen point is negative descriptively, statistically inconclusive, and its interpretation is complicated by timeout/termination and missingness behaviour",
+    "forbidden": [
+      "weak models are harmed by skills",
+      "timeouts caused the negative result",
+      "skill caused context overload",
+      "removing timeouts proves a positive effect"
+    ],
+    "notes": [
+      "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error).",
+      "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate.",
+      "A timeout is a TERMINATION STATE, not automatically a functional failure: trials that hit AgentTimeoutError still produced scored and even full-mark outcomes, so timeout counts and score outcomes are reported separately and never conflated.",
+      "POST-HOC DESCRIPTIVE ONLY, SELECTION-BIASED, NOT AUTHORITATIVE. Excluding timed-out trials conditions on a termination state that is itself associated with the arm (the with-skill arm timed out more often), so the surviving trials are not a random or balanced subsample. This number is a disclosure of sensitivity, it does not identify a cause, and it NEVER replaces the main task-level estimate."
+    ]
+  },
+  "completeness": {
+    "tasks": 56,
+    "arms": 2,
+    "attemptsPerArm": 3,
+    "intendedTrialSlots": 336,
+    "expectedTrialSlots": 336,
+    "scoredTrials": 335,
+    "unscoredTrials": 1,
+    "complete": true
+  },
+  "missingScores": {
+    "count": 1,
+    "detectedFrom": "per_task[].<arm>.rewards entries that are null; the count is recomputed and never hardcoded",
+    "slots": [
+      {
+        "task": "H8-fire-drill",
+        "arm": "no-skill",
+        "trial": 2,
+        "exception": "AgentTimeoutError"
+      }
+    ],
+    "byArm": {
+      "with-skill": 0,
+      "no-skill": 1
+    },
+    "byTask": {
+      "H8-fire-drill": 1
+    },
+    "legalRange": [
+      0,
+      1
+    ],
+    "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate.",
+    "boundsNote": "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error)."
+  },
+  "arms": {
+    "with-skill": {
+      "slots": 168,
+      "scoredTrials": 168,
+      "unscoredTrials": 0,
+      "timeoutTrials": 108,
+      "timeoutScoredTrials": 108,
+      "timeoutScoredFullCount": 18,
+      "timeoutScoredPartialCount": 9,
+      "timeoutScoredZeroCount": 81,
+      "timeoutUnscoredCount": 0,
+      "rewardSum": 69.89,
+      "rewardMeanScored": 0.416012,
+      "rewardFullCount": 55,
+      "rewardZeroCount": 88,
+      "rewardHistogram": {
+        "values": [
+          {
+            "reward": 0,
+            "count": 88
+          },
+          {
+            "reward": 0.1,
+            "count": 3
+          },
+          {
+            "reward": 0.25,
+            "count": 1
+          },
+          {
+            "reward": 0.4,
+            "count": 3
+          },
+          {
+            "reward": 0.5,
+            "count": 5
+          },
+          {
+            "reward": 0.6,
+            "count": 1
+          },
+          {
+            "reward": 0.75,
+            "count": 3
+          },
+          {
+            "reward": 0.8,
+            "count": 4
+          },
+          {
+            "reward": 0.9,
+            "count": 4
+          },
+          {
+            "reward": 0.99,
+            "count": 1
+          },
+          {
+            "reward": 1,
+            "count": 55
+          }
+        ],
+        "distinct": 11,
+        "total": 168
+      },
+      "buckets": [
+        {
+          "key": "no_timeout_scored",
+          "label": "scored, no timeout",
+          "count": 60
+        },
+        {
+          "key": "timeout_full",
+          "label": "scored, timeout, full reward",
+          "count": 18
+        },
+        {
+          "key": "timeout_partial",
+          "label": "scored, timeout, partial reward",
+          "count": 9
+        },
+        {
+          "key": "timeout_zero",
+          "label": "scored, timeout, zero reward",
+          "count": 81
+        },
+        {
+          "key": "timeout_unscored",
+          "label": "unscored, timeout",
+          "count": 0
+        },
+        {
+          "key": "unscored",
+          "label": "unscored, no timeout recorded",
+          "count": 0
+        }
+      ],
+      "exceptions": {
+        "AgentTimeoutError": 108,
+        "NetworkConnectionError": 5,
+        "NonZeroAgentExitCodeError": 1,
+        "ValidationError": 1
+      },
+      "infraScoredNonzero": [],
+      "trialSecondsSum": 110458.753,
+      "trialSecondsCount": 168,
+      "declaredTrials": 168,
+      "declaredRewardSum": 69.89,
+      "declaredMean": 0.416012,
+      "inputTokens": 409819928,
+      "cachedInputTokens": 400036000,
+      "outputTokens": 3988952,
+      "tokenRows": 56,
+      "summedSecondsFromCsv": 110458.755,
+      "secondsRows": 56,
+      "declaredInputTokens": 409819928,
+      "declaredOutputTokens": 3988952,
+      "declaredTimeoutTrials": 108,
+      "declaredSummedNativeTrialSeconds": 110458.754
+    },
+    "no-skill": {
+      "slots": 168,
+      "scoredTrials": 167,
+      "unscoredTrials": 1,
+      "timeoutTrials": 86,
+      "timeoutScoredTrials": 85,
+      "timeoutScoredFullCount": 12,
+      "timeoutScoredPartialCount": 8,
+      "timeoutScoredZeroCount": 65,
+      "timeoutUnscoredCount": 1,
+      "rewardSum": 75.05,
+      "rewardMeanScored": 0.449401,
+      "rewardFullCount": 59,
+      "rewardZeroCount": 77,
+      "rewardHistogram": {
+        "values": [
+          {
+            "reward": 0,
+            "count": 77
+          },
+          {
+            "reward": 0.1,
+            "count": 2
+          },
+          {
+            "reward": 0.15,
+            "count": 1
+          },
+          {
+            "reward": 0.25,
+            "count": 4
+          },
+          {
+            "reward": 0.3,
+            "count": 3
+          },
+          {
+            "reward": 0.4,
+            "count": 6
+          },
+          {
+            "reward": 0.5,
+            "count": 3
+          },
+          {
+            "reward": 0.6,
+            "count": 1
+          },
+          {
+            "reward": 0.8,
+            "count": 6
+          },
+          {
+            "reward": 0.9,
+            "count": 5
+          },
+          {
+            "reward": 1,
+            "count": 59
+          }
+        ],
+        "distinct": 11,
+        "total": 167
+      },
+      "buckets": [
+        {
+          "key": "no_timeout_scored",
+          "label": "scored, no timeout",
+          "count": 82
+        },
+        {
+          "key": "timeout_full",
+          "label": "scored, timeout, full reward",
+          "count": 12
+        },
+        {
+          "key": "timeout_partial",
+          "label": "scored, timeout, partial reward",
+          "count": 8
+        },
+        {
+          "key": "timeout_zero",
+          "label": "scored, timeout, zero reward",
+          "count": 65
+        },
+        {
+          "key": "timeout_unscored",
+          "label": "unscored, timeout",
+          "count": 1
+        },
+        {
+          "key": "unscored",
+          "label": "unscored, no timeout recorded",
+          "count": 0
+        }
+      ],
+      "exceptions": {
+        "AgentTimeoutError": 86,
+        "ApiRateLimitError": 1,
+        "NetworkConnectionError": 4,
+        "NonZeroAgentExitCodeError": 2,
+        "ValidationError": 2
+      },
+      "infraScoredNonzero": [],
+      "trialSecondsSum": 104028.546,
+      "trialSecondsCount": 168,
+      "declaredTrials": 167,
+      "declaredRewardSum": 75.05,
+      "declaredMean": 0.449401,
+      "inputTokens": 339853493,
+      "cachedInputTokens": 332139248,
+      "outputTokens": 3940227,
+      "tokenRows": 56,
+      "summedSecondsFromCsv": 104028.541,
+      "secondsRows": 56,
+      "declaredInputTokens": 339853493,
+      "declaredOutputTokens": 3940227,
+      "declaredTimeoutTrials": 86,
+      "declaredSummedNativeTrialSeconds": 104028.541
+    }
+  },
+  "timeoutTaxonomy": {
+    "definition": "per-trial classification from the positionally aligned exceptions[] arrays; a timeout is exception === AgentTimeoutError, and the reward buckets apply only to scored trials, so the buckets are disjoint and exhaustive over the intended slots",
+    "timeoutStateNote": "A timeout is a TERMINATION STATE, not automatically a functional failure: trials that hit AgentTimeoutError still produced scored and even full-mark outcomes, so timeout counts and score outcomes are reported separately and never conflated.",
+    "buckets": [
+      {
+        "key": "no_timeout_scored",
+        "label": "scored, no timeout"
+      },
+      {
+        "key": "timeout_full",
+        "label": "scored, timeout, full reward"
+      },
+      {
+        "key": "timeout_partial",
+        "label": "scored, timeout, partial reward"
+      },
+      {
+        "key": "timeout_zero",
+        "label": "scored, timeout, zero reward"
+      },
+      {
+        "key": "timeout_unscored",
+        "label": "unscored, timeout"
+      },
+      {
+        "key": "unscored",
+        "label": "unscored, no timeout recorded"
+      }
+    ],
+    "perArm": {
+      "with-skill": {
+        "no_timeout_scored": 60,
+        "timeout_full": 18,
+        "timeout_partial": 9,
+        "timeout_zero": 81,
+        "timeout_unscored": 0,
+        "unscored": 0,
+        "rewardHistogram": {
+          "values": [
+            {
+              "reward": 0,
+              "count": 88
+            },
+            {
+              "reward": 0.1,
+              "count": 3
+            },
+            {
+              "reward": 0.25,
+              "count": 1
+            },
+            {
+              "reward": 0.4,
+              "count": 3
+            },
+            {
+              "reward": 0.5,
+              "count": 5
+            },
+            {
+              "reward": 0.6,
+              "count": 1
+            },
+            {
+              "reward": 0.75,
+              "count": 3
+            },
+            {
+              "reward": 0.8,
+              "count": 4
+            },
+            {
+              "reward": 0.9,
+              "count": 4
+            },
+            {
+              "reward": 0.99,
+              "count": 1
+            },
+            {
+              "reward": 1,
+              "count": 55
+            }
+          ],
+          "distinct": 11,
+          "total": 168
+        },
+        "exceptions": {
+          "AgentTimeoutError": 108,
+          "NetworkConnectionError": 5,
+          "NonZeroAgentExitCodeError": 1,
+          "ValidationError": 1
+        },
+        "timeoutScoredFullCount": 18,
+        "timeoutScoredPartialCount": 9,
+        "timeoutScoredZeroCount": 81,
+        "timeoutScoredTrials": 108,
+        "timeoutTrials": 108,
+        "timeoutUnscoredCount": 0,
+        "infraScoredNonzero": []
+      },
+      "no-skill": {
+        "no_timeout_scored": 82,
+        "timeout_full": 12,
+        "timeout_partial": 8,
+        "timeout_zero": 65,
+        "timeout_unscored": 1,
+        "unscored": 0,
+        "rewardHistogram": {
+          "values": [
+            {
+              "reward": 0,
+              "count": 77
+            },
+            {
+              "reward": 0.1,
+              "count": 2
+            },
+            {
+              "reward": 0.15,
+              "count": 1
+            },
+            {
+              "reward": 0.25,
+              "count": 4
+            },
+            {
+              "reward": 0.3,
+              "count": 3
+            },
+            {
+              "reward": 0.4,
+              "count": 6
+            },
+            {
+              "reward": 0.5,
+              "count": 3
+            },
+            {
+              "reward": 0.6,
+              "count": 1
+            },
+            {
+              "reward": 0.8,
+              "count": 6
+            },
+            {
+              "reward": 0.9,
+              "count": 5
+            },
+            {
+              "reward": 1,
+              "count": 59
+            }
+          ],
+          "distinct": 11,
+          "total": 167
+        },
+        "exceptions": {
+          "AgentTimeoutError": 86,
+          "ApiRateLimitError": 1,
+          "NetworkConnectionError": 4,
+          "NonZeroAgentExitCodeError": 2,
+          "ValidationError": 2
+        },
+        "timeoutScoredFullCount": 12,
+        "timeoutScoredPartialCount": 8,
+        "timeoutScoredZeroCount": 65,
+        "timeoutScoredTrials": 85,
+        "timeoutTrials": 86,
+        "timeoutUnscoredCount": 1,
+        "infraScoredNonzero": []
+      }
+    },
+    "combined": {
+      "timeoutTrials": 194,
+      "timeoutScoredFullCount": 30,
+      "timeoutScoredPartialCount": 17,
+      "timeoutScoredZeroCount": 146,
+      "timeoutScoredTrials": 193,
+      "timeoutUnscoredCount": 1,
+      "unscoredNoTimeoutCount": 0
+    }
+  },
+  "estimates": {
+    "main": {
+      "scale": "percentage points (reward × 100)",
+      "estimator": "task-level equal-weight mean paired effect: per task per arm the mean of the SCORED trial rewards, then the mean over tasks of (with-skill − no-skill), × 100; a missing reward is excluded, never replaced by 0",
+      "tasks": 56,
+      "tasksWithMissing": 1,
+      "missingSlots": 1,
+      "taskWeightPoints": 1.785714,
+      "meanSkill": 0.416012,
+      "meanNoSkill": 0.446726,
+      "deltaObserved": -3.071429,
+      "deltaLowerBound": -3.666667,
+      "deltaUpperBound": -3.071429,
+      "boundWidth": 0.595238,
+      "positiveTasks": 7,
+      "zeroTasks": 31,
+      "negativeTasks": 18,
+      "missingBoundsNote": "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error).",
+      "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate."
+    },
+    "mainAuthorityNote": "This is the authority view: all scored trials, reduced to per-task per-arm means and then to a task-level equal-weight mean paired effect. It is the same estimator as the paper's paired-effect table for this group.",
+    "postHocNonTimeoutOnly": {
+      "note": "POST-HOC DESCRIPTIVE ONLY, SELECTION-BIASED, NOT AUTHORITATIVE. Excluding timed-out trials conditions on a termination state that is itself associated with the arm (the with-skill arm timed out more often), so the surviving trials are not a random or balanced subsample. This number is a disclosure of sensitivity, it does not identify a cause, and it NEVER replaces the main task-level estimate.",
+      "trialLevelSelection": {
+        "label": "scored_trials_only",
+        "description": "every scored trial whose exception is not AgentTimeoutError, pooled without task weighting",
+        "trials": 142,
+        "droppedTimeoutTrials": 194,
+        "meanReward": 0.731268,
+        "score": 73.126761
+      },
+      "noTimeoutTasksOnly": {
+        "label": "no_timeout_tasks_only",
+        "description": "only tasks whose six trials (both arms) are all non-timeout and scored; task-level equal-weight mean paired effect",
+        "tasks": 14,
+        "excludedTasks": 42,
+        "excludedTaskIds": [
+          "H1-plane-trap",
+          "H12-remote-result-boundary-trap",
+          "H13-ghost-host-trap",
+          "H14-mineru-api",
+          "H15-locale-pack",
+          "H16-history-dock",
+          "H17-merge-calls",
+          "H18-blame-bubbles",
+          "H19-workspace-ya",
+          "H2-baseline-trap",
+          "H21-question-answerer-waterfall",
+          "H3-client-plane",
+          "H4-tsbuildinfo-trap",
+          "H5-runtime-export-drift",
+          "H6-remote-error-trap",
+          "H7-locale-trap",
+          "H8-fire-drill",
+          "M1-host-migration",
+          "M10-tools-tree",
+          "M11-sidebar-spur",
+          "M12-interpreters-card",
+          "M13-repository-plugins-removal",
+          "M2-optional-dep-trap",
+          "M3-session-projection",
+          "M4-peer-prerelease-range",
+          "M5-token-auth-smoke",
+          "M6-sleep-tool",
+          "M7-d399-overlay",
+          "M8-brand-text",
+          "M9-mcpanel",
+          "S1-static-scan",
+          "S10-paste-rename-and-version-chip",
+          "S11-mermaid-lazyload-trap",
+          "S13-peer-range-vs-runtime",
+          "S14-link-install-lock-trap",
+          "S15-slot-error-boundary-crash",
+          "S16-self-host-upgrade-trap",
+          "S17-external-ui-plugin-onboarding-trap",
+          "S2-negative-scan",
+          "S3-snapshot-migration",
+          "S8-release-routing-trap",
+          "S9-composer-coordinate-trap"
+        ],
+        "effect": 4.02381
+      },
+      "taskNoTimeoutTrials": {
+        "label": "task_no_timeout_trials",
+        "description": "per task, drop timed-out trials from each arm and average the remaining scored trials; unbalanced (arms keep different trial counts)",
+        "tasksWithBothArms": 28,
+        "tasksDropped": 28,
+        "droppedTaskIds": [
+          "H1-plane-trap",
+          "H14-mineru-api",
+          "H15-locale-pack",
+          "H16-history-dock",
+          "H17-merge-calls",
+          "H18-blame-bubbles",
+          "H19-workspace-ya",
+          "H21-question-answerer-waterfall",
+          "H3-client-plane",
+          "H5-runtime-export-drift",
+          "H7-locale-trap",
+          "H8-fire-drill",
+          "M10-tools-tree",
+          "M11-sidebar-spur",
+          "M12-interpreters-card",
+          "M6-sleep-tool",
+          "M7-d399-overlay",
+          "M8-brand-text",
+          "M9-mcpanel",
+          "S1-static-scan",
+          "S10-paste-rename-and-version-chip",
+          "S11-mermaid-lazyload-trap",
+          "S14-link-install-lock-trap",
+          "S15-slot-error-boundary-crash",
+          "S16-self-host-upgrade-trap",
+          "S17-external-ui-plugin-onboarding-trap",
+          "S2-negative-scan",
+          "S3-snapshot-migration"
+        ],
+        "effect": 9.303571
+      },
+      "perTask": [
+        {
+          "task": "H1-plane-trap",
+          "skillMean": null,
+          "noSkillMean": 1,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H10-browser-activation-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H11-dual-cohort-rpc",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H12-remote-result-boundary-trap",
+          "skillMean": 0.8,
+          "noSkillMean": 0.3,
+          "delta": 50,
+          "included": true
+        },
+        {
+          "task": "H13-ghost-host-trap",
+          "skillMean": 1,
+          "noSkillMean": 0.575,
+          "delta": 42.5,
+          "included": true
+        },
+        {
+          "task": "H14-mineru-api",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H15-locale-pack",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H16-history-dock",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H17-merge-calls",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H18-blame-bubbles",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H19-workspace-ya",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H2-baseline-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H20-session-events-ledger",
+          "skillMean": 0.996667,
+          "noSkillMean": 1,
+          "delta": -0.333333,
+          "included": true
+        },
+        {
+          "task": "H21-question-answerer-waterfall",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H22-dsh-data-agent-alpha2",
+          "skillMean": 0,
+          "noSkillMean": 0,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H23-storage-domain-version-compat-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H24-invalid-record-salvage-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "H25-session-seed-boundary-trap",
+          "skillMean": 0.8,
+          "noSkillMean": 0.766667,
+          "delta": 3.333333,
+          "included": true
+        },
+        {
+          "task": "H3-client-plane",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H4-tsbuildinfo-trap",
+          "skillMean": 1,
+          "noSkillMean": 0.65,
+          "delta": 35,
+          "included": true
+        },
+        {
+          "task": "H5-runtime-export-drift",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H6-remote-error-trap",
+          "skillMean": 0.75,
+          "noSkillMean": 0,
+          "delta": 75,
+          "included": true
+        },
+        {
+          "task": "H7-locale-trap",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H8-fire-drill",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "H9-dsh-web-alpha2",
+          "skillMean": 0,
+          "noSkillMean": 0,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M1-host-migration",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M10-tools-tree",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M11-sidebar-spur",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M12-interpreters-card",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M13-repository-plugins-removal",
+          "skillMean": 0.9,
+          "noSkillMean": 0.95,
+          "delta": -5,
+          "included": true
+        },
+        {
+          "task": "M14-service-renames-0812",
+          "skillMean": 0.933333,
+          "noSkillMean": 0.6,
+          "delta": 33.333333,
+          "included": true
+        },
+        {
+          "task": "M2-optional-dep-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M3-session-projection",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M4-peer-prerelease-range",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M5-token-auth-smoke",
+          "skillMean": 0,
+          "noSkillMean": 0,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "M6-sleep-tool",
+          "skillMean": null,
+          "noSkillMean": 0.4,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M7-d399-overlay",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M8-brand-text",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "M9-mcpanel",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S1-static-scan",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S10-paste-rename-and-version-chip",
+          "skillMean": null,
+          "noSkillMean": 1,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S11-mermaid-lazyload-trap",
+          "skillMean": null,
+          "noSkillMean": 0.8,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S12-global-upgrade-ebusy-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "S13-peer-range-vs-runtime",
+          "skillMean": 1,
+          "noSkillMean": 0.933333,
+          "delta": 6.666667,
+          "included": true
+        },
+        {
+          "task": "S14-link-install-lock-trap",
+          "skillMean": null,
+          "noSkillMean": 0.8,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S15-slot-error-boundary-crash",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S16-self-host-upgrade-trap",
+          "skillMean": null,
+          "noSkillMean": 0.8,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S17-external-ui-plugin-onboarding-trap",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S2-negative-scan",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S3-snapshot-migration",
+          "skillMean": null,
+          "noSkillMean": null,
+          "delta": null,
+          "included": false
+        },
+        {
+          "task": "S4-legacy-client-imports",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "S5-negative-naming",
+          "skillMean": 0.583333,
+          "noSkillMean": 0.333333,
+          "delta": 25,
+          "included": true
+        },
+        {
+          "task": "S6-corridor-net-state",
+          "skillMean": 0.233333,
+          "noSkillMean": 0.233333,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "S7-unpublished-cohort",
+          "skillMean": 0.283333,
+          "noSkillMean": 0.333333,
+          "delta": -5,
+          "included": true
+        },
+        {
+          "task": "S8-release-routing-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        },
+        {
+          "task": "S9-composer-coordinate-trap",
+          "skillMean": 1,
+          "noSkillMean": 1,
+          "delta": 0,
+          "included": true
+        }
+      ]
+    }
+  },
+  "sourceInconsistencies": {
+    "note": "Discrepancies observed between the source artifacts are reported, never silently resolved. The per-trial exceptions[] array is used as the machine-readable authority for the taxonomy because it is positionally aligned with rewards[] and seconds[].",
+    "items": [
+      {
+        "kind": "declared-trial-count-vs-reward-slots",
+        "arm": "no-skill",
+        "declared": 167,
+        "recomputed": 168,
+        "detail": "the report declares 167 no-skill trials but the per_task block carries 168 reward slots; the difference equals that arm's unscored slots (1)"
+      },
+      {
+        "kind": "unscored-trial-caveat",
+        "task": "H8-fire-drill",
+        "arm": "no-skill",
+        "trial": 2,
+        "recordedException": "AgentTimeoutError",
+        "terminationState": "timeout",
+        "detail": "the unscored slot is reported as an observed state and is never imputed; the report Markdown attributes this trial to a verifier timeout while the machine-readable exceptions array records AgentTimeoutError, so the bucket counts follow the array and the prose discrepancy is disclosed here"
+      }
+    ]
+  },
+  "taskInfluence": {
+    "method": "leave-one-task-out: recompute the task-level equal-weight mean paired effect with one task removed; influence = (full-sample effect − effect without the task) × number of tasks, i.e. the percentage-point contribution of that task to the all-task mean (positive = the task pulls the mean up). This is a descriptive stability diagnostic: removing a single task is not a substitution for an out-of-sample or causal estimate, and no task is excluded from the main estimate.",
+    "scope": "The most influential task is computed automatically; task names are never hardcoded and the estimate is never reported with a favourable task removed.",
+    "tasks": 56,
+    "fullSampleObserved": -3.071429,
+    "fullSampleLower": -3.666667,
+    "fullSampleUpper": -3.071429,
+    "looObserved": {
+      "min": -4.339394,
+      "max": -2.036364,
+      "range": 2.30303,
+      "excludedTaskAtMin": "H6-remote-error-trap",
+      "excludedTaskAtMax": "S14-link-install-lock-trap"
+    },
+    "looLower": {
+      "min": -4.945455,
+      "max": -2.642424,
+      "range": 2.303031
+    },
+    "looUpper": {
+      "min": -4.339394,
+      "max": -2.036364,
+      "range": 2.30303
+    },
+    "mostPositiveInfluence": {
+      "task": "H6-remote-error-trap",
+      "influenceObserved": 71.006061,
+      "effectWithoutObserved": -4.339394
+    },
+    "mostNegativeInfluence": {
+      "task": "S14-link-install-lock-trap",
+      "influenceObserved": -57.963636,
+      "effectWithoutObserved": -2.036364
+    },
+    "perTask": [
+      {
+        "task": "H1-plane-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H10-browser-activation-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H11-dual-cohort-rpc",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H12-remote-result-boundary-trap",
+        "deltaObserved": 26.666667,
+        "effectWithoutObserved": -3.612121,
+        "effectWithoutLower": -4.218182,
+        "effectWithoutUpper": -3.612121,
+        "influenceObserved": 30.278788,
+        "influenceLower": 30.884849,
+        "influenceUpper": 30.278788
+      },
+      {
+        "task": "H13-ghost-host-trap",
+        "deltaObserved": -5,
+        "effectWithoutObserved": -3.036364,
+        "effectWithoutLower": -3.642424,
+        "effectWithoutUpper": -3.036364,
+        "influenceObserved": -1.963636,
+        "influenceLower": -1.357576,
+        "influenceUpper": -1.963636
+      },
+      {
+        "task": "H14-mineru-api",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H15-locale-pack",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H16-history-dock",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H17-merge-calls",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H18-blame-bubbles",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H19-workspace-ya",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H2-baseline-trap",
+        "deltaObserved": -20,
+        "effectWithoutObserved": -2.763636,
+        "effectWithoutLower": -3.369697,
+        "effectWithoutUpper": -2.763636,
+        "influenceObserved": -17.236364,
+        "influenceLower": -16.630303,
+        "influenceUpper": -17.236364
+      },
+      {
+        "task": "H20-session-events-ledger",
+        "deltaObserved": -0.333333,
+        "effectWithoutObserved": -3.121212,
+        "effectWithoutLower": -3.727273,
+        "effectWithoutUpper": -3.121212,
+        "influenceObserved": 2.787879,
+        "influenceLower": 3.39394,
+        "influenceUpper": 2.787879
+      },
+      {
+        "task": "H21-question-answerer-waterfall",
+        "deltaObserved": -30,
+        "effectWithoutObserved": -2.581818,
+        "effectWithoutLower": -3.187879,
+        "effectWithoutUpper": -2.581818,
+        "influenceObserved": -27.418182,
+        "influenceLower": -26.812121,
+        "influenceUpper": -27.418182
+      },
+      {
+        "task": "H22-dsh-data-agent-alpha2",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H23-storage-domain-version-compat-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H24-invalid-record-salvage-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H25-session-seed-boundary-trap",
+        "deltaObserved": 3.333333,
+        "effectWithoutObserved": -3.187879,
+        "effectWithoutLower": -3.793939,
+        "effectWithoutUpper": -3.187879,
+        "influenceObserved": 6.521212,
+        "influenceLower": 7.127272,
+        "influenceUpper": 6.521212
+      },
+      {
+        "task": "H3-client-plane",
+        "deltaObserved": -33.333333,
+        "effectWithoutObserved": -2.521212,
+        "effectWithoutLower": -3.127273,
+        "effectWithoutUpper": -2.521212,
+        "influenceObserved": -30.812121,
+        "influenceLower": -30.20606,
+        "influenceUpper": -30.812121
+      },
+      {
+        "task": "H4-tsbuildinfo-trap",
+        "deltaObserved": -10,
+        "effectWithoutObserved": -2.945455,
+        "effectWithoutLower": -3.551515,
+        "effectWithoutUpper": -2.945455,
+        "influenceObserved": -7.054545,
+        "influenceLower": -6.448485,
+        "influenceUpper": -7.054545
+      },
+      {
+        "task": "H5-runtime-export-drift",
+        "deltaObserved": -13.333333,
+        "effectWithoutObserved": -2.884848,
+        "effectWithoutLower": -3.490909,
+        "effectWithoutUpper": -2.884848,
+        "influenceObserved": -10.448485,
+        "influenceLower": -9.842424,
+        "influenceUpper": -10.448485
+      },
+      {
+        "task": "H6-remote-error-trap",
+        "deltaObserved": 66.666667,
+        "effectWithoutObserved": -4.339394,
+        "effectWithoutLower": -4.945455,
+        "effectWithoutUpper": -4.339394,
+        "influenceObserved": 71.006061,
+        "influenceLower": 71.612122,
+        "influenceUpper": 71.006061
+      },
+      {
+        "task": "H7-locale-trap",
+        "deltaObserved": -13.333333,
+        "effectWithoutObserved": -2.884848,
+        "effectWithoutLower": -3.490909,
+        "effectWithoutUpper": -2.884848,
+        "influenceObserved": -10.448485,
+        "influenceLower": -9.842424,
+        "influenceUpper": -10.448485
+      },
+      {
+        "task": "H8-fire-drill",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.127273,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": -30.20606,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "H9-dsh-web-alpha2",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M1-host-migration",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M10-tools-tree",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M11-sidebar-spur",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M12-interpreters-card",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M13-repository-plugins-removal",
+        "deltaObserved": -3.333333,
+        "effectWithoutObserved": -3.066667,
+        "effectWithoutLower": -3.672727,
+        "effectWithoutUpper": -3.066667,
+        "influenceObserved": -0.266666,
+        "influenceLower": 0.339394,
+        "influenceUpper": -0.266666
+      },
+      {
+        "task": "M14-service-renames-0812",
+        "deltaObserved": 33.333333,
+        "effectWithoutObserved": -3.733333,
+        "effectWithoutLower": -4.339394,
+        "effectWithoutUpper": -3.733333,
+        "influenceObserved": 37.066666,
+        "influenceLower": 37.672727,
+        "influenceUpper": 37.066666
+      },
+      {
+        "task": "M2-optional-dep-trap",
+        "deltaObserved": -33.333333,
+        "effectWithoutObserved": -2.521212,
+        "effectWithoutLower": -3.127273,
+        "effectWithoutUpper": -2.521212,
+        "influenceObserved": -30.812121,
+        "influenceLower": -30.20606,
+        "influenceUpper": -30.812121
+      },
+      {
+        "task": "M3-session-projection",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M4-peer-prerelease-range",
+        "deltaObserved": 33.333333,
+        "effectWithoutObserved": -3.733333,
+        "effectWithoutLower": -4.339394,
+        "effectWithoutUpper": -3.733333,
+        "influenceObserved": 37.066666,
+        "influenceLower": 37.672727,
+        "influenceUpper": 37.066666
+      },
+      {
+        "task": "M5-token-auth-smoke",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M6-sleep-tool",
+        "deltaObserved": 33.333333,
+        "effectWithoutObserved": -3.733333,
+        "effectWithoutLower": -4.339394,
+        "effectWithoutUpper": -3.733333,
+        "influenceObserved": 37.066666,
+        "influenceLower": 37.672727,
+        "influenceUpper": 37.066666
+      },
+      {
+        "task": "M7-d399-overlay",
+        "deltaObserved": -26.666667,
+        "effectWithoutObserved": -2.642424,
+        "effectWithoutLower": -3.248485,
+        "effectWithoutUpper": -2.642424,
+        "influenceObserved": -24.024243,
+        "influenceLower": -23.418182,
+        "influenceUpper": -24.024243
+      },
+      {
+        "task": "M8-brand-text",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "M9-mcpanel",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S1-static-scan",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S10-paste-rename-and-version-chip",
+        "deltaObserved": -33.333333,
+        "effectWithoutObserved": -2.521212,
+        "effectWithoutLower": -3.127273,
+        "effectWithoutUpper": -2.521212,
+        "influenceObserved": -30.812121,
+        "influenceLower": -30.20606,
+        "influenceUpper": -30.812121
+      },
+      {
+        "task": "S11-mermaid-lazyload-trap",
+        "deltaObserved": -26.666667,
+        "effectWithoutObserved": -2.642424,
+        "effectWithoutLower": -3.248485,
+        "effectWithoutUpper": -2.642424,
+        "influenceObserved": -24.024243,
+        "influenceLower": -23.418182,
+        "influenceUpper": -24.024243
+      },
+      {
+        "task": "S12-global-upgrade-ebusy-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S13-peer-range-vs-runtime",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S14-link-install-lock-trap",
+        "deltaObserved": -60,
+        "effectWithoutObserved": -2.036364,
+        "effectWithoutLower": -2.642424,
+        "effectWithoutUpper": -2.036364,
+        "influenceObserved": -57.963636,
+        "influenceLower": -57.357576,
+        "influenceUpper": -57.963636
+      },
+      {
+        "task": "S15-slot-error-boundary-crash",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S16-self-host-upgrade-trap",
+        "deltaObserved": -26.666667,
+        "effectWithoutObserved": -2.642424,
+        "effectWithoutLower": -3.248485,
+        "effectWithoutUpper": -2.642424,
+        "influenceObserved": -24.024243,
+        "influenceLower": -23.418182,
+        "influenceUpper": -24.024243
+      },
+      {
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S2-negative-scan",
+        "deltaObserved": -20,
+        "effectWithoutObserved": -2.763636,
+        "effectWithoutLower": -3.369697,
+        "effectWithoutUpper": -2.763636,
+        "influenceObserved": -17.236364,
+        "influenceLower": -16.630303,
+        "influenceUpper": -17.236364
+      },
+      {
+        "task": "S3-snapshot-migration",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S4-legacy-client-imports",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S5-negative-naming",
+        "deltaObserved": 25,
+        "effectWithoutObserved": -3.581818,
+        "effectWithoutLower": -4.187879,
+        "effectWithoutUpper": -3.581818,
+        "influenceObserved": 28.581818,
+        "influenceLower": 29.187879,
+        "influenceUpper": 28.581818
+      },
+      {
+        "task": "S6-corridor-net-state",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      },
+      {
+        "task": "S7-unpublished-cohort",
+        "deltaObserved": -5,
+        "effectWithoutObserved": -3.036364,
+        "effectWithoutLower": -3.642424,
+        "effectWithoutUpper": -3.036364,
+        "influenceObserved": -1.963636,
+        "influenceLower": -1.357576,
+        "influenceUpper": -1.963636
+      },
+      {
+        "task": "S8-release-routing-trap",
+        "deltaObserved": -33.333333,
+        "effectWithoutObserved": -2.521212,
+        "effectWithoutLower": -3.127273,
+        "effectWithoutUpper": -2.521212,
+        "influenceObserved": -30.812121,
+        "influenceLower": -30.20606,
+        "influenceUpper": -30.812121
+      },
+      {
+        "task": "S9-composer-coordinate-trap",
+        "deltaObserved": 0,
+        "effectWithoutObserved": -3.127273,
+        "effectWithoutLower": -3.733333,
+        "effectWithoutUpper": -3.127273,
+        "influenceObserved": 3.127273,
+        "influenceLower": 3.733333,
+        "influenceUpper": 3.127273
+      }
+    ]
+  },
+  "perTask": [
+    {
+      "task": "H1-plane-trap",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H10-browser-activation-trap",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H11-dual-cohort-rpc",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H12-remote-result-boundary-trap",
+      "skillScoredMean": 0.466667,
+      "noSkillScoredMean": 0.2,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.2,
+      "noSkillUpperMean": 0.2,
+      "deltaObserved": 26.666667,
+      "deltaLower": 26.666667,
+      "deltaUpper": 26.666667,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H13-ghost-host-trap",
+      "skillScoredMean": 0.333333,
+      "noSkillScoredMean": 0.383333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.383333,
+      "noSkillUpperMean": 0.383333,
+      "deltaObserved": -5,
+      "deltaLower": -5,
+      "deltaUpper": -5,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H14-mineru-api",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H15-locale-pack",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H16-history-dock",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H17-merge-calls",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H18-blame-bubbles",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H19-workspace-ya",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H2-baseline-trap",
+      "skillScoredMean": 0.8,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": -20,
+      "deltaLower": -20,
+      "deltaUpper": -20,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H20-session-events-ledger",
+      "skillScoredMean": 0.996667,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": -0.333333,
+      "deltaLower": -0.333333,
+      "deltaUpper": -0.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H21-question-answerer-waterfall",
+      "skillScoredMean": 0.333333,
+      "noSkillScoredMean": 0.633333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.633333,
+      "noSkillUpperMean": 0.633333,
+      "deltaObserved": -30,
+      "deltaLower": -30,
+      "deltaUpper": -30,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H22-dsh-data-agent-alpha2",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H23-storage-domain-version-compat-trap",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H24-invalid-record-salvage-trap",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H25-session-seed-boundary-trap",
+      "skillScoredMean": 0.8,
+      "noSkillScoredMean": 0.766667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.766667,
+      "noSkillUpperMean": 0.766667,
+      "deltaObserved": 3.333333,
+      "deltaLower": 3.333333,
+      "deltaUpper": 3.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H3-client-plane",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": -33.333333,
+      "deltaLower": -33.333333,
+      "deltaUpper": -33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H4-tsbuildinfo-trap",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 0.766667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.766667,
+      "noSkillUpperMean": 0.766667,
+      "deltaObserved": -10,
+      "deltaLower": -10,
+      "deltaUpper": -10,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H5-runtime-export-drift",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 0.8,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.8,
+      "noSkillUpperMean": 0.8,
+      "deltaObserved": -13.333333,
+      "deltaLower": -13.333333,
+      "deltaUpper": -13.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H6-remote-error-trap",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 66.666667,
+      "deltaLower": 66.666667,
+      "deltaUpper": 66.666667,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H7-locale-trap",
+      "skillScoredMean": 0.3,
+      "noSkillScoredMean": 0.433333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.433333,
+      "noSkillUpperMean": 0.433333,
+      "deltaObserved": -13.333333,
+      "deltaLower": -13.333333,
+      "deltaUpper": -13.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "H8-fire-drill",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 2,
+      "missingSlots": 1,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 1,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0.333333,
+      "deltaObserved": 0,
+      "deltaLower": -33.333333,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 33.333333
+    },
+    {
+      "task": "H9-dsh-web-alpha2",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M1-host-migration",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M10-tools-tree",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M11-sidebar-spur",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M12-interpreters-card",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M13-repository-plugins-removal",
+      "skillScoredMean": 0.9,
+      "noSkillScoredMean": 0.933333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.933333,
+      "noSkillUpperMean": 0.933333,
+      "deltaObserved": -3.333333,
+      "deltaLower": -3.333333,
+      "deltaUpper": -3.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M14-service-renames-0812",
+      "skillScoredMean": 0.933333,
+      "noSkillScoredMean": 0.6,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.6,
+      "noSkillUpperMean": 0.6,
+      "deltaObserved": 33.333333,
+      "deltaLower": 33.333333,
+      "deltaUpper": 33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M2-optional-dep-trap",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": -33.333333,
+      "deltaLower": -33.333333,
+      "deltaUpper": -33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M3-session-projection",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M4-peer-prerelease-range",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 0.666667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.666667,
+      "noSkillUpperMean": 0.666667,
+      "deltaObserved": 33.333333,
+      "deltaLower": 33.333333,
+      "deltaUpper": 33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M5-token-auth-smoke",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M6-sleep-tool",
+      "skillScoredMean": 0.466667,
+      "noSkillScoredMean": 0.133333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.133333,
+      "noSkillUpperMean": 0.133333,
+      "deltaObserved": 33.333333,
+      "deltaLower": 33.333333,
+      "deltaUpper": 33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M7-d399-overlay",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0.266667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.266667,
+      "noSkillUpperMean": 0.266667,
+      "deltaObserved": -26.666667,
+      "deltaLower": -26.666667,
+      "deltaUpper": -26.666667,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M8-brand-text",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "M9-mcpanel",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S1-static-scan",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0.333333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.333333,
+      "noSkillUpperMean": 0.333333,
+      "deltaObserved": -33.333333,
+      "deltaLower": -33.333333,
+      "deltaUpper": -33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0.266667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.266667,
+      "noSkillUpperMean": 0.266667,
+      "deltaObserved": -26.666667,
+      "deltaLower": -26.666667,
+      "deltaUpper": -26.666667,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "skillScoredMean": 0.933333,
+      "noSkillScoredMean": 0.933333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.933333,
+      "noSkillUpperMean": 0.933333,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "skillScoredMean": 0.266667,
+      "noSkillScoredMean": 0.866667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.866667,
+      "noSkillUpperMean": 0.866667,
+      "deltaObserved": -60,
+      "deltaLower": -60,
+      "deltaUpper": -60,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0.266667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.266667,
+      "noSkillUpperMean": 0.266667,
+      "deltaObserved": -26.666667,
+      "deltaLower": -26.666667,
+      "deltaUpper": -26.666667,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S2-negative-scan",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0.2,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.2,
+      "noSkillUpperMean": 0.2,
+      "deltaObserved": -20,
+      "deltaLower": -20,
+      "deltaUpper": -20,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "skillScoredMean": 0,
+      "noSkillScoredMean": 0,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0,
+      "noSkillUpperMean": 0,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "skillScoredMean": 1,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S5-negative-naming",
+      "skillScoredMean": 0.583333,
+      "noSkillScoredMean": 0.333333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.333333,
+      "noSkillUpperMean": 0.333333,
+      "deltaObserved": 25,
+      "deltaLower": 25,
+      "deltaUpper": 25,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "skillScoredMean": 0.233333,
+      "noSkillScoredMean": 0.233333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.233333,
+      "noSkillUpperMean": 0.233333,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "skillScoredMean": 0.283333,
+      "noSkillScoredMean": 0.333333,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.333333,
+      "noSkillUpperMean": 0.333333,
+      "deltaObserved": -5,
+      "deltaLower": -5,
+      "deltaUpper": -5,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 1,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 1,
+      "noSkillUpperMean": 1,
+      "deltaObserved": -33.333333,
+      "deltaLower": -33.333333,
+      "deltaUpper": -33.333333,
+      "deltaBoundWidth": 0
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "skillScoredMean": 0.666667,
+      "noSkillScoredMean": 0.666667,
+      "skillScoredTrials": 3,
+      "noSkillScoredTrials": 3,
+      "missingSlots": 0,
+      "missingSkillSlots": 0,
+      "missingNoSkillSlots": 0,
+      "noSkillLowerMean": 0.666667,
+      "noSkillUpperMean": 0.666667,
+      "deltaObserved": 0,
+      "deltaLower": 0,
+      "deltaUpper": 0,
+      "deltaBoundWidth": 0
+    }
+  ],
+  "privacy": {
+    "containsHostPaths": false,
+    "containsTimestamps": false,
+    "containsCredentials": false,
+    "note": "deterministic artifact: fixed key order, no timestamps, no host paths; regeneration byte-matches"
+  }
+}
