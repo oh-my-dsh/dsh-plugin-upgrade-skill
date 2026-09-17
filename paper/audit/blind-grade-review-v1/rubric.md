@@ -30,8 +30,9 @@ Conversely, do not raise `correctness_score` because citations look complete.
 ## Authority for "correct"
 
 The per-task rubric authority is the task instruction, fixture, and verifier
-contract as they existed at the historical source commit recorded in
-`../sample-manifest.json`. If a case is genuinely ambiguous under that
+contract as they existed at the historical source dataset recorded in
+`../sample-manifest.json`, at the original assessment time. If a case is
+genuinely ambiguous under that
 contract, mark the ambiguity in `rationale` instead of forcing a hard
 call, and record your confidence accordingly.
 

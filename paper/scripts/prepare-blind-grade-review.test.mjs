@@ -5,7 +5,7 @@
 // mkdtemp: no network, no model calls, and no dependence on the committed
 // packet's contents beyond determinism re-derivation.
 //
-// The builder is a pure function of (repoRoot, sourceCommit); most tests call
+// The builder is a pure function of the artifact bytes under repoRoot; most tests call
 // buildPackage() directly with a synthetic repo whose three round aggregates
 // and per-answer report.md files are written by hand.
 
@@ -111,7 +111,7 @@ function deltasFor(tasks) {
 
 function builtFixture(options) {
   const root = buildFixture(options)
-  const built = buildPackage({ repoRoot: root, sourceCommit: 'f'.repeat(40) })
+  const built = buildPackage({ repoRoot: root })
   return { root, built }
 }
 
@@ -419,8 +419,8 @@ test('every sampled task contributes exactly one answer per arm', () => {
 test('buildPackage is byte-identical across two runs on the same fixture', () => {
   const tasks = historicalShape()
   const root = buildFixture({ tasks })
-  const first = buildPackage({ repoRoot: root, sourceCommit: 'a'.repeat(40) })
-  const second = buildPackage({ repoRoot: root, sourceCommit: 'a'.repeat(40) })
+  const first = buildPackage({ repoRoot: root })
+  const second = buildPackage({ repoRoot: root })
   assert.deepEqual([...first.files.keys()].sort(), [...second.files.keys()].sort())
   for (const [rel, content] of first.files) {
     assert.equal(second.files.get(rel), content, `${rel} differs between runs`)
@@ -428,21 +428,33 @@ test('buildPackage is byte-identical across two runs on the same fixture', () =>
 })
 
 test('committed packet regenerates byte-identically from the real dataset', () => {
-  const committed = JSON.parse(readFileSync(join(REPO_ROOT, MANIFEST_PATH), 'utf8'))
-  const built = buildPackage({ repoRoot: REPO_ROOT, sourceCommit: committed.sourceCommit })
+  const built = buildPackage({ repoRoot: REPO_ROOT })
   for (const [rel, content] of built.files) {
     assert.equal(readFileSync(join(REPO_ROOT, rel), 'utf8'), content, `${rel} is stale; run npm run generate:blind-grade-review`)
   }
   assert.deepEqual([...built.files.keys()].sort(), listFiles(REPO_ROOT, dirname(MANIFEST_PATH)).sort())
 })
 
+test('the packet content is independent of the checkout commit', () => {
+  // The builder never reads git: no generated file may carry a commit id, so
+  // --check cannot drift with HEAD (this is what broke CI before).
+  const built = buildPackage({ repoRoot: REPO_ROOT })
+  for (const [rel, content] of built.files) {
+    assert.ok(!/[0-9a-f]{40}/.test(content) || rel.endsWith('.json'), `${rel} unexpectedly embeds a 40-hex run`)
+  }
+  const manifest = JSON.parse(built.files.get(MANIFEST_PATH))
+  assert.equal(manifest.sourceCommit, undefined)
+  assert.equal(manifest.provenance.sourceDate, '2026-09-11')
+  assert.equal(manifest.provenance.rounds.join(','), '1,2,3')
+})
+
 // ── manifest content ─────────────────────────────────────────────────────────
 
-test('manifest records the seed, source commit, and a frozen round rule', () => {
+test('manifest records the seed, frozen provenance, and a frozen round rule', () => {
   const { built } = builtFixture({ tasks: historicalShape() })
   const manifest = manifestOf(built)
   assert.equal(manifest.seed, SELECTION_SEED)
-  assert.equal(manifest.sourceCommit, 'f'.repeat(40))
+  assert.equal(manifest.provenance.dataset, 'glm-5.3-flash-s1-s22')
   assert.deepEqual(manifest.roundRule.preference, [2, 1, 3])
   assert.match(manifest.roundRule.description, /never chosen by score/)
   assert.equal(manifest.roundRule.answersUsingFallback, 0)
@@ -510,12 +522,12 @@ test('renderManifest and renderCoordinatorMap are pure functions of their inputs
   const manifest = manifestOf(built)
   const map = mapOf(built)
   assert.deepEqual(
-    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs, sourceCommit: 'x' }),
-    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs, sourceCommit: 'x' }),
+    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs }),
+    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs }),
   )
   assert.deepEqual(
-    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas, sourceCommit: 'x' }),
-    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas, sourceCommit: 'x' }),
+    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas }),
+    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas }),
   )
   assert.equal(manifest.seed, SELECTION_SEED)
   assert.equal(map.seed, SELECTION_SEED)
@@ -611,7 +623,7 @@ function writePacket(root, built) {
 /** Build a complete, valid packet in a fresh temp repo and return its root. */
 function validPacketRepo(options = { tasks: historicalShape() }) {
   const root = buildFixture(options)
-  const built = buildPackage({ repoRoot: root, sourceCommit: 'c'.repeat(40) })
+  const built = buildPackage({ repoRoot: root })
   writePacket(root, built)
   return { root, built }
 }
@@ -654,7 +666,7 @@ test('findRatingFields ignores status blocks and detects fabricated ratings', ()
 test('validateCoordinatorMapShape accepts the built map and rejects a missing warning', () => {
   const { built } = validPacketRepo()
   const map = mapOf(built)
-  const allow = new Set(map.entries.flatMap((_, index) => [`entries.${index}.arm`, `entries.${index}.originalScore`]))
+  const allow = coordinatorMapAllowSet(map)
   assert.deepEqual([...validateCoordinatorMapShape(map, { allow })], [])
   // Without the exemption the same map is rejected, proving the exemption is
   // what permits the coordinator-only fields.

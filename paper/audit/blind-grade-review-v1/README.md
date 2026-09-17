@@ -32,8 +32,9 @@ a reviewer familiar with the benchmark may recognise a task.
 
 ## Files
 
-- `sample-manifest.json` — source commit, sampled task ids, strata, the round
-  rule and selection algorithm, seed, and per-answer source path + sha256.
+- `sample-manifest.json` — frozen source provenance, sampled task ids, strata,
+  the round rule and selection algorithm, seed, and per-answer source path +
+  sha256 (the authoritative content pin).
   Carries `humanReviewStatus: "not-started"` and `humanReviewsSubmitted: 0`.
 - `reviewer-visible/` — the packet a reviewer may open: 32 answer files
   (`R001.md` ... `R032.md`), a reviewer-facing `README.md`, and `rubric.md`.

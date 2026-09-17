@@ -35,7 +35,6 @@
 //   node paper/scripts/prepare-blind-grade-review.mjs <repo-root>
 
 import { createHash } from 'node:crypto'
-import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -99,6 +98,29 @@ export const AGGREGATE_BASENAME = 'aggregate.json'
 export const ANSWER_BASENAME = 'report.md'
 
 export const HUMAN_REVIEW_STATUS = 'not-started'
+
+/**
+ * Frozen provenance for the historical source dataset. Deliberately a literal,
+ * not `git rev-parse HEAD`: every file this builder writes is a pure function
+ * of the artifact bytes on disk, so the packet regenerates byte-identically on
+ * any checkout and `--check` can never drift with the local commit state. The
+ * per-answer source sha256 values in the manifest, not a commit id, are the
+ * authoritative content pin.
+ */
+export const SOURCE_PROVENANCE = Object.freeze({
+  dataset: 'glm-5.3-flash-s1-s22',
+  modelFamily: 'historical mid-baseline group (S1-S22 static tasks)',
+  sourceDate: '2026-09-11',
+  rounds: [1, 2, 3],
+  arms: ['no-skill', 'with-skill'],
+  artifactRoots: [
+    'benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22',
+    'benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round2',
+    'benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round3',
+  ],
+  note: 'provenance is descriptive; the per-answer sha256 + source path in sources.answers pin the exact bytes',
+})
+
 
 // ── Deterministic primitives ─────────────────────────────────────────────────
 
@@ -552,8 +574,9 @@ function renderReviewerRubric() {
     '## Authority for "correct"',
     '',
     'The per-task rubric authority is the task instruction, fixture, and verifier',
-    'contract as they existed at the historical source commit recorded in',
-    '`../sample-manifest.json`. If a case is genuinely ambiguous under that',
+    'contract as they existed at the historical source dataset recorded in',
+    '`../sample-manifest.json`, at the original assessment time. If a case is',
+    'genuinely ambiguous under that',
     'contract, mark the ambiguity in `rationale` instead of forcing a hard',
     'call, and record your confidence accordingly.',
     '',
@@ -568,7 +591,7 @@ function renderReviewerRubric() {
   ].join('\n')
 }
 
-export function renderManifest({ answers, selection, deltas, inputs, sourceCommit, anonymousOrderSeed = SELECTION_SEED }) {
+export function renderManifest({ answers, selection, deltas, inputs, provenance = SOURCE_PROVENANCE, anonymousOrderSeed = SELECTION_SEED }) {
   const taskEntries = []
   for (const task of selection.tasks) {
     const answersForTask = answers.filter((answer) => answer.task === task)
@@ -604,7 +627,7 @@ export function renderManifest({ answers, selection, deltas, inputs, sourceCommi
     schemaVersion: SCHEMA_VERSION,
     id: MANIFEST_ID,
     packetDate: '2026-09-16',
-    sourceCommit,
+    provenance,
     seed: SELECTION_SEED,
     taskCount: TASK_COUNT,
     answersPerTask: ANSWERS_PER_TASK,
@@ -648,13 +671,13 @@ export function renderManifest({ answers, selection, deltas, inputs, sourceCommi
   }
 }
 
-export function renderCoordinatorMap({ answers, selection, deltas, sourceCommit }) {
+export function renderCoordinatorMap({ answers, selection, deltas, provenance = SOURCE_PROVENANCE }) {
   return {
     schemaVersion: SCHEMA_VERSION,
     id: COORDINATOR_MAP_ID,
     coordinatorOnly: true,
     warning: 'COORDINATOR-ONLY: this file unblinds the packet (arm, model family, source path, round, and original score). Reviewers must not open it.',
-    sourceCommit,
+    provenance,
     seed: SELECTION_SEED,
     entries: answers
       .map((answer) => ({
@@ -718,8 +741,9 @@ function renderPacketReadme() {
     '',
     '## Files',
     '',
-    '- `sample-manifest.json` — source commit, sampled task ids, strata, the round',
-    '  rule and selection algorithm, seed, and per-answer source path + sha256.',
+    '- `sample-manifest.json` — frozen source provenance, sampled task ids, strata,',
+    '  the round rule and selection algorithm, seed, and per-answer source path +',
+    '  sha256 (the authoritative content pin).',
     '  Carries `humanReviewStatus: "not-started"` and `humanReviewsSubmitted: 0`.',
     '- `reviewer-visible/` — the packet a reviewer may open: 32 answer files',
     '  (`R001.md` ... `R032.md`), a reviewer-facing `README.md`, and `rubric.md`.',
@@ -766,7 +790,7 @@ export function renderRubricMarkdown() {
  * Build every output file in memory: relative path → content. Deterministic;
  * the same inputs always produce the same map.
  */
-export function buildPackage({ repoRoot, sourceCommit }) {
+export function buildPackage({ repoRoot }) {
   const { rounds, taskIds, inputs } = loadAggregates(repoRoot)
   const deltas = computeTaskDeltas(rounds)
   const selection = selectTasks({ taskIds, deltas })
@@ -785,8 +809,8 @@ export function buildPackage({ repoRoot, sourceCommit }) {
   }
 
   const files = new Map()
-  files.set(MANIFEST_PATH, `${JSON.stringify(renderManifest({ answers, selection, deltas, inputs, sourceCommit, anonymousOrderSeed }), null, 2)}\n`)
-  files.set(COORDINATOR_MAP_PATH, `${JSON.stringify(renderCoordinatorMap({ answers, selection, deltas, sourceCommit }), null, 2)}\n`)
+  files.set(MANIFEST_PATH, `${JSON.stringify(renderManifest({ answers, selection, deltas, inputs, anonymousOrderSeed }), null, 2)}\n`)
+  files.set(COORDINATOR_MAP_PATH, `${JSON.stringify(renderCoordinatorMap({ answers, selection, deltas }), null, 2)}\n`)
   files.set(README_PATH, renderPacketReadme())
   files.set(RUBRIC_PATH, renderRubricMarkdown())
   files.set(REVIEWER_README_PATH, renderReviewerReadme(answers))
@@ -797,16 +821,7 @@ export function buildPackage({ repoRoot, sourceCommit }) {
   return { files, answers, selection, deltas, inputs, rounds }
 }
 
-// ── Repo-local git helper ────────────────────────────────────────────────────
-
-export function sourceCommit(repoRoot) {
-  try {
-    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
-  } catch {
-    return null
-  }
-}
-
+// ── Repo-local helpers ───────────────────────────────────────────────────────
 function listFilesRecursive(root) {
   const out = []
   const visit = (dir) => {
@@ -837,7 +852,7 @@ if (isMain) {
   const repoRoot = resolve(positional[0] ?? fileURLToPath(new URL('../../', import.meta.url)))
   let built
   try {
-    built = buildPackage({ repoRoot, sourceCommit: sourceCommit(repoRoot) })
+    built = buildPackage({ repoRoot })
   } catch (error) {
     console.error(`error: ${error.message}`)
     process.exit(1)

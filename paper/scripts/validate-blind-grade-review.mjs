@@ -274,7 +274,12 @@ export function validateCoordinatorMapShape(map, { allow = new Set() } = {}) {
 /** The coordinator map's expected unblinding-key exemption, derived from it. */
 export function coordinatorMapAllowSet(map) {
   const entries = Array.isArray(map?.entries) ? map.entries : []
-  return new Set(entries.flatMap((_, index) => [`entries.${index}.arm`, `entries.${index}.originalScore`]))
+  return new Set([
+    // The map is coordinator-only by design, so it may name the arms and the
+    // original score per entry, plus the frozen dataset provenance.
+    'provenance.arms',
+    ...entries.flatMap((_, index) => [`entries.${index}.arm`, `entries.${index}.originalScore`]),
+  ])
 }
 
 // ── B. Integrity ─────────────────────────────────────────────────────────────
