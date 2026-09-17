@@ -41,6 +41,14 @@ npm run check:paper-paired         # CI 门禁：两者字节级漂移检查
 npm run test:benchmark-paired      # 统计脚本单元测试 + golden 校验
 ```
 
+GLM 稳健性表（`paper/generated/glm-robustness-table.tex`）消费已合并的 #238 结果 `benchmark/results/glm-pair-stability.json`，脚本只渲染已提交数字、不重新分析，并在输入哈希漂移时拒绝生成：
+
+```bash
+npm run generate:paper-glm-robustness   # 从 #238 JSON 渲染稳健性表
+npm run check:paper-glm-robustness      # CI 门禁：表与 JSON 漂移检查
+npm run test:paper-glm-robustness       # 渲染/哈希门/漂移单元测试
+```
+
 ## 当前状态
 
 倒 U 以探索性观察进入主稿；四条件设计仅在附录。统计表可复算，工作稿已编译和检查。评分复核、稳健性分析和投稿材料整理尚未完成，统一在[工作建议](INVERTED-U-WORKPLAN.zh.md)中维护。
