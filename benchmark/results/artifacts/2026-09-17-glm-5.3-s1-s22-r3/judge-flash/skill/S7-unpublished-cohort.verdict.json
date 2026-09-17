@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Report grounds the analysis in the fixture package.json (declared ^0.1.2-alpha.1) and README, and correctly separates the declaration from the registry reality: alpha.1 was never published while alpha.2 was, explicitly flagged as brief-supplied/closed-book with registry caveats and proposed package-scoped verification rather than an online query."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains that ^0.1.2-alpha.1 expands to >=0.1.2-alpha.1 <0.2.0, applies node-semver prerelease tuple gating to show 0.1.1-rc.x rejected and 0.1.2-alpha.2 selected, notes dist-tags are irrelevant to range resolution, and identifies the silent alpha.1-vs-alpha.2 type-baseline mismatch plus the floating-range risk. No claim that all alphas are missing or that the caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Gives multiple complete feasible plans with tradeoffs and exit paths: Path A exact-pins the published 0.1.2-alpha.2 while acknowledging it does not validate alpha.1, and Path B obtains alpha.1 from the upstream Git tag, builds/packs locally, and consumes explicit local tarballs via overrides. More than the one coherent plan required."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Uses one consistent package manager (pnpm commands; npm noted as equivalent), requires lockfile regeneration for Path A and discusses frozen-lockfile handling for Path B tarballs, proposes a tsc --noEmit typecheck against the intended target (Path C lane, and migration across the R-11 edge for Path A), defines explicit exit paths for each plan (removing overrides, relaxing pins, repointing CI), and honestly marks unverified items in a dedicated section. Does not require both package managers or execution."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing alpha.1 from npm as if available; it states alpha.1 was never published and reaches it only via upstream source tag and locally built tarballs (Path B), with exact-pin plans targeting the published alpha.2 only."
+    }
+  ]
+}

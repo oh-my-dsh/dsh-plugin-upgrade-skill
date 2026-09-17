@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates patch.yml:2-5 (SessionView.ts target and renderSessionView replacement), the cordis.patch.yml patch: [patch.yml] wiring, and scripts/apply-patch.mjs:5-9 (DSH_HARNESS_SOURCE_ROOT runner); explicitly distinguishes the composition row from true source patching and grounds the private session-view coupling in the A1-03 split with re-validation against the exact tag."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Identifies the producer (src/index.ts:15-19, ignorable:true informational event) and the plain ctx.on observer; explains A1-02 alpha.1 removal and A2-01 alpha.2 restoration, applies corridor folding to keep the marker, notes the marker must stay on informational events only (not a whitelist), and explicitly states public Session.append has no ignorable parameter rather than claiming it does."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites with the session.rename and llm.providers operations, maps them to A1-01 (including the llm/listProviders + listConfigurableProviders split), correctly determines this is a host-plane plugin and prescribes direct domain-service injection instead of the client-plane ctx.remote facade, avoiding any nonexistent Host remote service; adds A2-02 error-flow discipline."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded join(homedir(), '.dsh', 'profiles', 'default') write at src/index.ts:36-37 and prescribes the runtime DSH_HOME/profile source of truth via A1-04; nowhere claims --profile was introduced in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both halves: the @deepseek-ai/dsh-session-view/internal import (line 10, also flagged as undeclared dependency) and the registerCommand construction of SessionView (lines 41-43); explains re-homing to public facets with pending-confirmation when no stable seam exists, mapped to A1-03, and correctly rules out the client-only A1-25/A1-26 cards."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the private loopback createServer on 127.0.0.1:43121 (lines 47-54), maps it to A1-08, and explains that loopback listening does not exempt the channel from the auth gate, distinguishing Connection/auth-gated carriers from raw routes (requestRejection or deletion); correctly notes never-invoked status affects severity, not classification."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh headless call sites and their stdout JSON.parse (src/index.ts:57-67 and scripts/apply-patch.mjs:12-18); explains stdout carries final text while stderr gains reasoning/error segments with exit-code judging (A1-05), and explicitly states the JSONL assumption was already wrong at rc.2 rather than inventing an alpha.2 stdout change; also notes chunks are not line-aligned."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Every mapping is tied to a located coupling: A1-03 (#1 and #5), A1-02+A2-01 folded (#2), A1-01 (#3), A1-04 (#4 and launcher shape in #7), A1-08 (#6), plus A1-05 as the valid additional stdout mapping; conditional cards are explicitly marked not-hit with reasons, so this is far beyond a bare card list and is complete."
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Correctly accounts for all seven categories being hits, states scan limits (heuristic patterns, non-compilable static fixture, curated card list), and proposes an isolated cold boot with --dump-config pending-row check plus a functional smoke of each migrated call path; however it never explicitly proposes a target-version build/typecheck as a follow-up verification — it only notes the fixture cannot be compiled, so that required element is substantively absent."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report locates `disabled: (props.input?.phase ?? 'plain') !== 'plain' || busy`, shows busy is AttachButton's local state unbound in AttachmentChips, explains the empty early-return null path, and that a present occurrence in plain phase makes the left guard false so busy evaluates and throws ReferenceError, grounding each step in the fixture code."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the InputZone slot entry's error boundary catches the render throw and unmounts the whole dock entry (not just the remove button), that the separate input.left attach-button slot survives, and that the diagnostic is console-only with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 file and maintainer note to establish busy already existed in baseline, flags the diff/stale-base inconsistency, proposes both a rollback/re-add bisect and a minimal data-present plain-phase mount whose stack trace attributes the throw, and independently identifies the diff's own defects (imageItem/status/record out of scope, inconsistency with baseline) rather than forcing the diff harmless."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Proposes removing the dangling busy or lifting properly owned state as an explicit prop while preserving the phase guard, hardening record?.items ?? [] and event.target?.closest?.(...), and moving the hoisted image lookup inside the map callback where record/status are defined."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Provides a concrete render/mount test with one matching occurrence in plain phase asserting the chip renders and no boundary capture, explains why empty-state-only and non-plain-phase smokes miss the expression, why node --check cannot catch runtime identifier resolution, and requires a data-present slot smoke in pre-ship checks."
+    }
+  ],
+  "caps": []
+}

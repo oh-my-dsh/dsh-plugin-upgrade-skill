@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Designs paste_image/paste_file names with (2),(3)… appended before the extension until unused; requires numbering derived from the live name set so in-batch and cross-batch reservations both count as taken; scopes the rename strictly to the clipboard/paste handler before add(), explicitly rejecting renaming inside the shared funnel; drop and picker keep real names verbatim. Grounded in plugin-attachment-flow.js (item.path kept verbatim, label = item.path, validateItems batch-only check). Unscored extension/display details only appear in a section explicitly marked not-scored, without displacing the core design."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Identifies input.state.getSnapshot().occurrences as the authoritative occupied-name source and grounds the diagnosis in the fixture's alive-subscription, explaining that records.delete(ref) fires on any momentary empty snapshot while the attachment may still be live, so a taken name reappears free. Correctly supplements with the plugin Map for same-batch/in-flight entries and notes the cache cannot replace live host state."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache HIT, age 178, s-maxage 300, stale v0.2.9) and renderCurrentChip printing the fetched tag to explain the wrong latest label, including the self-correction when cache expired. States the exact semantic rule: render the update chip with the fetched tag only when latestTag > PLUGIN_VERSION, otherwise show the running PLUGIN_VERSION, never the older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Concrete tests cover same-batch and sequential pastes producing distinct live names (paste_image.png / paste_image(2).png with upload paths asserted), a retired record with emptied cache not freeing a name (snapshot-probing test), drop/picker names unchanged, and chip behavior for stale/equal (shows running version, not v0.2.9) versus genuinely newer (v0.2.11) remote tags, plus an offline case."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires bumping the hand-inlined PLUGIN_VERSION in lockstep with package.json in the lib artifact, adds node --check lib/client.js plus behavioral regressions before tagging, and explains deployment: publish the installable package, tag only after publish (chip has no host-side update endpoint), then users hard-refresh/reinstall so the running version catches up. Grounded in the lib-only no-build-step comment in plugin-version-chip.js."
+    }
+  ],
+  "caps": []
+}

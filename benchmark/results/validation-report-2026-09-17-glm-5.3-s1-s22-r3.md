@@ -45,3 +45,16 @@ The corrected per-task median lift is **35 / 22 = 1.5909 pp**. Historical Flash 
 ## Offline arithmetic correction (2026-09-17)
 
 All 44 verdicts were recomputed using the scoring function and packets at `e0a9ff5`. Half-point values are preserved before aggregation. Original reports and criterion verdicts are unchanged; no new model calls or retries were made.
+
+## Re-judge (2026-09-17, glm-5.3-flash)
+
+The round-3 reports were fully re-judged by glm-5.3-flash (the canonical judge used in rounds 1-2); verdicts and the re-judged aggregate live in `artifacts/2026-09-17-glm-5.3-s1-s22-r3/judge-flash/` and `aggregate-flash-rejudge.json` (see `REJUDGE.md` there). The original same-model aggregate is retained unchanged.
+
+| Aggregate | zero-skill | with-skill | lift |
+|---|---:|---:|---:|
+| glm-5.3 judge (original, disclosed deviation) | 2013 (91.5%) | 2158 (98.1%) | +145 (+6.6 pp) |
+| **glm-5.3-flash re-judge (canonical)** | **2092.5 (95.1%)** | **2185 (99.3%)** | **+92.5 (+4.2 pp)** |
+
+Under the canonical judge the S17 zero-skill cap does not trigger (90, not 0) and the S4 zero-skill diagnosis is graded partial rather than fail. The three-round per-task medians under the flash-rejudged round 3 are: zero-skill **2112.5 (96.0%)**, with-skill **2190 (99.5%)**, lift **+77.5 (+3.5 pp)** — vs +34.5 (+1.6 pp) under the same-model round 3. Judge choice materially moves the top-of-pool estimate; both versions are committed, and cross-round comparisons use the flash-rejudged numbers.
+
+The A2 common-subset / headroom / gain-gap analysis (all three GLM configurations on the identical S1-S22 pool, flash-judged throughout) is committed as `benchmark/scripts/analyze-glm-common-subset.mjs` + `benchmark/results/glm-trio-common-subset.json` (golden tests included): glm-5.3-flash +9.27 (42% of headroom), glm-5.3 +3.52 (89% of headroom), glm-5.2 +3.05 (46%); gain gaps flash−5.2 = +6.23 [2.59, 10.05], flash−5.3 = +5.75 [2.23, 9.32].

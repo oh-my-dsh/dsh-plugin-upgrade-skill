@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in agent-session-log.txt and env-state.txt: the pwsh tool worker is a child of the running dsh host process that npm was replacing; npm removed the package tree, the GUI died at linkStuff, and the tool result is explicitly preserved as unknown. It calls the failure structural, not a network flake, and does not overclaim platform universality beyond its own construction argument."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains from env-state.txt that rc.1 package content remained while dsh/dsh.cmd were missing and dsh.ps1 stale, so PATH resolution fails before content matters and content presence does not prove a complete install; relates the hand-swapped non-standard tree to the shim state and rejects hand-swapping/hand-written shims because only a formal install's bin-linking regenerates them."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounds the remedy in repair-notes.md: a different agent CLI outside dsh re-ran the exact pinned install npm install -g @deepseek-ai/dsh@0.1.2-rc.1, shims were regenerated, dsh --version verified as rc.1, and the source-reference checkout was aligned to dsh-v0.1.2-rc.1; it clearly separates the recorded repair from candidate-proposed verification steps."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "partial",
+      "reason": "Core handoff logic is fully present: the agent must recognize it runs on the upgrade target, must not execute the install in that session, and hands off an external stop-host-first, exact-pinned procedure with restart/refresh/verify. However, it misclassifies the stop-host-first ordering as a rule 'new for this incident' whereas the rubric treats stop-host-first and exact pinning as established rules, with only refusing in-target execution as the additional self-host rule."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Proposes a pre-execution guard in the shell/subprocess path that refuses global installs targeting @deepseek-ai/dsh when the session runs inside that host; uses repair-notes.md's 252-file version-only diff to conclude no plugin re-migration for alpha.5→rc.1; checks displayed version, shims, and plugin loading after restart/refresh; and defers dsh-old-* backup cleanup until rc.1 is confirmed, all with no code changes."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The final plan explicitly refuses in-session execution and hands the pinned install to an external shell after the host is stopped; the in-session install appears only as the analyzed failure."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "The report explicitly rejects manual directory swaps and hand-written shims and requires the formal registry install; manual repair is described only as the user's failed attempt to diagnose."
+    }
+  ]
+}

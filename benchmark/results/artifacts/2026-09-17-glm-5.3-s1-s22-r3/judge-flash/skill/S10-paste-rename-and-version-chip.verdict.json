@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Report designs paste_image/paste_file names with (2),(3) numbering to the first free name, reserves names within the batch (each accepted name added to the taken set) and against live attachments, scopes the rename to the paste acquisition path before/during add() keyed on an acquisition flag, and explicitly keeps drop and picker paths untouched with real names verbatim. Grounded in fixture/plugin-attachment-flow.js (label = item.path, all three paths funnel into add(), validateItems stays as-is). Unscored extension/display details are marked as guidance, not treated as required."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Identifies input.state.getSnapshot().occurrences as the authoritative occupied-name source, and explains the alive-subscription fires records.delete(ref) on any momentary snapshot lacking the (source, ref) occurrence while the attachment is still live, citing the fixture comment and the maintainer note. It also accounts for in-batch/in-flight reservations and notes records only knows this plugin's own additions, so it can supplement but not replace live state."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (200, x-cache: HIT, age 178, s-maxage 300, cached page listing v0.2.9 while v0.2.10/v0.2.11 exist) and renderCurrentChip printing the fetched tag to explain the stale 'already latest' label. It then compares fetched tag vs the running hand-inlined PLUGIN_VERSION semantically and requires the chip to show the running version, never an older fetched tag; its neutral-state guard for fetched < running is an equivalent (safer) refinement that still never displays the stale tag, and update is shown only when remote is newer."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes concrete tests covering repeated/same-batch pastes yielding paste_image.png, paste_image(2).png, paste_image(3).png; the records-cache poisoning case where a momentary empty snapshot deletes the record yet a live occurrence still blocks the name (expects paste_image(2).png, failing with a duplicate today); drop/picker names unchanged; plus stale-tag (v0.2.9 vs running 0.2.10), equal-tag, and newer-tag (v0.2.11) chip tests with concrete expected renders. Unscoed extension/display guidance is included but not leaned on for credit."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires bumping package.json and the hand-inlined PLUGIN_VERSION in the distributed lib/client.js together with a sync-assertion gate, running node --check over lib/*.js plus behavioral regressions, and explains that with no host-side update endpoint users get the fix only by reinstalling/replacing the served artifact and hard-refreshing — a tag or the update chip alone does not install anything. Grounded in the fixture's lib-only/no-build-step comments."
+    }
+  ],
+  "caps": []
+}
