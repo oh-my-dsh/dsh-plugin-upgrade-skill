@@ -112,7 +112,7 @@ We study one skill lineage in a community-informed benchmark of version-pinned p
 Five historical with-skill versus no-skill comparisons show heterogeneous absolute gains: $-3.1$ points for the lowest-baseline configuration, $+8.7$ to $+10.7$ for three intermediate-baseline configurations, and $+3.0$ for the highest-baseline configuration.
 These observations form an exploratory inverted-U pattern when ordered by each group's unaided score.
 The groups differ in task pools, graders, skill revisions, and execution protocols, so the pattern does not establish an effect of model capability.
-The negative estimate is inconclusive and infrastructure-confounded; only the glm-5.3-flash pairing is significant under both reported statistical procedures, and it uses a same-model judge.
+The negative estimate is inconclusive and termination-confounded; only the glm-5.3-flash pairing is significant under both reported statistical procedures, and it uses a same-model judge.
 The high-baseline pairing has limited room to improve.
 Resource records additionally show that skill provision can accompany substantial overhead.
 We release task and evaluation artifacts with a reproducible paired analysis and explicit provenance limits.
@@ -378,6 +378,18 @@ Its with-skill arm consumed 20.6\% more input tokens, 6.2\% more solver time, an
 This group is infrastructure-confounded: 64\% of with-skill trials hit the timeout under local serving, and we cannot separate model capability from the timeout policy, so we report the association without a causal reading.
 For glm-5.3-flash, the round-1 report records with-skill sessions at roughly 2.2 times the session tokens of no-skill sessions, because skill files enter every turn's context; this group records positive score gains alongside overhead, without establishing cost effectiveness.
 
+\paragraph{Termination state and missing scores.}
+The historical Qwen estimate remains \emph{inconclusive and infrastructure/termination-confounded}.
+Its paired $\Delta$ is $-3.07$ points (from Table~\ref{tab:paired-effect}), and the completed timeout/missingness sensitivity analysis (Table~\ref{tab:qwen-sensitivity}) shows why that point should not be read as a capability or skill-harm claim.
+Of the 336 intended trials, 335 were scored and exactly one no-skill trial was never scored (H8-fire-drill, third attempt); because only one reward is missing we can bound its influence instead of imputing it.
+Treating each missing reward as an unknown in the legal range $[0,1]$ and holding the estimator fixed gives task-level equal-weight bounds of $[-3.67, -3.07]$ points --- these are \emph{missing-value bounds, not a confidence interval}, and a missing reward is never substituted with $0$ in the main estimate.
+Timeout is a termination state, not automatically a functional failure: 108 of 168 with-skill and 86 of 168 no-skill trials timed out, yet 30 timed-out trials still scored full marks, so timeout counts and score outcomes must be read separately.
+The missingness and termination patterns therefore complicate interpretation but do not identify a mechanism.
+A non-timeout-only view is reported purely as a post-hoc disclosure: keeping the 14 tasks whose six trials are all non-timeout gives $+4.02$ points, and dropping timed-out trials per task while keeping the 28 tasks that retain both arms gives $+9.30$ points.
+Both numbers are \textbf{post-hoc descriptive only}, selection-biased (they condition on a termination state that is itself associated with the arm) and must never replace the main estimate; they neither show that timeouts caused the negative result nor that removing them proves a positive effect.
+Leave-one-task-out over the task-level estimate moves the observed $\Delta$ only within $[-4.34, -2.04]$ points, so no single task drives the sign of the historical point.
+\input{../generated/qwen-paired-sensitivity-table.tex}
+
 \begin{table}[t]
 \centering
 \small
@@ -411,7 +423,7 @@ Table~\ref{tab:evidence} records their role without treating them as one leaderb
 Evidence & Scope and use\\
 \hline
 Astra coverage & 56 tasks, one with-skill attempt each; no matched no-skill arm. Coverage evidence only; no skill effect estimate.\\
-Qwen paired run & 56 tasks, two conditions, three attempts each; one missing score and historical graders. Retrospective utility evidence; analyzed in Table~\ref{tab:paired-effect}.\\
+Qwen paired run & 56 tasks, two conditions, three attempts each; one missing score and historical graders. Retrospective utility evidence; analyzed in Table~\ref{tab:paired-effect} with a termination/missingness sensitivity analysis in Table~\ref{tab:qwen-sensitivity}.\\
 GLM static runs & 22 static tasks, two conditions, three rounds; mixed grading methods and a same-family solver/judge. Diagnostic evidence; analyzed in Table~\ref{tab:paired-effect}.\\
 2026-09-01 paired runs & deepseek-v4-flash (23 tasks, three runs per arm, terminus-2), gpt-5.6-terra (21 scored tasks, single-shot), gpt-5.6-luna (18 tasks, single-shot, contaminated no-skill arm); legacy graders. Analyzed in Table~\ref{tab:paired-effect} and Appendix~\ref{app:sensitivity}.\\
 Semantic calibration & Grader implementation and selected answer checks; not independent validation of all model outputs.\\
@@ -507,6 +519,7 @@ In both GLM groups the solver and the grader belong to the same model family: gl
 The GLM groups cover only the S-series static-diagnosis tasks; hands-on evidence comes from the qwen3.8-27b group (historical graders, single agent protocol) and the 2026-09-01 groups.
 The glm-5.2 round-3 aggregate was initially reconstructed from the report's per-task table because the raw artifacts had not been committed; the raw artifacts (44 solver reports, 38 judge verdicts) were later committed and the reconstruction was verified against them, but the episode means round 3 lacks the continuous provenance chain of rounds 1--2.
 The qwen3.8-27b negative effect has a confidence interval crossing zero and is reported as a trend only; the group is also infrastructure-confounded (64\% of with-skill trials timed out under local serving), so model capability and timeout policy cannot be separated there.
+Its completed termination/missingness sensitivity analysis (Table~\ref{tab:qwen-sensitivity}) bounds the single missing score at $[-3.67, -3.07]$ points and reports timeout counts separately from score outcomes; those bounds are missing-value bounds rather than a confidence interval, and the non-timeout-only numbers shown there are post-hoc and selection-biased, so the historical estimate stays inconclusive rather than becoming a positive or a skill-harm result.
 The candidate pool belongs to one framework and includes development-exposed and related tasks, limiting independent generalization claims.
 Matching source files does not guarantee matching task-relevant information; differences in guidance length, retrieval behavior, and procedural content in the reference cards remain important interpretation boundaries.
 The historical results evaluate the shipped skill lineage; they do not estimate the effect of the document-only intervention proposed in the appendix.
