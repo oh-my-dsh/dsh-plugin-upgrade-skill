@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Report correctly locates the up-only/lo-only branches in renderer-excerpt.ts, explains that they emit only fg while the ▀/▄ glyph paints the empty half with the stale inherited 48;2 background from the last fully-painted cell, ties this to the right-edge phantom columns beside outline/Z/heart (and why left edges stay clean via RESET), and proposes ESC[49m on each half-painted branch; the row-end RESET is noted as too late for mid-row cells."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Identifies the out.replace(/[ ]+$/,'') trim, explains the pipeline's trailing-whitespace stripping leaves surplus columns untouched on wide→narrow switches, and proposes full-sprite-width padded rows plus explicit erase-to-EOL with SGR state controlled and pipeline cooperation — a correct two-part fix that survives trimming."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt to pin the tail2 mismatch (23 differing cells, upper-right cluster shifted one column left plus extras), distinguishes data drift from renderer artifacts, explains the excerpt-based regression covering a different frame missed it, and gates recurrence with whole-frame source-art digests run in CI over all frames — not hashing against the drifted port."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounds the hang in ci-hang-evidence.txt: the planner re-arms setTimeout each tick while mounted, the channel-ui hosts mount the header and finish without unmounting, the ref'd Timeout chain pins the event loop after PASS, and the interactive terminal is unaffected because TTY/stdin already keep it alive. Proposes timer.unref() on each scheduled timeout as the one-line fix, correctly noting cleanup-on-unmount alone is insufficient since hosts never unmount."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Section 5 consolidates complete-SGR-per-glyph background reset, constant output extent with erase-to-EOL, frame-switch residue-free behavior, deterministic whole-frame digest integrity, and timer loop-neutrality into a checklist, and gives a pre-flip audit covering mounting-host lifecycle inventory, leaked-handle drain assertions, feature-on render audit, CI canary on channel-ui, and rollback — no execution needed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The report affirmatively requires the half-cell background reset (SGR 49), full-width/erase clearing that survives trimming, source-backed all-frame digest checks, and timer.unref() as the fix; it does not blame the terminal emulator or recommend keeping timers referenced."
+    }
+  ]
+}

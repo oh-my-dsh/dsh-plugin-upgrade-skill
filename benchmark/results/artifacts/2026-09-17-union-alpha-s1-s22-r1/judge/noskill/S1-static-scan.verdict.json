@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates cordis.patch.yml:5-6 patch declaration, patch.yml:3-6 targeting src/session/view/SessionView.ts with the literal export replacement, and scripts/apply-patch.mjs:5-9; distinguishes profile composition from source patching (and notes the script only reads/logs the surface), and grounds the private session-view coupling (patched SessionView export invalidated by decomposition) in the files."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Locates the producer at src/index.ts:13-22 emitting legacy/informational-note with ignorable:true plus a listener; explains alpha.1 removal and alpha.2 restoration, prescribes retaining the marker across persistence/reload/transport and rejects a consumer whitelist for required events; explicitly states public Session.append has no ignorable parameter rather than claiming arbitrary append support."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates ctx.get('apiProxy') with invoke('session.rename') and invoke('llm.providers') at src/index.ts:24-32; distinguishes Host domain-service injection (llm/listProviders split, session/rename via ctx.remote only for a genuine Client path) from Web Client Remote and explicitly rejects prescribing a Host service named 'remote'."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates join(homedir(), '.dsh', 'profiles', 'default') with writeFileSync at src/index.ts:34-38 and explains resolving runtime DSH_HOME and the selected profile instead of fixed user directories; avoids claiming --profile is new in alpha.1 and notes the official launcher was retained."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the private @deepseek-ai/dsh-session-view/internal import (src/index.ts:9-10) and ctx.contributes.registerCommand('legacy.openView', ...) constructing SessionView (:40-43); explains verifying each surface against exact target source and preferring a stable public seam without inventing replacement paths."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the raw loopback createServer on 127.0.0.1:43121 responding on every path (src/index.ts:45-54, correctly noting it is dormant); explains loopback binding does not inherit auth/Host-Origin fence/CORS/TLS and distinguishes Connection-owned authenticated carriers and the rejection gate from raw routes."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh --profile headless spawn and execFileSync calls with per-line JSON.parse of stdout; explains stdout carries final text while stderr gains reasoning segments and success is judged by exit code, and correctly states the JSONL assumption was already wrong pre-alpha.1 rather than inventing a stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps the located couplings to A1-01 (#3), A1-02 folded with A2-01 as the final state (#2), A1-03 (#1 patch target and #5 UI), A1-04 (#4 hardcoded path), and A1-08 (#6), with A1-05 as a valid additional mapping for #7 — all grounded in cited files rather than a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Accounts for all seven categories being hits (no manufactured no-hit), thoroughly states scan limits and evidence boundaries, and proposes stdout/stderr/exit-code and auth acceptance checks; but it never explicitly proposes target-version build/typecheck, an isolated cold/boot check, or a functional end-to-end path as next verification steps — it only lists these as 'not performed'."
+    }
+  ],
+  "caps": []
+}

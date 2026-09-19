@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Report grounds attempt 1 in ls-remote-tags.txt (v0.9.5 absent, only v0.9.1 then v0.9.7) and sync-script.sh (pushes only HEAD:main, no tag refs), explicitly rejecting network fault or typo explanations."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and compat-table.md to explain v0.9.7 targets 0.1.2-alpha.1's client API so useConversation has no seat on rc.2, states the newer-artifact-on-older-runtime direction, and notes restarting cannot fix a static mismatch."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Correctly selects v0.9.3 via rc.1 verification plus the additive rc.2 note, honors the freeze, and notices v0.9.3 is absent from the mirror. But instead of pinning #v0.9.3 on the mirror after maintainer tag publication or citing a verified reachable commit, it proposes installing from the upstream origin repo — an assumed-public source not established by the fixtures — with only a conditional caveat, and offers no conditional mirror-based command."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit tag distribution to every mirror (refs/tags/v*:refs/tags/v* push alongside the branch push in the same remote loop) grounded in the branch-only script, plus a post-push ls-remote verification that the documented tag resolves; goes beyond branch sync."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Proposes routing README pins by consumer runtime: #v0.9.3 for rc.x, #v0.9.7 only for >= 0.1.2-alpha.1, with the compat matrix next to the install command and load-time compatibility gating; no blanket newest-tag default or unbounded future-alpha support."
+    }
+  ],
+  "caps": []
+}

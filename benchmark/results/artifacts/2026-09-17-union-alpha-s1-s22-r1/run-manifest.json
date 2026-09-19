@@ -1,0 +1,2506 @@
+{
+  "harness": "dsh web in-session subagents",
+  "round": "1",
+  "model": "openrouter/stealth/union-alpha",
+  "model_notes": "anonymous internal-beta via OpenRouter; 256K context; pricing 0 at run time; knowledge cutoff undisclosed; snapshot date 2026-09-17",
+  "base_commit": "f8ab0145f97b8de1b4abea88fa0c1090e66b4e00",
+  "notes": "pilot S1-S5 first, then full S1-S22 x2 single-shot; concurrency 1 (user override); judge planned glm-5.3-flash (separate pass); judged 2026-09-17 by 44 glm-5.3-flash judge subagents (44/44 verdicts, canonical口径); aggregate: noskill 2158 / skill 2190 / lift +32 (+1.5pp)",
+  "concurrency": 2,
+  "claim_issue_skipped": true,
+  "execution_events": [
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "event": "foreground_delegation_failed",
+      "error": "ToolCallError: subagent run failed",
+      "post_failure_observation": "No agents, jobs, or reports found; underlying cause unknown."
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "event": "background_relaunch_accepted",
+      "subagent_id": "f0887bcc-11ab-4ba5-b968-d29d2471d35c",
+      "completion_verified": false
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "f0887bcc-11ab-4ba5-b968-d29d2471d35c",
+      "detail": "failed before finishing, no closing message, no report.md produced"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "event": "third_attempt_launched_policy_note",
+      "subagent_id": "ebc3c1bd-54b8-44e1-8536-29553b3d7df7",
+      "detail": "exceeds handoff relaunch-once rule; foreground failure was not counted as a relaunch, so retry count drifted; recorded here as provenance disclosure; no further retries for S1 if this fails"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "ebc3c1bd-54b8-44e1-8536-29553b3d7df7",
+      "detail": "report.md verified on disk"
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "d03c9b5b-26a4-4e34-a01c-97fdf7644ab4",
+      "completion_verified": false
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "noskill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "d03c9b5b-26a4-4e34-a01c-97fdf7644ab4",
+      "message_id": "bb0acef6-bed7-4b6f-806f-ad98ca2522c6",
+      "detail": "Progress request delivered during goal round 6; original task unchanged, no restart requested. Delivery does not prove the child has processed the request."
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "d03c9b5b-26a4-4e34-a01c-97fdf7644ab4",
+      "detail": "report.md on disk; validation recorded in report_validation"
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "completion_verified": false,
+      "subagent_id": "567879f2-a216-48bd-89dc-4e2f4f78be1c"
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "567879f2-a216-48bd-89dc-4e2f4f78be1c",
+      "detail": "failed before finishing, no closing message, no report.md produced"
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "event": "relaunch_once_per_policy",
+      "completion_verified": false,
+      "subagent_id": "fa2ca6cb-aa67-4427-b3aa-25a3ab27b026",
+      "dispatch_accepted": true,
+      "detail": "Second attempt only; no third dispatch permitted under handoff retry policy. Await terminal notification before advancing."
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "event": "relaunch_alive_with_contamination_disclosure",
+      "subagent_id": "fa2ca6cb-aa67-4427-b3aa-25a3ab27b026",
+      "detail": "Child self-reports reading skills/plugin-upgrade/SKILL.md and local reference cards/example during a noskill run; report not yet written. Per single-shot no-rerun rule this attempt is not discarded; contamination is disclosed for judge consideration and may affect noskill S3 scoring. Skill-arm S3 run unaffected structurally but compare with care."
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "fa2ca6cb-aa67-4427-b3aa-25a3ab27b026",
+      "detail": "report.md on disk; contamination disclosure embedded in report and manifest"
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "completion_verified": false,
+      "subagent_id": "32d55e42-f01a-4bb8-8e90-6aa83623937f"
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "32d55e42-f01a-4bb8-8e90-6aa83623937f",
+      "message_id": "050ae747-bdf7-46f1-b0ab-e32eac0a281d",
+      "detail": "Requested stage/tool errors/report-writing status and reiterated skills directory restriction. Delivery confirmed; no reply received as of goal round 17."
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "event": "solver_progress_report_received",
+      "subagent_id": "32d55e42-f01a-4bb8-8e90-6aa83623937f",
+      "detail": "Child reports full read of 4 fixture files, no tool errors, and report writing as next step. This is progress evidence, not completion or independent validation."
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "32d55e42-f01a-4bb8-8e90-6aa83623937f",
+      "detail": "Full-text validation passed; 39 lines, complete ending, four card mappings with explicit uncertainty labels."
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "9b6eee94-aae4-40ec-8ba4-a91cc2b46534",
+      "completion_verified": false
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "9b6eee94-aae4-40ec-8ba4-a91cc2b46534",
+      "message_id": "3b389126-a6f5-4288-90af-7d8f997296fc"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "event": "solver_progress_report_received",
+      "subagent_id": "9b6eee94-aae4-40ec-8ba4-a91cc2b46534",
+      "detail": "Child reports full read of instruction and three fixture files, no tool errors, naming-surface analysis in progress; report not yet written."
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "9b6eee94-aae4-40ec-8ba4-a91cc2b46534",
+      "detail": "128 lines, complete ending, no Markdown .md links; terminal notification received."
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "3f1c1853-2389-4611-8f5e-72aa2b647073",
+      "completion_verified": false
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "event": "premature_terminal_without_report",
+      "subagent_id": "3f1c1853-2389-4611-8f5e-72aa2b647073",
+      "detail": "Terminal response announced intent to load skill and brief; subsequent output directory listing was empty. No completed report existed."
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "event": "recovery_turn_requested",
+      "subagent_id": "3f1c1853-2389-4611-8f5e-72aa2b647073",
+      "message_id": "41bad8c9-2984-40ac-9464-69340c800995",
+      "detail": "Existing agent resumed with explicit report-before-ending instruction. Same agent identity, but an additional execution turn after premature completion; counts as the one permitted recovery. No further recovery or parent-authored replacement if this turn ends without report.",
+      "recovery_budget_remaining": 0
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "3f1c1853-2389-4611-8f5e-72aa2b647073",
+      "message_id": "6fcb1a16-6ea3-4f11-a238-82407017a771",
+      "detail": "Requested factual stage, tool errors and report-writing status for existing recovery turn. Delivery confirmed; no response or completion received yet. No new solver dispatched."
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "event": "completed_and_verified",
+      "subagent_id": "3f1c1853-2389-4611-8f5e-72aa2b647073",
+      "detail": "Report delivered after one recovery turn; child reports truncated reference outputs followed by targeted extraction, no concrete tool errors."
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "604f9b6e-d9f2-4e9f-af0e-21e843946667",
+      "completion_verified": false
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "604f9b6e-d9f2-4e9f-af0e-21e843946667",
+      "message_id": "88d6a76e-47fc-4f50-b321-63bc5e2148d4",
+      "detail": "Progress query delivered in round 49; no further execution attempt requested."
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "event": "solver_progress_report_received",
+      "subagent_id": "604f9b6e-d9f2-4e9f-af0e-21e843946667",
+      "detail": "Child reports skill, task brief, five fixture files and selected references read; seven-category pattern scan completed; no tool errors; report writing begins. Report delivery and terminal completion not yet verified."
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "event": "completed_and_verified",
+      "subagent_id": "604f9b6e-d9f2-4e9f-af0e-21e843946667",
+      "detail": "Terminal notification received; 123-line report read in full, complete ending, no Markdown .md links."
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "skill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "1998e18c-c11c-42d0-a69e-99362cda693a",
+      "completion_verified": false
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "skill",
+      "event": "completed_and_verified",
+      "subagent_id": "1998e18c-c11c-42d0-a69e-99362cda693a",
+      "detail": "192 lines, full read, complete ending, no Markdown .md links; terminal notification received."
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "skill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "d21deea2-6e8d-4f1f-98e9-14ead37aa647",
+      "completion_verified": false
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "skill",
+      "event": "report_delivered_and_validated_awaiting_terminal",
+      "subagent_id": "d21deea2-6e8d-4f1f-98e9-14ead37aa647",
+      "detail": "84-line report read; complete ending and no Markdown .md links. Child reports task complete but registry still running at inspection; do not launch S5 until terminal notification."
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "skill",
+      "event": "completed_and_verified",
+      "subagent_id": "d21deea2-6e8d-4f1f-98e9-14ead37aa647",
+      "detail": "Terminal notification received; validated report stands (84 lines)."
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "skill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "35b7bd65-69a8-48ed-84f3-ed72372e3c79",
+      "completion_verified": false
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "skill",
+      "event": "completed_and_verified",
+      "subagent_id": "35b7bd65-69a8-48ed-84f3-ed72372e3c79",
+      "detail": "Terminal notification received; 95-line report validated."
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "adb03155-4563-4e8b-a804-241f14ce7a98",
+      "completion_verified": false
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "event": "premature_terminal_without_report",
+      "subagent_id": "adb03155-4563-4e8b-a804-241f14ce7a98",
+      "detail": "Child ended turn after analysis with no report on disk."
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "event": "recovery_turn_requested",
+      "subagent_id": "adb03155-4563-4e8b-a804-241f14ce7a98",
+      "message_id": "830cb6a9-80e6-4073-85fd-5e4d09e50dd1",
+      "detail": "Same agent resumed to write the report; counts as the one permitted recovery for this task. No further recovery if it ends again without report.",
+      "recovery_budget_remaining": 0
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "adb03155-4563-4e8b-a804-241f14ce7a98",
+      "detail": "41-line report validated; single recovery turn consumed."
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "a998fcbb-c33f-4ddc-8fa7-003eda730609",
+      "completion_verified": false
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "a998fcbb-c33f-4ddc-8fa7-003eda730609",
+      "detail": "71-line report validated; terminal notification received."
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "ca907a77-44da-47c4-a212-a63bc8dfaccf",
+      "completion_verified": false
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "ca907a77-44da-47c4-a212-a63bc8dfaccf",
+      "detail": "77-line report validated; terminal notification received."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "878d6c03-14b7-48b6-8168-7faeffd3bb4b",
+      "completion_verified": false
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "878d6c03-14b7-48b6-8168-7faeffd3bb4b",
+      "detail": "Failed before finishing; no closing message; no report produced."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "relaunch_once_per_policy",
+      "subagent_id": "a926988c-ebcf-4659-9968-99faedc36baa",
+      "completion_verified": false,
+      "detail": "Second attempt only; no further dispatch if it fails."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "relaunch_failed_and_marked_missing",
+      "subagent_id": "a926988c-ebcf-4659-9968-99faedc36baa",
+      "detail": "Both attempts failed silently with no report; retry budget exhausted; recorded as missing per handoff. Disclosed to user for judge-phase awareness."
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "c3246ceb-d2fc-41c8-a7ba-5ee5d52d4df9",
+      "completion_verified": false
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "c3246ceb-d2fc-41c8-a7ba-5ee5d52d4df9",
+      "detail": "115-line report validated; terminal notification received."
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "f04f1b24-be2f-467f-95ec-c7f801002da2",
+      "completion_verified": false
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "f04f1b24-be2f-467f-95ec-c7f801002da2",
+      "detail": "62-line report validated; terminal notification received."
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "b329960b-2668-4ff4-b6c6-c9ca7eba7efb",
+      "completion_verified": false
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "noskill",
+      "event": "report_delivered_and_validated_awaiting_terminal",
+      "subagent_id": "b329960b-2668-4ff4-b6c6-c9ca7eba7efb",
+      "detail": "71 lines read, complete ending, no Markdown .md links. Registry still running; no S13 dispatch before terminal completion."
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "b329960b-2668-4ff4-b6c6-c9ca7eba7efb",
+      "detail": "Terminal notification received."
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "06140e2c-d837-4088-863b-83be72b41bf6",
+      "completion_verified": false
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "noskill",
+      "event": "report_delivered_and_validated_awaiting_terminal",
+      "subagent_id": "06140e2c-d837-4088-863b-83be72b41bf6",
+      "detail": "75-line report read in full, complete ending, no Markdown .md links. Report content not scored. Await terminal completion before S14 dispatch."
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "noskill",
+      "event": "final_revision_completed_and_verified",
+      "subagent_id": "06140e2c-d837-4088-863b-83be72b41bf6",
+      "detail": "Child revised report within original active turn before terminal completion. Final 59-line version supersedes 75-line intermediate report; full read, complete ending. No parent content edits or rerun."
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "62c270d5-f5d6-4c64-9e46-8682c68dcb2d",
+      "completion_verified": false
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "62c270d5-f5d6-4c64-9e46-8682c68dcb2d",
+      "detail": "Failure notification received, no closing message; output directory empty and no running solvers at retry check. Root cause unknown."
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "relaunch_once_per_policy",
+      "subagent_id": "c8c18bfb-a391-4a3f-a94b-e1e506c041c1",
+      "completion_verified": false,
+      "recovery_budget_remaining": 0
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "relaunch_failed_and_marked_missing",
+      "subagent_id": "c8c18bfb-a391-4a3f-a94b-e1e506c041c1",
+      "detail": "Second failure notification with no closing message; output directory empty. Retry budget exhausted; cause unknown, not inferred as dependency/path/timeout failure."
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "a353ecdf-0d1c-4b00-8868-fa3e514e7b61",
+      "completion_verified": false
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "noskill",
+      "event": "report_delivered_and_validated_awaiting_terminal",
+      "subagent_id": "a353ecdf-0d1c-4b00-8868-fa3e514e7b61",
+      "detail": "159-line report read in full; complete ending; no Markdown .md links. Registry shows running; await terminal completion before S16 dispatch."
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "noskill",
+      "event": "final_revision_completed_and_verified",
+      "subagent_id": "a353ecdf-0d1c-4b00-8868-fa3e514e7b61",
+      "detail": "Final 95-line report supersedes 159-line intermediate report. Child corrected unsupported runtime claims within same execution turn; terminal received. No parent rewriting or rerun."
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "d971484b-9bf0-4675-aecd-28e9f5961ee5",
+      "completion_verified": false
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "d971484b-9bf0-4675-aecd-28e9f5961ee5",
+      "detail": "Failure notification without closing message; output directory empty and no running solver before retry. Cause unknown."
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "relaunch_once_per_policy",
+      "subagent_id": "714cde23-cfbb-4d63-9c24-39a688e6f346",
+      "completion_verified": false,
+      "recovery_budget_remaining": 0
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "attempt_ended_in_tool_error_recovery",
+      "subagent_id": "714cde23-cfbb-4d63-9c24-39a688e6f346",
+      "detail": "Second dispatch ended with a child-reported run_code template-literal parsing error and no report. Same agent resumed for an additional execution turn; this counts as a recovery attempt under the user-authorized continuous retry policy, not an uncounted continuation."
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "recovery_turn_requested",
+      "subagent_id": "714cde23-cfbb-4d63-9c24-39a688e6f346",
+      "message_id": "bc10b222-96fb-49a4-a617-c3ae97caebde",
+      "detail": "Additional recovery turn after second dispatch ended prematurely; tool invocation guidance provided, no benchmark solution supplied. Delivery confirmed; completion not yet verified."
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "report_delivered_and_validated_awaiting_terminal",
+      "subagent_id": "714cde23-cfbb-4d63-9c24-39a688e6f346",
+      "detail": "Recovery produced report. Parent read all 77 lines; child corrected initially reported 93-line metadata to 77. Complete ending; no Markdown .md links. Await terminal notification before backfill S9."
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "714cde23-cfbb-4d63-9c24-39a688e6f346",
+      "detail": "Terminal notification received; 77-line recovered report validated."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "backfill_dispatch_accepted",
+      "subagent_id": "53580b6e-96ae-4b99-93d3-7e0df0d5eee8",
+      "dispatch_attempt": 3,
+      "completion_verified": false,
+      "detail": "Third dispatch after two failed attempts with no report; authorized by updated user continuous-retry policy. Original noskill prompt retained."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "backfill_attempt_failed_silently",
+      "subagent_id": "53580b6e-96ae-4b99-93d3-7e0df0d5eee8",
+      "dispatch_attempt": 3,
+      "detail": "Third dispatch failed without closing message; output directory empty. No verified root cause."
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "backfill_dispatch_accepted",
+      "subagent_id": "65d182d4-d1e0-4442-b8d5-94c948c6abc2",
+      "dispatch_attempt": 4,
+      "completion_verified": false
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "backfill_dispatch_accepted",
+      "subagent_id": "ef95264a-605d-43ab-81a8-54761e558cd1",
+      "dispatch_attempt": 3,
+      "completion_verified": false
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "65d182d4-d1e0-4442-b8d5-94c948c6abc2",
+      "dispatch_attempt": 4,
+      "detail": "Fourth dispatch succeeded; 239-line report read in full, complete ending, no Markdown .md links. Terminal notification received."
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "ef95264a-605d-43ab-81a8-54761e558cd1",
+      "dispatch_attempt": 3,
+      "detail": "96 lines read in full; complete ending, no Markdown .md links; terminal received."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "4226181c-d42e-4c7d-8c24-966f5fa5f456",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "4226181c-d42e-4c7d-8c24-966f5fa5f456",
+      "dispatch_attempt": 1,
+      "detail": "Failure notification without closing message; output directory empty. S18 unaffected and still running."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "0b2c906d-d2a3-46f1-be8a-49cdf9461dd5",
+      "dispatch_attempt": 2,
+      "completion_verified": false,
+      "detail": "Continuous retry per user policy; concurrency stays at two (S18 running, S17 retry filling freed slot)."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "0b2c906d-d2a3-46f1-be8a-49cdf9461dd5",
+      "dispatch_attempt": 2,
+      "detail": "Second failure notification without closing message; no report. Cause unknown."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "1c5ee02b-03a0-4844-ac40-e3ed9a50db80",
+      "dispatch_attempt": 3,
+      "completion_verified": false
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "1c5ee02b-03a0-4844-ac40-e3ed9a50db80",
+      "message_id": "fc3c37f5-d1eb-4dd0-a5b2-8dde1ece37f3",
+      "detail": "Factual progress query only; delivery confirmed, no new execution attempt or solution hint."
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "message_id": "fc87cf7f-e498-43b1-820d-6bd55c6fcbb2",
+      "detail": "Factual progress query only; delivery confirmed, no new execution attempt or solution hint."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "solver_progress_report_received",
+      "subagent_id": "1c5ee02b-03a0-4844-ac40-e3ed9a50db80",
+      "detail": "Child reports full instruction and eight fixture files read; report not written. One broad installed-package grep timed out; narrowing lookup to exact slots API. No fixture modifications or external services reported. This is progress, not terminal failure."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "1c5ee02b-03a0-4844-ac40-e3ed9a50db80",
+      "dispatch_attempt": 3,
+      "detail": "136-line report read in full, complete ending, no Markdown .md links. Terminal received. Child withdrew unsupported sentence about a self-check suggestion in earlier status; final report remains authoritative."
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "coordinator_delivery_request_sent",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "message_id": "c821de85-f2a0-4b60-a79c-0f08cbca18d3",
+      "detail": "Requested delivery from already collected evidence with honest limitations. Existing attempt, not additional dispatch."
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "fb76cb4d-6a9b-4f36-894c-6b7872fef4b9",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "idle_without_report_observed",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "detail": "Registry idle, no report.md; cache openStep null and pendingCalls empty. Cause of stopped turn not established; not proof of normal pause or provider failure."
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "recovery_turn_requested",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "message_id": "bb947f1c-0b79-47a1-a0cd-bf01f3285bd6",
+      "detail": "Same agent resumed to preserve collected evidence. Additional execution turn counts as recovery under user continuous-retry authorization; not an uncounted continuation. No fresh duplicate child started."
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "noskill",
+      "event": "coordinator_delivery_request_sent",
+      "subagent_id": "fb76cb4d-6a9b-4f36-894c-6b7872fef4b9",
+      "message_id": "f1536b55-dea4-423d-8569-65f7b5c4a818",
+      "detail": "Output directory empty at checkpoint. Requested report using collected evidence and explicit limitations; delivery of message confirmed, processing not confirmed. No new execution attempt."
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "fb76cb4d-6a9b-4f36-894c-6b7872fef4b9",
+      "dispatch_attempt": 1,
+      "detail": "154-line report fully read; complete ending, no Markdown .md links. Terminal notification received. Report claims not independently scored."
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "ca95c68f-658a-496d-9df8-c26ecc71d3e9",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "ca95c68f-658a-496d-9df8-c26ecc71d3e9",
+      "dispatch_attempt": 1,
+      "detail": "Failure notification received without closing message; no files in output directory; root cause unknown."
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "fd711dd0-cd6e-49b4-8f3c-3a401c7ed46d",
+      "dispatch_attempt": 2,
+      "completion_verified": false
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "fd711dd0-cd6e-49b4-8f3c-3a401c7ed46d",
+      "dispatch_attempt": 2,
+      "detail": "Failure notification without closing message, no report. Recording deferred due to coordinator full-read parse failure."
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "c801c818-1792-4fe2-ae08-8938b32fb9df",
+      "dispatch_attempt": 3,
+      "completion_verified": false
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "background_attempt_failed_silently",
+      "subagent_id": "c801c818-1792-4fe2-ae08-8938b32fb9df",
+      "dispatch_attempt": 3,
+      "detail": "Failure notification without closing message; output directory verified empty. Root cause unknown."
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "c25686e8-6775-4038-95f5-bfbe26ad1ba7",
+      "dispatch_attempt": 4,
+      "completion_verified": false
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "recovery_turn_failed_without_report",
+      "subagent_id": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+      "dispatch_attempt": 1,
+      "detail": "Failure notification without closing message after recovery steer; no report.md. Retry counts toward the same task."
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "48f3adf9-e0bb-49ba-a273-dc8fce4846cb",
+      "dispatch_attempt": 2,
+      "completion_verified": false
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "c25686e8-6775-4038-95f5-bfbe26ad1ba7",
+      "dispatch_attempt": 4,
+      "detail": "Terminal received; 74-line report fully read, complete ending, no Markdown .md links. Exact card identifier remains explicitly unconfirmed; report not scored."
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "noskill",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "6928907b-fa69-44df-a7f8-27f563c5dacd",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "noskill",
+      "event": "completed_and_verified",
+      "subagent_id": "6928907b-fa69-44df-a7f8-27f563c5dacd",
+      "dispatch_attempt": 1,
+      "detail": "Terminal closing message received. 68-line report fully read: complete ending (Inspection limits), substantive, no Markdown .md links. Fixture read in full plus installed dsh-client packages; disclosed lookup miss of assumed dsh-client-loader (actual dsh-client-modules found). Report not scored."
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "noskill",
+      "event": "dispatch_accepted",
+      "subagent_id": "caadca15-1278-4770-a4cb-61565e0d9391",
+      "dispatch_attempt": 1,
+      "completion_verified": false,
+      "detail": "Dispatched to fill slot freed by verified S21 completion, keeping concurrency at 2 alongside S18 dispatch 2."
+    },
+    {
+      "arm": "noskill",
+      "task": "S18-terminal-sprite-render-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "48f3adf9-e0bb-49ba-a273-dc8fce4846cb",
+      "dispatch_attempt": 2,
+      "detail": "Terminal received; final 362-line report read fully, substantive and complete, no Markdown .md links. Dispatch 1 and its failed recovery preserved. Delivery validation only; no scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:13:53.554Z",
+      "arm": "skill",
+      "task": "S6-corridor-net-state",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "3d07089d-9637-42d9-ac78-e943ed5f98cf",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "arm": "noskill",
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "caadca15-1278-4770-a4cb-61565e0d9391",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 64-line report read fully, complete ending, no Markdown .md links; no scoring. Additional installed loader/app-boot read-only inspection disclosed; historical build equivalence not claimed."
+    },
+    {
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "8f55895f-79b6-4628-ad57-9f01cde82966",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:17:42.584Z",
+      "arm": "skill",
+      "task": "S6-corridor-net-state",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "3d07089d-9637-42d9-ac78-e943ed5f98cf",
+      "message_id": "84b887b8-0e6a-49e8-9bca-ac3e25a2f531",
+      "detail": "Factual stage/error/report status requested during current attempt; no interruption, restart, recovery or solution guidance."
+    },
+    {
+      "observed_at": "2026-09-17T09:17:42.585Z",
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "event": "coordinator_status_request_sent",
+      "subagent_id": "8f55895f-79b6-4628-ad57-9f01cde82966",
+      "message_id": "16952251-9f76-4afe-b333-a67c76b53c84",
+      "detail": "Factual stage/error/report status requested during current attempt; no interruption, restart, recovery or solution guidance."
+    },
+    {
+      "observed_at": "2026-09-17T09:19:22.691Z",
+      "arm": "skill",
+      "task": "S6-corridor-net-state",
+      "event": "completed_and_verified",
+      "subagent_id": "3d07089d-9637-42d9-ac78-e943ed5f98cf",
+      "dispatch_attempt": 1,
+      "detail": "Solver status message and 46-line report read fully; complete ending, no Markdown .md links. One child-side run_code template-literal syntax error self-recovered; skill methodology followed. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:19:22.691Z",
+      "arm": "skill",
+      "task": "S8-release-routing-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "cb281b37-dbad-4f1b-8840-8a2dd33fc70c",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:26:46.351Z",
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "event": "premature_close_without_report_recovery_requested",
+      "subagent_id": "8f55895f-79b6-4628-ad57-9f01cde82966",
+      "message_id": "7e99ce44-ce4e-4b82-af41-a7fe1735d2fb",
+      "dispatch_attempt": 1,
+      "detail": "Agent announced report before ending but output file verified absent (repeating announce-then-truncate pattern). Same-agent recovery turn required writing the full report before ending; counts as recovery under user continuous-retry policy, not a new dispatch. Offline semver crux finding preserved from closing message for provenance. If recovery ends without report, record failure and dispatch fresh attempt 2."
+    },
+    {
+      "observed_at": "2026-09-17T09:26:46.351Z",
+      "arm": "skill",
+      "task": "S8-release-routing-trap",
+      "event": "inflight_observation_only",
+      "subagent_id": "cb281b37-dbad-4f1b-8840-8a2dd33fc70c",
+      "detail": "Step sequence advancing from dispatch baseline; no failure evidence, so no termination or re-dispatch. Cache sequence numbers treated as auxiliary diagnostics only, not progress promises."
+    },
+    {
+      "observed_at": "2026-09-17T09:29:43.160Z",
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "event": "completed_and_verified_after_recovery",
+      "subagent_id": "8f55895f-79b6-4628-ad57-9f01cde82966",
+      "dispatch_attempt": 1,
+      "detail": "Recovery turn produced 175-line report; read fully, complete ending, no Markdown .md links. Premature close without report recorded and resolved by same-agent recovery; no scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:29:43.160Z",
+      "arm": "skill",
+      "task": "S8-release-routing-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "cb281b37-dbad-4f1b-8840-8a2dd33fc70c",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; 92-line report read fully, complete ending, no Markdown .md links. Broad-grep accidental exposure of benchmark solutions/judges/prior reports disclosed; child stopped the scope and did not use those snippets; recorded in contamination_log. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:29:43.160Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "8cbaef08-0d76-4661-8f2c-103c2840735e",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:34:23.658Z",
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "event": "final_revision_verified_supersedes_intermediate",
+      "subagent_id": "8f55895f-79b6-4628-ad57-9f01cde82966",
+      "detail": "Child revised report post-verification: final 97 lines supersede the 175-line intermediate I had validated. Final version read fully; corrections include prerelease-tuple attribution, disclosed references/scripts/README.md failed read, withdrawal of unverified Git-integrity claims. Fingerprint refreshed; earlier count preserved as superseded intermediate."
+    },
+    {
+      "observed_at": "2026-09-17T09:34:23.658Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "attempt_ended_without_report",
+      "subagent_id": "8cbaef08-0d76-4661-8f2c-103c2840735e",
+      "dispatch_attempt": 1,
+      "detail": "Agent closed with only an opening statement, no report file. Continuous-retry dispatch 2 accepted immediately."
+    },
+    {
+      "observed_at": "2026-09-17T09:34:23.658Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "de4e28bb-0127-47d1-bfbf-0abc0d7fb229",
+      "dispatch_attempt": 2,
+      "completion_verified": false,
+      "detail": "Prompt adds explicit begin-solving-immediately and report-before-closing-summary instructions; scope-limited search instruction retained from S8 exposure lesson."
+    },
+    {
+      "observed_at": "2026-09-17T09:37:18.892Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "attempt2_failed_silently_no_report",
+      "subagent_id": "de4e28bb-0127-47d1-bfbf-0abc0d7fb229",
+      "dispatch_attempt": 2,
+      "detail": "Failure notification without closing message; output directory verified empty. Cause unknown."
+    },
+    {
+      "observed_at": "2026-09-17T09:37:18.892Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "0af48eb3-995a-4c5d-af08-8a08ccb392ed",
+      "dispatch_attempt": 3,
+      "completion_verified": false,
+      "detail": "Continuous retry per user policy; noskill S9 precedent resolved on attempt 4."
+    },
+    {
+      "observed_at": "2026-09-17T09:37:18.892Z",
+      "arm": "skill",
+      "task": "S10-paste-rename-and-version-chip",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "727fe44a-93d7-4aca-be60-8c935aadeaf7",
+      "dispatch_attempt": 1,
+      "completion_verified": false,
+      "detail": "Dispatched into slot freed by failed S9 attempt 2, keeping concurrency at 2."
+    },
+    {
+      "observed_at": "2026-09-17T09:43:51.802Z",
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "event": "completed_and_verified_after_recovery",
+      "subagent_id": "0af48eb3-995a-4c5d-af08-8a08ccb392ed",
+      "dispatch_attempt": 3,
+      "detail": "Same-agent recovery turn after empty attempt produced 110-line report; read fully, complete ending, no Markdown .md links. Mirrors noskill S9 resolving on attempt 4. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:43:51.802Z",
+      "arm": "skill",
+      "task": "S11-mermaid-lazyload-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "8fc5f397-f387-412d-91ca-0e463b8d184e",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:52:18.511Z",
+      "arm": "skill",
+      "task": "S11-mermaid-lazyload-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "8fc5f397-f387-412d-91ca-0e463b8d184e",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 69-line report read fully, complete ending, no Markdown .md links. No scoring. Final version read at terminal, superseding the earlier 27-line intermediate snapshot observed while the child was still running."
+    },
+    {
+      "observed_at": "2026-09-17T09:52:18.511Z",
+      "arm": "skill",
+      "task": "S12-global-upgrade-ebusy-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "52a17e79-44fd-445f-a801-c27d76933130",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:55:48.123Z",
+      "arm": "skill",
+      "task": "S10-paste-rename-and-version-chip",
+      "event": "completed_and_verified",
+      "subagent_id": "727fe44a-93d7-4aca-be60-8c935aadeaf7",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 105-line report read fully, complete ending, no Markdown .md links. One in-attempt write failed on tool-argument validation (missing description) and was self-recovered in the same attempt before completion; not a dispatch failure. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T09:55:48.123Z",
+      "arm": "skill",
+      "task": "S13-peer-range-vs-runtime",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "8bf3d84c-5ffb-4fc1-ba0f-b962fa5ac7c2",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T09:57:32.505Z",
+      "arm": "skill",
+      "task": "S13-peer-range-vs-runtime",
+      "event": "attempt1_failed_silently_no_report",
+      "subagent_id": "8bf3d84c-5ffb-4fc1-ba0f-b962fa5ac7c2",
+      "dispatch_attempt": 1,
+      "detail": "Failure notification without closing message; output directory verified empty. Cause unknown."
+    },
+    {
+      "observed_at": "2026-09-17T09:57:32.505Z",
+      "arm": "skill",
+      "task": "S13-peer-range-vs-runtime",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "dba1fce4-273a-4e68-9110-f1a640911861",
+      "dispatch_attempt": 2,
+      "completion_verified": false,
+      "detail": "Continuous retry per user policy. Parent-authored report hypothesis explicitly rejected: solver-authored reports are required for arm validity."
+    },
+    {
+      "observed_at": "2026-09-17T10:32:32.078Z",
+      "arm": "skill",
+      "task": "S13-peer-range-vs-runtime",
+      "event": "completed_and_verified_on_retry",
+      "subagent_id": "dba1fce4-273a-4e68-9110-f1a640911861",
+      "dispatch_attempt": 2,
+      "detail": "Terminal received; final 93-line report read fully, complete ending, no Markdown .md links. Attempt 1 failed silently; retry resolved. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T10:32:32.078Z",
+      "arm": "skill",
+      "task": "S14-link-install-lock-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "f148ddcf-8357-40b2-a361-fcc1868f1644",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T10:35:08.041Z",
+      "arm": "skill",
+      "task": "S12-global-upgrade-ebusy-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "52a17e79-44fd-445f-a801-c27d76933130",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 94-line report read fully, complete ending, no Markdown .md links. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T10:35:08.041Z",
+      "arm": "skill",
+      "task": "S15-slot-error-boundary-crash",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "b6564ffc-1c31-4c7a-91a2-700307836bb0",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T10:42:06.680Z",
+      "arm": "skill",
+      "task": "S14-link-install-lock-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "f148ddcf-8357-40b2-a361-fcc1868f1644",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 113-line report read fully, complete ending, no Markdown .md links. Status updates received mid-flight were progress only; no scoring."
+    },
+    {
+      "observed_at": "2026-09-17T10:42:06.680Z",
+      "arm": "skill",
+      "task": "S16-self-host-upgrade-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "6d543b42-853e-49c3-a77c-bbc85f953a5c",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T10:46:03.623Z",
+      "arm": "skill",
+      "task": "S16-self-host-upgrade-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "6d543b42-853e-49c3-a77c-bbc85f953a5c",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 100-line report read fully, complete ending, no Markdown .md links. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T10:46:03.623Z",
+      "arm": "skill",
+      "task": "S15-slot-error-boundary-crash",
+      "event": "stalled_turn_interrupted_recovery_requested",
+      "subagent_id": "b6564ffc-1c31-4c7a-91a2-700307836bb0",
+      "message_id": "2eed6904-9fb7-4660-af35-82e697d7f223",
+      "detail": "Generation step static across multiple polls (seq 61, openStep open, no pendingCalls); interrupt accepted and same-agent recovery turn instructed to write the report with short incremental writes. Counts as recovery, not a new dispatch. S16 evidence review was misread as corrupted; it delivered successfully."
+    },
+    {
+      "observed_at": "2026-09-17T10:46:03.623Z",
+      "arm": "skill",
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "24bfc863-eeb1-494b-8b4f-e75e3abc0ed5",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T10:52:33.629Z",
+      "arm": "skill",
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "24bfc863-eeb1-494b-8b4f-e75e3abc0ed5",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 133-line report read fully, complete ending, no Markdown .md links. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T10:52:33.629Z",
+      "arm": "skill",
+      "task": "S18-terminal-sprite-render-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "cd455bc9-1059-4e27-9c92-d863f24bf897",
+      "dispatch_attempt": 1,
+      "completion_verified": false,
+      "detail": "Prompt adds incremental-write instruction (skeleton then section-by-section edits) adopted from S15 recovery lesson."
+    },
+    {
+      "observed_at": "2026-09-17T10:52:33.629Z",
+      "arm": "skill",
+      "task": "S15-slot-error-boundary-crash",
+      "event": "recovery_ended_without_report",
+      "subagent_id": "b6564ffc-1c31-4c7a-91a2-700307836bb0",
+      "detail": "Recovery turn closed announcing intent to write incrementally but no report file exists. Same agent remains available; per continuous-retry policy one more same-agent recovery before considering dispatch 2."
+    },
+    {
+      "observed_at": "2026-09-17T11:03:11.105Z",
+      "arm": "skill",
+      "task": "S18-terminal-sprite-render-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "cd455bc9-1059-4e27-9c92-d863f24bf897",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 242-line report read fully, complete ending, no Markdown .md links. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T11:03:11.105Z",
+      "arm": "skill",
+      "task": "S15-slot-error-boundary-crash",
+      "event": "completed_and_verified_after_recovery_and_revision",
+      "subagent_id": "b6564ffc-1c31-4c7a-91a2-700307836bb0",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received after interrupt plus two recovery turns with incremental writes. Child then rewrote the report to correct OR semantics and remove unsupported claims; final version re-read fully. Intermediate version (108 lines, busy short-circuit root cause) superseded by final; final line count verified before recording. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T11:03:11.105Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "attempt1_ended_without_report",
+      "subagent_id": "b655fd86-2482-4785-897c-4b1f23dfa4a7",
+      "dispatch_attempt": 1,
+      "detail": "Closed with only an opening statement; no report file. Continuous-retry dispatch 2 follows."
+    },
+    {
+      "observed_at": "2026-09-17T11:03:11.105Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "d368472a-87d4-45ed-84a9-399af990a969",
+      "dispatch_attempt": 2,
+      "completion_verified": false,
+      "detail": "Continuous retry per user policy after opening-statement-only attempt 1."
+    },
+    {
+      "observed_at": "2026-09-17T11:04:31.842Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "attempt2_ended_without_report",
+      "subagent_id": "d368472a-87d4-45ed-84a9-399af990a969",
+      "dispatch_attempt": 2,
+      "detail": "Again closed with only an opening statement; no report file. Cause unknown."
+    },
+    {
+      "observed_at": "2026-09-17T11:04:31.842Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "retry_dispatch_accepted",
+      "subagent_id": "ef26977b-ec25-4c07-8497-2ddf2b7c08cd",
+      "dispatch_attempt": 3,
+      "completion_verified": false,
+      "detail": "Third dispatch under continuous-retry policy."
+    },
+    {
+      "observed_at": "2026-09-17T11:04:31.842Z",
+      "arm": "skill",
+      "task": "S20-msvc-flock-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "cfe01e65-e004-4959-bed2-fd838a5d2785",
+      "dispatch_attempt": 1,
+      "completion_verified": false,
+      "detail": "Second slot filled keeping concurrency at 2."
+    },
+    {
+      "observed_at": "2026-09-17T11:08:01.717Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "recovery_turn_requested_on_attempt3",
+      "subagent_id": "ef26977b-ec25-4c07-8497-2ddf2b7c08cd",
+      "message_id": "ff9124de-7f7b-4b1c-a7e8-2d8f63e03eb3",
+      "detail": "Attempt 3 stopped after opening statement (seq 7, no open step). Same-agent recovery demands report write with incremental writes and requires file path plus line count before ending; counts as recovery, not a new dispatch. Parent-authored patch/test hypothesis rejected: S19 is a read-only analysis task and solver-authored reports are required for arm validity."
+    },
+    {
+      "observed_at": "2026-09-17T11:15:00.363Z",
+      "arm": "skill",
+      "task": "S20-msvc-flock-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "cfe01e65-e004-4959-bed2-fd838a5d2785",
+      "dispatch_attempt": 1,
+      "detail": "Solver completion message; 142-line report read fully, complete ending, no Markdown .md links. Corridor card DSH-0.1.3-A1-03 cited as matching evidence. No scoring. Awaiting terminal before slot reuse."
+    },
+    {
+      "observed_at": "2026-09-17T11:15:52.504Z",
+      "arm": "skill",
+      "task": "S20-msvc-flock-trap",
+      "event": "terminal_confirmed",
+      "subagent_id": "cfe01e65-e004-4959-bed2-fd838a5d2785",
+      "detail": "Terminal closing message matches the validated 142-line report; fingerprint unchanged."
+    },
+    {
+      "observed_at": "2026-09-17T11:15:52.504Z",
+      "arm": "skill",
+      "task": "S21-resource-service-unavailable-trap",
+      "event": "background_dispatch_accepted",
+      "subagent_id": "d3af7bb6-75bf-492b-ad5e-8f5656f7701a",
+      "dispatch_attempt": 1,
+      "completion_verified": false
+    },
+    {
+      "observed_at": "2026-09-17T11:20:42.753Z",
+      "arm": "skill",
+      "task": "S21-resource-service-unavailable-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "d3af7bb6-75bf-492b-ad5e-8f5656f7701a",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 82-line report read fully, complete ending, no Markdown .md links. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T11:20:42.753Z",
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "event": "completed_and_verified_after_recovery",
+      "subagent_id": "ef26977b-ec25-4c07-8497-2ddf2b7c08cd",
+      "dispatch_attempt": 3,
+      "detail": "Terminal received with self-confirmed path and 311-line count; full re-read validated: complete ending, no Markdown .md links. Three dispatches, first two ended at opening statement only; recovery on attempt 3 resolved. No scoring."
+    },
+    {
+      "observed_at": "2026-09-17T11:28:29.224Z",
+      "arm": "skill",
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "event": "completed_and_verified",
+      "subagent_id": "5bda8826-9469-4d7d-a7a4-3dc0f8a36c1d",
+      "dispatch_attempt": 1,
+      "detail": "Terminal received; final 80-line report read fully, complete ending, no Markdown .md links. No scoring."
+    }
+  ],
+  "task_brief_notes": "instruction.md briefs use container paths (/app/fixture/, /app/agent-output/); solver wrapper maps /app/fixture/ to the Windows fixture dir and /app/agent-output/ to the report.md output dir; input readability verified for S1 (instruction 20 lines, 6 fixture files)",
+  "report_validation": {
+    "noskill/S1-static-scan": {
+      "line_count": 98,
+      "full_text_read": true,
+      "nonempty_substantive": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S2-negative-scan": {
+      "line_count": 98,
+      "markdown_md_links_found": false,
+      "ending_complete": true,
+      "scored": false
+    },
+    "noskill/S3-snapshot-migration": {
+      "line_count": 102,
+      "markdown_md_links_found": false,
+      "ending_complete": true,
+      "scored": false,
+      "contamination": "noskill arm child read SKILL.md/references; disclosed in report; not rerun per single-shot rule"
+    },
+    "noskill/S4-legacy-client-imports": {
+      "line_count": 39,
+      "full_text_read": true,
+      "nonempty_substantive": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S5-negative-naming": {
+      "line_count": 128,
+      "markdown_md_links_found": false,
+      "ending_complete": true,
+      "scored": false
+    },
+    "skill/S1-static-scan": {
+      "line_count": 116,
+      "ending_complete": true,
+      "scored": false,
+      "full_text_read": true,
+      "markdown_md_links_found": false,
+      "replacement_characters_found": false
+    },
+    "skill/S2-negative-scan": {
+      "line_count": 123,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S3-snapshot-migration": {
+      "line_count": 192,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S4-legacy-client-imports": {
+      "line_count": 84,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S5-negative-naming": {
+      "line_count": 95,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S6-corridor-net-state": {
+      "line_count": 41,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S7-unpublished-cohort": {
+      "line_count": 71,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S8-release-routing-trap": {
+      "line_count": 77,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S10-paste-rename-and-version-chip": {
+      "line_count": 115,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S11-mermaid-lazyload-trap": {
+      "line_count": 62,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S12-global-upgrade-ebusy-trap": {
+      "line_count": 71,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S13-peer-range-vs-runtime": {
+      "line_count": 59,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "supersedes_intermediate_line_count": 75
+    },
+    "noskill/S15-slot-error-boundary-crash": {
+      "line_count": 95,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "supersedes_intermediate_line_count": 159
+    },
+    "noskill/S16-self-host-upgrade-trap": {
+      "line_count": 77,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S9-composer-coordinate-trap": {
+      "line_count": 239,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 4
+    },
+    "noskill/S14-link-install-lock-trap": {
+      "line_count": 96,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 3
+    },
+    "noskill/S17-external-ui-plugin-onboarding-trap": {
+      "line_count": 136,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 3
+    },
+    "noskill/S19-phantom-update-stale-host": {
+      "line_count": 154,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "noskill/S20-msvc-flock-trap": {
+      "line_count": 74,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 4
+    },
+    "noskill/S21-resource-service-unavailable-trap": {
+      "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S21-resource-service-unavailable-trap/report.md",
+      "total_lines": 68,
+      "complete_ending": true,
+      "markdown_md_links": false,
+      "substantive": true,
+      "validated_at": "2026-09-17T09:10:16.688Z",
+      "validator_note": "Format/delivery validation only; no scoring."
+    },
+    "noskill/S18-terminal-sprite-render-trap": {
+      "line_count": 362,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 2
+    },
+    "noskill/S22-duplicate-insert-boot-crash-trap": {
+      "line_count": 64,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S6-corridor-net-state": {
+      "line_count": 46,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S7-unpublished-cohort": {
+      "line_count": 97,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "note": "Delivered on recovery turn after premature close",
+      "superseded_intermediate_line_count": 175,
+      "validated_at": "2026-09-17T09:34:23.658Z"
+    },
+    "skill/S8-release-routing-trap": {
+      "line_count": 92,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S9-composer-coordinate-trap": {
+      "line_count": 110,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "note": "Delivered on same-agent recovery turn after empty attempt 3"
+    },
+    "skill/S11-mermaid-lazyload-trap": {
+      "line_count": 69,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S10-paste-rename-and-version-chip": {
+      "line_count": 105,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S13-peer-range-vs-runtime": {
+      "line_count": 93,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 2
+    },
+    "skill/S12-global-upgrade-ebusy-trap": {
+      "line_count": 94,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S14-link-install-lock-trap": {
+      "line_count": 113,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S16-self-host-upgrade-trap": {
+      "line_count": 100,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S17-external-ui-plugin-onboarding-trap": {
+      "line_count": 133,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S15-slot-error-boundary-crash": {
+      "line_count": 73,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "note": "Final version after child self-revision correcting OR semantics; delivered via interrupt plus two recovery turns",
+      "superseded_intermediate_line_count": 108
+    },
+    "skill/S18-terminal-sprite-render-trap": {
+      "line_count": 242,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S20-msvc-flock-trap": {
+      "line_count": 142,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S21-resource-service-unavailable-trap": {
+      "line_count": 82,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    },
+    "skill/S19-phantom-update-stale-host": {
+      "line_count": 311,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false,
+      "attempts_used": 3
+    },
+    "skill/S22-duplicate-insert-boot-crash-trap": {
+      "line_count": 80,
+      "full_text_read": true,
+      "ending_complete": true,
+      "markdown_md_links_found": false,
+      "scored": false
+    }
+  },
+  "methodology_observations": [
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "observation": "Report explicitly cites three files under skills/plugin-upgrade/references. Noskill wrapper did not prohibit reference access. This is reference exposure, not evidence that SKILL.md was loaded; retained for judge/provenance review without rerun."
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "reported_by": "child progress message",
+      "observation": "Child reports consulting locally installed package sources to locate slots declarations/API, in addition to fixture. No skills-directory access reported. Preserve as input exposure disclosure; no scoring or retrospective rerun."
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "reported_by": "child completion message",
+      "observation": "Child disclosed broadening path discovery/search beyond fixture while seeking card references; reported no additional modifications and no full card ID obtained. Exact accessed paths not established by this message; no unsupported claim of skills exposure or isolation compliance."
+    }
+  ],
+  "diagnostic_limits": "Parent read/glob successfully accessed S1 instruction and fixture paths. This does not establish child tool availability or rule out child-specific environment, provider, or tool failures. Initial foreground delegation failure cause remains unknown. A running registry state alone does not establish progress or a hang.",
+  "contamination_log": [
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "subagent_id": "fa2ca6cb-aa67-4427-b3aa-25a3ab27b026",
+      "reported_by": "child message",
+      "status": "disclosed_not_rerun"
+    },
+    {
+      "observed_at": "2026-09-17T09:29:43.160Z",
+      "task": "skill/S8-release-routing-trap",
+      "subagent_id": "cb281b37-dbad-4f1b-8840-8a2dd33fc70c",
+      "detail": "Child disclosed one overly broad read-only grep unintentionally returned snippets from benchmark solutions, judges, and prior reports; child stopped that scope and states the report is based only on the task brief and five fixture files. Exposure disclosed for judge consideration; parent did not verify which files were returned."
+    }
+  ],
+  "protocol_amendments": [
+    {
+      "id": "noskill-s4-input-restriction",
+      "introduced_at": "noskill/S4-legacy-client-imports",
+      "original_wrapper": "Noskill S1-S3 wrapper did not prohibit skill/reference access.",
+      "added_instruction": "Do not read files under the skills/ directory of the benchmark repository; the task brief and fixture are your intended inputs.",
+      "reason": "Coordinator added restriction after S3 explicitly disclosed reading SKILL.md.",
+      "comparability_limit": "This changes available evidence as well as methodology exposure. S1-S3 and S4 onward must not be represented as one unchanged noskill protocol. Preserve reports without rerunning or retroactive relabeling."
+    },
+    {
+      "observed_at": "2026-09-17T09:13:53.554Z",
+      "detail": "Coordinator started skill S6 while final noskill S22 remains running, filling the second slot under the user-authorized concurrency cap of two. This overlaps arm execution instead of waiting for the entire noskill arm; prompts and isolated solver inputs unchanged. Earlier coordinator statement that no concurrency slot was free was incorrect: one slot was free, and waiting was for arm order only."
+    }
+  ],
+  "coordinator_diagnostic_notes": [
+    {
+      "id": "s4-cache-read-parse",
+      "detail": "Parent attempted JSON.parse on text reconstructed from the read-tool result for the exact S4 projection cache; parse failed with Bad control character. No cache corruption or child failure established. No cache was modified. Further runtime-directory diagnosis stopped after child reported progress."
+    },
+    {
+      "id": "s17-s18-cache-observation-2026-09-17T08:22:33.837Z",
+      "observed_at": "2026-09-17T08:22:33.837Z",
+      "source": "Exact per-agent persisted projection cache; read-only observation, not live provider telemetry.",
+      "agents": [
+        {
+          "agent": "1c5ee02b-03a0-4844-ac40-e3ed9a50db80",
+          "task": "noskill/S17",
+          "recorded_steps": 4,
+          "open_step": 5,
+          "open_step_started_at": "2026-09-17T08:19:38.026Z",
+          "first_token_time": null,
+          "cached_failure": null
+        },
+        {
+          "agent": "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+          "task": "noskill/S18",
+          "recorded_steps": 5,
+          "open_step": 6,
+          "open_step_started_at": "2026-09-17T08:05:51.459Z",
+          "first_token_time": null,
+          "cached_failure": null
+        }
+      ],
+      "limits": "No provider failure or hang established. No pending tool calls in either cache. Do not infer complete absence of activity from potentially stale persisted statistics."
+    },
+    {
+      "id": "manifest-paged-read-recovery",
+      "detail": "JSON.parse failed on reconstructed large single-read output before any write. Reading all 1215 lines in 150-line pages parsed successfully. No manifest corruption established; subsequent updates use paginated reads."
+    },
+    {
+      "observed_at": "2026-09-17T09:11:16.088Z",
+      "detail": "Previous manifest-update program failed parsing due to duplicate const first declaration; no tools or writes ran in that failed program. Corrected program saved S21 verification and S22 dispatch; persisted JSON was reread and verified."
+    },
+    {
+      "detail": "Task inventory glob patterns */instruction.md and S*/instruction.md returned no paths; basename instruction.md enumerated inputs successfully. First inventory program stopped at count assertion without writing. No input files were missing."
+    },
+    {
+      "observed_at": "2026-09-17T09:26:46.351Z",
+      "detail": "Self-check hypothesis tested: S7 missing-report claim confirmed and acted on via recovery; S8 stalled claim rejected on evidence (recent dispatch, advancing sequence, live running status). No interrupt, no duplicate dispatch."
+    },
+    {
+      "observed_at": "2026-09-17T09:37:18.892Z",
+      "detail": "Self-check hypothesis of parent-authored S9 report rejected: benchmark protocol requires solver-authored reports and preserves the two-arm experiment; continuous-retry policy retained. Pre-dispatch brief existence re-verified as adopted practice."
+    },
+    {
+      "observed_at": "2026-09-17T09:52:18.511Z",
+      "detail": "Process lesson recorded: S11 report was observed mid-writing at 27 lines before terminal; final terminal version was 69 lines. Finalized counts must be read only after terminal notification, superseded intermediates preserved as observation only."
+    },
+    {
+      "observed_at": "2026-09-17T11:08:01.717Z",
+      "detail": "Self-check hypothesis of direct parent patch/test on S19 rejected after reading manifest protocol fields: read-only task, no product code to patch, solver-authored reports required. Adopted nugget: recovery turn must confirm written file path and line count."
+    },
+    {
+      "observed_at": "2026-09-17T11:15:00.363Z",
+      "detail": "S19 recovery produced a report file; final version and line count awaited from child confirmation before validation record, per S7/S11/S13 terminal-then-read lesson."
+    }
+  ],
+  "repository_observations": [
+    {
+      "observed_at": "2026-09-17T05:35:46.569Z",
+      "head": "dbca8e4583e36c01105028734631d4f255332363",
+      "working_tree_clean": true,
+      "original_base_commit": "f8ab0145f97b8de1b4abea88fa0c1090e66b4e00",
+      "input_diff_paths": [],
+      "input_diff_scope": [
+        "benchmark/tasks",
+        "skills/plugin-upgrade"
+      ],
+      "detail": "HEAD changed since initial baseline. git diff --name-only for task and skill inputs was empty. Changes shown by stat concern other benchmark results and analysis scripts; contents of judge results not read. Cause of HEAD movement not established; original base_commit preserved."
+    },
+    {
+      "observed_at": "2026-09-17T09:11:16.088Z",
+      "head": "dbca8e4583e36c01105028734631d4f255332363",
+      "working_tree_clean": true,
+      "original_base_commit": "f8ab0145f97b8de1b4abea88fa0c1090e66b4e00",
+      "input_diff_paths": [],
+      "input_diff_scope": [
+        "benchmark/tasks",
+        "skills/plugin-upgrade"
+      ],
+      "detail": "Read-only git status and baseline-to-HEAD input diff both empty; exit code 0. Interim check, not final completion check."
+    },
+    {
+      "observed_at": "2026-09-17T11:30:41.654Z",
+      "head": "dbca8e4583e36c01105028734631d4f255332363",
+      "working_tree_clean": true,
+      "original_base_commit": "f8ab0145f97b8de1b4abea88fa0c1090e66b4e00",
+      "input_diff_paths": [],
+      "input_diff_scope": [
+        "benchmark/tasks",
+        "skills/plugin-upgrade"
+      ],
+      "detail": "Final completion check: git status empty, HEAD dbca8e4 unchanged from earlier verification. Clean worktree preserved through solver phase."
+    }
+  ],
+  "resume_checkpoint": {
+    "observed_at": "2026-09-17T11:29:24.449Z",
+    "verified_reports": 44,
+    "concurrency": 2,
+    "active": [],
+    "next_task_after_verification": "HANDOFF: 44/44 delivered and verified; awaiting user switch to glm-5.3-flash for judging. No further solver work."
+  },
+  "pilot_gate": {
+    "completed_at": "2026-09-17T06:16:44.105Z",
+    "noskill_reports_verified": 5,
+    "skill_reports_verified": 5,
+    "pilot_total": 10,
+    "verdict": "PASS — all 10 pilot reports on disk and substantively complete. Known deviations carried to judge phase: noskill S1/S2 disclosed reference access; noskill S5 reports no skills-directory access; noskill S3 explicitly read SKILL.md (contamination disclosed); input-restriction amendment started at noskill S4; one premature-terminal recovery on skill S1; repo HEAD moved from baseline f8ab0145 to dbca8e45 during run (task inputs unchanged).",
+    "next_stage": "Full run S6–S22 both arms, concurrency 1, starting noskill S6.",
+    "total_run_target": 44
+  },
+  "missing_reports": [
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "reason": "Two subagent dispatches failed with no closing message and no report; retry budget exhausted. Not solved by parent by design.",
+      "status": "resolved_on_attempt_4",
+      "policy_note": "Original failure record retained. User now authorizes repeated retries until report completion."
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "status": "resolved_on_attempt_3",
+      "reason": "Both subagent attempts failed with no report; retry budget exhausted. No third attempt or parent substitution.",
+      "policy_note": "Original failure record retained. User now authorizes repeated retries until report completion."
+    }
+  ],
+  "retry_policy_update": {
+    "updated_at": "2026-09-17T07:53:26.879Z",
+    "user_directive": "Continuous retries for failed tasks without a completed report, overriding the earlier single-retry limit; strictly single concurrency; every attempt logged; no rerun of completed reports.",
+    "applies_to": [
+      "all remaining tasks",
+      "backfill noskill/S9",
+      "backfill noskill/S14"
+    ],
+    "possible_cause_user_reported": "Union-alpha service slow due to heavy user load (recorded as user-reported possibility, not verified cause)."
+  },
+  "concurrency_policy_update": {
+    "updated_at": "2026-09-17T07:57:55.344Z",
+    "user_directive": "Increase to two concurrent solvers because of slow Union-alpha service; continuous retries still authorized; log every attempt."
+  },
+  "delivery_integrity_audit": {
+    "observed_at": "2026-09-17T11:28:29.224Z",
+    "method": "SHA-256 of line text returned by read, joined with LF; normalized-text fingerprint, not raw-file byte hash. Read-only report audit; no scoring.",
+    "reports": [
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S1-static-scan\\report.md",
+        "line_count": 98,
+        "full_read": true,
+        "normalized_text_sha256": "97f90cd96efef338063a1df31e4ea490d0c25957dc6cc582b7cfb6b7b9f8a132",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S2-negative-scan\\report.md",
+        "line_count": 98,
+        "full_read": true,
+        "normalized_text_sha256": "f45d7ecc2580292528990e539277a1683e188e07cd721ed30061667e4d4dd579",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S3-snapshot-migration\\report.md",
+        "line_count": 102,
+        "full_read": true,
+        "normalized_text_sha256": "f0d814dd95612de4d0d4940dc04e414bb4aee13bd6e1292f13908954074e2001",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S4-legacy-client-imports\\report.md",
+        "line_count": 39,
+        "full_read": true,
+        "normalized_text_sha256": "4a59bf5d6437ecc0f330859dc869c07d2ed1177ad116149b15c1a29a962225d9",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S5-negative-naming\\report.md",
+        "line_count": 128,
+        "full_read": true,
+        "normalized_text_sha256": "d26cea42706b5265932527df14321d933a24935262dd667535210f59bdb0b4e5",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\skill\\S1-static-scan\\report.md",
+        "line_count": 116,
+        "full_read": true,
+        "normalized_text_sha256": "5cd0331009b6c829ec6bbc5e2a68b738f9429118cce33a2d26386385f6013605",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\skill\\S2-negative-scan\\report.md",
+        "line_count": 123,
+        "full_read": true,
+        "normalized_text_sha256": "2da844bba4f2e68755611f615ab93fb713a8419eaa362cf826d38c034a62324a",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\skill\\S3-snapshot-migration\\report.md",
+        "line_count": 192,
+        "full_read": true,
+        "normalized_text_sha256": "47667c110406ff0438666e628911814508f6d0915954d0711e6386022ad62c92",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\skill\\S4-legacy-client-imports\\report.md",
+        "line_count": 84,
+        "full_read": true,
+        "normalized_text_sha256": "69d955bc14f4b4f12743ad2fde8645a5458f3840691cd22a3c56af1d81e1ec58",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\skill\\S5-negative-naming\\report.md",
+        "line_count": 95,
+        "full_read": true,
+        "normalized_text_sha256": "99e948e20d1a22df3924f26183ef2ede6501c4b74a3bde0109eb3896e9698dd1",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S6-corridor-net-state\\report.md",
+        "line_count": 41,
+        "full_read": true,
+        "normalized_text_sha256": "72b4461caf6a33e242fc51f695a8ca6e16173178c3999f06d28682d95ede89f8",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S7-unpublished-cohort\\report.md",
+        "line_count": 71,
+        "full_read": true,
+        "normalized_text_sha256": "64f1939e35b4ec5aeb2e8a3f312c19eeeec0e78ade007fa4e1364ed08d6d488d",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S8-release-routing-trap\\report.md",
+        "line_count": 77,
+        "full_read": true,
+        "normalized_text_sha256": "e71b89adab4da0e569f1718779914999817a38676c007e11e4ee8d427efd4d3d",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S10-paste-rename-and-version-chip\\report.md",
+        "line_count": 115,
+        "full_read": true,
+        "normalized_text_sha256": "1e8292ea31ddd890c6b2276070594d0752c25e0908481d6640a0db1a71431ff6",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S11-mermaid-lazyload-trap\\report.md",
+        "line_count": 62,
+        "full_read": true,
+        "normalized_text_sha256": "78c613b22cff2c3c8956e903a34674ea79f0aefc0012785af1e16c2e45526e9e",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S12-global-upgrade-ebusy-trap\\report.md",
+        "line_count": 71,
+        "full_read": true,
+        "normalized_text_sha256": "cbc06e331abb09e42105b45b7cf27ce703b7f43cbe89337687ca0144aa0bad17",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S13-peer-range-vs-runtime\\report.md",
+        "line_count": 59,
+        "full_read": true,
+        "normalized_text_sha256": "313913f61959bd9a647fa1adbd98202903d43dcd43d6039184f63a0d3024854b",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S15-slot-error-boundary-crash\\report.md",
+        "line_count": 95,
+        "full_read": true,
+        "normalized_text_sha256": "da1d507f54fe9ae5e291a27de7f963080f24357221b85a556073076fdcdc0076",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S16-self-host-upgrade-trap\\report.md",
+        "line_count": 77,
+        "full_read": true,
+        "normalized_text_sha256": "884de43c2be0f2be4eb16c90749b0b3a5a0e3d1922c589cc79d6a414f2468597",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S9-composer-coordinate-trap\\report.md",
+        "line_count": 239,
+        "full_read": true,
+        "normalized_text_sha256": "9e69751720712b141ce64d82cf9e2c37728abcc52e8125b625edc49d75ef3c22",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:\\deepseek-harness\\test-lhh010\\benchmark-runs\\union-alpha-r1\\noskill\\S14-link-install-lock-trap\\report.md",
+        "line_count": 96,
+        "full_read": true,
+        "normalized_text_sha256": "5156883255a8267ddb432b6fbe917a13d935e107d0691fa7fd5bdbd80fc76361",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S21-resource-service-unavailable-trap/report.md",
+        "line_count": 68,
+        "full_read": true,
+        "normalized_text_sha256": "bcef67d82c167c0f3dbbab2f1653f9cf4beb0cf59682e9d097d5122db992c4ae",
+        "markdown_md_links": false,
+        "replacement_characters": false
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S17-external-ui-plugin-onboarding-trap/report.md",
+        "line_count": 136,
+        "full_read": true,
+        "normalized_text_sha256": "3c7830aa5f53bc8862abd9c298f2a08e9b783fb9fbd226e9ab8b2013a7942c6a",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:11:16.088Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S19-phantom-update-stale-host/report.md",
+        "line_count": 154,
+        "full_read": true,
+        "normalized_text_sha256": "8744d8a068ffd1beaa1bd31463b442a1e1e192bb82849c41583fac5d3008a4e5",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:11:16.088Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S20-msvc-flock-trap/report.md",
+        "line_count": 74,
+        "full_read": true,
+        "normalized_text_sha256": "dee747ad6c5807d3ff5445d33ff699ac021532a98c603de59c414c1cdd634f56",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:11:16.088Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S18-terminal-sprite-render-trap/report.md",
+        "line_count": 362,
+        "full_read": true,
+        "normalized_text_sha256": "b9fb378542ea71ccc98075523da42012b8f72b37492db646514f02349029fe76",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:11:43.579Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/noskill/S22-duplicate-insert-boot-crash-trap/report.md",
+        "line_count": 64,
+        "full_read": true,
+        "normalized_text_sha256": "df94ff4a299be456dfe3b2f1f770b3e80af6ec8ec21afacb63f850769e0acaf6",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:15:14.387Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S6-corridor-net-state/report.md",
+        "line_count": 46,
+        "full_read": true,
+        "normalized_text_sha256": "718f315ca416cf429b18b0a518171ed14b8bbf620e04cfaa27d57442c88b49b6",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:19:22.691Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S7-unpublished-cohort/report.md",
+        "line_count": 97,
+        "full_read": true,
+        "normalized_text_sha256": "cf05a3c5da2bd20ffb60e89f23279dbb0104a83f9919c940b956f90e67a3e7c5",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:34:23.658Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S8-release-routing-trap/report.md",
+        "line_count": 92,
+        "full_read": true,
+        "normalized_text_sha256": "f0c93b7f06f8b199c8804864f2e859ad463d794f849eb5b3ba127f24b14fe5b4",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:29:43.160Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S9-composer-coordinate-trap/report.md",
+        "line_count": 110,
+        "full_read": true,
+        "normalized_text_sha256": "a85ce9d0888992e935320cbcabbcf912f9f849655b9e31017072f0ea8f2f0c5b",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:43:51.802Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S11-mermaid-lazyload-trap/report.md",
+        "line_count": 69,
+        "full_read": true,
+        "normalized_text_sha256": "52214658aaabd0a306b9f8235e160174f44e0fd566c41fd19d2d22990eedb84a",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:52:18.511Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S10-paste-rename-and-version-chip/report.md",
+        "line_count": 105,
+        "full_read": true,
+        "normalized_text_sha256": "c5610420503d80352cfdc0bda3d700ff4b08fadd29713599b97b90047561a153",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T09:55:48.123Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S13-peer-range-vs-runtime/report.md",
+        "line_count": 93,
+        "full_read": true,
+        "normalized_text_sha256": "dbe857ee68a80f192c11b7acfa88727201fe2e7800054d80b4a0a07c1e0ff312",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T10:32:32.078Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S12-global-upgrade-ebusy-trap/report.md",
+        "line_count": 94,
+        "full_read": true,
+        "normalized_text_sha256": "9e27c88e6b41277d87e6bb55ebb82a73506438f690e70be2f2d01426203b4f62",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T10:35:08.041Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S14-link-install-lock-trap/report.md",
+        "line_count": 113,
+        "full_read": true,
+        "normalized_text_sha256": "442c524491cd596b09cc35f6b5ae9896c09b9db3d7b973eca7c22fecbafe4387",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T10:42:06.680Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S16-self-host-upgrade-trap/report.md",
+        "line_count": 100,
+        "full_read": true,
+        "normalized_text_sha256": "32a31ee6bb50535deda587d5f5023fe64aee54e4554dd4efc0064b6a19787264",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T10:46:03.623Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S17-external-ui-plugin-onboarding-trap/report.md",
+        "line_count": 133,
+        "full_read": true,
+        "normalized_text_sha256": "7de653956f0bfd124c70a426264e18be0aea60aa724bf8cfada58f4e7c06b975",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T10:52:33.629Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S15-slot-error-boundary-crash/report.md",
+        "line_count": 73,
+        "full_read": true,
+        "normalized_text_sha256": "16258daa2114fb9311936258bd1ec16a85075933e5239468dfa0a3590cb7c008",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:03:11.105Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S18-terminal-sprite-render-trap/report.md",
+        "line_count": 242,
+        "full_read": true,
+        "normalized_text_sha256": "b8ae241c2c423e0ae514ac22297fe5ff8176f83cfc037775e08d9d00a2e7f82c",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:03:11.105Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S20-msvc-flock-trap/report.md",
+        "line_count": 142,
+        "full_read": true,
+        "normalized_text_sha256": "a07037864129641a2ea052ac737a7bbfb4174672b0aa6374c998f08b9a52c788",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:15:00.363Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S19-phantom-update-stale-host/report.md",
+        "line_count": 311,
+        "full_read": true,
+        "normalized_text_sha256": "5be65687b91c4511dd13a4df0a58a0b4b8bc699e0e3a76ff002245cfd28f786a",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:20:42.753Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S21-resource-service-unavailable-trap/report.md",
+        "line_count": 82,
+        "full_read": true,
+        "normalized_text_sha256": "d60cc17e7d05a8fe9115c9987c6b8e789a4d077c90603cb0ce4cca19463a2761",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:20:42.753Z"
+      },
+      {
+        "path": "E:/deepseek-harness/test-lhh010/benchmark-runs/union-alpha-r1/skill/S22-duplicate-insert-boot-crash-trap/report.md",
+        "line_count": 80,
+        "full_read": true,
+        "normalized_text_sha256": "349e951664bc6b27a31baac77c825a6672fba3e214d5a7ccc44afdb349452014",
+        "markdown_md_links": false,
+        "replacement_characters": false,
+        "observed_at": "2026-09-17T11:28:29.224Z"
+      }
+    ],
+    "last_recheck": {
+      "observed_at": "2026-09-17T09:12:12.034Z",
+      "reports_checked": 26,
+      "all_normalized_text_fingerprints_unchanged": true,
+      "scored": false
+    }
+  },
+  "retry_summary": {
+    "observed_at": "2026-09-17T09:14:25.626Z",
+    "method": "Derived from distinct subagent IDs plus failed foreground delegation events; recovery_turn_requested counted separately. execution_events remains authoritative; event indices are zero-based.",
+    "entries": [
+      {
+        "task_key": "noskill/S1-static-scan",
+        "dispatch_attempts": 3,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "f0887bcc-11ab-4ba5-b968-d29d2471d35c",
+          "ebc3c1bd-54b8-44e1-8536-29553b3d7df7"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "task_key": "noskill/S3-snapshot-migration",
+        "dispatch_attempts": 2,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "567879f2-a216-48bd-89dc-4e2f4f78be1c",
+          "fa2ca6cb-aa67-4427-b3aa-25a3ab27b026"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "task_key": "skill/S1-static-scan",
+        "dispatch_attempts": 1,
+        "additional_recovery_turns": 1,
+        "agent_ids": [
+          "3f1c1853-2389-4611-8f5e-72aa2b647073"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ]
+      },
+      {
+        "task_key": "noskill/S6-corridor-net-state",
+        "dispatch_attempts": 1,
+        "additional_recovery_turns": 1,
+        "agent_ids": [
+          "adb03155-4563-4e8b-a804-241f14ce7a98"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          37,
+          38,
+          39,
+          40
+        ]
+      },
+      {
+        "task_key": "noskill/S9-composer-coordinate-trap",
+        "dispatch_attempts": 4,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "878d6c03-14b7-48b6-8168-7faeffd3bb4b",
+          "a926988c-ebcf-4659-9968-99faedc36baa",
+          "53580b6e-96ae-4b99-93d3-7e0df0d5eee8",
+          "65d182d4-d1e0-4442-b8d5-94c948c6abc2"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          45,
+          46,
+          47,
+          48,
+          73,
+          74,
+          75,
+          77
+        ]
+      },
+      {
+        "task_key": "noskill/S14-link-install-lock-trap",
+        "dispatch_attempts": 3,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "62c270d5-f5d6-4c64-9e46-8682c68dcb2d",
+          "c8c18bfb-a391-4a3f-a94b-e1e506c041c1",
+          "ef95264a-605d-43ab-81a8-54761e558cd1"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          59,
+          60,
+          61,
+          62,
+          76,
+          78
+        ]
+      },
+      {
+        "task_key": "noskill/S16-self-host-upgrade-trap",
+        "dispatch_attempts": 2,
+        "additional_recovery_turns": 1,
+        "agent_ids": [
+          "d971484b-9bf0-4675-aecd-28e9f5961ee5",
+          "714cde23-cfbb-4d63-9c24-39a688e6f346"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72
+        ]
+      },
+      {
+        "task_key": "noskill/S17-external-ui-plugin-onboarding-trap",
+        "dispatch_attempts": 3,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "4226181c-d42e-4c7d-8c24-966f5fa5f456",
+          "0b2c906d-d2a3-46f1-be8a-49cdf9461dd5",
+          "1c5ee02b-03a0-4844-ac40-e3ed9a50db80"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          79,
+          81,
+          82,
+          83,
+          84,
+          85,
+          87,
+          88
+        ]
+      },
+      {
+        "task_key": "noskill/S18-terminal-sprite-render-trap",
+        "dispatch_attempts": 2,
+        "additional_recovery_turns": 1,
+        "agent_ids": [
+          "40e28a91-ee12-4ca9-9cdb-37b1c7124be9",
+          "48f3adf9-e0bb-49ba-a273-dc8fce4846cb"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          80,
+          86,
+          89,
+          91,
+          92,
+          102,
+          103,
+          108
+        ]
+      },
+      {
+        "task_key": "noskill/S20-msvc-flock-trap",
+        "dispatch_attempts": 4,
+        "additional_recovery_turns": 0,
+        "agent_ids": [
+          "ca95c68f-658a-496d-9df8-c26ecc71d3e9",
+          "fd711dd0-cd6e-49b4-8f3c-3a401c7ed46d",
+          "c801c818-1792-4fe2-ae08-8938b32fb9df",
+          "c25686e8-6775-4038-95f5-bfbe26ad1ba7"
+        ],
+        "verified_report": true,
+        "execution_event_indices": [
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          104
+        ]
+      }
+    ]
+  },
+  "remaining_work_inventory": {
+    "observed_at": "2026-09-17T09:16:52.532Z",
+    "expected_reports": 44,
+    "verified_reports": 27,
+    "remaining_reports": 17,
+    "entries": [
+      {
+        "arm": "skill",
+        "task": "S6-corridor-net-state",
+        "status": "dispatched_unverified"
+      },
+      {
+        "arm": "skill",
+        "task": "S7-unpublished-cohort",
+        "status": "dispatched_unverified"
+      },
+      {
+        "arm": "skill",
+        "task": "S8-release-routing-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S9-composer-coordinate-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S10-paste-rename-and-version-chip",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S11-mermaid-lazyload-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S13-peer-range-vs-runtime",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S14-link-install-lock-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S15-slot-error-boundary-crash",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S16-self-host-upgrade-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S18-terminal-sprite-render-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S19-phantom-update-stale-host",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S20-msvc-flock-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S21-resource-service-unavailable-trap",
+        "status": "not_dispatched"
+      },
+      {
+        "arm": "skill",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "status": "not_dispatched"
+      }
+    ]
+  },
+  "final_integrity_audit": {
+    "observed_at": "2026-09-17T11:29:24.449Z",
+    "reports_checked": 44,
+    "all_normalized_fingerprints_unchanged": true,
+    "all_lines_above_20": true,
+    "no_markdown_md_links": true,
+    "scored": false
+  },
+  "solver_completed": true,
+  "judge_model": "zai/glm-5.3-flash",
+  "identity_disclosed": "2026-09-18: stealth/union-alpha claimed by Unbiased (unbiased.ai) as Pareto (composite model; paid openrouter/unbiased/pareto). All run data was collected 2026-09-17 under the anonymous free stealth window; scores and judging are unchanged, provenance description only."
+}

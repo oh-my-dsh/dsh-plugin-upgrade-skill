@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report identifies both declarations of workspace-files (web-app bundle cordis.patch.yml L110-111 and the manual profile insert), grounds the rejection in the crash stack at cordis-plugin-loader EntryGroup.update via Include._apply during cordis:include, explains inserts are distinct entries so no last-write-wins merge applies, and explicitly rejects the profile comment's 'redundant, keep it' assumption."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes all three operations: id-targeted config change is safe, inserting a genuinely new id is legitimate, inserting an already bundle-shipped id is fatal. Classifies the maintainer's row as the third case, grounded in both excerpts (profile final insert vs bundle L110-111 row with same id and package), and notes the adjacent bundle-provided controller rows as evidence of ownership."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the final manual workspace-files insert block (shown explicitly, labeled as the block to remove) plus its misleading comment from the profile cordis.patch.yml, preserving the bundle entry and unrelated external plugins; rejects renaming, deleting the bundle row, adding another insert, and routes any config customization to an id-targeted config operation."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "States the crash is a profile composition error at load, before plugin activation, so no plugin-code change can make duplicate ids valid; notes the fix only restores the possibility of boot and explicitly keeps the earlier 文件资源服务不可用 read failure as a separate problem requiring post-repair verification, without claiming it is cured."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Author side: inspect the installed web-app bundle's cordis.patch.yml, search for both the exact id and package name, and check other composing layers before inserting, distinguishing override from insert. Host side: concrete diagnostic message naming workspace-files, both declaration origins with paths/lines, and the removal hint, plus suggested preflight and regression cases."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice removes the duplicate block; the report never endorses keeping or adding it, never asserts silent merging (it quotes the wrong profile comment only to reject it), and explicitly forbids curing the crash via plugin edits."
+    }
+  ]
+}

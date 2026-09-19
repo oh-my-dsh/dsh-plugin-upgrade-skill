@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Correctly identifies the up-only/lo-only branches emitting foreground only, explains that the previous cell's SGR background persists into the transparent half, notes the dedup lets stale state ride across edge runs and that the end-of-row RESET comes too late, ties it to the outline/Z/heart right-edge symptoms, and gives the precise fix: emit fg(up)+ESC[49m (or transparent-color bg) in each half-filled cell."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Grounds the trailing-space trim in the renderer's .replace(/[ ]+$/,''), explains the text pipeline writes short lines leaving surplus columns untouched so a narrower frame never overwrites the wide frame's tail, and proposes full-sprite-width rows plus ESC[K erase-to-EOL with a pipeline-side union clear, keeping SGR state controlled via the row RESET."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt to pin tail2 as the only MISMATCH with 23 differing cells (row-level detail quoted from the report), distinguishes hand-port data drift from renderer artifacts, explains the excerpt-based regression added for a different frame missed it, and proposes a whole-frame digest gate against source-art pins with reviewed regen."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "partial",
+      "reason": "Mechanism, the mount-without-unmount hosts, and TTY/stdin keeping the interactive product alive are all correctly grounded in ci-hang-evidence.txt. But the report's cited one-line fix is an unmount in host teardown (which stops animation in those hosts); the required unref of each newly scheduled planner timeout — animation continuing while the timer alone stays live — appears only as secondary hardening, so the mandated fix is present but not the report's recommendation."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Consolidates cell-independence/background reset, full-width or erase coverage, frame-switch erase semantics, whole-frame digest integrity, geometry and timer lifecycle into a renderer checklist, and prescribes a pre-rollout audit with a host matrix asserting event-loop drain (no Timeout handles at exit) before flipping default-on."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The final advice affirms the background reset, requires clearing/full-width output rather than retaining trimming, endorses source-backed whole-frame digests, and recommends unref'd planner timers as hardening; the terminal emulator is never blamed. No affirmative bad advice found in the report."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Identifies node.exe PID 42432, the dsh web host from running-processes.txt, as the loader of koffi.node, and explains the native .node binary stays locked by the OS until the host exits so npm copyfile fails with EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains refreshing only reloads the SPA while the host process that loaded koffi stays alive, and gives an ordered numbered procedure: fully stop and verify all dsh node processes, install from an external terminal, then restart the host. No over-broad kill of unrelated Node processes."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Grounded in npm-dist-tags.txt: a bare @deepseek-ai/dsh name follows the latest tag, which was 0.1.1-rc.2 (alpha = 0.1.2-alpha.5), so the unpinned install replaced the running alpha.4 with rc.2 — an unpinned install preserves neither the installed version nor the newest release."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides the exact pinned command npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus @deepseek-harness-tui/dsh-tui (combined or as two commands) after stopping the host, then restart and verify dsh --version prints 0.1.2-alpha.5; @alpha only mentioned as explicit-tag alternative, not a replacement."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Tells README authors to never publish bare unpinned dsh install commands, pin the exact intended version (or name the tag explicitly), state the stop-host precondition, and add post-install version verification — a plain recommendation, with the unpinned combined command cited only as the bad example."
+    }
+  ],
+  "caps": []
+}

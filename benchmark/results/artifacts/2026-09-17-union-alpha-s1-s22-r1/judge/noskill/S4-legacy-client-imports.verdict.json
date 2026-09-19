@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the deleted-package import at index.ts:1 consumed by apply at line 9, maps DSH-0.1.2-A1-25 on the Web Client plane, and requires migrating the context annotation to a supported owning module while marking the exact replacement unconfirmed. It treats type-only import impact as type/module resolution yet still mandates removal/migration, so it does not claim type erasure makes it harmless."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "Correctly contrasts the loader id 'pet-legacy-bundle' at index.ts:10 with the package.json name 'dsh-pet-session-bench', maps A1-26, and requires exact alignment of the registration id to the manifest name; its later plan proposes verifying module registration on the target, which suffices for a static task."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates the flat useSession() nodes destructure at index.ts:12 and nodes[0] at line 13, maps A1-27, and requires migrating to the target's supported content-reading surface including rewriting the first-node lookup, with exact successor APIs marked unconfirmed rather than invented; it also correctly notes Pet.tsx is empty with no breaking surface. The first-node rewrite preserves the ordering requirement."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates ctx.connection.api.agentPresets.list() at index.ts:11, maps A1-30, and requires removing that deleted face in favor of the target's supported Web Client mechanism for the same operation, explicitly marking the replacement path and signature unconfirmed and warning against transplanting the old call shape."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never asserts an apply-to-setup/activate lifecycle replacement nor that service inject generally must move into a manifest; it treats the inject list as unconfirmed and only plans legitimate cleanup of removed package imports."
+    }
+  ]
+}
