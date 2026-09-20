@@ -1,7 +1,7 @@
 # dsh plugin upgrade tasks (benchmark v2.4 · Harbor format)
 
-The 63 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
-installed, will it actually upgrade the plugin**. The first 25 are written exams (read
+The 64 plugin-upgrade tasks measure one thing: **once an AI has our upgrade skill
+installed, will it actually upgrade the plugin**. The first 26 are written exams (read
 the code, produce the answer); the last 38 are hands-on (actually install dsh and run
 the plugin — whether it is alive is obvious at a glance). Every task ships with
 auto-grading, so no human marking is involved.
@@ -10,7 +10,7 @@ auto-grading, so no human marking is involved.
 task format** — each question is a standard Harbor task (directory layout below) that
 can be run directly with `harbor run` on any agent / provider Harbor supports.
 
-**H4, H6, H12 and all S1–S22 tasks use [LLM-as-judge by default](docs/report-judge-pilot.md).**
+**H4, H6, H12 and all S1–S23 tasks use [LLM-as-judge by default](docs/report-judge-pilot.md).**
 Run their registered `benchmark/tasks/<task>` directories directly. Configure
 `REPORT_JUDGE_BASE_URL`, `REPORT_JUDGE_MODEL` and `REPORT_JUDGE_API_KEY` for the
 separate verifier; a missing/broken judge is an evaluator failure, never a
@@ -60,6 +60,7 @@ honestly instead of quietly fixing it and pretending nothing happened).
 | S20-msvc-flock-trap | Static | Upgrading to 0.1.3-alpha.1 on a Windows machine without MSVC: `pnpm install` dies on the fs-ext native build even though Windows never calls `flock` (named kernel semaphore) — can it diagnose the static-import trap (`--ignore-scripts` cannot skip it) and plan the pnpm-patch fix instead of demanding Visual Studio |
 | S18-terminal-sprite-render-trap | Static | A terminal pixel sprite shows phantom pixels at its right edges and ghost pixels surviving frame switches (half-block SGR background leak + trailing-trim), one hand-ported frame drifted 23 cells, and flipping the animation default-on hung a CI job (planner timer chain pinned probe hosts) - diagnose renderer defects, timer pinning, and the prevention checklist |
 | S19-phantom-update-stale-host | Static | A client-plugin release trips three interacting pitfalls: the released version's own update badge announces v0.3.7 to itself (the client bundle bakes the pre-bump version constant — build ran before the bump), the new SVG render route 404s while the client UI is updated (host-half routes register once at boot; client refresh does not touch them), and one broken image traces to a corrupted session read payload (source file well-formed, log text spliced) — can it attribute all three from the evidence pack and design the validated render-source chain (asset bytes → DOMParser-checked payload → sandboxed iframe → explicit error) |
+| S23-passing-compat-guard-trap | Static | After a dsh upgrade to 0.1.6-alpha.2, a compat-guarded input-recall plugin silently stops responding: attribute the break to the removed `sessions.list` `current` field behind surviving services, derive the `uiSession.current` replacement from sealed host type excerpts, write a dual-host migration, and harden the guard to probe fields instead of service presence |
 | S22-duplicate-insert-boot-crash-trap | Static | After a dsh upgrade, a maintainer manually inserts workspace-files into the profile's cordis.patch.yml to fix an unavailable sidebar tab — but the web-app bundle already provides it, causing a fatal `duplicate loader entry id` boot crash: can the agent attribute the crash to Cordis's duplicate-insert rule (fatal, not merge), distinguish profile-patch insert from bundle-provided plugins, prescribe the correct fix (remove the duplicate), and give the prevention step (grep the bundle patch first) |
 | S21-resource-service-unavailable-trap | Static | After an in-place dsh upgrade, a right-Sidebar document tab opens for a session file but its content read fails (文件资源服务不可用) while a contrast reader of the same file works and all 62 manifest modules serve 200: can the agent attribute the failure to the workspace-files resource-provider/RPC chain on the upgraded profile, run valid probes (per-module sweep, contrast reader; the naive all-in-one combo join exceeds the 3 KB URL cap and is invalid), choose restart → rollback → upstream report, and keep the unrelated paste-input fold-skip warnings separate |
 | M2-optional-dep-trap | Hands-on | The plugin declares an optional dependency but imports it unconditionally at top level (the comment says optional is harmless): does it fix the dependency contract instead of wrapping the import, and prove it with a cold boot |
@@ -285,7 +286,7 @@ harbor run -p benchmark/tasks/S1-static-scan -a oracle
 # evaluate a single task with an agent
 harbor run -p benchmark/tasks/M1-host-migration -a claude-code -m anthropic/claude-opus-4-1
 
-# all 63 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
+# all 64 tasks: pointing -p at the tasks/ directory runs them as a dataset batch
 harbor run -p benchmark/tasks -a claude-code -m anthropic/claude-opus-4-1
 ```
 
@@ -297,7 +298,7 @@ the judge's per-item reasons are in the verifier log.
 
 ### Unattended authorization
 
-All 63 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
+All 64 `instruction.md` files carry the `BENCHMARK-AUTH-v1` marker: the task prompt
 itself is the user's confirmation of the plan and the execution within the stated
 scope. The agent should complete the necessary analysis/planning and then proceed — it
 must not stop just because Harbor will not send a second round of "confirmation". The
@@ -474,7 +475,7 @@ numbers cannot be compared across models or against later runs.
   adding ordinary fixture tasks** — the point is to stop anyone from accidentally
   publishing fake plugins to npm.
 - When adding a task, scaffold it with `harbor task init`, then fill in
-  judge / solve.sh following the layout of the existing 63 tasks, and verify the
+  judge / solve.sh following the layout of the existing 64 tasks, and verify the
   reference answer scores 1.0 with `harbor run -p <task> -a oracle`.
 - After adding or modifying prompts, run
   `node benchmark/scripts/validate-execution-contract.mjs` to make sure the

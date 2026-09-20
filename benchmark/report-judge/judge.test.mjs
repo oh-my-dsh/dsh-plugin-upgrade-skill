@@ -194,7 +194,7 @@ test('CLI failure produces details and nonzero exit, never a default-zero reward
 test('preparation keeps agent prompts/fixtures exact and puts references/keys only in verifier', t => {
   const dir = sandbox(t); const out = join(dir, 'pilot')
   const manifest = prepare(out)
-  assert.equal(manifest.tasks.length, 25)
+  assert.equal(manifest.tasks.length, 26)
   for (const { task } of manifest.tasks) {
     assert.equal(readFileSync(join(out, task, 'instruction.md'), 'utf8'), readFileSync(join(REPO, 'benchmark/tasks', task, 'instruction.md'), 'utf8'))
     assert.deepEqual(collectFiles(join(out, task, 'environment/fixture')), makePacket(task).fixture)

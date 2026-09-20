@@ -430,13 +430,13 @@ test('an unresolvable source benchmark commit fails loudly instead of falling ba
   assert.throws(() => loadPinnedRegistry(repoRoot, 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef'), /report\/source mismatch/)
 })
 
-test('the living 63-task registry is rejected: only the pinned commit governs the run', () => {
+test('the living 64-task registry is rejected: only the pinned commit governs the run', () => {
   const livingText = readFileSync(join(repoRoot, 'benchmark', 'README.md'), 'utf8')
   const livingRows = loadRegistryFromText(livingText, 'working tree benchmark/README.md')
   const reportTaskIds = validateReport(realReport).taskIds
-  assert.equal(livingRows.length, 63)
+  assert.equal(livingRows.length, 64)
   assert.equal(pinnedRegistry.length, 56)
-  assert.throws(() => validateRegistryCoverage(livingRows, reportTaskIds, 'working tree'), /63 tasks but the report has 56/)
+  assert.throws(() => validateRegistryCoverage(livingRows, reportTaskIds, 'working tree'), /64 tasks but the report has 56/)
   assert.doesNotThrow(() => validateRegistryCoverage(pinnedRegistry, reportTaskIds, '74af446'))
 })
 

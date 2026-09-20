@@ -15,7 +15,7 @@ function sandbox(t) {
 }
 
 test('registered default tasks are self-contained semantic verifiers with separate secrets and artifacts', () => {
-  assert.equal(Object.keys(RUBRICS).length, 25)
+  assert.equal(Object.keys(RUBRICS).length, 26)
   assert.deepEqual(syncDefaults({ check: true }).changed, [])
   for (const task of Object.keys(RUBRICS)) {
     const files = defaultFiles(task)

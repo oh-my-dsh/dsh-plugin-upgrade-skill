@@ -1,11 +1,11 @@
 # Scoring rules and checkpoint mapping
 
-Total 6300 (63 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
+Total 6400 (64 tasks × 100; the Harbor reward is 0–1, normalized as score/100).
 Most legacy deterministic judges exit 0 with the last stdout line
 `{"score": 0-100, "max": 100, "reasons": [...]}`; `tests/test.sh` parses that last
 line as JSON and writes score/100 to `/logs/verifier/reward.txt`.
 
-H4, H6, H12 and all S1–S22 tasks now use [semantic report judging](report-judge-pilot.md)
+H4, H6, H12 and all S1–S23 tasks now use [semantic report judging](report-judge-pilot.md)
 by default (task versions 4.0.0 and 4.1.0; see [diagnosis rubrics](diagnosis-rubrics.md)). The LLM decides each criterion; deterministic
 code checks the sealed fixture and structured decisions and aggregates pass/partial/
 fail/missing as 100%/50%/0%/0% of the criterion weight. Missing reports or exact
@@ -56,6 +56,7 @@ reported separately. Historical keyword and semantic scores must not be mixed.
 | S18-terminal-sprite-render-trap | skills/plugin-runtime-debug (terminal sprite rendering + timer-pinning symptom families; real 2026-09-05 dsh-TUI whale follow-up session) | LLM: half-cell background, frame clearing, frame-data integrity, timer liveness, and renderer/rollout prevention: 20 each; affirmative contradictory renderer/timer advice caps at 0. Sealed fixture changes → 0. |
 | S19-phantom-update-stale-host | skills/plugin-release (publish gates, version-constant hygiene); skills/plugin-runtime-debug (plane asymmetry + payload-untrusted families; real 2026-09-05 dsh-file-trace v0.3.7/v0.3.8 incident) | LLM: baked version/release order, client-host asymmetry, payload corruption, validated render fallbacks, and forensics/prevention: 20 each; affirmative unsafe release/render advice caps at 0. Sealed fixture changes → 0. |
 | S22-duplicate-insert-boot-crash-trap | Cordis profile-patch duplicate-insert boot crash (real 2026-09-09 in-place upgrade incident) | LLM: duplicate-loader attribution, three layering cases, minimal profile fix, plugin/failure boundary, and author/host prevention: 20 each; retaining/adding the duplicate or fixing this crash in plugin code caps at 20. Sealed fixture changes → 0. |
+| S23-passing-compat-guard-trap | sessions.list current-field removal behind passing service-level compat guards (real 2026-09-17/18 multi-instance-refactor incident); DSH-0.1.6-A2-01 · uiSession.current { key, ctx } replacement, dual-host fallback, guard hardening | LLM: silent-break-attribution / evidence-mapping / dual-host-migration / guard-hardening / verification-and-prevention, 20 each; cap slot-reregistration-misdiagnosis 40 |
 | S21-resource-service-unavailable-trap | workspace-files resource-provider/RPC chain on the upgraded profile (real 2026-09-09/10 in-place upgrade incident; discussion deepseek-ai/deepseek-harness#5999) | LLM: metadata-chain attribution, valid probes/partitioning, distractors/tab scope, ordered mitigation, and upstream forensics/fail-loud diagnostics: 20 each; invalid probe attribution or plugin workaround/duplicate insertion caps at 40. Sealed fixture changes → 0. |
 | M6-sleep-tool | DSH-0.1.2-A2-03 peer hygiene (bare cordis contract, ContentBlock → dsh-llm); real @huanlin/dsh-plugin-sleep e25a4a9 | Static 50 (bare cordis gone 12 + @deepseek-ai/cordis 10 + dsh-tools floor 12 + dsh-llm peer 10 + meta optional 6) + headless activation 25 + diagnose 15 (exists 5, names 5, A2-03 3, R-01 2) + release 10; memo bait (keep bare cordis) caps at 60, changed-but-unfixed caps at 40 (M4 precedent) |
 | M7-d399-overlay | DSH-0.1.2-A1-25 client-runtime removal; DSH-0.1.2-A1-19 roster anchor | Static 50 (runtimeGone 10 + inject recomposed 10 + ISessions annotation 10 + cohort 12 + scoped cordis 8) + deploy 25 + diagnose 15 (exists 5, names 5, A1-25 3, R-01 2) + release 10; runtime retained caps at 20 |

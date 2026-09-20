@@ -1,0 +1,35 @@
+=== Release notes excerpt · dsh-v0.1.6-alpha.2 · 其他变更 ===
+
+- 插件依赖解析模式调整为运行时解析，插件管理支持运行时卸载，请开发者检查插件加载和卸载逻辑
+- 可继续对话的 Subagent 链默认最多同时保留 8 个子代理、委派深度为 1，可在设置中调整
+- 客户端 Session 会话支持多实例共存，相关 API 及 slot 有变化
+- 创造模式移除原 Cordis 动态定义及运行工具，调整为通过 Plugin Manager 安装持久化插件
+
+=== Host boot log excerpt (after upgrade, alpha.2) ===
+
+[dsh-profiles] ready
+combo assembled: 57 entries
+  ... @deepseek-ai/dsh-client-ui-conversation/client.js
+  ... @dsh-external/dsh-ui-progress/client.js
+  ... @dsh-community/dsh-paste-input/client.js
+  ... @dsh-external/dsh-input-history/client.js
+  ... @dsh-external/dsh-file-trace/client.js
+  ... @dsh-external/dsh-ui-whale/client.js
+  ... @lhh010/dsh-profiles/client.js
+no pending entries, no duplicate loader ids, host up
+
+=== Maintainer's already-tried list ===
+
+1. F12 console while pressing chords — clean, nothing from the plugin.
+2. Compat banner — not showing (guard passed).
+3. Re-linked the junction, hard refresh — no change.
+4. Disabled all other plugins — no change.
+5. Plugin update chip — "latest version".
+6. Verified the chords are not taken by anything else: with the plugin's
+   junction removed entirely, Ctrl+Up/Down still do nothing (no other handler).
+
+=== Note from a colleague ===
+
+"Multi-instance refactor landed in alpha.2 — I skimmed the release notes, it says
+client Session APIs and slots changed. Maybe your plugin needs to re-register its
+slot or re-declare inject? Have you tried adding 'uiSession' to the inject list?"
