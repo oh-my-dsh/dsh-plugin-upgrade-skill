@@ -51,6 +51,8 @@ const expectedModes = new Map([
   ['S19-phantom-update-stale-host', 'readonly'],
   ['S18-terminal-sprite-render-trap', 'readonly'],
   ['S22-duplicate-insert-boot-crash-trap', 'readonly'],
+  ['S23-passing-compat-guard-trap', 'readonly'],
+  ['S24-dock-cotenant-crash-trap', 'readonly'],
   ['S21-resource-service-unavailable-trap', 'readonly'],
   ['H12-remote-result-boundary-trap', 'readonly'],
   ['M2-optional-dep-trap', 'mutable'],

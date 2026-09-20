@@ -1,7 +1,23 @@
 // Independent bilingual answers and adversarial hypotheses for live calibration.
 // Expected bands are not semantic unit-test results or human gold labels.
 export const DIAGNOSIS_PROBES = {
-  'S11-mermaid-lazyload-trap': {
+      'S24-dock-cotenant-crash-trap': {
+    keywords: 'standard kit useSessions useSessionPendingInteraction removed dock shared DrawerErrorBoundary co-tenant unmount optional chaining empty fallback degradation attribution disable experiment',
+    wrong: 'Both plugins were broken by the refactor, so both need parallel fixes and a reinstall. The attachment plugin lost its registration. Reinstalling plugin B and fixing its slot registration will restore the chips.',
+    reject: 'Do not blame or fix plugin B for the dock vanish: B uses no standard-kit hooks. The single crash is plugin A calling removed seats; the shared boundary unmounted the whole dock subtree, and disabling A restored B instantly.',
+    contradiction: 'Final correction: both plugins need independent fixes, and plugin B must re-declare its dock registration after the reinstall.',
+    cap: 40,
+    zh: 'console-excerpt.txt指向plugin A的SessionProgressBar调用已移除的useSessionPendingInteraction；dock所有条目挂在同一个DrawerErrorBoundary下，A抛错即卸载整个子树，B的chips随之消失。tried-notes里禁用A后B恢复，证明B无辜。修复：A的两个seats改可选调用+空表降级，绝不抛错。',
+  },
+'S23-passing-compat-guard-trap': {
+    keywords: 'sessions.list current field removed uiSession adapter.current key ctx binding value compat guard presence probe silent no-op dual-host fallback scope',
+    wrong: 'The sessions service was removed in alpha.2 and the plugin must migrate to the Remote API. The compat guard is broken and should be deleted. Reinstalling the plugin or re-registering its slots will restore the chords.',
+    reject: 'Do not claim the sessions service, its list observable, or the guard itself was removed or renamed. The services all exist; only the current field inside the published snapshot is gone. Slot re-registration and reinstall are red herrings that cannot fix a field-level read.',
+    contradiction: 'Final conclusion: the compat guard passing proves the host API is fully compatible, so the plugin failure must be a keyboard-event routing problem unrelated to the upgrade.',
+    cap: 40,
+    zh: 'plugin源码resolve()读sessions.list.getSnapshot().current，而alpha2类型节选的SessionListSnapshot没有current字段——服务与observable都在，字段没了，所以guard四项存在性检查全过而每次按键都拿到undefined静默退出。修复走新uiSession服务的adapter.current（{key, ctx}），key替代current、ctx替代sessions.scope(id)，并保留alpha1回退；guard应改为字段级/行为级探针。',
+  },
+'S11-mermaid-lazyload-trap': {
     keywords: 'relative chunk URL single bundle realpath startsWith case path.relative MIME modal wheel fallback regression',
     wrong: 'Sibling chunks need not be shipped because the entry returned 200. Windows paths are unreliable; remove both containment guards and serve any requested absolute file as text/plain. The pane and modal should both resize on Ctrl+wheel. No fallback or regression is needed.',
     reject: 'Do not remove containment checks. A modal stopPropagation cannot undo an ancestor capture listener that already changed the pane font.',

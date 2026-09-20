@@ -1,0 +1,22 @@
+=== F12 console, after pasting one file ===
+
+Uncaught TypeError: useSessionPendingInteraction is not a function
+    at SessionProgressBar (plugin://dsh-external/dsh-ui-progress/lib/client.js:219:41)
+    at renderWithHooks (react-dom)
+    at mountIndeterminateComponent (react-dom)
+    ...
+The above error occurred in <SessionProgressBar>. React will unmount the entire
+subtree at the nearest error boundary.
+    at DrawerErrorBoundary (dsh-client-ui-conversation)
+    at InputDock (dsh-client-ui-conversation)
+
+(no further errors; the paste toast did not reappear after the first attempt)
+
+=== Host follow-up (from the alpha.2 conversation package source) ===
+
+// InputDock renders its entries as ONE list inside ONE shared error boundary:
+//   <DrawerErrorBoundary>            <- nearest boundary for every entry
+//     <DockEntry id="dsh-paste-input-dock" />   <DockEntry id="progress" /> ...
+//   </DrawerErrorBoundary>
+// A throw from any entry unmounts the WHOLE boundary subtree — every co-tenant
+// entry disappears with the crashing one until the boundary resets.
