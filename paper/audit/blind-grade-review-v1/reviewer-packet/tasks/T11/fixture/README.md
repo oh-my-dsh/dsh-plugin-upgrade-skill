@@ -1,0 +1,3 @@
+# S6 fixture · Corridor net state (S6-specific copy)
+
+A piece of "defense code" written for alpha.1: before writing a third-party persistent event it actively `delete`s the `ignorable` marker, and the comment claims readers will reject it otherwise and that it must be kept when migrating to alpha.2. The target alpha.2 restored the retention semantics (DSH-0.1.2-A1-02 → DSH-0.1.2-A2-01 remove-then-restore) — **the correct action is to delete this defense**. **Test material only — do not execute or publish** (`"private": true`). This task's grading requires the fixture to be unchanged relative to git HEAD.

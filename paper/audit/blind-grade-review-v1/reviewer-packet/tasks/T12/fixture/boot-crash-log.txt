@@ -1,0 +1,22 @@
+# dsh web boot crash — full terminal output (2026-09-09, Windows 11, npm global 0.1.5-alpha.2)
+
+PS E:\deepseek-harness> dsh web
+  file:///C:/Users/lhh/AppData/Roaming/npm/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1545
+                  throw new Error(${binName}: ${stage}: ${detail}${stack}, { cause });
+                        ^
+
+  Error: dsh: plugin tree failed to load: failed to apply loader entry include (cordis:include):
+  duplicate loader entry id: workspace-files
+  TypeError: duplicate loader entry id: workspace-files
+      at EntryGroup.update (file:///C:/Users/lhh/AppData/Roaming/npm/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/cordis-plugin-loader/lib/index.js:91:28)
+      at Include._apply (file:///C:/Users/lhh/AppData/Roaming/npm/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:240:19)
+      at boot (file:///C:/Users/lhh/AppData/Roaming/npm/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-app-boot/lib/index.js:1534:3)
+      at async runProfile (@deepseek-ai/dsh/lib/profile-boot-Dk-7KqJc.js:311:14)
+      at async runCli (@deepseek-ai/dsh/lib/bin.js:146:4)
+
+  Node.js v24.14.1
+
+# Prior context: the profile was upgraded in place from 0.1.2/0.1.3; the right-Sidebar
+# document tab opened but its content read failed (文件资源服务不可用). The maintainer
+# then manually added the workspace-files insert row to the profile's cordis.patch.yml
+# (see profile-patch-excerpt.txt) and restarted — producing this crash.
