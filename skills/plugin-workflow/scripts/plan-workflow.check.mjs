@@ -96,6 +96,14 @@ export async function runWorkflowPlannerChecks() {
   const registrationPhase = registration.ledger.find((phase) => phase.capability === 'registry-register')
   assert.deepEqual(registrationPhase.confirmations, ['repository-writes', 'external-publication'])
 
+  const fleet = buildWorkflowPlan(selection({ workflow: 'fleet-sweep' }))
+  assert.deepEqual(fleet.ledger.map((phase) => phase.capability), ['discovery', 'fleet-sweep'])
+  const fleetPhase = fleet.ledger.find((phase) => phase.capability === 'fleet-sweep')
+  assert.equal(fleetPhase.owner, 'plugin-fleet-sweep')
+  assert.deepEqual(fleetPhase.confirmations, ['repository-writes', 'dependency-runtime', 'external-publication'])
+  assert.deepEqual(fleet.confirmations.map((entry) => entry.boundary), ['repository-writes', 'dependency-runtime', 'external-publication'])
+  assert.throws(() => buildWorkflowPlan(selection({ workflow: 'fleet-sweep', exclude: ['fleet-sweep'] })), /requires excluded capability fleet-sweep/)
+
   const naming = buildWorkflowPlan(selection({ workflow: 'naming-registry' }))
   assert.deepEqual(naming.ledger.map((phase) => phase.capability), ['discovery', 'naming-local', 'registry-query'])
   assert.equal(naming.readOnly, true)
@@ -143,6 +151,10 @@ export async function runWorkflowPlannerChecks() {
     assert.equal(explicitHealth.code, 0, explicitHealth.stderr)
     assert.deepEqual(JSON.parse(explicitHealth.stdout).ledger.map((phase) => phase.capability), ['discovery', 'touchpoint-scan'])
 
+    const defaultFleet = await runCli(['--workflow', 'fleet-sweep', '--format', 'json'])
+    assert.equal(defaultFleet.code, 0, defaultFleet.stderr)
+    assert.deepEqual(JSON.parse(defaultFleet.stdout).ledger.map((phase) => phase.capability), ['discovery', 'fleet-sweep'])
+
     const capabilityWithoutWorkflow = await runCli(['--include', 'docker-smoke'])
     assert.equal(capabilityWithoutWorkflow.code, 1)
     assert.match(capabilityWithoutWorkflow.stderr, /select a workflow with --workflow/)
@@ -168,5 +180,5 @@ export async function runWorkflowPlannerChecks() {
 const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : undefined
 if (invokedPath === import.meta.url) {
   await runWorkflowPlannerChecks()
-  console.log('Workflow planner checks OK: pre-run menu, schema sync, naming-registry defaults, explicit selections, dependency gates, confirmations, read-only CLI')
+  console.log('Workflow planner checks OK: pre-run menu, schema sync, naming-registry defaults, fleet-sweep boundaries, explicit selections, dependency gates, confirmations, read-only CLI')
 }

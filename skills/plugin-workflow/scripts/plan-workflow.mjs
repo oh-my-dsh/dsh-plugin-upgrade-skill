@@ -55,6 +55,11 @@ const WORKFLOWS = {
     defaults: ['heavy-dependency'],
     required: ['heavy-dependency'],
   },
+  'fleet-sweep': {
+    outcome: 'Sweep the whole installed plugin fleet against an upgraded host',
+    defaults: ['fleet-sweep'],
+    required: ['fleet-sweep'],
+  },
 }
 
 const CAPABILITIES = {
@@ -71,6 +76,13 @@ const CAPABILITIES = {
     confirmations: ['repository-writes', 'dependency-runtime'],
     requires: ['static-tests', 'functional-probe', 'browser-check', 'rollback', 'package-artifact'],
     surface: 'web-client',
+  },
+  'fleet-sweep': {
+    description: 'Sweep the whole installed plugin fleet against the upgraded host',
+    owner: 'plugin-fleet-sweep',
+    // The sweep runs the upgraded host, then commits, tags and pushes each fixed plugin and its mirrors.
+    // No surface gate: a fleet mixes Web Client and logic-only plugins, so the sweep must plan by default.
+    confirmations: ['repository-writes', 'dependency-runtime', 'external-publication'],
   },
   'dsh-audit': { description: 'DSH version compatibility audit', owner: 'dsh-upgrade-audit', confirmations: [] },
   'touchpoint-scan': { description: 'Seven-touchpoint plugin scan', owner: 'plugin-upgrade', confirmations: [] },
@@ -109,6 +121,7 @@ const PHASE_ORDER = [
   'core',
   'runtime-debug',
   'heavy-dependency',
+  'fleet-sweep',
   'naming-local',
   'registry-query',
   'static-tests',
