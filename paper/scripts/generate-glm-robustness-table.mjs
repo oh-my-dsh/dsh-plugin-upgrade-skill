@@ -108,7 +108,10 @@ function roundValues(entries) {
 }
 
 /** The lower/upper LOO rows name the tasks whose removal moves the contrast
- *  most: removing a task whose value is above the mean raises the contrast. */
+ *  most. Removing a task whose d_t is ABOVE the mean LOWERS the contrast, so
+ *  the task at the LOO minimum is the largest upward influence (it pulls the
+ *  contrast up); removing a below-mean task raises the contrast, so the task at
+ *  the LOO maximum is the largest downward influence. */
 export function influenceFromLeaveOneOut(leaveOneOut, meanD) {
   const min = leaveOneOut?.min
   const max = leaveOneOut?.max
