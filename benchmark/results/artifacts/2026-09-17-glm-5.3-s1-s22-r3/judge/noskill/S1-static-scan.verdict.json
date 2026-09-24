@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates the patch-surface declaration in patch.yml (SessionView.ts target, renderSessionView replacement), the apply-patch.mjs script keyed on DSH_HARNESS_SOURCE_ROOT, correctly classifies cordis.patch.yml as profile composition rather than a source patch, and grounds the coupling in the private session-view target path."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Locates the ctx.emit producer with ignorable:true and the ctx.on consumer in src/index.ts, explains the alpha.1 removal and alpha.2 restoration with correct corridor folding (keep the marker, do not delete-and-restore), preserves omission-safe informational semantics, and explicitly notes public Session.append still cannot write the marker."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates ctx.get('apiProxy') with session.rename and llm.providers calls, maps to A1-01 with the correct split (session/rename, llm/listProviders + listConfigurableProviders), and correctly prescribes Host domain-service injection (ctx.llm.listProviders) while warning the ctx.remote table is client-plane only and inject:['remote'] would stall on the host."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded join(homedir(), '.dsh', 'profiles', 'default') write in src/index.ts and prescribes runtime DSH_HOME/profile information per A1-04; it does not claim --profile was introduced in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the @deepseek-ai/dsh-session-view/internal import and the contributes.registerCommand returning new SessionView, maps to A1-03, and prescribes rebuilding imports by owning module, marking missing public seams pending confirmation, and preferring public facets/services."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the loopback HTTP server on 127.0.0.1:43121 serving /api/legacy, states loopback does not excuse authentication, and distinguishes Connection-owned authenticated carriers / requestRejection-wired custom routes from raw unauthenticated routes per A1-08."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh subprocess call sites (apply-patch.mjs execFileSync and src/index.ts spawn) with per-line/per-chunk JSON.parse, explains stdout is the final text with reasoning/errors on stderr, and correctly states the JSONL assumption was already wrong at rc.2 rather than inventing an alpha.2 stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps the located couplings substantively: patch surface and UI internals to A1-03, event marker to A1-02+A2-01 folded to the alpha.2 net state, apiProxy to A1-01, hardcoded profile path to A1-04, loopback channel to A1-08, and subprocess stdout parsing to A1-05 as the valid additional mapping; each mapping cites the concrete fixture evidence and card-specific reasoning, not a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Correctly accounts for all seven hit categories with no no-hit categories, lists the complete scanned file set including the no-extra-coupling files, and states read-only/static scan discipline. However, it never proposes the target-version build/typecheck, isolated boot, and functional verification path as required next steps; only scattered per-item verification hints appear."
+    }
+  ],
+  "caps": []
+}

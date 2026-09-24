@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet in dsh-plugin.naming.json, distinguishes the plugin short name from the acme/greet coordinate and the dsh-greet package name, and rules it a valid official short name with no compatibility error; prefixes treated only as collision recommendations."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies the unprefixed service 'search' from the manifest, explains collision risk with existing search capabilities, and explicitly classifies it as a warning/collision recommendation rather than a compatibility error; no strict-mode exit treated as proof of incompatibility."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Locates web-search/ready, frames it as a shared/foreign channel handled informationally, and explains that matching names alone do not establish a conflict since emit-vs-listen ownership and registry context decide; no unsupported global-uniqueness claim."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Covers all remaining surfaces (loader, tool, command, skill, skill provider, settings namespace, route, plus npm package name) with justified common verdicts, separates local schema compatibility from unqueried registry occupancy, marks every availability claim unknown/not checked, proposes later registry verification without claiming it ran, and never invents an error from private:true; explicitly rejects all-clear/reserved/globally-available claims."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report explicitly disclaims any 'reserved' or 'globally available' conclusion and marks all registry-dependent availability as unknown/not checked; local compatibility verdicts are correctly scoped to the manifest alone."
+    }
+  ]
+}

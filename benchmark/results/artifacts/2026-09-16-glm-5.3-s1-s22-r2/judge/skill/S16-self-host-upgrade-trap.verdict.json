@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in agent-session-log.txt and env-state.txt: the host process executes from node_modules/@deepseek-ai/dsh, the tool worker is a child of that host, the host dies first (GUI connection lost mid-call), and the tool result was never durably recorded so its outcome stays unknown. It explicitly frames the failure as deterministic self-host dependency, not a network flake, and limits the claim to upgrades of the executing tree rather than asserting a universal crash rule."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Report explains from env-state.txt and the log's new-shell probe that npm died between content extraction and shim generation: dsh and dsh.cmd are missing, dsh.ps1 is stale, so package content presence does not imply a complete install. It ties the user's hand-placed files to the recorded non-standard install and explicitly rejects directory swaps or hand-written shims as repair."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Report grounds the remedy in repair-notes.md: re-running npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from an external CLI outside the dead target regenerated all three shims and dsh --version reports 0.1.2-rc.1; it also covers the checkout alignment to the dsh-v0.1.2-rc.1 tag without unrelated source edits. It consistently marks these as actions recorded in the repair notes, separate from its own read-only analysis."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Report states the agent must recognize it runs inside the upgrade target and must not execute the global install, handing over an ordered external procedure: fully stop all dsh hosts first (a browser refresh is not a stop), then an exact pinned install from an EXTERNAL terminal (with the rationale for pinning), then restart, hard-refresh and verify. It identifies stop-first ordering and exact pinning as established rules and the refusal-to-execute-from-inside plus repair guidance as the new self-host rules. Its repair runs from an external terminal outside the host, not a dependent in-host shell."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Report describes a pre-execution guard that compares the requested install target against the host's own executing tree and refuses in-session execution. It uses the repair notes' 252-file version-only alpha.5→rc.1 diff to conclude no plugin re-migration is needed, and its checklist verifies dsh --version, the rc.1 web version marker, browser hard-refresh, and plugin loading (whale/progress), with dsh-old-* cleanup only after confirmation — all specific to the supplied tags and no code change."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The final protocol and guard explicitly forbid executing the global install from a session or tool worker on the target host and require a fully stopped host before the external pinned install; the in-session install appears only as the analyzed failure and rejected example."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and hand-written shims are discussed only as the user's harmful attempt and are explicitly rejected; the final fix is the formal external pinned registry reinstall."
+    }
+  ]
+}

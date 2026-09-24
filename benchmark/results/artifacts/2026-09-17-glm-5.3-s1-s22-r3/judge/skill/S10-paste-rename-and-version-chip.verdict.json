@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Report specifies paste_image.png / paste_file.<ext> with (2),(3),... appended before the extension, first-free selection, immediate in-batch reservation, and scopes the rename to the clipboard acquisition path (scoped pre-step or acquisition==='paste' gate) before validateItems/record creation, grounded in the fixture's add() (label = item.path verbatim) and validateItems in-batch duplicate check. Explicitly keeps drop and file/folder picker names untouched."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Identifies input.state.getSnapshot() occurrences (plus in-batch assignments) as the authoritative taken-name source, and explains two concrete reasons the records Map alone fails: the alive-subscription deletes entries on any momentary empty snapshot while the attachment is still live (citing the fixture's records.delete(ref) line and the maintainer note), and it under-counts names from other paths. Notes records may supplement for chip re-render but not replace live state."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache: HIT, age=178, s-maxage=300, tags listing only v0.2.9 while ls-remote shows v0.2.11) and renderCurrentChip printing the fetched tag to explain the stale 'latest v0.2.9' message. Correct display rule: semver-compare fetched tag vs running PLUGIN_VERSION, show update only when remote is newer, display the running version in the green chip, and treat fetched<running as stale/unknown rather than latest."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes concrete tests covering repeated same-batch/successive image pastes yielding distinct paste_image(2)/(3) names, the empty-records-cache-but-live-occurrence trap (driving the subscription with a momentary empty snapshot), drop/picker names unchanged, plus stale/equal/newer remote-tag tests against the running build with expected chip outcomes. Concrete expected names and assertions are given."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Covers synchronizing package.json version with the hand-inlined PLUGIN_VERSION in the shipped lib bundle (with a mechanical equality gate), node --check / import smoke as the bundle syntax check alongside the behavioral regression tests from item 4, and explains that users receive updates only by reinstalling/replacing the served artifact followed by browser hard refresh since a Git tag or chip alone installs nothing and there is no host-side update endpoint."
+    }
+  ],
+  "caps": []
+}

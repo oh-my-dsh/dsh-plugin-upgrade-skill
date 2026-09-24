@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "partial",
+      "reason": "Correctly locates index.js:3 inject=[\"apiProxy\"] and index.js:9 ctx.apiProxy.llm.providers(), and flags the dead @deepseek-ai/dsh-host-apiproxy dependency at package.json:17 as declared-but-never-imported. However, it maps the break to the retirement card only by content without identifying A1-01 (stating the corridor was absent) and never explains the concrete migration via llm injection / listProviders, giving only generic token/call-form replacement advice."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six non-behavioral categories are accounted for with concrete scanned-file evidence (package.json fields and line cites, cordis.patch.yml:1-3, grep sweeps for config, lifecycle, network, and host surfaces). session-notes.js is correctly dismissed as pure string/array utilities with no importers, cordis.patch.yml is treated as ordinary descriptor composition without denying its existence or misreading the insert as host-source modification, and no coupling is invented from filenames."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly argues that zero static hits cannot establish compatibility because grep coverage is limited and semantic, dependency, descriptor-validation, and runtime behavior need separate evidence, and it clearly separates the single decisive apiProxy break from the six zero-hit categories, concluding known-incompatible until migrated rather than roughly compatible."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies post-migration install/build/typecheck against 0.1.2-alpha.2, an isolated-profile cold boot on the target version confirming the plugin activates with inject resolving (no service-not-found/pending), and a functional smoke test that actually exercises the migrated providers call; it explicitly presents these as proposed steps not executed in the static fixture."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Correctly grounds the diagnosis in client-bundle-excerpt.js (PLUGIN_VERSION = \"0.3.6\" inlined by tsdown, not read at runtime) and release-log.md (16:22 build before 16:23 bump), explains the self-badge despite identical verified mirror SHAs, gives the corrected bump-before-build order, proposes inspecting the emitted constant before tag/push, retains mirror verification, and keeps v0.3.8's manifest separate from the earlier build."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt (PNG 200 proves route alive, SVG 404 unsupported-type shows stale running whitelist) and lib-index-excerpt.js (disk copy already whitelists svg); attributes the gap to the long-lived host process holding its boot/apply-time closure, concludes a host restart (or re-activation) is needed since client refresh only updates the browser half, and keeps the conclusion specific to this host lifecycle rather than all hot-reload mechanisms."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the attribution in session-log-excerpt.txt: source/XML well-formed and clean reread versus spliced persisted model-visible text (line 232 prefix + line 247 tail, lines 233-247 missing, stro0 parse error), locates corruption in upstream result-text assembly, marks the plugin consumer and the traced disk file innocent, treats the payload as untrusted, and explicitly rejects repairing the good SVG."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the required ordered chain with justification: authoritative disk bytes via the asset route, session payload only after DOMParser/application/xml well-formedness validation rejecting parsererror, sandboxed iframe with scripts blocked while SMIL animations still run, and an explicit error state; the malformed payload is rejected at validation and never passed unchecked to the iframe. Framed as a plan, as allowed."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding concatenated Zstandard frames frame by frame (accepting an equivalent decoder), preserving order, recovering the JSONL event with the exact stored splice, comparing it against the clean source and well-formedness verdicts, and reporting the upstream result-text-assembly bug; adds the checklist: bump before build, verify the shipped baked constant, per-mirror tag SHA, and plane-specific runtime probes. No decode or posting claimed as executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "No affirmative bad advice: bump-after-build is rejected, mirror verification is kept but scoped honestly, host restart is required for the route, editing the clean SVG is explicitly rejected, and the session payload must pass XML validation before any iframe rendering; the iframe sandbox blocks scripts."
+    }
+  ]
+}

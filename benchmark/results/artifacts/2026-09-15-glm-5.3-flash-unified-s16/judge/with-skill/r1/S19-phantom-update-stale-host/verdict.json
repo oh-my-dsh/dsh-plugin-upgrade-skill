@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Grounds the self-badge in the release log's build-before-bump order and the bundle excerpt's build-time-inlined stale constant, notes package.json is not reread at runtime, explains why identical mirror SHAs cannot catch a stale constant, prescribes bump-before-build plus a grep/assert gate on the emitted bundle while retaining mirror verification, and correctly keeps v0.3.7 separate from the later v0.3.8 manifest."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe file and lib excerpt to show PNG 200 proves the handler is alive, SVG 404 unsupported-type shows the running whitelist is old, and the disk copy already whitelists svg, pinning staleness to the unrestarted host process; explains client re-fetch vs boot/apply-time route registration, requires a host restart for the change to take effect, and scopes the hot-update exception to this lifecycle."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Contrasts the well-formed disk source and clean typed read result with the spliced persisted text and clean re-read from the session-log excerpt, describes the shared-prefix splice precisely, locates corruption in upstream result-text assembly rather than the plugin or file, treats the payload as untrusted rendering input, and argues against repairing the intact traced file."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain with justifications: disk bytes via the asset route first, session payload only after DOMParser/parsererror well-formedness checking with failures discarded, a sandboxed iframe without allow-scripts that still permits SMIL, and an explicit error state instead of a silent broken image; malformed payloads never reach the iframe unchecked."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-Zstandard log frame-by-frame with a concatenation-aware decoder, reconstructing the JSONL read-result event in order, diffing the stored splice against the source, and reporting the upstream bug; checklist covers bump-before-build, grepping the shipped constant, per-mirror tag SHA as necessary-not-sufficient, and plane-specific re-probing after restart."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The final advice affirms bump-before-build, host restart for route changes, keeping the clean SVG untouched, XML validation before rendering any session payload, and a script-free sandboxed fallback; no affirmative statement endorses the forbidden alternatives."
+    }
+  ]
+}

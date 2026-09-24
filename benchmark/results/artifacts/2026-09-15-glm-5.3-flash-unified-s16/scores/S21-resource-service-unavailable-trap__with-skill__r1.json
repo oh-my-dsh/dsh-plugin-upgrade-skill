@@ -1,0 +1,61 @@
+{
+  "task": "S21-resource-service-unavailable-trap",
+  "arm": "with-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:32:47.249Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report explicitly rejects the joined-URL 404 as a measurement of module availability, calling it out-of-contract and contradictory to the valid sweep.",
+      "total": 40
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The report affirmatively rejects plugin rewrite/retry/fallback concealment and directs the fix to restart, pinned rollback, and upstream follow-up instead.",
+      "total": 40
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

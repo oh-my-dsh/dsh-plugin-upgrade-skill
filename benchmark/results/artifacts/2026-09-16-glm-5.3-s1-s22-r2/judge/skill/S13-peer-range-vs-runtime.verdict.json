@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in the fixture: cites plugin-source-excerpt.js reads (liveAgent.session.events, session.events.at(-1), 42 references), the crash iteration at prepareReplayEvents (channel.js:623) during apply, the changelog removal in v0.1.2-alpha.4, and the replacements seq/eventAt()/snapshotEvents(). Correctly explains session.events becoming undefined and then 'TypeError: events is not iterable' when the plugin iterates it."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt: alpha.5 satisfies ^0.1.2-alpha.2 (>=0.1.2-alpha.2 <0.2.0, same-base prerelease ordering), and explains npm's peer check only validates declared version ranges against resolved versions — never API existence or runtime behavior — and that a peer declaration is an author's claim, not verification. Explicitly does not rely on npm proving runtime compatibility."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives genuinely distinct classes: (1) removed/renamed APIs (this Session.events case plus examples) and (2) signature/behavioral drift without removal (parameter order, return shape, sync-to-async timing like waterfall next() requirements), plus a third type-vs-runtime composition class. The two main classes are independently explained, not two names for one removal."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against actual target versions (CI matrix mounting newest released dsh cohort, running real apply), then an actionable policy: narrow the peer range to the verified cohort / exclude breaking releases, and implement runtime capability detection with correct old/new paths (snapshotEvents check with fallback and loud failure). Also correctly distinguishes version metadata claims from runtime guards."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install investigations tied to this incident: read the host changelog for every release between the peer floor and the installed host (alpha.2→alpha.5, spotting the alpha.4 Session.events removal), and statically grep the plugin tarball for removed APIs before installing. Goes beyond merely rerunning npm install or checking the peer range."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report never concludes that a satisfied peer range or a warning-free install proves runtime compatibility; it explicitly states the opposite (a peer range is a version-metadata claim, not runtime verification) and affirms the documented Session.events removal."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Report locates the upper-only (fg only) and lower-only branches in renderer-excerpt.ts, explains the stale SGR background paints the transparent half, notes the row-end RESET is too late for mid-row halves, prescribes ESC[49m/39 defaults per half-filled cell, and ties it to the right-edge/outline/sleep-Z/heart symptoms rather than artwork or the emulator."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Report identifies the trailing /[ ]+$/ trim producing narrower rows, explains trailing whitespace never overwrites surplus columns, and proposes ESC[K erase plus a fixed bounding region (or explicit clear of uncovered cells), with SGR state reset — a demonstrably equivalent clearing procedure that survives the pipeline."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Report uses frames-digest-report.txt to pin the hand-copied tail2 with 23 differing cells and the 1-column left shift, distinguishes data drift from renderer artifacts, explains the excerpt-based regression covered only a different frame, and proposes a golden full-frame digest gate over every frame against source art (not excerpts, not the drifted port)."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "partial",
+      "reason": "Diagnosis is complete and grounded in ci-hang-evidence.txt: self-re-arming planner Timeouts keep the loop alive, channel-ui hosts mount the header without unmounting, and TTY/stdin masks it interactively. However the rubric's prescribed fix is unref on each newly scheduled planner timeout so the animation keeps running; the report mentions unref only as an alternative and declares unmount/teardown the 'correct' fix, which stops the animation in the host rather than fixing the lifecycle contract via unref."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Report consolidates SGR completeness, erase/bounding-region behavior, frame-switch idempotence, and all-frame digest gates into a renderer checklist, and its pre-default-on audit covers handle inventories under headless hosts, mount/unmount enumeration (especially hosts that finish without unmounting), and exit/wall-clock liveness regressions; no execution was required."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The report affirms resetting the half-cell background, replaces trimming with explicit erase/bounding-region clearing, demands source-backed all-frame digest checks, and presents unref as a workable alternative without calling it harmful; no affirmative bad advice or emulator-blaming is present."
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report distinguishes the clipboard-text projection (InputState.draft, Occurrence.offset/length, chips expanded to clipboardText) from the detect projection (EditorProjection.detectText, chip = one U+FFFC) used by insertReference/consumeToken, citing host-input-contract.ts and the facade, and shows separator/text width via the 29-vs-2 length comparison.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length as the span source in add (plugin-client.js:28–31); explains that with an empty composer [0,0) is valid in both coordinate systems so paste #1 succeeds, while paste #2 sends [29,29) into a 2-char detect document, the splice fails, insertReference returns false, and the plugin emits its changed-composer toast — explicitly noting the toast is a misdiagnosis, not a real concurrent edit.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing occurrence.offset/length unconverted as a [0,28) span to consumeToken, the splice failing over the 2-char detect document, the false return ignored while records.delete and changed() run anyway, leaving the live occurrence with the composer chip intact while the missing record renders 'unavailable'; ties both symptoms to the same coordinate mismatch.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives toDetect(x) = x − Σ(occ.length − 1) from the contract excerpts with a sanity check, applies it at the insert call site (fresh snapshot, revision guard and rollback kept) and at removal (mapped offset plus a one-detect-character span), and retires the record only when consumeToken returns true.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Plan A asserts two successive pastes with both chips/occurrences present; Plan B removes a chip while another survives, asserting composer occurrence, dock chip and record are removed together, and adds declined-consumption (stale-rev, record kept) and remove-last/empty-again variants.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:28–31",
+      "path": "plugin-client.js",
+      "start": 28,
+      "end": 31,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:28",
+      "path": "host-input-contract.ts",
+      "start": 28,
+      "end": 28,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:18",
+      "path": "host-input-facade.ts",
+      "start": 18,
+      "end": 18,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:37",
+      "path": "host-input-contract.ts",
+      "start": 37,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:33–36",
+      "path": "plugin-client.js",
+      "start": 33,
+      "end": 36,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:15–17",
+      "path": "host-input-contract.ts",
+      "start": 15,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:47–48",
+      "path": "plugin-client.js",
+      "start": 47,
+      "end": 48,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:50–54",
+      "path": "plugin-client.js",
+      "start": 50,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:58–59",
+      "path": "plugin-client.js",
+      "start": 58,
+      "end": 59,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:63–65",
+      "path": "plugin-client.js",
+      "start": 63,
+      "end": 65,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:49",
+      "path": "plugin-client.js",
+      "start": 49,
+      "end": 49,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:15–17",
+      "path": "host-input-contract.ts",
+      "start": 15,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:21–32",
+      "path": "plugin-client.js",
+      "start": 21,
+      "end": 32,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:37",
+      "path": "plugin-client.js",
+      "start": 37,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:49–54",
+      "path": "plugin-client.js",
+      "start": 49,
+      "end": 54,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "ab36002ccf901c5b22f7cc2969855d1d10b5d8b0a6aad8311363a9a56cc6e6bf"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eca3984f1c94f3ff5770c686ae84e515e2364834e15b4ebcd21467077efb85a3",
+  "judge_input_sha256": "85f4c85edbd3dcbc2464b0e6f4af62a41f7c7f40f32def40c7b7d7ac2a02136e"
+}

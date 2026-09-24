@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report correctly reconstructs the corridor history: alpha.1 temporarily removed SessionEvent.ignorable (A1-02, readers rejecting unknown persisted events) and alpha.2 restored the retention semantics (A2-01, revert), computes the alpha.2 net state, and applies it to produceExternalEvent in the fixture's src/events.ts, concluding the defense must be deleted. Grounded in the fixture file and both corridor cards, not just card names."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates delete (event as any).ignorable in src/events.ts, rejects the comment's claim that stripping must be kept on alpha.2 as inverted (deleting the marker is what causes rejection), and recommends removing the delete line and its obsolete rationale while distinguishing stripping code from the marker itself."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Explains ignorable:true is a producer-side omission-safety marker only for informational events whose omission does not break reconstruction, that it is not a consumer-side filtering directive and marked events remain in the loaded log, and applies this to the third-party/informational producer, noting the live append limitation and fail-closed behavior for unmarked unknown events."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that public live Session.append on alpha.2 has no ignorable parameter, forbids faking the entry via cast or invented arguments, marks the producer seam as a capability gap, and defers exact producer/persistence integration pending target API verification (flagging even the single-object append overload as unconfirmed). No undocumented successor is invented."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation deletes the alpha.1 defense (the delete line and comment) rather than keeping it; no passage affirmatively continues stripping the marker on alpha.2."
+    }
+  ]
+}

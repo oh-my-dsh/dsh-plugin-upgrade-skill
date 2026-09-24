@@ -166,6 +166,7 @@
 - [主稿](latex/acl_latex.tex)
 - [配对统计](../benchmark/results/paired-effect-stats.json)
 - [统计脚本](../benchmark/scripts/measure-paired-effect.mjs)
+- [统一对照运行手册](../benchmark/docs/unified-glm53flash-run.zh.md)：GLM-5.3-Flash 中间组 64-trial 跑的冻结套件与执行步骤（抽样/排程/评分脚本位于 `benchmark/scripts/*unified*`）。
 - [历史审计](audit/README.zh.md)：保留评分、成本及暴露证据，日期和覆盖范围以原记录为准。
 - [本轮改稿记录](audit/REVISION-2026-09-15-retrospective.zh.md)：记录已修改内容，不另设任务清单。
 - [四条件候选协议](study-v1/README.zh.md)：可选扩展，尚未冻结/执行正式实验。

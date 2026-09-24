@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "The report uses both host files to distinguish the clipboard-text projection (InputState.draft, Occurrence.offset/length, chip expanded to clipboardText) from the detect-text projection (TokenSpan, chip = one U+FFFC), quoting the exact contract fields and connecting them to insertReference/consumeToken guards."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in plugin-client.js add(), shows paste #1 succeeds because both projections are empty/identical, computes 29-char clipboard draft vs 2-char detect text after the first chip, and explains that $replaceDetectSpanWithNodes at offset 29 fails so insertReference returns false, producing the toast; explicitly rules out a real concurrent edit and inconsistent hardcoded counts."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): clipboard offsets 0..28 passed unconverted to consumeToken, guard passes (rev current, start≠end) but the detect splice on a 2-char string fails; the boolean is never inspected so records.delete and changed() run anyway, leaving a live occurrence whose missing record renders 'unavailable' while the composer chip stays — and ties it to the same projection mismatch rather than an upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detect(c) = c − Σ(occ.length−1) over occurrences fully before c from the host source, applies it at both call sites (end-of-draft insert over all occurrences; removal mapped to a one-detect-character span), keeps the draftRev guard, and gates records.delete/changed() on a successful consumeToken result; pseudocode plus prose, with the clipboard-coordinate setDraft fallback correctly identified as already sound."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes two successive pastes with chips present (second paste asserted with no toast), removal of the first of two chips asserting occurrence, dock chip and record removed together while the other chip survives, plus declined-consumption bookkeeping, first/last-chip, empty-again and cross-path variants with concrete assertions."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report locates the disabled expression in AttachmentChips, identifies busy as AttachButton-local state unbound in the chip component, explains the early null return for empty occurrences and that a present occurrence in plain phase falsifies the left guard so busy is evaluated, raising ReferenceError; grounded in plugin-dock-chips.js."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Report explains the render exception is caught by the slot-level error boundary which unmounts the entire dock entry rather than just the remove button, that the attach button survives in its own input.left slot with its own boundary, and that the error surfaces only in the browser console with no UI banner, matching the user thread."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Report uses the shipped v0.2.10 expression and maintainer note to establish the busy line predates the feature, proposes both a minimal v0.2.10 plain-phase data-present mount and a rollback/re-add bisect, credits the feature.diff inconsistencies (context line lacking || busy; imageItem referencing callback-scoped status/record), and explicitly avoids claiming when users first exercised the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Report removes the dangling busy reference or threads explicitly owned props while keeping the phase guard, hardens record?.items with ?? [], optional-chains event.target.closest, and scopes the imageItem hover lookup inside the map callback where record/status are defined, with reasoning about why these are cheap insurance in slot components."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Report designs a render smoke mounting AttachmentChips/AttachmentDock with a matching occurrence in plain phase, asserting the chip/remove element renders and no error-boundary capture occurs, explains why empty-state-only tests and node --check miss the free identifier, and adds a data-present slot smoke on the built bundle to pre-ship checks."
+    }
+  ],
+  "caps": []
+}

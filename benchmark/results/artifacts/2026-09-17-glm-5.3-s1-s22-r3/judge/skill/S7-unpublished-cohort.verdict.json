@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in the fixture package.json declaration (^0.1.2-alpha.1) and README claim, and correctly separates it from the supplied published list: alpha.1 never published, alpha.2 published and resolvable. Explicitly notes dist-tags are irrelevant to range resolution and does not infer per-package existence from the root package or a tag. Registry fact is taken from the brief/fixture with current state marked unconfirmed rather than queried."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Correct semver analysis: ^0.1.2-alpha.1 expands to >=0.1.2-alpha.1 <0.2.0, prerelease tuple gating admits 0.1.2-alpha.2 and rejects the 0.1.1-rc versions, so install succeeds and silently selects alpha.2. Identifies the declaration/type-baseline mismatch, prerelease compatibility uncertainty, and the floating-range problem; does not claim the range is unresolvable or that caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Multiple complete plans with tradeoffs and exits: Path A pins published alpha.2 exactly while acknowledging it no longer validates the alpha.1 intent; Path B builds the cohort from the upstream alpha.1 tag and consumes local tarballs via overrides with stated pitfalls and exit. Both rubric-approved shapes are present and coherent."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Plans are reproducible: single package manager per path (pnpm with packageManager pin in Path B), lockfile regeneration/frozen-lockfile behavior discussed, and a proposed tsc --noEmit typecheck against the intended target (Path C CI lane). Override removal once published equivalents exist is explained, the exact-pin path describes deliberate future upgrades, and unverifiable source/build/runtime details are honestly marked unconfirmed. No package-manager switching or install execution is required."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing the unpublished alpha.1 from npm as if available; it pins the published alpha.2 or builds alpha.1 from a source tag into local tarballs."
+    }
+  ]
+}

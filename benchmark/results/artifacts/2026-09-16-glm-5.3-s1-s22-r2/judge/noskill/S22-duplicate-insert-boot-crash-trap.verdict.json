@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Identifies both workspace-files insert rows (bundle web-app patch and profile patch) and grounds rejection in EntryGroup.update via cordis-plugin-loader during Include._apply/compose, explains the whole-boot refusal (uniqueness invariant, no authoritative winner, fails loud), and explicitly rejects the profile comment's 'redundant/harmless' claim."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes all three cases: config-by-id override safe, genuinely new insert safe, re-inserting a bundle-provided id fatal; classifies the maintainer's row as the third case and grounds it in the identical bundle and profile excerpts, citing the proving bundle row."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the manually added workspace-files insert block from the profile cordis.patch.yml, preserving bundle and other rows; says use config override if tuning needed; rejects renaming/deleting the bundle service or adding another insert, and states no plugin-side change can fix it."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a profile composition error before plugin execution so external plugin code changes cannot cure it; notes removal restores boot but does not cure the original 文件资源服务不可用 read failure, which needs separate diagnosis/verification."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Maintainer advice: grep the installed bundle's cordis.patch.yml for the id before inserting and use override-vs-insert distinction; host diagnostic proposed naming workspace-files and both declaration origins (bundle patch path/line and profile patch path) with a concrete removal instruction."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice removes the duplicate; the report rejects the 'harmless redundancy' comment and denies any plugin-side cure, only quoting/rejecting the bad examples."
+    }
+  ]
+}

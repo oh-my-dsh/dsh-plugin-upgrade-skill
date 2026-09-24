@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Correctly locates the upper-only/lower-only branches emitting fg only, explains the stale 48;2 background painting the empty half of half-filled cells at right-edge cells (outline, sleep-Z, heart), ties it to the symptom log, and gives a precise fix that sets the empty half explicitly (declared surface bg or 49m/39m default) per cell; row-end reset is treated as too late."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Identifies the trailing-space trim in renderSpriteRows and the pipeline's trailing-whitespace semantics leaving surplus wide-frame columns unwritten/unerased; proposes full-width rows with explicit backgrounds plus erase-to-EOL (ESC[K) after each row, keeping SGR controlled — the rubric's exact two-part fix."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt to name tail2 as the sole MISMATCH with 23 differing cells (visible cluster is a projection of the 1-col shift, not the full count), attributes it to hand-copying during conversion, explains the different-frame excerpt regression missed it, and proposes full-frame digests of every frame pinned against source art as a CI gate — rejecting hashing against the drifted port."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounded in ci-hang-evidence.txt: planner re-arms one setTimeout per tick while mounted, channel-ui hosts mount without unmounting so the loop never drains, interactive product unaffected via TTY/stdin handles. Offers timer.unref on each newly scheduled timeout as the lifecycle fix (checklist item 8) alongside unmount-on-teardown, and explicitly rejects extending timeouts/stop-animation as non-fixes."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Ships an 8-point renderer contract covering complete SGR per cell, declared background, full-width rows, ESC[K erase, diff-writer semantics, full-frame digest gate against source art, and animation lifecycle/timer hygiene; the pre-rollout audit inventories mounting hosts, traces the timer chain, and includes liveness/exit regression of historically-finished jobs before flipping default-on."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice consistently requires explicit per-cell background reset, full-width rows with erase-to-EOL, source-backed all-frame digests, and never calls unref harmful; the terminal emulator is never blamed — the renderer defect is owned throughout."
+    }
+  ]
+}

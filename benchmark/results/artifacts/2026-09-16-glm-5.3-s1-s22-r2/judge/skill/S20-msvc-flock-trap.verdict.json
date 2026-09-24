@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes the failure to fs-ext@2.1.1, pinned by dsh-session-persistence-jsonl per manifest-excerpt.json; identifies the node-gyp configure build install script and the missing Visual Studio/MSVC toolchain from install-error.log, with install exiting 1 — not blamed on pnpm or network."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Grounded in lease-excerpt.md's top-level `import { flock } from 'fs-ext'` and its note that the loader must resolve fs-ext even on Windows; explains that --ignore-scripts only converts the install-time failure into a boot-time module-load failure, so the service cannot boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes the POSIX non-blocking flock(2) on session.lock from the Windows acquireLockHandleWin32 named kernel semaphore (CreateSemaphoreW etc.) using lease-excerpt.md and win32-excerpt.ts, notes Windows never takes a file lock, and concludes fs-ext is dead code on Windows — an import-safe Windows stub is permitted while Windows locking stays on the semaphore."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the README's node-pty patchedDependencies precedent: patch fs-ext@2.1.1 to skip node-gyp on Windows, add a pure-JS warn-once flock stub so the statically imported entry loads while non-Windows keeps the native build; registers the patch in pnpm-workspace.yaml (patchedDependencies plus allowBuilds consistent with the precedent) and proposes reinstall, module-load (require('fs-ext'), warn-once callback) and boot checks (dsh web --no-open, HTTP 200)."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly honors the no-Visual-Studio constraint and keeps the upstream dependency pinned at fs-ext@2.1.1; the fix is a repository-managed local pnpm patch applied at install time, correctly treated as allowed rather than forbidden upstream modification."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites the full card DSH-0.1.3-A1-03 and connects it substantively: its title, breaking type, migration recipe and source anchors (package.json pin, lease.ts static import, win32.ts semaphore bindings) are matched against the fixture findings and the §4 patch plan — not a bare ID."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan never depends on installing Visual Studio; the constraint is explicitly respected and MSVC is avoided entirely via the platform-guarded install script."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "--ignore-scripts is explicitly rejected as insufficient; the plan makes the statically imported entry loadable with a pure-JS fallback rather than just skipping the build."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "No upstream repository or published dependency change is required; the fix uses the existing repository-managed pnpm patch mechanism only."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking remains on the named kernel semaphore; the no-op flock stub only covers the never-taken Windows branch, and real flock is preserved on Linux/macOS — no weakening of write ownership."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "Uses contrast-probe and symptom-log: same file read fine by file-trace's own RPC while the documentpreview tab via the api-workspace-files Remote stalls with meta.status pinned at 'none'; localizes the fault to the host-side workspace-files service registration/activation chain, explicitly notes the cordis.patch.yml row only proves wiring not activation, and rules out disk existence, permissions, and the external plugin renderer."
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "Correctly designates the 62/62 per-module sweep as the valid measurement, disqualifies the joined 4-5 KB URL 404 as a non-loader access pattern, and explains the loader fetches per-entry manifest URLs. However it never addresses the manifest-says-60 vs probe-says-62 count discrepancy the evidence contains, and only vaguely lists 'size limits' among hypotheses instead of recognizing bounded combo partitioning."
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "Separates the dsh-paste-input fold warnings as an unrelated subsystem, uses the boot manifest to explain the textpreview-to-documentpreview replacement and the new session-only canOpen scope as the cause of the absolute-address claim failure, and explicitly states that change does not explain the session tab's stalled metadata."
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "Orders clean restart once, then rollback to the verified 0.1.3-alpha.2 escape hatch from discussion #5999, then upstream follow-up; explicitly rejects plugin-side rewrite/retry/fallback and duplicate service insertion, and treats the alpha.1 roster mismatch as prior art rather than proof of missing bytes now."
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "reason": "Covers versions/upgrade history, exact absolute and session addresses with symptoms, roster census, the valid per-module sweep, the contrast probe with meta.status, and the explicit invalid-join caveat; proposes named boot-time diagnostics (inject-dependency service-activation assertion and per-Remote liveness handshake) targeting the failing metadata chain, plus a client-side stall timeout.",
+      "verdict": "pass"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report affirmatively concludes all modules are served (62/62) and explicitly forbids citing the joined-URL 404 as missing modules; no affirmative conclusion rests on the invalid probe."
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The final remedy explicitly rejects plugin rewrites, retries, fallbacks, and duplicating the resource capability; all recommended actions are host restart, rollback, and upstream reporting."
+    }
+  ]
+}

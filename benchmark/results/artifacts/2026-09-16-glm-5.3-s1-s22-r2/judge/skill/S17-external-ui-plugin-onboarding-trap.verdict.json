@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Section 1 correctly ties the top-level ESM import in plugin/lib/client.js to the classic-script combo: one script-level SyntaxError prevents the whole combo from compiling, so no entries register and stock plugins vanish; it explains the outer error names the first awaited stock entry (dsh-typert-registry, innocent victim) while the inner client-modules cause names the real bundle, and never claims ESM is invalid everywhere."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Section 2 bisects via the single insert row in cordis.patch.yml and gives parse-only classic-script checks (top-level token check, top-level import/export grep, new Function), noting the bundle's only valid top-level statement; it then describes the full ModuleLoader.load({id, factory}) wrapper with package-name id, require('react') inside the factory, and module.exports carrying apply plus inject — matching working-plugin-excerpt.txt in equivalent form."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Section 3 uses plugin-apply-error.txt and the bare settings.section registration to show another entry (the settings shell) owns the declaration via its children table and apply ordering is not guaranteed; it gives the precise ctx.slots.inject(\"settings.section\", () => ctx.slots.register(...)) deferred form, and correctly splits registrant fields (name/id/order/label) from declaration-owned kind/scope."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Section 4 grounds boot-once combo assembly in host-boot-log.txt/restart-notes.txt, requires a full host stop/restart per iteration (file edits and hard refresh alone change nothing), includes the Windows taskkill /PID <pid> /T /F tree kill to free the port, then refresh and verify the plugin list, and explains EADDRINUSE as the orphaned old process retaining the port rather than a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Section 5 proposes a per-bundle startup purity gate plus combo-failure attribution naming the culprit bundle instead of the first awaited entry, and slot-contract diagnostics; the authoring checklist covers the loader factory, host React via require and apply/inject exports, deferred cross-entry slots via ctx.slots.inject without kind/scope/children, and the restart/Windows process-tree dev loop — well beyond a generic 'add tests'."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report's affirmative advice is the corrected contracts throughout: factory-wrapped classic script, ctx.slots.inject deferred registration, registrant fields only, and full host restart with process-tree kill; the HMR mention is an explanation of when rebuilds can occur, not advice to rely on browser refresh instead of restarting."
+    }
+  ]
+}

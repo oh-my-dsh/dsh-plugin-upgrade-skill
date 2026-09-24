@@ -1,0 +1,318 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Pinpoints the patch declaration (cordis.patch.yml:6), the surface targeting src/session/view/SessionView.ts renderSessionView, and the apply-patch.mjs applier; explicitly separates the declared patch surface from ordinary composition rows and grounds the coupling in the private session-view path and symbol.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Locates the ignorable:true producer and the observer by line, walks A1-02 removal and A2-01 restoration to the alpha.2 net state, keeps the marker only because the event is omission-safe informational, notes unknown required events must fail closed rather than being whitelisted, and explicitly warns Session.append cannot set the field instead of claiming it can.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Finds both ctx.get('apiProxy') call sites with their operations, states the apiProxy key/package deletion, correctly classifies the plugin as host-plane, prescribes direct llm/session domain-service injection (including the llm.providers split) and warns against the nonexistent host-side inject:['remote'] path.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded homedir()/.dsh/profiles/default write, explains it against runtime DSH_HOME and the $DSH_HOME/profiles layout per A1-04, and never claims --profile was introduced in alpha.1.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Cites both the /internal SessionView import and the registerCommand construction site, and explains post-split verification: rebuild imports by owning module against the exact tag, prefer public facets/seams, and mark pending confirmation rather than guessing new paths.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the loopback createServer on 127.0.0.1:43121 (dead code but statically present), explains loopback binding does not exempt it from the auth gate, and contrasts raw routes lacking inherited auth/Host-Origin/CORS with Connection-gated host-managed channels plus the requestRejection/carrier-seam remedies.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Finds both dsh subprocess wrappers and their stdout JSON.parse, explains stdout was already final text and never JSONL in rc.2, that reasoning and errors go to stderr with exit code as the success signal, and invents no alpha.2 stdout change.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Every located coupling is mapped with evidence: apiProxy calls to A1-01, events to A1-02 folded under governing A2-01 per the corridor net state, patch and UI sites to A1-03, hardcoded path to A1-04, loopback to A1-08, plus a valid A1-05 stdout mapping; grounded throughout, not a bare card list.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "Accounts for all seven categories as hits, states concrete scan limits (heuristic patterns, curated card sets, no data-flow visibility, dead code) and why no-hit cannot mean no-problem, and proposes target-tag build/typecheck, isolated cold boot and per-card functional checks without requiring execution of the static fixture.",
+      "points": 10,
+      "awarded": 10
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:6",
+      "path": "cordis.patch.yml",
+      "start": 6,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "patch.yml:2-6",
+      "path": "patch.yml",
+      "start": 2,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:5",
+      "path": "scripts/apply-patch.mjs",
+      "start": 5,
+      "end": 5,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:15-19",
+      "path": "src/index.ts",
+      "start": 15,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:20-22",
+      "path": "src/index.ts",
+      "start": 20,
+      "end": 22,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:26",
+      "path": "src/index.ts",
+      "start": 26,
+      "end": 26,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:30",
+      "path": "src/index.ts",
+      "start": 30,
+      "end": 30,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:36-37",
+      "path": "src/index.ts",
+      "start": 36,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:41-43",
+      "path": "src/index.ts",
+      "start": 41,
+      "end": 43,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:47-54",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:57-67",
+      "path": "src/index.ts",
+      "start": 57,
+      "end": 67,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:12-19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 12,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:6",
+      "path": "cordis.patch.yml",
+      "start": 6,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "patch.yml:2-6",
+      "path": "patch.yml",
+      "start": 2,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:5-6",
+      "path": "scripts/apply-patch.mjs",
+      "start": 5,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:15-19",
+      "path": "src/index.ts",
+      "start": 15,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:20-22",
+      "path": "src/index.ts",
+      "start": 20,
+      "end": 22,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:26",
+      "path": "src/index.ts",
+      "start": 26,
+      "end": 26,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:36",
+      "path": "src/index.ts",
+      "start": 36,
+      "end": 36,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:47-53",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 53,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:57-67",
+      "path": "src/index.ts",
+      "start": 57,
+      "end": 67,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:12-19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 12,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.ts:65",
+      "path": "src/index.ts",
+      "start": 65,
+      "end": 65,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:15-19",
+      "path": "src/index.ts",
+      "start": 15,
+      "end": 19,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:47-54",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:2-5",
+      "path": "cordis.patch.yml",
+      "start": 2,
+      "end": 5,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "49d7e892d0511bfff8f61995f6b3ec8471ac2c11558ef184c6041b2de73dd5f3"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+  "judge_input_sha256": "5bfdc666b645dcd632a9ce6f1e8331d6de0a5ce4d77f56b78a6ef8b70bc671ce"
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report compares both excerpts, identifies the same id workspace-files inserted in both the web-app bundle patch and the profile patch, locates the fatal rejection at EntryGroup.update during cordis:include/include application per the boot crash log, explicitly states insert collisions are fatal (no silent merge or last-write-wins), and directly rejects the profile comment's '冗余' harmless-redundancy claim as wrong."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A three-row table cleanly distinguishes config override by existing id (safe), insert of a genuinely new unprovided id (safe, e.g. dsh-file-trace/dsh-profiles), and insert of an already bundle-provided id (fatal). The maintainer's row is classified as the third case and grounded by quoting the matching insert blocks in web-app-patch-excerpt.txt and profile-patch-excerpt.txt."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Recommends deleting only the manual workspace-files insert block (with its comment lines) from the profile cordis.patch.yml, leaving the bundle-provided service and the unrelated external plugins untouched, and states any configuration need should use an id-targeted override/config change rather than a second insert. Does not rename, does not delete the bundle row."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a loader/composition error raised in EntryGroup.update before plugin resolution or apply(), so no plugin-code change can fix the duplicate id; only correcting the composition restores the possibility of boot. Explicitly separates the earlier 文件资源服务不可用 read failure as a distinct, unresolved problem that motivated but is not cured by the insert/removal, keeping it subject to its own diagnosis."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Author-side advice: before inserting, inspect and grep the installed web-app bundle's cordis.patch.yml (and other composing patches/profile rows) for the id and distinguish override from insert. Host-side proposal: catch the duplicate-id rejection and report the colliding id (workspace-files) with both declaration origins (bundle patch path and profile patch path) plus a concrete removal pointer, and optionally a pre-flight dedupe scan. Goes well beyond a bare 'check for duplicates'."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The report's affirmative conclusion is the opposite: it labels the redundant insert fatal rather than harmless, directs its removal, warns against keeping 'just in case' duplicate rows, and states no plugin-side edit can cure the composition error. The bad advice appears only as an explicitly rejected example (the profile comment)."
+    }
+  ]
+}

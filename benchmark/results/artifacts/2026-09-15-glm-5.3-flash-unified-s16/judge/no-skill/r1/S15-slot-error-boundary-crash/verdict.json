@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in plugin-dock-chips.js: pinpoints the disabled: ... || busy expression in AttachmentChips, shows busy is AttachButton's useState local and unbound in the sibling's scope chain, explains the empty-dock early return null skips the line, and that an occurrence present in plain phase makes the left guard false so busy is evaluated, throwing ReferenceError."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Grounded in the fixture: explains the render-phase throw is caught by the slot error boundary which unmounts the whole dock entry (not just the remove button), the separate input.left attach-button slot has its own boundary and survives, and the error is visible only in the browser console with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 file to show busy already exists in the baseline, proposes a rollback/re-add bisection with a data-present plain-phase jsdom mount, correctly flags that feature.diff has a stale base (re-adds || busy, omits the aria-label) and that imageItem is placed at function scope before the callback-scoped status/record, and explicitly declines to overclaim about which historical users first hit the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling busy reference while preserving the phase guard (or scopes it to owned data like record status / lifted props), hardens arrays with (record?.items ?? []).find(...), guards DOM access with event.target.closest?.(...) plus an instanceof Element check, and moves imageItem inside the map callback where record/status are defined."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a jsdom render smoke mounting AttachmentDock with an occurrence in plain phase, asserting the chip and remove control render and the console spy sees no error-boundary capture; explains the empty state returns null before the throwing line and locked phases short-circuit past busy, and that node --check only parses and cannot resolve free identifiers or execute the component; includes the data-present slot smoke in the pre-ship gates."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry chunk served 200 while its relative hashed sibling imports 404'd because siblings were never shipped, so the whole dynamic import rejects; proposes a single self-contained feature bundle with splitting disabled and alternatively shipping/serving every emitted chunk."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Correctly identifies E: vs e: drive-letter divergence between the raw LIB_DIR prefix and realpath output, the case-sensitive startsWith failing on a contained file, and why Linux/laptop controls pass; avoids claiming Windows paths are intrinsically unreliable (explicitly calls that folklore) and hedges rather than asserting realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes canonicalizing both sides (realpath of LIB_DIR once) plus a path.relative-based containment check rejecting '', '..'-prefixed and absolute results, keeps the symlink defense, and preserves a JavaScript MIME type for dynamic import; no removal of the guard or blind lowercasing."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both wheel listeners receiving the same bubbling Ctrl+wheel event and preventDefault not stopping other listeners; gives the modal exclusive ownership via capture-phase stopPropagation or scoping the pane handler to a non-ancestor element, and notes capture-phase pane listeners would defeat late stopping."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Provides a planned (not executed-claimed) matrix covering all three incidents with expected outcomes: pack/emitted-asset integrity plus fallback preservation, a case-diverging contained path serving 200 with correct MIME while traversal and symlink escapes still refuse, and a Ctrl+wheel test asserting diagram zoom with unchanged pane font size plus a modal-closed control."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The recommended fix strengthens containment (dual realpath canonicalization plus relative-based escape rejection) and explicitly keeps the symlink/traversal defense; no advice to disable containment or serve outside the plugin root."
+    }
+  ]
+}

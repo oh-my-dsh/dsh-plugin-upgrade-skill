@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Report locates the short name greet in dsh-plugin.naming.json pluginNames, distinguishes it from the coordinate acme/greet and package dsh-greet, and explicitly classifies it as a collision recommendation rather than a compatibility error, keeping the manifest loadable; prefixing is advised but not treated as mandatory."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Report locates the unprefixed service search, explains the collision/confusion risk with core and other plugins' services, and classifies it as a recommendation/warning rather than a compatibility error (noting the policy could not be verified to make it fatal); no strict-mode exit is misused as proof of incompatibility."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "partial",
+      "reason": "Report locates web-search/ready, treats it as informational pending registry context, and correctly avoids declaring a conflict from name overlap alone (could be a shared/standard channel). However, it never mentions publisher schema compatibility as a conflict determiner, covering only the registry-context half of the requirement."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Table covers every remaining declared surface (loader, tool, command, skill, skill provider, settings namespace, route, npm name). The report explicitly separates local manifest-level compatibility from unqueried registry occupancy, marks all availability questions unknown/not checked, proposes later registry verification without claiming it was run, does not invent an error from private:true, and explicitly rejects reserved/globally-available/all-clear claims."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report draws no blanket all-clear conclusion: it reports zero compatibility errors but explicitly states no registry was queried, denies that any name is reserved or globally available, and lists unknown registry-dependent checks with proposed later verification."
+    }
+  ]
+}

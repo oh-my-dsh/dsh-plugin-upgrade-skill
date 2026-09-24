@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "Report uses symptom-log.txt and contrast-probe.txt: file-trace's own RPC reads the same file while the documentpreview tab keeps meta.status 'none' (request issued but never answered), and localizes the fault to the api-workspace-files Remote/provider activation chain. It explicitly rules out file existence, filesystem, scope rejection, and static artifact serving, notes the workspace-files host row being declared does not prove activation, and does not guess an internal failing function."
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "pass",
+      "reason": "Report treats Probe 1 and the 62/62 per-module sweep as the valid static-serving measurement and Probe 2's hand-joined ~4-5 KB URL as invalid (outside the served namespace, plausibly over a URL-length limit), explaining the loader fetches per boot-manifest entry rather than joining. It never cites the 404 as missing modules and invents no reconciliation for the 60/62 count difference."
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "Report separates the dsh-paste-input fold warnings as an unrelated warning family (citing the clean console for documentpreview/sidebar) and uses the boot manifest to explain the textpreview-to-documentpreview rename and the new session-only canOpen scope, attributing only the absolute-scope claim error to it while the session tab's stalled metadata is a separate service-activation fault. It does not demand a fold-parser fix version or END-marker cause."
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "Report orders full host restart once (with the #5999 self-heal precedent and its caveat not to loop restarts), pinned rollback to the verified published 0.1.3-alpha.2 escape hatch, then upstream follow-up on discussion #5999. It rejects plugin-side rewrite, blind retry/fallback, and bypassing the Remote as cures for the host-chain gap, treats the alpha.1 roster mismatch as prior art on the same failure family, and proposes actions without executing any upgrade."
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "Report packages versions, npm-global in-place history, old-profile provenance with six junction-linked plugins, the exact absolute and session addresses with symptoms, roster evidence, the valid 62/62 sweep, the same-file contrast probe with meta.status 'none', and an explicit caveat that the joined-URL 404 must not be misread. It proposes named host diagnostics: boot-time combo-serve self-check, a Remote-provider activation assertion before serving traffic, and a workspace-files deadline diagnostic with typert lookups.register logging — concrete failing-chain checks beyond roster-vs-byte comparison."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report affirmatively states Probe 2's 404 is not evidence of missing modules because the 62/62 sweep proves the modules exist; it never uses the joined-URL 404 as proof in its diagnosis or advice."
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The final recommendation explicitly rejects rewriting the external plugin, shipping retry/fallback workarounds, and bypassing the Remote; it proposes no duplicate workspace-files service insertion, directing fixes at restart, rollback, and upstream host changes."
+    }
+  ]
+}

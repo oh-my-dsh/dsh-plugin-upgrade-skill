@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction/Target and the cordis.patch.yml link marker; concludes the repo tree is the installed copy, edits are already live, copying was never necessary (a self-copy through the junction), and explicitly distinguishes copied real-directory installs."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes the EBUSY IOException to the running dsh web host Node process, explains closing the browser tab releases nothing since the browser talks over HTTP, and separately explains the host serving the old client bundle plus browser HTTP caching, requiring host restart then cache-bypassing hard refresh; scoped to this Web-plugin setup rather than claiming all DSH versions behave identically."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains that through the junction the destination path is the repo's own file, so renaming renamed the sole source files and the subsequent copy failed because the source no longer existed. Restores client.js.old2/index.js.old2 back to their original names with contents preserved, verifies with node --check, and only then activates; stopping the host first is included as a precaution."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the semantic order: fully stop the dsh web host, restart it so it loads the new host half through the junction, hard-refresh (Ctrl+F5) to bypass browser cache, then verify the feature/host route and network responses; states syntax checks alone are not activation and explicitly orders host restart before browser refresh."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Requires inspecting Get-Item LinkType/Target and cross-checking the cordis.patch.yml link marker before any deployment operation, branches the procedure for linked versus copied installs, and explains why generic copy-into-node_modules advice is harmful (destination is the source; renames act on the repo itself)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan explicitly rejects any copy step: the report states 'There is nothing to copy', that copying was never necessary or correct, and prescribes only rename-back, node --check, and restart; the two paths are treated as the same directory, not independent copies."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The final activation procedure always fully stops and restarts the dsh web host before the browser hard refresh and explicitly states refreshing against an old host re-serves the old bundle; it never claims browser refresh or tab closure alone releases the lock or makes the edit effective."
+    }
+  ]
+}

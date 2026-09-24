@@ -1,0 +1,147 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report cites index.js:3 inject=[\"apiProxy\"] and index.js:9 ctx.apiProxy.llm.providers(), maps the break to A1-01 as the primary card, explains the host-plane fix (inject [\"llm\"] with listProviders plus listConfigurableProviders, matching the card's split row and field note), and explains the dead @deepseek-ai/dsh-host-apiproxy dependency at package.json:17 with the instruction to drop it since alpha.1 deletes the package — well beyond a bare card name.",
+      "points": 40,
+      "awarded": 40
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "The scan table accounts for all six non-hit categories with per-category pattern evidence and file citations. session-notes.js is correctly described as pure string/array utilities with no host coupling despite its filename, and cordis.patch.yml is classified as ordinary composition (a bundle insert row) rather than a host-source patch — the file is cited as existing, its insert is not misclassified, and no coupling is invented from names.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 4 explicitly concludes zero hits cannot establish compatibility, citing the scan's heuristic-only nature, curated card coverage, grep's blindness to data flow, and the unproven from-tag pin requiring dependency/runtime evidence; it clearly separates the decisive apiProxy blocker from the six negative categories, which it says only mean no carded migration work.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "The report lists mandatory post-migration checks: build and typecheck against the target cohort, an isolated-profile cold boot with the entry active and no pending-service rows plus dump-config confirmation, and a real listProviders/listConfigurableProviders round covering success and failure — all framed as proposed steps explicitly not executed in the non-runnable static fixture.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "package.json:1-5",
+      "path": "package.json",
+      "start": 1,
+      "end": 5,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:6-10",
+      "path": "package.json",
+      "start": 6,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:11-14",
+      "path": "package.json",
+      "start": 11,
+      "end": 14,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:1-4",
+      "path": "cordis.patch.yml",
+      "start": 1,
+      "end": 4,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:16-18",
+      "path": "package.json",
+      "start": 16,
+      "end": 18,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:3",
+      "path": "index.js",
+      "start": 3,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/session-notes.js:1-10",
+      "path": "src/session-notes.js",
+      "start": 1,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:2",
+      "path": "index.js",
+      "start": 2,
+      "end": 2,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:3",
+      "path": "index.js",
+      "start": 3,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:9",
+      "path": "index.js",
+      "start": 9,
+      "end": 9,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:17",
+      "path": "package.json",
+      "start": 17,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:11-13",
+      "path": "index.js",
+      "start": 11,
+      "end": 13,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "97e1f6956eaf37a8ba2173311b45744161386a3dc745af140184db434a60d252"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "1bc0c4380ef019d66b966ad6e38cf9cc70f004b965baa5ced858adf5682312ec",
+  "judge_input_sha256": "f9d5c9414e43ac1ffc2e0aff507674002a6c1a010a93c46512a51883145f889a"
+}

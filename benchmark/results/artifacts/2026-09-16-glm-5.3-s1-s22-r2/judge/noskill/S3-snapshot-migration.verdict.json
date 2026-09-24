@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates the partial/runningCalls/turnEnds reads at specific Pet.tsx lines with the old flat ConversationSnapshot shape, explains the temporary views.get('chat')?.legacy projection from the A1-03 field note, and gives the final alpha.2 read path (useChat + keyed order/nodes.get with assistant-step finalNode narrowing). Projection vs. new path are clearly separated."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates useSession(s => s.running) at Pet.tsx:19, correctly states running is a lifecycle field outside the chat legacy projection that must keep going through the useSession seat, and never claims the existing useSession call must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates the removed dsh-client-runtime/client imports (Pet.tsx:8, index.ts:6) and the package.json client.inject entry, repoints Context as ClientContext to @deepseek-ai/cordis, sends snapshot types to their owning packages (ui-chat ChatSnapshot, ui-conversation pulls), and explicitly defers remaining exact snapshot symbols to target exports rather than claiming cordis exports them."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register call for 'conversation.session.header.actions' inside ctx.inject(['slots','conversation'],...), explains the ordering/service-ownership reason for the slots/conversation inject and the type-only owning-package pulls that supply the Context/SlotMap augmentation, and preserves the slot name and registration lifetime; the tag-verification hedge is a supported equivalent form, not a wrong claim."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties the snapshot/lifecycle/slot changes to the full card DSH-0.1.2-A1-03 with its field-note evidence, uses DSH-0.1.2-A1-25 as the valid package-removal card with the inject-cleanup recipe, and separates staged legacy projection from immediate type/inject/lifecycle changes in an explicit table. Extra card ids (A1-26, A1-27) are hedged as conditional/verification-only and do not drive required changes; no bare card ID is relied on."
+    }
+  ],
+  "caps": []
+}

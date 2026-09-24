@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Uses agent-session-log.txt and env-state.txt to tie the pwsh tool worker and web session to the host process executing from the @deepseek-ai/dsh tree npm was removing. Tracks the 16:41:02 clean through linkStuff, names the host process as what dies first (GUI connection loss), explains the tool call could not return because the recording machinery died, and preserves the log's 'outcome unknown' framing. Correctly treats it as a structural self-replacement hazard, not a random network failure, without claiming every in-place upgrade on every platform must crash."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains env-state.txt precisely: rc.1 content present but dsh/dsh.cmd missing and dsh.ps1 stale, so CLI entry points are broken; content presence does not equal a completed install because shim generation is npm's final bin-linking phase, which the death during linkStuff skipped. Relates the manually swapped tree and dsh-old backups to the non-standard state and explicitly rejects hand-swapping directories or hand-writing shims as making things worse."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounded in repair-notes.md: rerun npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from an external shell outside the stopped target host so npm regenerates all three shims; verifies dsh --version = 0.1.2-rc.1. Accounts for aligning the source-reference checkout to the dsh-v0.1.2-rc.1 tag without demanding unrelated source edits, and clearly separates the recorded repair and proposed verification from anything the candidate performed (report states no installs were executed)."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Agent should recognize it runs inside the upgrade target, must not execute the global install in that session (no retry, no longer timeout), and hand over an external procedure: fully stop all dsh hosts first, run the exact-pinned npm install from an external terminal, then restart, hard-refresh, verify. Explains stop-first and exact version pinning are established rules while refusing in-target execution is the incident's new self-host rule. The external shell is an independent handoff, not a dependent tool of the dying host."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Guard compares the requested global-install target against the running process's own module path (ancestor-of-runtime check) and refuses with a structural explanation plus the external procedure; also catches hand-copied trees/shims. Checklist uses the alpha.5-to-rc.1 version-only diff (252 package.json bumps, zero plugin-facing changes) to rule out needless plugin re-migration, checks displayed version markers and actual plugin loading after restart/refresh including ghost KeepAlive hosts, keeps backup cleanup until after successful verification, and stays a no-code-change conclusion specific to these tags."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The final protocol and guard advice are the opposite: never run the global upgrade from a session or tool worker on the live target host; fully stop hosts and install from an external terminal. The in-session install appears only as the rejected incident under analysis."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "The final fix is the formal external pinned npm install; manual directory swaps and handmade shims are mentioned only as failed attempts or explicitly rejected repair paths, never as affirmative advice."
+    }
+  ]
+}

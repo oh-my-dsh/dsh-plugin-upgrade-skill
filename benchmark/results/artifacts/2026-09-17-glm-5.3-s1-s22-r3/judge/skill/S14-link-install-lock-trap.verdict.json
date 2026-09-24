@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction, Target E:\\dev\\dsh-attach-input, and the cordis.patch.yml link marker to establish the profile entry resolves to the repo working tree; correctly explains repo edits are already the deployed copy, that Copy-Item through the junction is a self-copy and was never right for link mode, and distinguishes it from a copied dependency (empty LinkType)."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes both mechanisms to the running dsh host: it serves/loads the old client code (why tab refresh showed nothing) and holds the lib files open causing EBUSY (why closing the tab released nothing, since the browser only talks HTTP). Separately explains browser cache staleness after host restart and requires host restart plus cache-bypassing hard refresh, without conflating cache with a filesystem lock or generalizing to all DSH versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains renaming through the junction renamed the sole source files, which made the subsequent source copy fail ('source does not exist'); uses the identical .old2 listings in both paths from copy-session.txt as proof. Recovery: stop the host first, rename client.js.old2/index.js.old2 back to original names from either path, node --check both, then activate — matching the required procedure without recreating or deleting files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: pre-flight/syntax check, fully stop all dsh host processes, restart dsh web, hard-refresh with cache bypass for client.js, then verify host route/log and fresh client artifact with feature markers. Explicitly states syntax checking alone is not activation and browser restart alone is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Pre-flight uses Get-Item LinkType/Target plus the cordis.patch.yml link:E:\\dev\\dsh-attach-input marker before any file operation, branches the procedure for link vs copied installs, and explains concretely why generic copy-into-node_modules advice was harmful: self-copy, EBUSY under the running host, and junction workarounds damaging the single shared source directory."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final recovery renames the .old2 files back rather than copying repo files onto the junction target; it never deletes the .old2 files (the restore consumes them by renaming) and repeatedly affirms the two paths are one directory, explicitly rejecting copy-through-node_modules."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires fully stopping and restarting the host as the core activation step and treats browser hard refresh only as the client-side supplement; the report explicitly states a browser refresh is not a host stop and the browser holds no file locks."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "The report identifies the two colliding insert rows for id workspace-files (web-app bundle patch and profile patch, quoting both fixtures), locates the rejection at EntryGroup.update while Include._apply composes cordis:include, and explains the fail-closed id-uniqueness invariant instead of last-write-wins. It explicitly rejects the profile comment's claim that keeping the duplicate is harmless redundancy."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "All three operations are distinguished in a table: config override by existing id is safe, inserting a genuinely new id is safe (illustrated by dsh-file-trace/dsh-profiles), inserting a bundle-shipped id is fatal. The maintainer's row is classified as the third case and grounded in the web-app-patch-excerpt row plus the identical profile block."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "The fix removes only the manually appended workspace-files insert block (comments included) from the profile cordis.patch.yml, keeps the bundle's row and unrelated external plugins, and says to use a config override by id if adjustment is needed. It explicitly rules out renaming the extra instance, deleting the bundle's row, or adding another insert."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "The report explains the crash is a composition error in the loader before any plugin code runs, so no plugin-side change can fix the duplicate id, and that removing the duplicate only restores boot. It keeps the original 文件资源服务不可用 symptom as a separate problem to re-verify rather than claiming it is cured."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Prevention says to grep/inspect the installed web-app bundle's cordis.patch.yml (and resolved composition) for the id before inserting and to distinguish override from insert. It proposes a concrete host diagnostic naming workspace-files, both declaration origins with file/line, and the exact redundant profile block to delete, plus the config-by-id alternative."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The report's final advice is to delete the redundant profile insert and treats the duplicate as a fatal composition error; it quotes the '冗余' comment only to reject it and never endorses keeping, adding, merging, or plugin-side fixes for the boot failure."
+    }
+  ]
+}

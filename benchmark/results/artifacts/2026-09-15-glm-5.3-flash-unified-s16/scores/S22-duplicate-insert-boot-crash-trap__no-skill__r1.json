@@ -1,0 +1,55 @@
+{
+  "task": "S22-duplicate-insert-boot-crash-trap",
+  "arm": "no-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T01:56:28.668Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is to delete the profile-side duplicate and never re-add it; keeping the row is presented as rejected trap reasoning, and plugin-side fixes are explicitly ruled out, so no affirmative bad advice is given.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "fail",
+      "reason": "The report correctly locates the removed @deepseek-ai/dsh-client-runtime/client import at src/client/index.ts:1 and its type use at line 9, and maps A1-25, but its migration action is only 'unconfirmed, consult the A1-25 card' — no migration direction toward a supported owning target (e.g. importing Context from cordis with type augmentation) is offered. The rubric states uncertainty without a diagnosis-and-migration direction earns no credit."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Correctly compares the loader id 'pet-legacy-bundle' (src/client/index.ts:10) with package.json name dsh-pet-session-bench, maps A1-26, and requires exact name alignment. However it requires no client activation verification (boot graph / entries check / no 'loaded without registering' assertion), so that required component is missing."
+    },
+    {
+      "id": "session-content",
+      "verdict": "fail",
+      "reason": "The report locates the flat useSession() nodes destructure and nodes[0] indexing (src/client/index.ts:12-13) and maps A1-27, but offers no replacement content-reading direction (no supported content surface such as a binding/durable window or selector) and never addresses preserving ordering; it defers entirely to the card as 'unconfirmed'. No credit per the rubric's uncertainty-without-direction rule."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "fail",
+      "reason": "It locates ctx.connection.api.agentPresets.list (src/client/index.ts:11) and maps A1-30, but prescribes no verified public target interface for the operation; its only hint ('package-private JSON methods on the new connection face') is vague and effectively still assumes a connection-style face rather than a supported public surface. Deferral to the card without a defensible migration direction earns no credit."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never positively asserts an unsupported apply→setup/activate replacement or that client inject entries generally must move into a manifest; it explicitly lists the inject line as having no evidenced change and invents no lifecycle replacement."
+    }
+  ]
+}

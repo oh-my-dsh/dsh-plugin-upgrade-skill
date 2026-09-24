@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction, Target E:\\dev\\dsh-attach-input, and the cordis.patch.yml link marker; correctly concludes the profile entry resolves to the repo working tree, that repo edits already are deployment, that Copy-Item was never right for this install (degenerates into self-overwrite), and contrasts with a copied dependency."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Grounded in copy-session.txt and maintainer-thread.md: attributes the EBUSY file locks and the stale module state to the running dsh host, explains the browser tab holds no filesystem handle so closing it could not release EBUSY, and separately covers browser HTTP-cache staleness requiring host restart plus cache-bypassing refresh. Does not conflate caching with a filesystem lock."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the rename through the junction renamed the sole physical source files (both paths are one directory), so the later copy failed with missing source. Recovery: stop the host first, rename client.js.old2/index.js.old2 back to original names, preserve contents, node --check both files, then activate — no deletion or recreation of files required."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct dependency order: verify files, fully stop the host (handle holder and old in-memory code), restart dsh web, hard-refresh with cache bypass, then verify the new feature/route, network fetch of client.js, and absence of load errors. Explicitly notes browser-only restart is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Pre-flight inspects Get-Item LinkType/Target and the cordis.patch.yml link marker to classify link vs copied installation before any file operation, with the branch logic for each mode, and explains why generic copy-into-node_modules advice caused the incident (assumed independent copies; actually one shared directory)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final recovery renames the .old2 files back to their original names to restore entry files; it explicitly keeps (not deletes) the .old2 files as backup and never copies repo files onto the junction target or treats the two paths as independent copies."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan affirmatively requires fully stopping and restarting the dsh host; browser refresh is only the final cache-bypass step and the report states closing the browser cannot release the host lock."
+    }
+  ]
+}

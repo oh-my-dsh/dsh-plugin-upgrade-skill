@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Identifies `disabled: (props.input?.phase ?? 'plain') !== 'plain' || busy` in AttachmentChips as the throwing expression, grounds it in the shipped fixture code, explains busy is a local of sibling AttachButton and unbound in AttachmentChips (ReferenceError at render), notes empty occurrences return null before the map, and explains the || short-circuit: left guard true in non-plain phase never reads busy, so plain phase with an occurrence finally evaluates it."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render exception is caught by the slot-level error boundary which unmounts the whole dock entry, so the entire chip dock disappears rather than just the remove button; the attach button survives in its separate input.left slot, and the error is visible only in the browser console with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 source to show busy already occurs in the baseline, so the hover diff is not the root cause; proposes a data-present plain-phase minimal mount of the v0.2.10 artifact and a rollback/re-add bisect as isolation. Also credits grounded diff inconsistencies: feature.diff contradicts the baseline about the || busy line and hoists imageItem above the callback where record/status are declared (flagging window.status hazards). It frames v0.2.11 as first exercising, not causing, the latent bug without overclaiming historical usage."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Primary fix removes the dangling busy reference (or threads explicitly owned state via props) while preserving the phase guard; adds record?.items ?? [] defensive reads explaining the async-partial-data hazard, optional-calls event.target.closest?.() with rationale, and moves the hoisted imageItem lookup inside the map callback after record/status are defined."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a render smoke mounting the dock with one occurrence in plain phase, asserting the chip/remove control renders via DOM/label queries and zero error-boundary captures; explains the empty-state test returns null before the throwing line and that node --check/parse-only passes cannot resolve free identifiers. Recommends a data-present slot render smoke on the shipped artifact as the pre-ship gate; no actual test execution required."
+    }
+  ],
+  "caps": []
+}

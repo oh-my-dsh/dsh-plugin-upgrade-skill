@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in plugin-dock-chips.js: pinpoints the disabled: ... || busy expression in AttachmentChips, shows busy is AttachButton's useState local and unbound in the sibling's scope chain, explains the empty-dock early return null skips the line, and that an occurrence present in plain phase makes the left guard false so busy is evaluated, throwing ReferenceError.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Grounded in the fixture: explains the render-phase throw is caught by the slot error boundary which unmounts the whole dock entry (not just the remove button), the separate input.left attach-button slot has its own boundary and survives, and the error is visible only in the browser console with no user-facing banner.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 file to show busy already exists in the baseline, proposes a rollback/re-add bisection with a data-present plain-phase jsdom mount, correctly flags that feature.diff has a stale base (re-adds || busy, omits the aria-label) and that imageItem is placed at function scope before the callback-scoped status/record, and explicitly declines to overclaim about which historical users first hit the failure.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling busy reference while preserving the phase guard (or scopes it to owned data like record status / lifted props), hardens arrays with (record?.items ?? []).find(...), guards DOM access with event.target.closest?.(...) plus an instanceof Element check, and moves imageItem inside the map callback where record/status are defined.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a jsdom render smoke mounting AttachmentDock with an occurrence in plain phase, asserting the chip and remove control render and the console spy sees no error-boundary capture; explains the empty state returns null before the throwing line and locked phases short-circuit past busy, and that node --check only parses and cannot resolve free identifiers or execute the component; includes the data-present slot smoke in the pre-ship gates.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "851f29fd09e7c431939ddbc722cf3f312ddc2091aba0063414dca2f92d00c4ee"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "b13320d86d85716b6499dcea96c1eef279a5d8022e8db543705ab2585f64260b",
+  "judge_input_sha256": "4956badc239e3eb21dc6c42d08813198fc7c6c5432b24ddbb81579276549a013"
+}

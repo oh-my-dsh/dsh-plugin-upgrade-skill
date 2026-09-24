@@ -1,0 +1,242 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report cites the contract and facade to distinguish the two projections: draft and Occurrence offsets are clipboard-text (chips expand to clipboardText) while insertReference and consumeToken splice detectText where a chip is one U+FFFC; literal text and the separator space keep normal width (detectText 'U+FFFC ' length 2).",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in add (plugin-client.js:29-31), explains that on an empty composer both coordinates coincide so paste #1 succeeds, computes the overshoot (clipboard 29 vs detect length 2) making insertReference return false, which the !accepted branch turns into the changed-composer toast; explicitly notes the revision CAS passed, so no real concurrent edit is inferred.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing clipboard-space occurrence.offset/length unconverted to consumeToken, whose detect splice fails and returns false; the plugin ignores the result, records.delete runs anyway, and the undefined-record fallback renders 'unavailable' while the composer chip stays; both symptoms are tied to the same coordinate mismatch, not a separate upload failure.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detect(p) = p minus the sum of (length-1) for preceding chips and applies it at both call sites: insert at draft end sums over all occurrences, removal maps occurrence.offset then uses a one-detect-character span; draftRev guard is kept and records.delete is gated on the verb's successful consumption.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "R1 asserts two successive pastes with both chips present and no toast; R2 removes a middle chip with a preceding chip, asserting it leaves composer and dock while the other chips and records survive; R3/R4/R5 add empty-again, declined-consumption record-retention, and smoke variants.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:29-31",
+      "path": "plugin-client.js",
+      "start": 29,
+      "end": 31,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:27",
+      "path": "host-input-contract.ts",
+      "start": 27,
+      "end": 27,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:18",
+      "path": "host-input-facade.ts",
+      "start": 18,
+      "end": 18,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:37",
+      "path": "host-input-contract.ts",
+      "start": 37,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:16-17",
+      "path": "host-input-facade.ts",
+      "start": 16,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:33-36",
+      "path": "plugin-client.js",
+      "start": 33,
+      "end": 36,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:43-60",
+      "path": "plugin-client.js",
+      "start": 43,
+      "end": 60,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:15-17",
+      "path": "host-input-contract.ts",
+      "start": 15,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:37-43",
+      "path": "host-input-facade.ts",
+      "start": 37,
+      "end": 43,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:4",
+      "path": "host-input-facade.ts",
+      "start": 4,
+      "end": 4,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:50-59",
+      "path": "plugin-client.js",
+      "start": 50,
+      "end": 59,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "plugin-client.js:63-65",
+      "path": "plugin-client.js",
+      "start": 63,
+      "end": 65,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-contract.ts:36-42",
+      "path": "host-input-contract.ts",
+      "start": 36,
+      "end": 42,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "host-input-facade.ts:21-23",
+      "path": "host-input-facade.ts",
+      "start": 21,
+      "end": 23,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/host-input-contract.ts:26-28",
+      "path": "host-input-contract.ts",
+      "start": 26,
+      "end": 28,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/host-input-contract.ts:15-17",
+      "path": "host-input-contract.ts",
+      "start": 15,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/host-input-contract.ts:36-38",
+      "path": "host-input-contract.ts",
+      "start": 36,
+      "end": 38,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/host-input-facade.ts:18",
+      "path": "host-input-facade.ts",
+      "start": 18,
+      "end": 18,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/host-input-facade.ts:37-43",
+      "path": "host-input-facade.ts",
+      "start": 37,
+      "end": 43,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/plugin-client.js:29-31",
+      "path": "plugin-client.js",
+      "start": 29,
+      "end": 31,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/plugin-client.js:48-54",
+      "path": "plugin-client.js",
+      "start": 48,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/plugin-client.js:50-58",
+      "path": "plugin-client.js",
+      "start": 50,
+      "end": 58,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/plugin-client.js:63-65",
+      "path": "plugin-client.js",
+      "start": 63,
+      "end": 65,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "d6124b821537b18fa905b55caaf790ecb4a0cbb31840eca7b3fa0cc50772083a"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eca3984f1c94f3ff5770c686ae84e515e2364834e15b4ebcd21467077efb85a3",
+  "judge_input_sha256": "4f2c37e6c020e4e371597150fdf04cf525d45a5da9b9a67b229797f0f970bcb3"
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report locates the exact disabled expression in AttachmentChips, identifies busy as useState-local to sibling AttachButton and unbound in AttachmentChips, explains the empty-occurrences early return null before the map, and that a present occurrence in plain phase falsifies the left guard so busy evaluates and throws ReferenceError at render time."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Report explains the per-slot-entry error boundary catches the render exception and unmounts the entire InputZone dock entry rather than just the remove button, that the separate input.left attach-button slot and its owning component survive, and that the diagnostic is console-only with no user-facing banner — matching the user thread."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Report grounds attribution in the shipped v0.2.10 artifact showing busy already in the baseline, proposes both a rollback/re-add bisect and a decisive minimal plain-phase data-present mount (stack trace names the throwing line), explicitly flags feature.diff's inconsistent minus-side context and the imageItem lookup hoisted above callback-scoped record/status as additional defects, and does not force a claim the hover diff is harmless nor overclaim when users first hit the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Report prescribes removing the dangling busy or lifting an explicit shared busy prop while preserving the phase guard, moving the hover lookup inside the map callback where record/status are scoped, hardening record?.items ?? [] and optional-chained/safe event.target closest access, and scoping the image lookup to callback scope; read-only, no execution required."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Report proposes a concrete jsdom/vitest mount with one matching occurrence in plain phase, asserting the remove control renders and no error-boundary/console capture occurs; explains why empty-state-only tests and any parse check (node --check) cannot reach free-identifier resolution; and folds a data-present slot render smoke into the pre-ship checklist without claiming a run."
+    }
+  ],
+  "caps": []
+}

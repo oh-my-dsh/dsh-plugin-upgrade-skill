@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 87.5,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report gives the full version history (pre-alpha.1 field honored, alpha.1 A1-02 temporary removal, alpha.2 A2-01 restoration), explains the remove-then-restore corridor and judging by destination state, and applies it to produceExternalEvent in src/events.ts, grounded in fixture/README.md and fixture/src/events.ts.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the exact delete expression, rejects the comment's keep-it advice and corrects its obsolete rationale, recommends deleting the defense, and correctly notes the delete is a no-op since the literal never carries the marker while still rejecting the stripping policy.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Correctly frames ignorable as platform/envelope-owned and applies this to the third-party/informational producer under the live-append limitation, but never states that only omittable informational events may carry the marker (required events must not be made ignorable) nor that retention is not a filtering directive and marked events remain in the loaded log.",
+      "points": 25,
+      "awarded": 12.5
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that Session.append offers no legitimate way to set ignorable and that the parameter may not exist publicly, warns producers against forging or mutating envelope fields (no cast/fake entry), and explicitly defers the exact signature/integration as unconfirmed pending target API verification.",
+      "points": 25,
+      "awarded": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the defense code and remove the delete statement; the old comment is quoted only to reject it, so the cap's condition is not met.",
+      "total": 10
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "d6004f40444971945fb61e5174d6bae3bdef95cc3a7cd7156907e95a420a0a32"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "90de00b02f3d79f3077edbb780e50270f57f332eca821e8310c8a949a22c1402",
+  "judge_input_sha256": "95dc693a30b692b184ce0b458230c97536ac0ea8a2c6ad1b128ae1613ee1e3b2"
+}

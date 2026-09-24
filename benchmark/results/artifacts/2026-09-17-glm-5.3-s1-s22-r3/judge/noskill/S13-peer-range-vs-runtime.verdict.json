@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report locates session.events reads in plugin-source-excerpt.js (channel.js line 734, line 657 .at(-1), 42 references), cites the crash-stack iteration failure chain (prepareReplayEvents → TypeError: events is not iterable inside apply), quotes the changelog removal at 0.1.2-alpha.4 with seq/eventAt()/snapshotEvents replacements, and causally explains undefined → non-iterable TypeError."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt to explain alpha.5 satisfies ^0.1.2-alpha.2 via same-base prerelease ordering (>=0.1.2-alpha.2 <0.2.0-0), and states npm only compares version metadata, never loads host code or checks API existence; explicitly frames the peer declaration as an author claim, not tested compatibility."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives two genuinely distinct classes — removed/renamed APIs (this case) and changed shape/semantics of still-present APIs (sync→async, array→iterator, return-type changes) — plus further behavioral changes; each is concretely explained, not just named."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing the actual target versions (matrix across alpha.2–alpha.5 with real host artifacts) and an actionable policy: narrow the peer range to exclude breaking releases plus runtime feature detection with correct old/new paths and a fail-fast diagnostic; explains engines covers Node runtime, not DSH API behavior. Both testing and policy present."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install investigations: npm pack + grep plugin source for host API usage, probe installed host exports for events, and read changelog entries between peer floor (alpha.2) and installed alpha.5 — explicitly tied to the Session.events removal, going well beyond rerunning npm install or re-checking range satisfaction."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The final conclusion affirms the opposite: peer-range satisfaction is a metadata claim while runtime compatibility is behavioral; the report never claims satisfied peers or warning-free install prove API compatibility, nor denies the documented Session.events removal."
+    }
+  ]
+}

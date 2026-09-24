@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Uses agent-session-log.txt and env-state.txt to tie the pwsh tool worker and web session to the host process loaded from the npm global tree being replaced; explains the GUI death at the link phase, the worker dying with the host, and quotes the log's unknown final tool outcome. Frames it as a structural self-host hazard, not a network failure, without any universal every-platform claim."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains env-state.txt accurately: package content present but dsh/dsh.cmd missing and dsh.ps1 stale, so PATH resolution fails before content matters and content presence does not prove a complete install. Links the hand-swapped nonstandard tree to the missing shims and explicitly rejects hand-swapping directories or hand-making shims in favor of a formal npm install."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounds the remedy in repair-notes.md: rerun npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from an external CLI/terminal outside the stopped host so npm regenerates all three shims, verify dsh --version equals rc.1, align the source-reference checkout to dsh-v0.1.2-rc.1 without unrelated edits. Clearly separates the recorded repair and user-left verification from anything the candidate performed."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "States the agent must recognize it runs inside the upgrade target and must never execute the global install itself, only hand off an external procedure: stop the host first, then exact-version pinned install from a shell not spawned by dsh, then restart the host, hard-refresh the browser, and verify. Distinguishes stop-host-first and exact pinning as known upgrade discipline from the additional self-host no-execute rule."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Describes a pre-execution guard that matches global npm installs targeting dsh against the session's own runtime/module path (process.execPath vs npm prefix) and emits the handoff procedure. Uses the alpha.5-to-rc.1 version-only 252-file diff to skip plugin re-migration, checks shims/version markers and actual plugin loading after restart/refresh, and defers dsh-old-* backup cleanup until rc.1 is confirmed — all specific to the supplied tags, no code changes."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "Final protocol is categorically to refuse executing the global install from inside the target host and hand the external procedure to the user; no affirmative advice to run or retry it in-session."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "The report explicitly rejects directory swaps, hand-made shims, --no-bin-links, and copying over the old tree; the final fix is the formal external pinned npm install."
+    }
+  ]
+}

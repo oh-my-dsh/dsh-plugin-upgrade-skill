@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Grounds the distinction in package.json's devDependencies declaration and the fixture README's published-version list, states alpha.1 was never published while alpha.2 was, does not infer package existence from the root package or a dist-tag, and proposes package-specific verification (npm view @deepseek-ai/dsh-llm versions) while marking the registry state unconfirmed."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Correctly explains ^0.1.2-alpha.1 as >=0.1.2-alpha.1 <0.2.0 with prerelease tuple matching, showing 0.1.2-alpha.2 is selected and rc.1/rc.2 excluded; identifies the silent type-baseline drift and reproducibility concern; avoids claiming all alphas are missing or that the caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Gives several complete feasible plans with explicit tradeoffs and exit paths; the recommended Path A exact-pins the published 0.1.2-alpha.2 and acknowledges alpha.1 cannot be validated (unobtainable, no diff possible); no bare-keyword-only plan."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Uses one consistent manager (npm) with a committed lockfile/frozen resolution, exact pins, and a proposed tsc --noEmit typecheck against the intended target; each path has an exit/replacement path (revert bump, promote Path B to A, re-upgrade later), and unverified registry/type-surface facts are honestly flagged as unconfirmed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report explicitly states no path requires alpha.1 because it was never published; it recommends exact-pinning the published alpha.2 or other published versions, never prescribing installing the unpublished alpha.1 cohort from npm as if available."
+    }
+  ]
+}

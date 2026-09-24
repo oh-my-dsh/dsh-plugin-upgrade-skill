@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report locates the exact break in index.js — `export const inject = [\"apiProxy\"]` and `await ctx.apiProxy.llm.providers()` inside ctx.effect — and maps it to the APIProxy-removal card, explaining the plugin would hang on an unsatisfied inject and that ctx.apiProxy.llm.providers targets the removed dot-domain surface (provider listing re-expressed against the LLM capability service / new Remote convention, matching A1-01's llm.providers → llm/listProviders recipe). It also ties the dead `@deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1` pin in package.json to the removal. The card is identified by full content rather than the literal id A1-01 (no card catalog was provided), which is substantively equivalent."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All other categories are covered with scanned-file evidence: no client half/UI, no session events (with src/session-notes.js correctly identified as pure string/array utilities whose session filename is a false positive), no tool registration, and cordis.patch.yml correctly treated as an ordinary plugin-composition insert (format-level no hit) rather than a host-source patch — without denying the composition file's existence or inventing coupling. Every negative verdict cites concrete file contents."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 3 explicitly answers 'zero hits ≠ compatible': static scan only certifies non-reference to changed surfaces, implicit surfaces (loader semantics, ESM resolution, inject lifecycle, patch mounting) and out-of-category changes escape it, runtime-only failures are invisible statically, and it distinguishes the single decisive apiProxy break from the six negative categories, noting the question is moot until the break is fixed."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Section 4 proposes exactly the required post-migration checks as future steps (explicitly not executed on the non-runnable fixture): build/typecheck against the target type surface, an isolated-profile cold boot verifying the patch insert, inject resolution and apply(), a functional smoke test of the actual provider-listing call, plus a fresh install/resolution check for the updated dependency coordinates."
+    }
+  ],
+  "caps": []
+}

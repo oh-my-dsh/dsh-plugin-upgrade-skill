@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates cordis.patch.yml, patch.yml and scripts/apply-patch.mjs with line references; distinguishes the official composition overlay from the genuine source-patch surface (patch.yml find/replace against src/session/view/SessionView.ts plus DSH_HARNESS_SOURCE_ROOT), explains the patch: key as the coupling, and grounds the private session-view coupling in A1-03 with re-validation against the exact tag rather than guessed paths."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Identifies the producer (src/index.ts:15-19, legacy/informational-note with ignorable:true) and the plain consumer (20-22); explains A1-02 removal and A2-01 restoration as a corridor fold whose net alpha.2 state keeps the marker; explicitly rejects the consumer-whitelist anti-pattern and even notes Session.append has no ignorable parameter, claiming no unsupported append API."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites (session.rename, llm.providers) and the alpha.1 removal; maps llm.providers to llm/listProviders + llm/listConfigurableProviders and, applying the A1-01 plane decision, prescribes host-plane direct domain-service injection (inject llm) while reserving ctx.remote for the client plane — no nonexistent Host remote service is invented; A2-02 error handling is added."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded join(homedir(),'.dsh','profiles','default') write at src/index.ts:36-37 and explains migration to runtime DSH_HOME/profile plus the official launcher per A1-04; no claim that --profile was introduced in alpha.1 appears anywhere."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the private import (@deepseek-ai/dsh-session-view/internal, line 10) and the registerCommand usage returning new SessionView (41-43); explains post-split verification: rebuild by owning module against the exact tag, mark ownerless capabilities pending confirmation, and API-07 packed-artifact evidence order for any replacement internal subpath."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the private loopback createServer on 127.0.0.1:43121 and explains that loopback listening does not exempt it from the A1-08 auth gate; distinguishes host-managed authenticated routes from raw ctx.webServer.register routes that need connection.requestRejection, and notes missing teardown."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh headless subprocess sites (index.ts:57-67 spawn, apply-patch.mjs:12-18 execFileSync) with per-line JSON.parse; explains stdout is final text while stderr carries reasoning/progress per A1-05/API-06, and explicitly states the JSONL assumption was already wrong in rc.2 rather than inventing an alpha.2 stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Substantively maps the located couplings: A1-01 (#3), A1-02+A2-01 as a folded pair (#2), A1-03 (#1 patch target and #5 UI), A1-04 (#4, also the #7 launcher surface), A1-08 (#6), with A1-05 as a correct additional stdout mapping for #7; each mapping is grounded in specific fixture hits, not a bare card list, and the coverage is complete."
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "Accounts for all seven categories as hits with a negative-evidence section for ruled-out cards; states static-scan limits (no data flow, no runtime coupling proof, curated card list, invisible dependency breakage) and proposes target-tag build/typecheck, isolated profile boot via --dump-config with no pending services, and a functional/persist-reload smoke, without requiring execution of the static fixture."
+    }
+  ],
+  "caps": []
+}

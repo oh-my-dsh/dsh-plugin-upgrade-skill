@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report distinguishes the clipboard-text projection (InputState.draft, Occurrence.offset/length, chip expanded to clipboardText) from the detect-coordinate spans used by insertReference and consumeToken (chip = one U+FFFC), grounded in host-input-contract.ts and host-input-facade.ts including the detectText tail probe and the $replaceDetectSpanWithText splice."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in plugin-client.js add(), explains that with an empty composer both coordinate systems coincide (paste #1 succeeds), and after a chip the clipboard endpoint overshoots the detect span by the chip's clipboard length minus one, so insertReference returns false and the plugin throws its changed-composer toast; explicitly rules out a real concurrent edit since the revision CAS passes."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): occurrence.offset/length (clipboard coordinates) are passed unconverted to consumeToken, the splice into the 2-character detectText fails, the false return is ignored, and records.delete runs anyway — leaving the live occurrence and composer chip while the missing record renders 'unavailable' in the dock. Ties both symptoms to the same coordinate mismatch plus the unchecked boolean."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detect(X) = X − Σ(occ.length − 1) over preceding occurrences from the projection contract, applies it at both call sites (end-of-draft insertion and removal mapping occurrence.offset with a one-detect-character span), keeps the draftRev guard, and gates records.delete on a successful consumeToken return with a fallback path mentioned; sanity-checked against the captured numbers."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "R1 asserts two successive pastes with both occurrences/chips present; R3/R6 assert removal with another chip surviving, checking composer occurrence, dock chip, and record removed together and no 'unavailable' text; R4 covers declined-consumption bookkeeping and empty-again variants in R7."
+    }
+  ],
+  "caps": []
+}
