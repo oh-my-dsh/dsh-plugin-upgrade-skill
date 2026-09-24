@@ -1049,6 +1049,7 @@ test('maskAnswer masks skill identity, paths, mode vocabulary, and tool-sense "s
     'Method: plugin-upgrade skill (Mode A · inspect); see `references/v0.1.2-alpha.2.md`, SKILL.md and rollup-0.1.2.md.',
     'Mode: **A · inspect**; not Mode B/C work. Fixture at `E:/x/dsh-plugin-upgrade-skill/benchmark/tasks/S1/environment/fixture`.',
     'Corridor built from the skill\'s version index.',
+    'Corridor cards (skill references); (Skill-side discipline).',
   ].join('\n')
   const { text, replacements } = maskAnswer(input)
   assert.ok(!/dsh-plugin-upgrade|plugin-upgrade|references\/|SKILL\.md|rollup-0\.1\.2\.md|Mode [A-D]|A · inspect/i.test(text), text)

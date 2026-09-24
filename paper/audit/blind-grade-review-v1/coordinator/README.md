@@ -16,7 +16,7 @@ script are committed, so anyone who runs it can rebuild the id-to-arm map.
 | Arm | Answers with ≥1 replacement | Replacements |
 |---|---|---|
 | no-skill | 4 / 16 | 5 |
-| with-skill | 14 / 16 | 80 |
+| with-skill | 14 / 16 | 82 |
 
 Token density differs strongly by arm, so the number of masked tokens is
 itself a residual cue; the reviewer README asks reviewers not to use it.

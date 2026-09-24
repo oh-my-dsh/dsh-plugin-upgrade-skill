@@ -145,7 +145,7 @@ export const ANSWER_KEY_PATTERNS = [
  * "(skill)" surface label are task content.
  */
 export const UNMASKED_SKILL_PATTERNS = [
-  { id: 'unmasked-skill-mention', pattern: /(?<!\()\bskill(?:'s|’s)?\b(?![ \t]+(?:name|provider)s?\b)(?!\))/i, reason: 'unmasked "skill" tool reference' },
+  { id: 'unmasked-skill-mention', pattern: /\bskill(?:'s|’s)?\b(?![ \t]+(?:name|provider)s?\b)(?!(?<=\(skill)\))/i, reason: 'unmasked "skill" tool reference' },
   { id: 'unmasked-skill-mode', pattern: /\bMode[ \t]+[A-D]\b|\b[A-D][ \t]*·[ \t]*(?:inspect|update|author-migrate)\b/, reason: 'unmasked skill mode vocabulary' },
 ]
 

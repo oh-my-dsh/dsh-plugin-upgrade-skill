@@ -43,7 +43,7 @@
     },
     {
       "id": "skill-word",
-      "pattern": "(?<!\\()\\bskill(?:'s|’s)?\\b(?![ \\t]+(?:name|provider)s?\\b)(?!\\))",
+      "pattern": "\\bskill(?:'s|’s)?\\b(?![ \\t]+(?:name|provider)s?\\b)(?!(?<=\\(skill)\\))",
       "flags": "gi",
       "description": "the word \"skill\" used as a tool reference (not \"skill name\"/\"skill provider\"/\"skills\"/\"(skill)\" surface labels)"
     }
@@ -283,6 +283,11 @@
           "rule": "skill-word",
           "line": 35,
           "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 86,
+          "original": "Skill"
         }
       ]
     },
@@ -613,6 +618,11 @@
           "rule": "skill-word",
           "line": 3,
           "original": "Skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 26,
+          "original": "skill"
         }
       ]
     },

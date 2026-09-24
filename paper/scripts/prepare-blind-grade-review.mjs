@@ -583,7 +583,7 @@ export const MASK_RULES = Object.freeze([
   },
   {
     id: 'skill-word',
-    pattern: /(?<!\()\bskill(?:'s|’s)?\b(?![ \t]+(?:name|provider)s?\b)(?!\))/gi,
+    pattern: /\bskill(?:'s|’s)?\b(?![ \t]+(?:name|provider)s?\b)(?!(?<=\(skill)\))/gi,
     description: 'the word "skill" used as a tool reference (not "skill name"/"skill provider"/"skills"/"(skill)" surface labels)',
   },
 ])
