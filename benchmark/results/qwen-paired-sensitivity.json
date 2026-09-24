@@ -38,7 +38,7 @@
     ],
     "notes": [
       "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error).",
-      "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate.",
+      "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; the endpoints 0 and 1 are substituted only inside the two bound scenarios (lower delta bound: missing with-skill rewards → 0, missing no-skill rewards → 1; upper delta bound: the reverse), and neither substitution is ever used for the main estimate.",
       "A timeout is a TERMINATION STATE, not automatically a functional failure: trials that hit AgentTimeoutError still produced scored and even full-mark outcomes, so timeout counts and score outcomes are reported separately and never conflated.",
       "POST-HOC DESCRIPTIVE ONLY, SELECTION-BIASED, NOT AUTHORITATIVE. Excluding timed-out trials conditions on a termination state that is itself associated with the arm (the with-skill arm timed out more often), so the surviving trials are not a random or balanced subsample. This number is a disclosure of sensitivity, it does not identify a cause, and it NEVER replaces the main task-level estimate."
     ]
@@ -75,7 +75,7 @@
       0,
       1
     ],
-    "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate.",
+    "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; the endpoints 0 and 1 are substituted only inside the two bound scenarios (lower delta bound: missing with-skill rewards → 0, missing no-skill rewards → 1; upper delta bound: the reverse), and neither substitution is ever used for the main estimate.",
     "boundsNote": "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error)."
   },
   "arms": {
@@ -189,6 +189,7 @@
       "declaredMean": 0.416012,
       "inputTokens": 409819928,
       "cachedInputTokens": 400036000,
+      "cachedTokenRows": 56,
       "outputTokens": 3988952,
       "tokenRows": 56,
       "summedSecondsFromCsv": 110458.755,
@@ -309,6 +310,7 @@
       "declaredMean": 0.449401,
       "inputTokens": 339853493,
       "cachedInputTokens": 332139248,
+      "cachedTokenRows": 56,
       "outputTokens": 3940227,
       "tokenRows": 56,
       "summedSecondsFromCsv": 104028.541,
@@ -521,7 +523,7 @@
       "zeroTasks": 31,
       "negativeTasks": 18,
       "missingBoundsNote": "These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error).",
-      "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate."
+      "missingNotZeroNote": "An unscored reward is MISSING, NOT 0. The main estimate is computed over each task's scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; the endpoints 0 and 1 are substituted only inside the two bound scenarios (lower delta bound: missing with-skill rewards → 0, missing no-skill rewards → 1; upper delta bound: the reverse), and neither substitution is ever used for the main estimate."
     },
     "mainAuthorityNote": "This is the authority view: all scored trials, reduced to per-task per-arm means and then to a task-level equal-weight mean paired effect. It is the same estimator as the paper's paired-effect table for this group.",
     "postHocNonTimeoutOnly": {
@@ -1040,7 +1042,7 @@
     ]
   },
   "taskInfluence": {
-    "method": "leave-one-task-out: recompute the task-level equal-weight mean paired effect with one task removed; influence = (full-sample effect − effect without the task) × number of tasks, i.e. the percentage-point contribution of that task to the all-task mean (positive = the task pulls the mean up). This is a descriptive stability diagnostic: removing a single task is not a substitution for an out-of-sample or causal estimate, and no task is excluded from the main estimate.",
+    "method": "leave-one-task-out: recompute the task-level equal-weight mean paired effect with one task removed; influence = (full-sample effect − effect without the task) × number of tasks n, which equals n/(n−1) × (task delta − full-sample effect): the deviation of the task from the all-task mean scaled by n/(n−1), not its additive contribution to the mean (positive = removing the task lowers the mean). This is a descriptive stability diagnostic: removing a single task is not a substitution for an out-of-sample or causal estimate, and no task is excluded from the main estimate.",
     "scope": "The most influential task is computed automatically; task names are never hardcoded and the estimate is never reported with a favourable task removed.",
     "tasks": 56,
     "fullSampleObserved": -3.071429,

@@ -234,11 +234,39 @@ test('a wrong declared total is a hard failure, never silently reconciled', () =
   tampered.totals[SKILL_ARM].reward_sum = 1
   const { tasks } = buildTrials(tampered)
   const computed = {
-    [SKILL_ARM]: { declaredTrials: 168, rewardSum: 69.89, timeoutTrials: 108, rewardFullCount: 55, rewardZeroCount: 88 },
-    [NO_SKILL_ARM]: { declaredTrials: 167, rewardSum: 75.05, timeoutTrials: 86, rewardFullCount: 59, rewardZeroCount: 77 },
+    [SKILL_ARM]: { scoredTrials: 168, rewardSum: 69.89, timeoutTrials: 108, rewardFullCount: 55, rewardZeroCount: 88 },
+    [NO_SKILL_ARM]: { scoredTrials: 167, rewardSum: 75.05, timeoutTrials: 86, rewardFullCount: 59, rewardZeroCount: 77 },
   }
   assert.equal(tasks.length, EXPECTED_TASKS)
   assert.throws(() => validateDeclaredTotals(tampered.totals, computed), /disagrees with the recomputed/)
+})
+
+test('the declared per-arm trial count is checked against the recomputed scored count', () => {
+  // The source declares 168 / 167: the unscored no-skill slot is excluded.
+  assert.equal(analysis.arms[SKILL_ARM].scoredTrials, sourceReport.totals[SKILL_ARM].trials)
+  assert.equal(analysis.arms[NO_SKILL_ARM].scoredTrials, sourceReport.totals[NO_SKILL_ARM].trials)
+  const tampered = JSON.parse(JSON.stringify(sourceReport))
+  tampered.totals[NO_SKILL_ARM].trials = 168
+  assert.throws(
+    () => analyzeQwenSensitivity({ report: tampered, csvRecords: sourceCsvRecords, sourceHashes: [] }),
+    /totals\.no-skill\.trials = 168 disagrees with the recomputed 167/,
+  )
+})
+
+test('a missing cached-token cell is treated as missing, not as 0', () => {
+  let dropped = null
+  const records = sourceCsvRecords.map((record) => {
+    if (dropped === null && record.condition === SKILL_ARM) {
+      dropped = Number(record.cached_input_tokens)
+      return { ...record, cached_input_tokens: '' }
+    }
+    return record
+  })
+  const result = analyzeQwenSensitivity({ report: sourceReport, csvRecords: records, sourceHashes: [] })
+  assert.equal(result.arms[SKILL_ARM].tokenRows, EXPECTED_TASKS)
+  assert.equal(result.arms[SKILL_ARM].cachedTokenRows, EXPECTED_TASKS - 1)
+  assert.equal(result.arms[SKILL_ARM].cachedInputTokens, 400036000 - dropped)
+  assert.equal(analysis.arms[SKILL_ARM].cachedTokenRows, EXPECTED_TASKS)
 })
 
 test('source token and duration totals are recomputed and match the CSV', () => {
@@ -297,7 +325,7 @@ test('the main estimate ignores a missing reward instead of zeroing it', () => {
   assert.equal(b.deltaBoundWidth, 33.333333) // lower bound sets the slot to 1
 })
 
-test('missing lower bound substitutes 0 and upper bound substitutes 1', () => {
+test('a missing no-skill reward: the lower delta bound substitutes 1, the upper substitutes 0', () => {
   const perTask = [
     syntheticTask('A', [1, 1, 1], [1, 1, 1]),
     syntheticTask('B', [1, 1, 1], [0, 0, null]),
@@ -610,7 +638,17 @@ test('the most influential tasks are found automatically, not hardcoded', () => 
   assert.equal(negative.influenceObserved, -57.963636)
 })
 
-test('influence is the shift the task contributes to the all-task mean', () => {
+test('influence is the n/(n-1)-scaled deviation of the task from the all-task mean', () => {
+  const n = EXPECTED_TASKS
+  for (const row of analysis.taskInfluence.perTask) {
+    const scaledDeviation = (n / (n - 1)) * (row.deltaObserved - analysis.taskInfluence.fullSampleObserved)
+    assert.ok(Math.abs(scaledDeviation - row.influenceObserved) < 1e-4, row.task)
+  }
+  assert.match(analysis.taskInfluence.method, /n\/\(n−1\) × \(task delta − full-sample effect\)/)
+  assert.doesNotMatch(analysis.taskInfluence.method, /i\.e\. the percentage-point contribution/)
+})
+
+test('influence reconstructs the leave-one-task-out effect', () => {
   for (const row of analysis.taskInfluence.perTask) {
     const reconstructed =
       analysis.taskInfluence.fullSampleObserved - row.influenceObserved / EXPECTED_TASKS
@@ -764,6 +802,36 @@ test('the LaTeX table carries the key numbers from the artifact', () => {
   assert.match(tex, /\+9\.30/) // post-hoc unbalanced effect
 })
 
+test('the LaTeX bound labels follow the arm that is missing (no-skill: 1 -> lower, 0 -> upper)', () => {
+  const tex = renderQwenSensitivityTableTex(analysis)
+  assert.equal(analysis.missingScores.byArm[NO_SKILL_ARM], 1)
+  assert.equal(analysis.missingScores.byArm[SKILL_ARM], 0)
+  assert.match(tex, /unscored no-skill reward set to \$1\$ & --- & \$-3\.67\$ & Lower missing-value bound/)
+  assert.match(tex, /unscored no-skill reward set to \$0\$ & --- & \$-3\.07\$ & Upper missing-value bound/)
+  assert.doesNotMatch(tex, /\(lower\) and \$1\$ \(upper\)/)
+  // A missing with-skill reward flips the direction: 0 gives the lower bound.
+  const flipped = JSON.parse(JSON.stringify(analysis))
+  flipped.missingScores.byArm = { [SKILL_ARM]: 1, [NO_SKILL_ARM]: 0 }
+  const flippedTex = renderQwenSensitivityTableTex(flipped)
+  assert.match(flippedTex, /unscored with-skill reward set to \$0\$ & --- & [^&]+ & Lower missing-value bound/)
+  assert.match(flippedTex, /unscored with-skill reward set to \$1\$ & --- & [^&]+ & Upper missing-value bound/)
+})
+
+test('a missing with-skill reward sets the lower delta bound at 0 and the upper at 1', () => {
+  const level = syntheticTaskLevel([syntheticTask('W', [1, 1, null], [0, 0, 0])])
+  const w = level[0]
+  assert.equal(w.deltaObserved, 100)
+  assert.equal(w.deltaLower, 66.666667) // missing with-skill reward -> 0
+  assert.equal(w.deltaUpper, 100) // missing with-skill reward -> 1
+})
+
+test('the LaTeX width row states points per slot, not per task', () => {
+  const tex = renderQwenSensitivityTableTex(analysis)
+  // One slot is one of three attempts of one of 56 tasks: 100 / 56 / 3 = 0.595.
+  assert.match(tex, /1 unscored slot, 0\.60 points per slot\) & --- & 0\.60 &/)
+  assert.doesNotMatch(tex, /1\.79 points per slot/)
+})
+
 test('the LaTeX table states that missing bounds are not a confidence interval', () => {
   const tex = renderQwenSensitivityTableTex(analysis)
   assert.match(tex, /Missing rewards are treated as unknowns in the legal range/)
@@ -798,9 +866,13 @@ test('the paper inputs the generated sensitivity table', () => {
   assert.match(paper, /tab:qwen-sensitivity/)
 })
 
-test('the paper states the Qwen estimate is inconclusive and termination-confounded', () => {
+test('the paper states the Qwen estimate is inconclusive and infrastructure-confounded', () => {
   const paper = readFileSync(paperTexPath, 'utf8')
   assert.match(paper, /inconclusive/)
-  assert.match(paper, /termination-confounded/)
+  assert.match(paper, /infrastructure-confounded/)
+  // One confound label is used throughout, not three variants.
+  assert.doesNotMatch(paper, /termination-confounded/)
+  // The timeout denominator is the 168 intended trials per arm on both arms.
+  assert.doesNotMatch(paper, /86 of 167/)
   assert.match(paper, /not automatically a functional failure/)
 })

@@ -112,7 +112,7 @@ We study one skill lineage in a community-informed benchmark of version-pinned p
 Five historical with-skill versus no-skill comparisons show heterogeneous absolute gains: $-3.1$ points for the lowest-baseline configuration, $+8.7$ to $+10.7$ for three intermediate-baseline configurations, and $+3.0$ for the highest-baseline configuration.
 These observations form an exploratory inverted-U pattern when ordered by each group's unaided score.
 The groups differ in task pools, graders, skill revisions, and execution protocols, so the pattern does not establish an effect of model capability.
-The negative estimate is inconclusive and termination-confounded; only the glm-5.3-flash pairing is significant under both reported statistical procedures, and it uses a same-model judge.
+The negative estimate is inconclusive and infrastructure-confounded; only the glm-5.3-flash pairing is significant under both reported statistical procedures, and it uses a same-model judge.
 The high-baseline pairing has limited room to improve.
 Resource records additionally show that skill provision can accompany substantial overhead.
 We release task and evaluation artifacts with a reproducible paired analysis and explicit provenance limits.
@@ -374,16 +374,16 @@ The comparison is unpaired, confounds model identity with capability, and spans 
 The task S19-phantom-update-stale-host illustrates the discrimination: glm-5.3-flash has a three-round median of 0 on both arms (one round scored 80/80), while glm-5.2 scored 100/100 on both arms in all three rounds, which illustrates a score difference but does not independently validate the rubric or attribute that difference to capability.
 
 The lowest-baseline group also records increased resource use with the skill (Table~\ref{tab:resources}).
-Its with-skill arm consumed 20.6\% more input tokens, 6.2\% more solver time, and timed out 22 more times than the no-skill arm (108 of 168 vs.\ 86 of 167 trials; one no-skill trial was never scored), so the skill's context and instruction overhead coincides with its negative trend.
+Its with-skill arm consumed 20.6\% more input tokens, 6.2\% more solver time, and timed out 22 more times than the no-skill arm (108 vs.\ 86 of 168 intended trials per arm; one no-skill trial, itself a timeout, was never scored), so the skill's context and instruction overhead coincides with its negative trend.
 This group is infrastructure-confounded: 64\% of with-skill trials hit the timeout under local serving, and we cannot separate model capability from the timeout policy, so we report the association without a causal reading.
 For glm-5.3-flash, the round-1 report records with-skill sessions at roughly 2.2 times the session tokens of no-skill sessions, because skill files enter every turn's context; this group records positive score gains alongside overhead, without establishing cost effectiveness.
 
 \paragraph{Termination state and missing scores.}
-The historical Qwen estimate remains \emph{inconclusive and infrastructure/termination-confounded}.
+The historical Qwen estimate remains \emph{inconclusive and infrastructure-confounded}: the confound is a local-serving timeout, i.e.\ a termination state that differs between arms.
 Its paired $\Delta$ is $-3.07$ points (from Table~\ref{tab:paired-effect}), and the completed timeout/missingness sensitivity analysis (Table~\ref{tab:qwen-sensitivity}) shows why that point should not be read as a capability or skill-harm claim.
 Of the 336 intended trials, 335 were scored and exactly one no-skill trial was never scored (H8-fire-drill, third attempt); because only one reward is missing we can bound its influence instead of imputing it.
-Treating each missing reward as an unknown in the legal range $[0,1]$ and holding the estimator fixed gives task-level equal-weight bounds of $[-3.67, -3.07]$ points --- these are \emph{missing-value bounds, not a confidence interval}, and a missing reward is never substituted with $0$ in the main estimate.
-Timeout is a termination state, not automatically a functional failure: 108 of 168 with-skill and 86 of 168 no-skill trials timed out, yet 30 timed-out trials still scored full marks, so timeout counts and score outcomes must be read separately.
+Treating each missing reward as an unknown in the legal range $[0,1]$ and holding the estimator fixed gives task-level equal-weight bounds of $[-3.67, -3.07]$ points (the lower bound sets the missing no-skill reward to $1$, the upper bound to $0$; one slot is one of three attempts on one of 56 tasks, i.e.\ $0.60$ points) --- these are \emph{missing-value bounds, not a confidence interval}, and a missing reward is never substituted with $0$ in the main estimate.
+Timeout is a termination state, not automatically a functional failure: 108 of 168 with-skill and 86 of 168 no-skill intended trials timed out (the unscored no-skill trial is one of the 86), yet 30 timed-out trials still scored full marks, so timeout counts and score outcomes must be read separately.
 The missingness and termination patterns therefore complicate interpretation but do not identify a mechanism.
 A non-timeout-only view is reported purely as a post-hoc disclosure: keeping the 14 tasks whose six trials are all non-timeout gives $+4.02$ points, and dropping timed-out trials per task while keeping the 28 tasks that retain both arms gives $+9.30$ points.
 Both numbers are \textbf{post-hoc descriptive only}, selection-biased (they condition on a termination state that is itself associated with the arm) and must never replace the main estimate; they neither show that timeouts caused the negative result nor that removing them proves a positive effect.

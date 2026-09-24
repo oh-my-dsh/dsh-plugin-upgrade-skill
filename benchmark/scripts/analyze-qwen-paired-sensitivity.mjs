@@ -31,8 +31,13 @@
 //     treated as an unknown in the legal reward range [0, 1]. The main estimate
 //     is the task-level equal-weight mean paired effect taken over each task's
 //     SCORED trials only — a missing reward is never substituted with 0. The
-//     bounds re-run the same estimator with every missing slot set to 0 (lower)
-//     and to 1 (upper). These are MISSING-VALUE BOUNDS, NOT a confidence
+//     bounds re-run the same estimator at the extreme corners of [0, 1]. Because
+//     delta = with-skill − no-skill, the LOWER delta bound sets missing
+//     with-skill rewards to 0 and missing no-skill rewards to 1, and the UPPER
+//     bound does the reverse. In this run the only missing slot is on the
+//     no-skill arm, so setting it to 1 gives the lower bound (−3.67) and setting
+//     it to 0 gives the upper bound (−3.07, equal to the point estimate because
+//     that task's scored no-skill trials are 0). These are MISSING-VALUE BOUNDS, NOT a confidence
 //     interval: they describe the algebraic span of the missingness alone and
 //     carry no sampling or inferential interpretation.
 //  3. Timeout taxonomy per arm, from the per-trial `exceptions` arrays, which
@@ -113,7 +118,7 @@ export const MISSING_BOUNDS_NOTE =
   'These are MISSING-VALUE BOUNDS, NOT a confidence interval: they are the algebraic span obtained by setting every unscored reward slot to the endpoints of the legal range [0, 1] while keeping the estimator fixed. They carry no sampling, coverage or inferential interpretation, and they do not include any other source of uncertainty (bootstrap, task sampling, grading error).'
 
 export const MISSING_NOT_ZERO_NOTE =
-  'An unscored reward is MISSING, NOT 0. The main estimate is computed over each task\'s scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; 0 is substituted exclusively inside the lower-bound scenario and 1 exclusively inside the upper-bound scenario, and neither substitution is ever used for the main estimate.'
+  'An unscored reward is MISSING, NOT 0. The main estimate is computed over each task\'s scored trials only, so a missing reward is never usable as or replaced by 0 in the point estimate; the endpoints 0 and 1 are substituted only inside the two bound scenarios (lower delta bound: missing with-skill rewards → 0, missing no-skill rewards → 1; upper delta bound: the reverse), and neither substitution is ever used for the main estimate.'
 
 export const TIMEOUT_STATE_NOTE =
   'A timeout is a TERMINATION STATE, not automatically a functional failure: trials that hit AgentTimeoutError still produced scored and even full-mark outcomes, so timeout counts and score outcomes are reported separately and never conflated.'
@@ -389,7 +394,10 @@ export function validateDeclaredTotals(declared, computed, { sourceLabel = 'repo
     if (!isPlainObject(block)) throw new Error(`${sourceLabel}: totals is missing the "${arm}" arm`)
     const actual = computed[arm]
     for (const [key, value] of [
-      ['trials', actual.declaredTrials],
+      // The source's declared per-arm `trials` counts SCORED trials (the one
+      // unscored no-skill slot is excluded: 168 / 167), so it is checked against
+      // the recomputed scored count, not against itself.
+      ['trials', actual.scoredTrials],
       ['reward_sum', actual.rewardSum === null ? null : round6(actual.rewardSum)],
       ['timeout_trials', actual.timeoutTrials],
       ['perfect_trials', actual.rewardFullCount],
@@ -528,14 +536,18 @@ export function taskArmValueUnder(trials, substitute) {
 }
 
 /**
- * Build the task-level table. For every task the skill-arm value is a point
- * (the source has no missing skill-arm slot) and the no-skill value is a range
- * `[lower, upper]`; single-point inputs collapse the range, so the bounds are
- * exact rather than arbitrary.
+ * Build the task-level table. Each arm value is a range under the missing-reward
+ * scenarios; complete arms collapse to a point, so the bounds are exact rather
+ * than arbitrary. delta = with-skill − no-skill, so the LOWER delta bound pairs
+ * the skill arm at 0-substitution with the no-skill arm at 1-substitution, and
+ * the UPPER bound pairs the reverse. (In the historical source only the no-skill
+ * arm has a missing slot.)
  */
 export function buildTaskLevel(tasks) {
   return tasks.map(({ task, arms }) => {
     const skill = taskArmValue(arms[SKILL_ARM])
+    const skillLower = taskArmValueUnder(arms[SKILL_ARM], REWARD_MIN)
+    const skillUpper = taskArmValueUnder(arms[SKILL_ARM], REWARD_MAX)
     const noSkillScored = taskArmValue(arms[NO_SKILL_ARM])
     const noSkillLower = taskArmValueUnder(arms[NO_SKILL_ARM], REWARD_MIN)
     const noSkillUpper = taskArmValueUnder(arms[NO_SKILL_ARM], REWARD_MAX)
@@ -543,9 +555,9 @@ export function buildTaskLevel(tasks) {
     const missingNoSkill = arms[NO_SKILL_ARM].filter((trial) => !trial.scored).length
     const observed = skill === null || noSkillScored === null ? null : (skill - noSkillScored) * SCALE
     // delta = with-skill − no-skill, so substituting a LARGER no-skill value
-    // yields the SMALLER (lower) delta and vice versa.
-    const deltaMin = skill === null || noSkillUpper === null ? null : (skill - noSkillUpper) * SCALE
-    const deltaMax = skill === null || noSkillLower === null ? null : (skill - noSkillLower) * SCALE
+    // (or a SMALLER with-skill value) yields the SMALLER (lower) delta.
+    const deltaMin = skillLower === null || noSkillUpper === null ? null : (skillLower - noSkillUpper) * SCALE
+    const deltaMax = skillUpper === null || noSkillLower === null ? null : (skillUpper - noSkillLower) * SCALE
     return {
       task,
       skillScoredMean: round6(skill),
@@ -617,9 +629,11 @@ export function taskInfluence(taskLevel) {
       effectWithoutObserved: round6(without.observed),
       effectWithoutLower: round6(without.lower),
       effectWithoutUpper: round6(without.upper),
-      // influence = (full-sample mean − mean without the task) × n, i.e. the
-      // percentage-point contribution of the task to the all-task mean. A task
-      // that pulls the mean up has a positive influence.
+      // influence = (full-sample mean − mean without the task) × n
+      //           = n / (n − 1) × (task delta − full-sample mean),
+      // i.e. the task's deviation from the all-task mean scaled by n / (n − 1)
+      // (a jackknife-style influence value, NOT the task's additive
+      // contribution to the mean). Positive = removing the task lowers the mean.
       influenceObserved: round6((full.observed - without.observed) * taskLevel.length),
       influenceLower: round6((full.lower - without.lower) * taskLevel.length),
       influenceUpper: round6((full.upper - without.upper) * taskLevel.length),
@@ -642,7 +656,7 @@ export function taskInfluence(taskLevel) {
   const mostNegativeInfluence = byInfluenceDesc[byInfluenceDesc.length - 1]
   return {
     method:
-      'leave-one-task-out: recompute the task-level equal-weight mean paired effect with one task removed; influence = (full-sample effect − effect without the task) × number of tasks, i.e. the percentage-point contribution of that task to the all-task mean (positive = the task pulls the mean up). This is a descriptive stability diagnostic: removing a single task is not a substitution for an out-of-sample or causal estimate, and no task is excluded from the main estimate.',
+      'leave-one-task-out: recompute the task-level equal-weight mean paired effect with one task removed; influence = (full-sample effect − effect without the task) × number of tasks n, which equals n/(n−1) × (task delta − full-sample effect): the deviation of the task from the all-task mean scaled by n/(n−1), not its additive contribution to the mean (positive = removing the task lowers the mean). This is a descriptive stability diagnostic: removing a single task is not a substitution for an out-of-sample or causal estimate, and no task is excluded from the main estimate.',
     scope:
       'The most influential task is computed automatically; task names are never hardcoded and the estimate is never reported with a favourable task removed.',
     tasks: taskLevel.length,
@@ -848,6 +862,7 @@ export function analyzeQwenSensitivity({ report, csvRecords, sourceHashes }) {
     const csvRows = tasks.map((entry) => csvByKey.get(`${entry.task}|${arm}`))
     const tokenSums = { input: 0, cachedInput: 0, output: 0 }
     let tokenRows = 0
+    let cachedTokenRows = 0
     let secondsSum = 0
     let secondsRows = 0
     for (const record of csvRows) {
@@ -857,9 +872,14 @@ export function analyzeQwenSensitivity({ report, csvRecords, sourceHashes }) {
       const seconds = parseUsageCell(record.trial_seconds_sum)
       if (input !== null && output !== null) {
         tokenSums.input += input
-        tokenSums.cachedInput += cached ?? 0
         tokenSums.output += output
         tokenRows += 1
+        // A missing cached-token cell is MISSING, not 0: it is excluded from
+        // the cached sum and the row count below discloses the coverage.
+        if (cached !== null) {
+          tokenSums.cachedInput += cached
+          cachedTokenRows += 1
+        }
       }
       if (seconds !== null) {
         secondsSum += seconds
@@ -876,7 +896,8 @@ export function analyzeQwenSensitivity({ report, csvRecords, sourceHashes }) {
       declaredRewardSum: declared?.reward_sum ?? null,
       declaredMean: declared?.mean ?? null,
       inputTokens: tokenRows === 0 ? null : tokenSums.input,
-      cachedInputTokens: tokenRows === 0 ? null : tokenSums.cachedInput,
+      cachedInputTokens: cachedTokenRows === 0 ? null : tokenSums.cachedInput,
+      cachedTokenRows,
       outputTokens: tokenRows === 0 ? null : tokenSums.output,
       tokenRows,
       summedSecondsFromCsv: secondsRows === 0 ? null : round6(secondsSum),

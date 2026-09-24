@@ -64,12 +64,17 @@ export function validateAnalysis(parsed) {
   for (const field of ['deltaObserved', 'deltaLowerBound', 'deltaUpperBound', 'tasks', 'taskWeightPoints', 'boundWidth']) {
     if (main?.[field] === undefined) throw new Error(`estimates.main is missing "${field}"`)
   }
-  for (const field of ['unscoredTrials', 'attemptsPerArm']) {
+  for (const field of ['unscoredTrials', 'attemptsPerArm', 'tasks']) {
     if (parsed.completeness?.[field] === undefined) throw new Error(`completeness is missing "${field}"`)
   }
   const postHoc = parsed.estimates?.postHocNonTimeoutOnly
   for (const field of ['noTimeoutTasksOnly', 'taskNoTimeoutTrials', 'trialLevelSelection']) {
     if (postHoc?.[field] === undefined) throw new Error(`postHocNonTimeoutOnly is missing "${field}"`)
+  }
+  for (const arm of ['with-skill', 'no-skill']) {
+    if (typeof parsed.missingScores?.byArm?.[arm] !== 'number') {
+      throw new Error(`missingScores.byArm is missing "${arm}"`)
+    }
   }
   const loo = parsed.taskInfluence?.looObserved
   for (const field of ['min', 'max', 'range']) {
@@ -108,6 +113,29 @@ export function loadAnalysis(repoRoot) {
   }
 }
 
+/**
+ * Human-readable description of the two missing-value bound scenarios. delta is
+ * with-skill − no-skill, so the LOWER delta bound sets missing with-skill
+ * rewards to 0 and missing no-skill rewards to 1; the UPPER bound is the
+ * reverse. Only arms that actually have missing slots are named, so the label
+ * direction always follows the data.
+ */
+export function boundScenarioLabels(analysis) {
+  const byArm = analysis.missingScores.byArm
+  const parts = (skillValue, noSkillValue) => {
+    const out = []
+    if (byArm['with-skill'] > 0) out.push(`unscored with-skill reward${byArm['with-skill'] === 1 ? '' : 's'} set to $${skillValue}$`)
+    if (byArm['no-skill'] > 0) out.push(`unscored no-skill reward${byArm['no-skill'] === 1 ? '' : 's'} set to $${noSkillValue}$`)
+    return out.length === 0 ? 'no unscored rewards' : out.join(', ')
+  }
+  return { lower: parts(0, 1), upper: parts(1, 0) }
+}
+
+/** Points one reward slot moves the task-level mean: (100 / tasks) / attempts. */
+export function pointsPerSlot(analysis) {
+  return analysis.estimates.main.taskWeightPoints / analysis.completeness.attemptsPerArm
+}
+
 /** Count for one taxonomy bucket of one arm. */
 export function bucketCount(analysis, arm, key) {
   const bucket = analysis.arms[arm].buckets.find((entry) => entry.key === key)
@@ -128,6 +156,7 @@ export function renderQwenSensitivityTableTex(analysis) {
   const slotsPerArm = analysis.completeness.tasks * analysis.completeness.attemptsPerArm
   const rate = (count) => `${fmt2((count / slotsPerArm) * 100)}\\%`
   const unscoredCount = analysis.completeness.unscoredTrials
+  const scenario = boundScenarioLabels(analysis)
 
   const bucketRows = REQUIRED_BUCKETS.map((key) => {
     const label = analysis.timeoutTaxonomy.buckets.find((entry) => entry.key === key)?.label ?? key
@@ -137,7 +166,7 @@ export function renderQwenSensitivityTableTex(analysis) {
   }).join('\n')
 
   const boundaryNote =
-    'Missing rewards are treated as unknowns in the legal range $[0,1]$, never as $0$: the main estimate uses each task\'s scored trials only, and the bounds re-run the same estimator with every missing slot set to $0$ (lower) and $1$ (upper).'
+    'Missing rewards are treated as unknowns in the legal range $[0,1]$, never as $0$: the main estimate uses each task\'s scored trials only, and the bounds re-run the same estimator at the extremes of that range. Because $\\Delta$ is with-skill minus no-skill, the lower $\\Delta$ bound sets missing with-skill rewards to $0$ and missing no-skill rewards to $1$, and the upper bound does the reverse.'
   const timeoutNote =
     'A timeout is a termination state, not automatically a functional failure: a timed-out trial can still be scored and can still earn full marks.'
   const postHocNote =
@@ -157,9 +186,9 @@ export function renderQwenSensitivityTableTex(analysis) {
     'Quantity & Estimate & Missing bound & Reading \\\\',
     '\\midrule',
     `  Task-level mean paired $\\Delta$, all scored trials & ${fmtSigned2(main.deltaObserved)} & --- & Main estimate; the authority view for this group \\\\`,
-    `  Same estimator, unscored rewards set to $0$ & --- & ${fmtSigned2(main.deltaLowerBound)} & Lower missing-value bound \\\\`,
-    `  Same estimator, unscored rewards set to $1$ & --- & ${fmtSigned2(main.deltaUpperBound)} & Upper missing-value bound \\\\`,
-    `  Missing-bound width (${unscoredCount} unscored slot${unscoredCount === 1 ? '' : 's'}, ${fmt2(main.taskWeightPoints)} points per slot) & --- & ${fmt2(Math.abs(main.boundWidth))} & Missing-value span, not a confidence interval \\\\`,
+    `  Same estimator, ${scenario.lower} & --- & ${fmtSigned2(main.deltaLowerBound)} & Lower missing-value bound \\\\`,
+    `  Same estimator, ${scenario.upper} & --- & ${fmtSigned2(main.deltaUpperBound)} & Upper missing-value bound \\\\`,
+    `  Missing-bound width (${unscoredCount} unscored slot${unscoredCount === 1 ? '' : 's'}, ${fmt2(pointsPerSlot(analysis))} points per slot) & --- & ${fmt2(Math.abs(main.boundWidth))} & Missing-value span, not a confidence interval \\\\`,
     `  Post-hoc: tasks whose six trials are all non-timeout ($n = ${postHoc.noTimeoutTasksOnly.tasks}$) & ${fmtSigned2(postHoc.noTimeoutTasksOnly.effect)} & --- & Post-hoc, selection-biased, non-authoritative \\\\`,
     `  Post-hoc: per-task timed-out trials dropped ($n = ${postHoc.taskNoTimeoutTrials.tasksWithBothArms}$) & ${fmtSigned2(postHoc.taskNoTimeoutTrials.effect)} & --- & Post-hoc, unbalanced, non-authoritative \\\\`,
     `  Leave-one-task-out observed range & --- & [${fmtSigned2(loo.min)}, ${fmtSigned2(loo.max)}] & Extreme-task influence, computed automatically \\\\`,
