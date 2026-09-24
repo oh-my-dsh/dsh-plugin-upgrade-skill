@@ -1,0 +1,36 @@
+% AUTO-GENERATED. DO NOT EDIT.
+% Source: benchmark/results/qwen-paired-sensitivity.json
+% Regenerate with: npm run generate:qwen-sensitivity
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}}
+\toprule
+Quantity & Estimate & Missing bound & Reading \\
+\midrule
+  Task-level mean paired $\Delta$, all scored trials & $-3.07$ & --- & Main estimate; the authority view for this group \\
+  Same estimator, unscored no-skill reward set to $1$ & --- & $-3.67$ & Lower missing-value bound \\
+  Same estimator, unscored no-skill reward set to $0$ & --- & $-3.07$ & Upper missing-value bound \\
+  Missing-bound width (1 unscored slot, 0.60 points per slot) & --- & 0.60 & Missing-value span, not a confidence interval \\
+  Post-hoc: tasks whose six trials are all non-timeout ($n = 14$) & +4.02 & --- & Post-hoc, selection-biased, non-authoritative \\
+  Post-hoc: per-task timed-out trials dropped ($n = 28$) & +9.30 & --- & Post-hoc, unbalanced, non-authoritative \\
+  Leave-one-task-out observed range & --- & [$-4.34$, $-2.04$] & Extreme-task influence, computed automatically \\
+\midrule
+Termination state & with-skill & no-skill & \\
+\midrule
+  scored, no timeout & 60 (35.71\%) & 82 (48.81\%) & \\
+  scored, timeout, full reward & 18 (10.71\%) & 12 (7.14\%) & \\
+  scored, timeout, partial reward & 9 (5.36\%) & 8 (4.76\%) & \\
+  scored, timeout, zero reward & 81 (48.21\%) & 65 (38.69\%) & \\
+  unscored, timeout & 0 (0.00\%) & 1 (0.60\%) & \\
+  unscored, no timeout recorded & 0 (0.00\%) & 0 (0.00\%) & \\
+\midrule
+  Timeout trials that were still scored & 193 & --- & Timeout is a termination state, not automatically a failure \\
+  \quad of which full marks & 30 & --- & Scored full reward despite timing out \\
+\bottomrule
+\end{tabular}
+\caption{Qwen3.8-27B (medium) paired run --- timeout/termination state and missing-score sensitivity (56 tasks $\times$ 2 arms $\times$ 3 intended attempts; 1 unscored slot). Missing rewards are treated as unknowns in the legal range $[0,1]$, never as $0$: the main estimate uses each task's scored trials only, and the bounds re-run the same estimator at the extremes of that range. Because $\Delta$ is with-skill minus no-skill, the lower $\Delta$ bound sets missing with-skill rewards to $0$ and missing no-skill rewards to $1$, and the upper bound does the reverse. A timeout is a termination state, not automatically a functional failure: a timed-out trial can still be scored and can still earn full marks. The non-timeout-only numbers are post-hoc and selection-biased --- they condition on a termination state that is itself associated with the arm --- so they disclose sensitivity, they do not replace the main estimate, and they carry no causal reading. All quantities are descriptive of this historical run; none is a causal claim.}
+\label{tab:qwen-sensitivity}
+\end{table*}

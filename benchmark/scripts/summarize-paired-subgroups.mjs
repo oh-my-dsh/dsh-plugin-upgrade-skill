@@ -808,6 +808,10 @@ export function renderMarkdown(breakdown) {
   lines.push('- No benchmark task, grader, fixture, skill or formal-run flag was modified by this analysis.')
   lines.push('- Numbers for a subgroup are only comparable within the same paired run and the same source commit')
   lines.push(`  (\`${breakdown.sourceBenchmarkCommit}\`).`)
+  lines.push('- A separate deterministic analysis of this same run quantifies the timeout/termination taxonomy and')
+  lines.push('  the missing-score sensitivity (including the single unscored trial): see')
+  lines.push('  [`qwen-paired-sensitivity.json`](./qwen-paired-sensitivity.json) and')
+  lines.push('  `benchmark/scripts/analyze-qwen-paired-sensitivity.mjs`. It changes none of the numbers above.')
   while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop()
   return `${lines.join('\n')}\n`
 }
