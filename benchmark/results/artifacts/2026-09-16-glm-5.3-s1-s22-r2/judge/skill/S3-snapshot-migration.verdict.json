@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Report locates the partial/runningCalls/turnEnds selector reads in Pet.tsx with line references, explains the temporary views.get('chat')?.legacy projection covering all four flat fields, and prescribes the verified two-step migration to the useChat keyed store (order + nodes.get(id)) / view timeline, correctly noting legacy is a bridge not a destination. Unknown new field names are explicitly deferred rather than invented."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Report locates useSession(s => s.running) in Pet.tsx and states lifecycle fields are not in the chat legacy projection and must stay on the useSession seat; it explicitly keeps the existing useSession call valid rather than claiming it must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Report locates both removed-runtime type imports (ClientContext in index.ts:3, ConversationSnapshot in Pet.tsx:4) and the package.json client.inject entry, repoints Context as ClientContext to @deepseek-ai/cordis, moves ChatSnapshot to dsh-client-ui-chat/client per API-10, never claims cordis exports all snapshot types, and explicitly defers unlisted snapshot symbols to target-tag exports as allowed."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "Report identifies the slots.register call, the header.actions slot name, the inject ordering edge, and the Context-augmentation type-only imports, and correctly argues the slot surface is unchanged in this corridor; but it treats the registration as a non-hit and does not explain the post-migration mechanics asked for (slots.inject around registration, ui-renderer/client Context augmentation ownership, slot lifetime preservation or an equivalent new registration form)."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Report ties the snapshot/read-surface changes to full card DSH-0.1.2-A1-03 (with its legacy-projection field note), cites A1-25 as the package-removal card with full IDs throughout, and separates temporary legacy-projection fields from immediate type/inject/lifecycle/id changes in a dedicated section."
+    }
+  ],
+  "caps": []
+}

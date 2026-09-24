@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Correctly grounds attempt 1 in ls-remote-tags.txt (v0.9.5 and v0.9.2-v0.9.6 absent, list jumps v0.9.1 to v0.9.7) and sync-script.sh pushing only HEAD:main with no tag refspecs; explicitly rejects network/typo explanations and calls it a tag-distribution defect."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and compat-table.md to state v0.9.7 targets the 0.1.2-alpha.1 client API whose useConversation seat is missing on the consumer's older rc.2 runtime; explains that install success and restart do not fix static bundle-vs-host incompatibility."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Correctly selects v0.9.3 grounded in the rc.1 verification plus the additive rc.2 note and honors the freeze with no upgrade, but wrongly asserts v0.9.3 'exists on the mirror' when ls-remote-tags.txt omits it, presents the command as immediately installable, and gives no conditional verified-commit/tag-publication alternative."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes an explicit non-forced 'git push \"$remote\" --tags' per mirror added to the branch-only sync script, plus a post-sync ls-remote tag-comparison verification gate per mirror; branch sync alone is not relied on."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Proposes per-DSH-version install pins (v0.9.3 command for 0.1.1-rc.x users, v0.9.7 for 0.1.2-alpha.x) with an explicit compatibility matrix and manifest-encoded compatibility ranges, rejecting newest-tag defaults; only the two evidenced DSH lines are supported, no untested alphas generalized."
+    }
+  ],
+  "caps": []
+}

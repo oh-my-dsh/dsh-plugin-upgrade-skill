@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in console-split-chunks.txt: entry chunk 200s, sibling imports resolve relative to the chunk URL but were never shipped, and the dynamic import fails atomically over the module graph. Proposes a self-contained single-file bundle with splitting disabled (inlineDynamicImports / esbuild no-splitting) or shipping every emitted chunk, accounting for all dependencies."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Compares chunk-route.ts's guard with ci-note.md's debug print: LIB_DIR keeps uppercase E: from fileURLToPath while realpathSync canonicalizes to lowercase e:, so the case-sensitive startsWith rejects an actually contained file. Explains Linux (no drive letters) and the laptop (lowercase c: coincidentally matching) passing, and explicitly rejects the 'Windows paths are unreliable' takeaway."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes canonicalizing the root via realpathSync(LIB_DIR) and a path.relative-based check that rejects ''-outside, '..' traversal and absolute results while keeping the realpath of the target so symlink escapes after resolution stay blocked; notes win32/posix relative matching each filesystem's case semantics and requires preserving the JavaScript MIME type. No weakening of containment."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains one bubbling Ctrl+wheel event reaching both the pane font handler and the modal zoom handler because neither stops propagation. Gives the modal exclusive ownership: pane listener scoped to the pane subtree stands down while the modal is open, and the modal handler calls stopPropagation plus preventDefault; scoping the pane listener also neutralizes the ancestor-capture case."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "The matrix is substantive: packaging/route checks that every emitted import specifier is shipped and served (deployable dependency set), a Windows case-divergence test expecting 200 for the contained file plus traversal/symlink escape still refused, and a modal Ctrl+wheel test asserting zoom changes and pane font size does not. However, no check verifies that an import failure preserves the code-block fallback, so one required expected outcome is missing."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final advice strengthens containment (canonicalized root comparison, relative-path rejection of traversal and symlink escape); nothing disables the guard or serves paths outside the plugin resource root."
+    }
+  ]
+}

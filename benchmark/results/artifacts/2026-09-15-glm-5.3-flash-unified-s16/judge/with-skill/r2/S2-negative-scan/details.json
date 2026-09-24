@@ -1,0 +1,147 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report locates index.js:3 inject of apiProxy and the index.js:9 llm.providers call, maps them to breaking card A1-01, explains the host-plane fix of injecting llm directly and the split into listProviders/listConfigurableProviders, and grounds the dead @deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1 pin at package.json:17 with the pending-service failure mode.",
+      "points": 40,
+      "awarded": 40
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six non-hit categories carry per-category pattern evidence backed by full-file reads; session-notes.js is cleared as pure string/array utilities; cordis.patch.yml is correctly treated as composition rather than a source patch without denying the file exists, and it is separately checked under the packaging surface; no coupling is invented from filenames.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 4 explains that zero hits only mean not-detected-by-patterns, that dependency/cohort, packaging and runtime behavior need separate evidence, and it distinguishes the decisive apiProxy break from the six negative categories by using this very plugin as the counterexample.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "The report proposes (explicitly not executed) a build with typecheck addressed as N/A for this plain-JS plugin, an isolated-profile cold boot and dump-config requiring no pending service lines, and a real provider-list call covering both success and a domain error code, plus a packaging smoke check.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "index.js:2",
+      "path": "index.js",
+      "start": 2,
+      "end": 2,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:17",
+      "path": "package.json",
+      "start": 17,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:3",
+      "path": "index.js",
+      "start": 3,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:9",
+      "path": "index.js",
+      "start": 9,
+      "end": 9,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:2",
+      "path": "index.js",
+      "start": 2,
+      "end": 2,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:17",
+      "path": "package.json",
+      "start": 17,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:6",
+      "path": "index.js",
+      "start": 6,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:3",
+      "path": "index.js",
+      "start": 3,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:17",
+      "path": "package.json",
+      "start": 17,
+      "end": 17,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "index.js:11-13",
+      "path": "index.js",
+      "start": 11,
+      "end": 13,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:1-3",
+      "path": "cordis.patch.yml",
+      "start": 1,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "package.json:11-15",
+      "path": "package.json",
+      "start": 11,
+      "end": 15,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "8bce35237e10e5226e88f4d530c36a1d4224f31ca5b82413d143b8412e2c63ae"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "1bc0c4380ef019d66b966ad6e38cf9cc70f004b965baa5ced858adf5682312ec",
+  "judge_input_sha256": "8406ee2a8091a45b2492f98ba1e564e3c4af630de8c934846945623afb33bd92"
+}

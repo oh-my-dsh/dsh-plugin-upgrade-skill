@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Report explicitly links the top-level ESM import in @lhh010/dsh-profiles/lib/client.js to the classic-script combo from host-boot-log.txt: one SyntaxError aborts parsing of the whole concatenated script so zero __ModuleLoader__.load calls run and no entry registers. It identifies dsh-typert-registry (entry 0c013085) as the first awaited innocent victim, points to the inner compile-error path naming the real bundle at position 1:1, and never claims raw ESM is invalid in every JS context."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Bisects by removing one insert row at a time from cordis.patch.yml; proposes a static classic-script check scanning top-level import/export tokens or parsing with a classic-script goal (new Function, node --check in CJS goal — the equivalent-parsing form the rubric allows, noting bare node --check is insufficient). Describes the full contract: window.__ModuleLoader__.load({id: package name, factory: (require)=>{...; return module.exports}}), host-provided React via require('react'), and inject/apply exports."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Uses plugin-apply-error.txt to explain that the settings shell entry owns the declaration via its children table and that apply ordering across entries is not guaranteed, so a bare ctx.slots.register of settings.section hits no live declaration. It shows exactly ctx.slots.inject(\"settings.section\", () => ctx.slots.register({...}, Component)) and explains the epoch/deferred semantics. Fields are correctly split: registrant supplies name/id/order/label (plus locale/priority), never declaration-owned kind/scope, which the user's bundle wrongly passed."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in host-boot-log.txt/restart-notes.txt: the combo is composed once at boot from bundle bytes (no rebuild on file edit or refresh, absent an HMR rebuilt hook external plugins lack), the restart procedure is full host stop/start plus hard refresh and Plugin-list verification, EADDRINUSE is explained as the orphaned Windows node tree retaining the port, killed with taskkill /PID <pid> /T /F — not a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes per-bundle classic-script validation at compose time with error aggregation naming package/path/position, and failure-time attribution reporting unregistered factory ids instead of the first awaited entry. The authoring checklist covers loader factory shape, host React via require, inject/apply, deferred cross-entry slot registration without kind/scope, locale-owned labels, and host restart with Windows tree cleanup — beyond a generic 'add tests'."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report never endorses bare top-level ESM in the classic combo, never suggests dropping slots.inject for immediate cross-entry registration, explicitly labels the user's kind/scope fields as forbidden to registrants, and prescribes full host restart with process-tree kill rather than HMR/refresh as the dev loop; HMR rebuilt() is mentioned only as the mechanism that is absent for external plugins."
+    }
+  ]
+}

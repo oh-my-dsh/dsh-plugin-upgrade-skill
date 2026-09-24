@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "The report lays out the full corridor history: alpha.1 temporarily removed SessionEvent.ignorable (A1-02), alpha.2 restored the retention semantics (A2-01, remove-then-restore), and applies the restored state to produceExternalEvent in src/events.ts. Card IDs are accompanied by the actual history, which the rubric accepts."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "It quotes and locates delete (event as any).ignorable in src/events.ts, explicitly rejects the comment's keep-it-on-alpha.2 advice as the planted fallacy, recommends removing the defense and correcting its obsolete rationale, and distinguishes removing the delete statement from removing the marker itself (restored code appends the plain event with the marker left intact)."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "It correctly explains that ignorable marks informational events readers may skip without breaking reconstruction, that required-on-read is the default and envelope-level, and respects the live append limitation. However it never states the key retention point that marked events remain in the loaded log after reload and that retention is not a reader-side filtering directive, so the coverage is substantive but incomplete."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "It identifies that the public Session.append surface exposes no ignorable parameter, warns against the any-cast back door as an unsupported way to fake the entry, and explicitly defers the exact alpha.2 append/envelope signature as unconfirmed under the closed-book scope rather than inventing an API."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the defense and the delete line entirely; the old stripping code is quoted only for diagnosis and rejected, so the cap's requirement is not met."
+    }
+  ]
+}

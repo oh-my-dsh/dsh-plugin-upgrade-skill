@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly identifies fs-ext@2.1.1 as a production dependency of dsh-session-persistence-jsonl@0.1.3-alpha.1 (manifest-excerpt.json), its node-gyp configure build install script, and the failed MSVC/VS probes (install-error.log); attributes the failure to the native build phase, not pnpm/network."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Uses lease-excerpt.md's static top-level flock import to show the module must resolve and load on Windows before branch selection; explains --ignore-scripts only converts install-time failure into boot-time module-load failure, so it cannot yield a working service boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes POSIX flock via fs-ext from Windows acquireLockHandleWin32 named kernel semaphore (CreateSemaphoreW bindings per win32-excerpt.ts), explains the branch meaning, and concludes the dead Windows fs-ext path permits an import-safe stub while Windows keeps the semaphore and Linux/macOS keep real flock."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the README node-pty patchedDependencies precedent: patch fs-ext@2.1.1 so win32 skips node-gyp and the entry exports a pure-JS warn-once no-op flock stub (callable, loadable), non-Windows keeps the native module; registers in pnpm-workspace.yaml with build allowlist note; proposes reinstall, module-load, and service-boot verification. No execution required."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly respects the owner's no-Visual-Studio constraint and keeps the fix to the repository-managed local pnpm patch with no upstream fork, PR, or published-dependency change."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites full card ID DSH-0.1.3-A1-03 with its title, corridor edge, packaging/install scope, required-if-hit level, and explicitly connects its migration recipe to this fs-ext install failure and the Windows patch plan in §4."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Final plan avoids MSVC entirely; VS install is mentioned only as the machine owner's refusal and the log's error text."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "--ignore-scripts is analyzed and rejected as insufficient; the final fix is a pnpm patch making the entry loadable."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Plan uses the repository-managed local pnpm patch mechanism and explicitly excludes upstream changes."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking stays on the named kernel semaphore and POSIX keeps real flock; the no-op applies only to the never-called Windows flock stub."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Report designs paste_image/paste_file with (n) numbering (smallest free n≥2) before the extension, reserves names against both the live composer snapshot and the current paste batch, applies the rename only on an explicit paste origin at the add() funnel, keeps drop/picker paths verbatim, and keeps validateItems on original paths before rename. Grounded in fixture/plugin-attachment-flow.js add(); unscored extension/chip details are extra, not penalized."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Identifies input.state.getSnapshot().occurrences as the authoritative occupied-name source, explains the records alive-subscription evicts entries on any momentary empty snapshot (quoting the fixture code) while attachments stay live, accounts for in-batch reservations, and relegates the records Map to a supplementary hint."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache: HIT, age: 178, body limited to v0.2.9 while ls-remote shows v0.2.10/v0.2.11) plus renderCurrentChip(tag) to explain the stale 'latest v0.2.9' label, and gives a semantic fetched-vs-PLUGIN_VERSION rule: update chip only when remote > running, otherwise show the local running version, never the fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Concrete test list covers sequential and same-batch pastes producing distinct names (tests 1, 4), a live snapshot occurrence blocking a name with an empty records Map (test 5) plus eviction robustness (6), drop/picker names unchanged (3), and chip tests for older (7), equal (9), and genuinely newer (8) remote tags, plus fetch failure. Assertions are concrete without requiring specific wording."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires package.json version and hand-inlined PLUGIN_VERSION to be synchronized (with a release-time check), node --check on each lib entry plus behavioral regressions, and explains updates reach users only by re-pulling the package/profile composition followed by a hard refresh, explicitly noting the chip cannot install the artifact and there is no host-side update endpoint."
+    }
+  ],
+  "caps": []
+}

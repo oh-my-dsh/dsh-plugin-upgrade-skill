@@ -1,0 +1,105 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report identifies both colliding workspace-files inserts from the two patch excerpts, pins rejection at EntryGroup.update during the cordis:include apply via the crash-log stack, argues the duplicate is fatal rather than silently merged, and explicitly rejects the profile comment's keep-the-redundancy rationale.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "The section-2 table distinguishes config-by-id override (safe), new-id insert (safe, exemplified by dsh-file-trace/dsh-profiles), and duplicate-id insert (fatal), classifying the maintainer's row as the fatal third case and grounding it in the bundle excerpt's identical workspace-files row.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the manually appended workspace-files block from the profile cordis.patch.yml, keeps the bundle's row and unrelated profile rows intact, notes config-by-id override as the correct alternative to a second insert, and rejects renaming, keeping, or re-adding rows.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a declaration-merge error at composition time before any plugin loads, so plugin-side changes cannot help; also states removing the row cures only the boot crash, leaving the original 文件资源服务不可用 read failure a separate problem needing its own verification.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping the installed web-app bundle's cordis.patch.yml for the id before inserting and distinguishing override from insert; proposes a host diagnostic naming workspace-files, both declaration file origins, and the exact profile row to delete, plus upgrade-time diff warnings.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is to delete the profile-side duplicate and never re-add it; keeping the row is presented as rejected trap reasoning, and plugin-side fixes are explicitly ruled out, so no affirmative bad advice is given.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "@deepseek-ai/cordis-plugin-loader/lib/index.js:91",
+      "path": "@deepseek-ai/cordis-plugin-loader/lib/index.js",
+      "start": 91,
+      "end": 91,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "@deepseek-ai/dsh-app-boot/lib/index.js:240",
+      "path": "@deepseek-ai/dsh-app-boot/lib/index.js",
+      "start": 240,
+      "end": 240,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "dsh-app-boot/lib/index.js:1534",
+      "path": "dsh-app-boot/lib/index.js",
+      "start": 1534,
+      "end": 1534,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:110",
+      "path": "cordis.patch.yml",
+      "start": 110,
+      "end": 110,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "web-app/cordis.patch.yml:110",
+      "path": "web-app/cordis.patch.yml",
+      "start": 110,
+      "end": 110,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "7f21d596623a8918067a8f92c3e203419c3027f3e61d7bb12a5aab7f751dbb84"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "f920b1ef85fe90d26bf940c37251e6e6dc8e672b3fc87122d8e6def6a0ef0afa",
+  "judge_input_sha256": "bb3d39c10b2d0acc1e687698a91b4c4a66f393e61d40df68f8c05ec3a4fe88d3"
+}

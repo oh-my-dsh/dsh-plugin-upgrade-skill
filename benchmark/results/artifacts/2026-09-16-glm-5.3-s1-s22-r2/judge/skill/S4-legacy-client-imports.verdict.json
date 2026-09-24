@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Correctly locates the removed dsh-client-runtime/client ClientContext import at src/client/index.ts:1, maps DSH-0.1.2-A1-25, and requires replacing it with Context from @deepseek-ai/cordis plus type-only augmentations from the owning packages actually consumed, matching the sealed API-10 mapping; notes type erasure/skipLibCheck does not make the missing package harmless and marks inject/lockfile cleanup N/A for this fixture."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Maps DSH-0.1.2-A1-26, correctly compares against package.json name dsh-pet-session-bench, requires exact id alignment plus boot-graph/window.__DSH_BOOT__ verification — but misquotes the fixture's actual loader id as 'pet-legacy-bench' when index.ts:10 contains 'pet-legacy-bundle', an incorrect factual claim about the located source."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates the useSession import (index.ts:2) and the flat nodes read nodes[0] (index.ts:12-13), maps A1-27, does not claim the old flat API survives, and requires switching to useChat iterating ChatSnapshot.order with snapshot.nodes.get(id) per id to preserve ordering, plus the SessionBinding durable event window — all supported by the sealed A1-27/API-10 references."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "partial",
+      "reason": "Locates ctx.connection.api.agentPresets.list at index.ts:11, maps A1-30, correctly notes the inject list has no 'connection' entry and requires removing the deleted face in favor of a verified public Remote surface, flagging the exact list successor unconfirmed. But it positively asserts an invented successor mapping (ctx.remote.agentPresets.deletePreset) attributed to an 'API-01' ledger absent from the sealed facts."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never asserts that apply/setup must be replaced or that service inject entries generally must move into a manifest; it only notes the fixture has no dsh.client.inject list and that the deleted-package inject cleanup is N/A here."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Report identifies the dsh web host node.exe PID 42432 from running-processes.txt as the process that loaded the koffi native addon, explains the loaded binary stays locked until that process exits so npm's copyfile fails with EBUSY, and grounds it in the fixture log paths."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Report explains a browser refresh only reloads the SPA and does not stop the koffi-owning host, then gives an ordered stop-and-verify, install, restart sequence with a tasklist verification step."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Report correctly explains that a bare package name resolves to the latest dist-tag (0.1.1-rc.2 per npm-dist-tags.txt), which downgraded alpha.4 to rc.2, while alpha points to 0.1.2-alpha.5; mechanism is accurate and grounded in the fixture."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Report provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus @deepseek-harness-tui/dsh-tui as separate commands after stopping the host, with dsh --version verification and restart; @alpha is discussed only as a mutable alternative."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Report tells README authors to pin the exact tested host version when a plugin install also installs dsh, avoid unpinned commands that follow latest over an existing prerelease, and prefer separate pinned core/plugin commands."
+    }
+  ],
+  "caps": []
+}

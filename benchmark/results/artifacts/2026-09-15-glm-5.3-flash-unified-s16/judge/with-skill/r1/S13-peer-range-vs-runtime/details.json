@@ -1,0 +1,81 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report grounds the crash in the plugin's 42 session.events reads from plugin-source-excerpt.js, the non-iterable TypeError from crash-stack.txt, and a verbatim changelog quote for removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents replacements, explaining the undefined-then-iterate causal chain; the flagged channel.js:623 citation is a stack-frame line number and does not undermine the located diagnosis.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt facts to show alpha.5 satisfies ^0.1.2-alpha.2 via same-tuple prerelease matching (>=0.1.2-alpha.2 <0.2.0-0), explains npm only compares version strings and never inspects APIs or behavior, and frames the peer range as an author claim never verified against runtime reality.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Lists several genuinely distinct classes beyond the removal: type/signature-shape changes (branded SessionSeq, replaced seed fields), removed packages and phantom references, wire/persistence format drift, and silent behavior/default changes — clearly more than one explained class.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against the actual target versions (typecheck against target declarations plus cold-boot smoke, re-verified per release edge) and a compatibility policy: narrow the peer floor to exclude breaking releases or add a capability-detection guard with correct old/new branches; also explains static metadata cannot encode API existence and that engines is a declaration npm may not enforce, not a behavior test.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives concrete pre-install investigations: compare the plugin's peer floor against changelog breaking changes up to the installed target, and fetch/grep the plugin tarball for the removed API, both tied explicitly to the Session.events removal boundary rather than merely re-checking the range.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report does the opposite: it states a silent install proves nothing about runtime compatibility and affirms the documented Session.events removal; no affirmative claim that peer satisfaction establishes runtime compatibility.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "channel.js:623",
+      "path": "channel.js",
+      "start": 623,
+      "end": 623,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "channel.js:623",
+      "path": "channel.js",
+      "start": 623,
+      "end": 623,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "c96a65cab1984d7333634727d8b77b3b9eeb69ac2bc8e49021f632a68eb9b30e"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "c88da29da8f9034a57645a0a81b2adb050ba1eeb870279ca8c6a80b57a8b1275",
+  "judge_input_sha256": "483010993627f210e3c0820230098b94fab0269979ec368cb681c51c35525185"
+}

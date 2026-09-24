@@ -1,0 +1,74 @@
+{
+  "status": "scored",
+  "score": 87.5,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report explains the full remove-then-restore corridor: alpha.1 temporarily removed ignorable retention (A1-02) and alpha.2 restored it (A2-01), with each card's actual meaning rather than bare IDs, and applies the final alpha.2 state to produceExternalEvent in src/events.ts, grounded in cited fixture lines.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates delete (event as any).ignorable at events.ts:6, rejects the comment's keep-on-alpha.2 advice as the trap, recommends deleting the line and stale comment entirely (not just neutralizing), distinguishes removing the stripping code from the marker itself, and correctly notes the delete is a no-op on the current literal.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Correctly applies plain append and no manual marker handling to the third-party producer within the append limitation, but never states that only informational events whose omission preserves reconstruction may carry ignorable:true, that required events must not be made ignorable, or that retention is not reader-side filtering since marked events remain in the loaded log; it instead frames the marker as purely host-controlled.",
+      "points": 25,
+      "awarded": 12.5
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that the public Session.append has no ignorable parameter, warns against hacking the marker onto the object rather than faking an entry via cast or invented argument, and explicitly defers the exact integration by marking the alpha.2 append signature as unconfirmed pending verification.",
+      "points": 25,
+      "awarded": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation affirmatively deletes the defense and its comment entirely; the old code is quoted only for diagnosis and the comment's keep-advice is rejected, so the cap is not met.",
+      "total": 10
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "fixture/src/events.ts:6",
+      "path": "src/events.ts",
+      "start": 6,
+      "end": 6,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "fixture/src/events.ts:2",
+      "path": "src/events.ts",
+      "start": 2,
+      "end": 2,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "266c9498c07ac2ebd96e8ccc8504afaf9d2a70230560c83a957bbfa89df6a83b"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "90de00b02f3d79f3077edbb780e50270f57f332eca821e8310c8a949a22c1402",
+  "judge_input_sha256": "ae1257c996406e8ba308f78392b4efcdc496d44b912c554d59c5e100a7400a08"
+}

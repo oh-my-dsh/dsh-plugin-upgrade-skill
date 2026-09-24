@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "The report quotes the exact upper-only/lower-only branches of renderer-excerpt.ts (seq = fg(up) with '▀', seq = fg(lo) with '▄'), explains that the 48;2 background set by an earlier full cell persists across cells and paints the empty half of a half-filled glyph, correctly notes the row-end RESET comes too late, and prescribes ESC[49m on each half-filled cell (complete fg+bg pens). It ties the mechanism to the right-edge outline/Z/heart cells from the symptom log and does not blame artwork or the emulator."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "The report identifies the out.replace(/[ ]+$/g-style trailing-space trim in renderer-excerpt.ts (quotes the regex), explains the text pipeline never touches columns beyond the trimmed row end so a narrower frame leaves the wide frame's surplus columns on screen, and proposes the two-part fix: ESC[K erase-to-EOL per row plus fixed 40-column canvas / full-rectangle repaint, noting trimming is only safe behind an explicit erase and that SGR state must stay controlled."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt: tail2 MISMATCH with 23 differing cells in the upper-right spout/tail-tip area, cites the row-2 column shift and explicitly treats the 23-cell count as the full diff rather than just the visible shifted cluster. Correctly frames it as hand-copy data drift, not a renderer artifact, explains the excerpt-based regression covered a different frame, and prescribes a sha256 digest assertion of every frame's full rows against the committed source-art digests in CI, plus mechanical porting."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounded in ci-hang-evidence.txt: the planner rearms a setTimeout per tick while the component stays mounted, channel-ui hosts mount the header and finish without unmounting, so live Timeout handles pin the event loop after all checks PASS; the interactive terminal is unaffected because TTY/stdin already keep it alive. One-line fix setTimeout(tick, interval).unref() keeps animation running while another handle is live but does not keep finished probes alive. Does not extend CI timeouts or stop animation globally."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "The checklist consolidates complete per-cell pens (default bg/fg for empty halves), stateless cell rendering, ESC[K/full-width erase on frame switches, frame-invariant geometry, all-frame sha256 digest integrity, and unref'd timer hygiene. The pre-flip audit inventories every mounting host and its teardown (especially probes finishing without unmounting), verifies event-loop exit with no live Timeout handles (an exit/liveness regression), and includes visual diffs across wide-to-narrow transitions and edge-cell assertions."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "All final advice affirms the required fixes: resetting the half-cell background with ESC[49m, erase-to-EOL behind any retained trimming, source-backed digest checks for every frame, and unref'ing the planner timer. No passage blames the terminal emulator or rejects any fix."
+    }
+  ]
+}

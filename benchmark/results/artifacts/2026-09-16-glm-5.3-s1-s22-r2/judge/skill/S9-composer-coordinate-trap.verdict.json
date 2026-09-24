@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report uses EditorProjection from host-input-contract.ts to separate detectText (chip = one U+FFFC, used by insertReference/consumeToken spans) from draft/clipboardText coordinates (chip expanded to clipboardText, occurrences offset/length documented in clipboard projection), and states plain text maps 1:1."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in add() as the span source; with empty composer both projections coincide (first paste passes), after a chip draft length 29 overshoots the 2-char detect text by 27 = length-1, splice fails, insertReference returns false, plugin emits its changed-composer toast and deletes the record; explicitly rejects a real concurrent-edit reading."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): unconverted occurrence.offset/length span [0,28) passed to consumeToken, false return ignored, records.delete runs unconditionally, dock renderer's record===undefined branch yields 'unavailable' while the composer chip remains; ties both symptoms to the same coordinate mismatch and flags the plugin comment as the contract misread."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detectPos(p) = p - Σ(o.length-1) over preceding chips from the projection docs; applies it at both call sites (end-of-draft insert uses full Σ over all occurrences; removal maps occurrence.offset then a one-detect-char span), keeps the draftRev snapshot discipline, and gates records.delete on a true consumeToken return. setDraft fallback branch correctly noted as already clipboard-coordinate."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Plan A covers two then three successive pastes with both chips present and no toast; B.1 removes the first chip with a preceding/other chip asserting composer occurrence, dock chip and record are removed together while the second chip survives; B.3 adds last-of-three, C adds rejection/bookkeeping variants, D adds a coordinate invariant property test."
+    }
+  ],
+  "caps": []
+}

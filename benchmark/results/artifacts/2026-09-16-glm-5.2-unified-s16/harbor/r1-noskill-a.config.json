@@ -1,0 +1,30 @@
+{
+  "job_name": "glm52-unified-r1-noskill-a",
+  "jobs_dir": "<local-run>/jobs",
+  "n_concurrent_trials": 3,
+  "n_attempts": 1,
+  "environment": {
+    "type": "docker",
+    "force_build": true
+  },
+  "agents": [
+    {
+      "name": "terminus-2",
+      "model_name": "anthropic/GLM-5.2",
+      "n_concurrent": 3,
+      "skills": [],
+      "env": {
+        "ANTHROPIC_BASE_URL": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_AUTH_TOKEN": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_MODEL": "GLM-5.2",
+        "ANTHROPIC_API_KEY": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_SMALL_FAST_MODEL": "GLM-5.2",
+        "DISABLE_PROMPT_CACHING": "1"
+      }
+    }
+  ],
+  "skills": [],
+  "extra_instructions": [
+    "This is a literal zero-skill evaluation. Do not search for, open, read, quote, or follow any SKILL.md file, skill catalog entry, or skill-related documentation anywhere in the workspace or host. Complete the task using only the task prompt and the fixture provided under /app/fixture."
+  ]
+}

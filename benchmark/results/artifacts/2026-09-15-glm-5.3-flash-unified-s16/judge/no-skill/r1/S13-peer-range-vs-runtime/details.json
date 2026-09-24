@@ -1,0 +1,89 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in all three fixtures: cites the changelog for Session.events removal in 0.1.2-alpha.4 replaced by seq/eventAt()/snapshotEvents(), points to the plugin's .events reads in plugin-source-excerpt.js, and explains that the removed property yields undefined whose iteration throws the 'events is not iterable' TypeError from crash-stack.txt. The flagged channel.js line citations are stack-frame numbers from the crash log and do not undermine the located diagnosis.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses the npm-install-output.txt data (silent install, ^0.1.2-alpha.2 peer deps, alpha.5 in range) to show same-tuple prerelease ordering admits alpha.4/5, and explains npm only performs version-string vs range arithmetic on author-declared metadata, never inspecting exports or executing code, so the declaration is a claim rather than evidence any version was tested.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives four genuinely distinct classes: removed/renamed APIs (the Session.events case), type/shape changes including sync-to-promise and return-shape swaps (SessionSeq/SessionLogOffset), signature/arity changes, and behavioral/lifecycle contract changes, each explained beyond a mere label.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing the actual target versions (CI smoke test at the range tip plus a matrix across range endpoints and changelog monitoring) and gives an actionable compatibility policy: narrow the peer range to exclude alpha.4+ and add a load-time feature-detection guard checking both old (session.events) and new (snapshotEvents) paths, with a bridged dual-era implementation.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Offers concrete pre-install checks tied to this incident: read the changelog for every release between the peer floor and the installed version (surfacing the alpha.4 Session.events removal before install) and npm pack plus grep the plugin for the removed symbol; goes beyond merely re-checking peer-range acceptance.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's conclusion asserts the opposite: peer-range satisfaction is a static metadata check that was never a guarantee of runtime compatibility, and it affirms the documented Session.events removal; no affirmative claim that a satisfied peer range or warning-free install proves runtime compatibility.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "channel.js:623",
+      "path": "channel.js",
+      "start": 623,
+      "end": 623,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "channel.js:6127",
+      "path": "channel.js",
+      "start": 6127,
+      "end": 6127,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "channel.js:623",
+      "path": "channel.js",
+      "start": 623,
+      "end": 623,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "1fcb176093eed53cecda1dea69a3ff8cb1b769ca8d9fb6bf9899de4d5d9b26d1"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "c88da29da8f9034a57645a0a81b2adb050ba1eeb870279ca8c6a80b57a8b1275",
+  "judge_input_sha256": "c2decd9fd29bba05fd7d56ab39f459c48c3ec749c029a3822842fb7cb6e36032"
+}

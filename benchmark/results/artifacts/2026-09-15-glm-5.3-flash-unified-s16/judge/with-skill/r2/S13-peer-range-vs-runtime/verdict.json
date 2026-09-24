@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in the fixtures: cites the .events reads in plugin-source-excerpt.js, the iteration TypeError in crash-stack.txt, and the changelog's alpha.4 removal replaced by seq/eventAt/snapshotEvents, and explains undefined access becoming non-iterable at iteration. The flagged line number is from the stack trace itself and does not undermine the located diagnosis."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses the npm install output to show alpha.5 falls inside ^0.1.2-alpha.2 via same-base prerelease ordering, and explains npm only does package-metadata interval checks with no knowledge of API existence, and that the peer floor is an untested author claim."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Explains four genuinely distinct classes (removed/renamed API, signature/type tightening enforced at runtime, package removals/renames, behavior/default changes), each with a concrete mechanism; well beyond the required two distinct classes."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against the actual target version (typecheck at alpha.4 declarations and a pinned cold-start boot) and gives an actionable policy: narrow the peer range to exclude breaking releases plus a startup feature-detection guard with correct fallback guidance, and explains static metadata cannot certify behavior, including engines-field limits."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives concrete pre-install steps: read the peer floor and installed version, read the changelog between floor and target for breaking removals, and inspect the plugin tarball's API usage via npm pack plus grep, all tied to the Session.events boundary rather than just rechecking the peer range."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report concludes the opposite: that peer-range satisfaction and a silent install prove nothing about runtime compatibility, and it affirms the documented Session.events removal rather than denying it."
+    }
+  ]
+}

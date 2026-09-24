@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "The report cites index.js:3 and index.js:9 for `inject: [\"apiProxy\"]` and `ctx.apiProxy.llm.providers()`, maps the break to DSH-0.1.2-A1-01 with substantive reasoning (host-plane facade removed, dot-domain call, one call splitting into listProviders + listConfigurableProviders, correct host-plane migration injecting the `llm` domain service rather than `remote`), and separately identifies the dead `@deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1` dependency in package.json:17 with the alpha.1 deletion consequence. Well beyond a card name."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six remaining categories are each concluded no-hit with concrete scanned-pattern evidence (no patch-package/patchedDependencies under #1, no ctx.on/subscribe under #2, no DSH_HOME/IO under #4, no client face/dsh.client under #5, no server/WS/DOM under #6, no child_process/spawn under #7). session-notes.js is correctly shown as a pure string/array utility and cordis.patch.yml as ordinary plugin composition whose filename alone is not a source-patch hit; no invented coupling and no denial that the composition file exists."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "The report explicitly answers that six zero-hit categories do not establish compatibility, grounding the limits in regex-heuristic scan coverage, the separately-handled dependency/config layer (where the fatal break actually lives), curated-card incompleteness, and unresolved install identity, while cleanly distinguishing the decisive #3 apiProxy/package break from the six clean negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "The report proposes post-migration build/typecheck (with pre-recorded baseline), an isolated-profile cold boot verifying required services do not stay pending (expected `inject: ['llm']` to resolve), and an actual provider-listing smoke call with success and failure branches. All are framed as mandatory future checks, not as executed in the non-runnable fixture."
+    }
+  ],
+  "caps": []
+}

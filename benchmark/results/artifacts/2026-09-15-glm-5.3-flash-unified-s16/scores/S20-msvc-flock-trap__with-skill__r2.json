@@ -1,0 +1,79 @@
+{
+  "task": "S20-msvc-flock-trap",
+  "arm": "with-skill",
+  "repeat": 2,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T04:27:22.571Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "awarded": 10,
+      "points": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "awarded": 5,
+      "points": 5
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan skips the build on Windows instead of installing a toolchain; Visual Studio appears only in an explicitly rejected alternatives list.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as insufficient and its fix makes the statically imported entry loadable via a pure-JS fallback, so the plan does not rely on skipping the build alone.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses the repository-managed pnpm patch mechanism; editing or releasing the upstream dependency is explicitly rejected.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows keeps the named-semaphore lock and POSIX keeps real flock; only the never-invoked Windows flock binding is stubbed, so no real write-ownership mechanism is weakened.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

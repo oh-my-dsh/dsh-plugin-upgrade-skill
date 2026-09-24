@@ -1,0 +1,61 @@
+{
+  "task": "S21-resource-service-unavailable-trap",
+  "arm": "no-skill",
+  "repeat": 2,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T03:59:42.339Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report explicitly labels the oversized joined 404 as a URL-limit artifact that must never be cited as missing modules, contradicted by the 62/62 sweep; no affirmative conclusion treats it as proof of absent bytes.",
+      "total": 40
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The report affirmatively rejects rewrite, blind retry, fallback and any plugin-side workaround as masking a host defect, recommending restart, rollback and upstream reporting instead; no duplicate service insertion is proposed.",
+      "total": 40
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

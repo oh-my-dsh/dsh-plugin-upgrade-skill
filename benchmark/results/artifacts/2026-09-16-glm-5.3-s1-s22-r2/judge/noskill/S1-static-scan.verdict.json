@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates cordis.patch.yml patch declaration, patch.yml surface targeting src/session/view/SessionView.ts, and scripts/apply-patch.mjs; explicitly distinguishes ordinary profile composition from the declared patch: surface and names the private session-view coupling (hardcoded source path + symbol-level find/replace)."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Identifies the ignorable:true informational producer and the plain observer, explains alpha.1 removal and alpha.2 restoration as restored retention semantics, notes unknown unmarked events stay required-on-read, and explicitly treats ctx.emit as a capability gap rather than claiming Session.append supports the marker."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Finds both apiProxy.invoke call sites (session.rename, llm.providers), ties them to the deleted apiproxy package, and correctly determines the host plane: migrate by injecting domain services (llm.listProviders) instead of prescribing a nonexistent Host remote service; ctx.remote.* reserved for a client half."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded join(homedir(), '.dsh', 'profiles', 'default') write and prescribes runtime DSH_HOME/profile/official-launcher resolution; makes no claim that --profile was introduced in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the @deepseek-ai/dsh-session-view/internal import and the registerCommand constructing SessionView, and explains revalidating imports by owning module against public facets/seams after the split, marking unstable seams pending confirmation."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the private loopback server on 127.0.0.1:43121 and explains per A1-08 that loopback does not bypass auth requirements, distinguishing Connection-managed authenticated carriers from raw custom routes needing the requestRejection gate."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh subprocess call sites and the per-line stdout JSON.parse; explains stdout carries the final text while stderr gains progress/reasoning output, and correctly identifies the JSONL assumption as already wrong on the base version rather than inventing an alpha.2 stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps every located coupling to the required cards (A1-03, A1-02+A2-01 with the corridor-folding net state, A1-01 with the operation table, A1-04, A1-08) plus the valid A1-05 stdout mapping, each grounded in concrete hit lines, not a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Accounts for all seven hit categories and states scan limits (static patterns cannot see install-time dependency effects, runtime state, or live auth behavior). But the proposed follow-up is only an exact-tag compare, a real mount, and functional smokes: no explicit target-version build/typecheck and no isolated boot step."
+    }
+  ],
+  "caps": []
+}

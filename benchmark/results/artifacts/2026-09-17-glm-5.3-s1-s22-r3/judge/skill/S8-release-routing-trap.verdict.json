@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Report uses ls-remote-tags.txt (v0.9.5 absent, tags stop at v0.9.1 then jump to v0.9.7) and sync-script.sh (pushes only HEAD:main per remote, never tags) to explain attempt-1 resolution failure as a missing ref, explicitly ruling out network/command problems."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Report uses dsh-version.txt (0.1.1-rc.2) and compat-table.md (v0.9.7 targets 0.1.2-alpha.1 with the useConversation seat) to explain that a newer-client-API artifact runs on an older host lacking that export, states the direction plainly, and notes restarting cannot fix an API-existence mismatch."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Selects v0.9.3 based on rc.1 verification plus the additive rc.2 compatibility note, notices v0.9.3 is also absent from the public mirror, gives a #v0.9.3 install command conditioned on tag publication or a verified remote carrying the tag, invents no SHA, and never requires a DSH upgrade."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes distributing tags to every mirror (explicit --follow-tags / git push remote --tags) grounded in the branch-only sync script, plus one-time reconciliation of v0.9.2-v0.9.6 and a post-sync ls-remote verification gate that fails the release on missing tags."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Recommends replacing the single pinned default with per-DSH-version install routing (rc.2 users -> #v0.9.3, alpha.1 users -> #v0.9.7) via a published compatibility matrix, and manifest-level compatibility declaration; does not generalize to untested future alphas."
+    }
+  ],
+  "caps": []
+}

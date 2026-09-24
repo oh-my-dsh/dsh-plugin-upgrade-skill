@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the failure in console-split-chunks.txt (entry 200, siblings 404, siblings never shipped), explains relative sibling imports resolve against the fetched chunk URL and that one failed fetch rejects the whole import() graph, and proposes a self-contained single-file bundle via inlineDynamicImports plus the ship-all-emitted-chunks alternative that accounts for every dependency."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Pins the uppercase E: LIB_DIR vs lowercase e: realpath divergence from ci-note.md and the case-sensitive startsWith rejecting a contained file, gives per-API behavior on each platform (fileURLToPath keeps loader spelling, win32 realpathSync returns on-volume canonical casing), explains Linux and the C: laptop pass, and explicitly rejects the 'Windows paths unreliable' folklore without claiming realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes a path.relative containment helper with '..'+sep and isAbsolute rejection applied at both guard sites, keeps realpathSync to catch symlink escapes after resolution, folds case only on win32 while staying strict on posix, and identifies preserving a JavaScript MIME type as the other serving requirement for dynamic import; the guard is strengthened, not removed."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains one ctrl+wheel event reaches both handlers through event propagation, assigns exclusive gesture ownership to the modal with preventDefault plus stopPropagation under {passive:false}, and makes the pane handler stand down via target/composedPath filtering, which also covers ancestor-level listeners where modal-side stopping alone would not."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "Strong expected-outcome matrix: pack/config/mount-smoke checks prove the built dependency set is deployable, the route matrix asserts the case-differing contained Windows path serves while traversal and symlink escapes are refused, and DOM tests assert modal zoom without pane font change; however, no check verifies that an import failure still preserves the code-block fallback, leaving the incident-1 coverage slightly incomplete."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final advice strengthens containment: both guard sites are kept, realpath resolution retained, and parent traversal, cross-drive absolute results and symlink escapes are explicitly rejected; nothing disables containment or serves paths outside the plugin resource root."
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Quotes the introspection LinkType Junction/Target and the cordis.patch.yml link marker, concludes the repo tree is the installed copy so repo edits were already deployed and copying was an unnecessary same-file operation, and contrasts with ordinary copied installs.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes the EBUSY handles to the running dsh web host, notes closing the tab released nothing since the browser held only an HTTP connection, and separately explains stale client delivery via HTTP cache needing host restart plus cache-bypassing refresh, keeping the two mechanisms distinct.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the junction made both listings the same directory so the rename hit the sole source copy and the follow-up copy failed for lack of a source; recovery renames client.js.old2/index.js.old2 back, syntax-checks both with node --check, then activates, without deleting or recreating files.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct dependency order: fully stop the host, restart dsh web, hard-refresh the browser, then verify the new route/feature and absence of errors, with explicit rationale that restart must precede refresh; treats syntax check as pre-activation only and rejects browser-only restart.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Places the read-only LinkType/Target plus cordis.patch.yml marker check before any file operation, branches procedure for link vs copied installs, and gives concrete reasons copy-into-node_modules advice is redundant, doomed to EBUSY, and destructive via rename-aside on a junction.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan never copies repo files through the junction, renames the .old2 files back instead of deleting them, and repeatedly states both paths are one directory; copy advice appears only as the rejected bad example.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires a full host stop and restart before a hard refresh, explicitly stating a browser refresh is not a host stop and that tab closure released no lock; browser-only claims appear only as the rejected mistake.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "85abedd562b4a60cb5bf0301b25cf62e249f57d2f23a8d3b95c9e97f96f99ac7"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "992a5dece3a1a15cfaff888e0cccd344ac0ef33ab7b4a6adffe5a1e794290f61",
+  "judge_input_sha256": "03245ffd52d1f52c7e92116ab8f4172228498214c2640c7ebc7c10502f121199"
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report locates session.events reads in plugin-source-excerpt.js (42 references, replayEvents iteration), ties them to the 'events is not iterable' TypeError in crash-stack.txt, cites dsh-changelog-excerpt.md for removal in 0.1.2-alpha.4, names the replacements seq/eventAt()/snapshotEvents(), and explains that the removed property yields undefined which is non-iterable."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt to show ^0.1.2-alpha.2 means >=0.1.2-alpha.2 <0.2.0-0 and alpha.5 falls inside; explains npm's check is a pure semver metadata comparison that never inspects API existence or behavior, and that the peer declaration is only the author's claim, not evidence any in-range version was tested."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives genuinely distinct classes: (1) API removal/rename inside a satisfied range (this incident), and (2) behavior/signature changes such as an API becoming async/on-demand (snapshotEvents), plus shape changes (SessionSeq/SessionLogOffset) and load-order effects — more than two independent classes, each explained."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing the actual newest in-range version (CI matrix over range endpoints) AND an actionable policy: narrowing the peer range to tested versions and adding a runtime feature-detection guard (typeof session.snapshotEvents === 'function') with a clear failure message; correctly states an engines field alone does not test API behavior and that no range can encode API existence."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install procedure: read changelogs for every version between the declared floor (alpha.2) and the installed target (alpha.5), diff against the plugin's API usage, and grep the plugin tarball for session.events; explicitly tied to the Session.events removal at alpha.4 rather than merely rerunning npm install or re-checking the peer range."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's conclusion affirms the opposite: it states the satisfied peer range proves nothing about runtime compatibility and confirms Session.events was removed in alpha.4; no affirmative claim that peer satisfaction or a warning-free install proves runtime compatibility."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report traces the corridor explicitly: alpha.1 removed ignorable retention (A1-02, readers reject unknown unmarked events), alpha.2 restored it (A2-01 revert), net state = preserve the marker on alpha.2, and applies this to produceExternalEvent in src/events.ts. History is reasoned from card content, not bare card names, which the rubric accepts as equivalent history."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates `delete (event as any).ignorable` in src/events.ts, rejects the comment's keep-on-alpha.2 instruction as inverted (absence, not presence, of the marker causes rejection), recommends deleting the defense and its rationale, distinguishes removing the stripping code from the marker itself, and correctly notes the literal has no ignorable key so the delete is a runtime no-op while still rejecting the stripping policy."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "States ignorable:true fits only auxiliary/informational events whose omission still rebuilds the Session, that it is not a consumer-side filter, and that marked events remain in loaded events after reload; applies this to the third-party informational producer (recommending a plugin-owned sidecar given the live-append limitation)."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that the public live Session.append has no supported ignorable parameter, forbids faking via cast/invented argument, and explicitly defers re-evaluating third-party persistent events until a supported producer seam is verified upstream; no execution is claimed as evidence."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation affirmatively deletes the defense and the stripping line; the alpha.1 comment is quoted only to be rejected and diagnosed, so the cap is not met."
+    }
+  ]
+}

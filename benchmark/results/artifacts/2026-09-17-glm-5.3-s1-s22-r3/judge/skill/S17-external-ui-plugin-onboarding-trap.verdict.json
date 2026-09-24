@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Connects plugin/lib/client.js top-level ESM import to the boot log's single classic-script combo and browser-error.txt's compile error: one early syntax error fails the whole script, so zero of 53 entries register and the stock plugins vanish. Correctly explains the named dsh-typert-registry entry as the innocent first awaited victim while the second clause names the real bundle at position 1:1, and scopes the 'no ESM' rule to classic scripts only."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Gives bisect over the patch-layer insert rows (remove newest row, restart, re-insert) plus a cheap grep for top-level import/export tokens and standalone classic-script parsing as the static check. Correctly describes the window.__ModuleLoader__.load({id, factory}) wrapper grounded in working-plugin-excerpt.txt, package-name identity, host-provided React via require inside the factory, and module.exports carrying inject/apply. Minor imprecision around the node --check remark does not undermine the correct classic-script parse and packaging contract."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Uses plugin-apply-error.txt and the bare registration to explain that the settings entry owns the declaration and apply order across entries is undefined, so a bare register can run before the declaration. Shows the exact ctx.slots.inject('settings.section', () => ctx.slots.register(...)) deferred form and correctly lists registrant fields (name/id/order, optional label) versus declaration-owned kind/scope it must not pass."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in host-boot-log.txt and restart-notes.txt: combo assembled once per boot with no watcher, so edits and hard refresh change nothing until full host stop/restart; correct loop is stop host, taskkill /PID <pid> /T /F when the orphaned tree holds the port, then hard refresh and verify the plugin list. Explains EADDRINUSE as the old node process retaining the port, not a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes per-bundle classic-script pre-flight validation at combo assembly with named per-plugin rejection, and reattributing combo-failure errors to the known compile-error bundle instead of the first awaited entry. Authoring checklist covers bundler-emitted __ModuleLoader__.load wrapper with package-name id, require-based host React, inject/apply exports, deferred cross-entry slot registration without kind/scope, and the stop-tree-then-restart Windows procedure — all four required prevention areas."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "All affirmative recommendations match the incident contracts: classic-script wrapper instead of bare ESM, slots.inject deferred registration, registrant omitting kind/scope, and full host restart (with Windows tree kill) rather than refresh/HMR. Bare ESM and bare register appear only as quoted rejected bad examples."
+    }
+  ]
+}

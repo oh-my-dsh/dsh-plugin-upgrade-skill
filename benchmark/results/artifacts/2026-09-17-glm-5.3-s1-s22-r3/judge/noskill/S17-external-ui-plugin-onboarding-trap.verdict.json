@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Connects plugin/lib/client.js's top-level import with the host-boot-log classic-script combo and the browser-error compile failure: parse is all-or-nothing so zero entries register, and dsh-typert-registry is only the first awaited entry, not the faulty bundle. Correctly scopes the ESM restriction to classic scripts rather than all JavaScript."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Recommends bisecting the cordis.patch.yml insert rows (removing the dsh-profiles row isolates the culprit) and a per-bundle parse-as-classic-script check (equivalent to vm.Script). Describes the ModuleLoader.load({id, factory}) wrapper with package-name identity, host-provided React via require inside the factory, and inject/apply exports, matching the working-plugin excerpt."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "Correctly uses plugin-apply-error.txt to explain that the settings parent entry owns the declaration, apply ordering is not guaranteed, and registrants must not set kind/scope. However, it never shows or describe the required deferred form ctx.slots.inject(\"settings.section\", () => ctx.slots.register(...)); instead it invents an immediate ctx.slots.register(parentSlot, ...) form unsupported by the sealed facts, and wrongly claims the registrant must not pass name (rubric says registrants supply name/id/order)."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in host-boot-log.txt and restart-notes.txt: combo assembled once per boot so edits and browser refresh do not rebuild it; full stop/restart per iteration; EADDRINUSE explained as the orphaned old process retaining the port, resolved via taskkill /PID <pid> /T /F; then refresh and verify the plugin list."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "partial",
+      "reason": "Host-side advice is solid: per-plugin classic-script validation before concatenation and culprit attribution by byte-range at combo failure instead of blaming the first awaited entry. The authoring checklist covers loader factory, host React via require, inject/apply, install rows, and restart/Windows tree cleanup, but its slot item lacks the deferred cross-entry slots.inject registration form required by the checklist."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": true,
+      "reason": "In its affirmative recommended registration form (section 3 and checklist item 4) the report omits the child-side slots.inject deferral and recommends immediate cross-entry registration via ctx.slots.register(parentSlot, ...) inside apply, contradicting the deferred-registration contract that apply ordering is not guaranteed."
+    }
+  ]
+}

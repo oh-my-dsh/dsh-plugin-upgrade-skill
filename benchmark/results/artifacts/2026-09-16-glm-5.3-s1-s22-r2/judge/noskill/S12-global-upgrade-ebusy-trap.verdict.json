@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Identifies the dsh web host node.exe PID 42432 from running-processes.txt as the koffi.node loader and explains the OS keeps the native binary locked until that process exits, so npm's copyfile fails with EBUSY; file-in-use/lock wording is equivalent."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explicitly states a browser refresh only reloads the SPA while the koffi-owning host stays alive, and gives an ordered stop-verify-install-restart procedure as numbered steps, without prescribing killing unrelated Node processes."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in npm-dist-tags.txt: an unpinned global install resolves to latest (0.1.1-rc.2), silently replacing/downgrading the running 0.1.2-alpha.4 instead of upgrading it; the resolution mechanism is correct, so the minor aside about semver range matching does not detract."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 @deepseek-harness-tui/dsh-tui after stopping dsh processes, verifies dsh --version prints 0.1.2-alpha.5 and restarts; @alpha is presented only as a mutable alternative, not a replacement."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Tells README authors to pin the exact version whenever a plugin install command also installs dsh and warns that a bare name silently follows latest, which can downgrade users on pre-release channels; presented as the report's own recommendation, not an endorsed bad example."
+    }
+  ],
+  "caps": []
+}

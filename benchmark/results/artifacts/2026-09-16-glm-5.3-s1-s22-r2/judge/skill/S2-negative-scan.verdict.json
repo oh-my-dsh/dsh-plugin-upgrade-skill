@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Locates index.js:3 `inject = [\"apiProxy\"]` and index.js:9 `ctx.apiProxy.llm.providers()`, maps the hit to DSH-0.1.2-A1-01, explains the llm.providers→listProviders/listConfigurableProviders split, the host-plane inject-[\"llm\"] + ctx.llm.listProviders() migration from the card's field note, and the deleted @deepseek-ai/dsh-host-apiproxy dependency at package.json:17 — well beyond a card-name mention."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "Covers all six other categories in a table with per-class scanned-pattern evidence (no ctx.on, no fs access, no command/UI registration, no servers/WS, no subprocess). Correctly reads session-notes.js as pure string/array utilities and classifies cordis.patch.yml as ordinary composition rather than a #1 source patch, without denying the file exists or misclassifying its insert."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly answers no: heuristic scan cannot prove compatibility (coverage limits, curated card list, dependency/config surface outside the seven classes, silent-catch masking), and contrasts the single decisive apiProxy break against the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies dependency install with exact cohort, build+typecheck, isolated-profile cold boot with no pending services, and a real provider call asserting returned data (positive assertion, not merely no-crash); clearly marked as proposed post-migration steps, not executed in this static fixture."
+    }
+  ],
+  "caps": []
+}

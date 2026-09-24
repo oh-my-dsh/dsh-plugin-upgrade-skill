@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report explicitly distinguishes the clipboard-text projection (InputState.draft, Occurrence.offset/length, chip expands to clipboardText) from the detect-text projection used by insertReference/consumeToken (chip = one U+FFFC), citing host-input-contract.ts JSDoc and the facade's detectText slicing/splicing, and notes plain text contributes equal width to both."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in add and explains paste #1 succeeds because both projections coincide on an empty composer, while paste #2 submits 29 against a 2-char detectText so the span splice fails and insertReference returns false, which the plugin converts to the changed-composer toast; explicitly rules out a real concurrent edit since the rev CAS passes."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing unconverted occurrence.offset/length (0..28) to consumeToken, the false return being ignored, records.delete running anyway, leaving the live occurrence and composer chip while the missing record triggers the dock's 'unavailable' sentinel — both symptoms tied to the same cross-projection mismatch plus ignored return value, not a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives toDetectPos subtracting Σ(length−1) for occurrences before the position, applies it at both call sites: caret conversion accounting for all preceding occurrences on insert, and mapped offset with a one-character detect span (start, start+1) on removal; keeps the fresh-snapshot/draftRev guard and retires records only after consumeToken returns true (with distinct error state on false)."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes two successive pastes asserting both chips/occurrences exist, then removing a chip with another preceding chip (remove A, B survives with updated offsets), asserting composer occurrence, dock chip, and record are removed together; adds guard-refusal, first/last-chip, empty-again, and phase-guard variants with concrete assertions."
+    }
+  ],
+  "caps": []
+}

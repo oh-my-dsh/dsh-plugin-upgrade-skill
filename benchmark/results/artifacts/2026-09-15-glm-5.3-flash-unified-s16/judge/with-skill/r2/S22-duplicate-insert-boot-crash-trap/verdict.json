@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report compares both excerpts showing the same workspace-files insert in bundle and profile, pins rejection at cordis-plugin-loader EntryGroup.update via dsh-app-boot Include._apply during boot, states duplicate insert is fatal rather than silent last-wins, and explicitly rejects the maintainer's harmless-redundancy comment as the trap. Diagnosis is grounded in the named fixture files; invalid audited line numbers are near-obsolete references into the crash log and do not undermine the correctly located diagnosis."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A table distinguishes all three operations: config override by existing id is safe, inserting an unprovided id is safe (dsh-file-trace, dsh-profiles examples), inserting a bundle-shipped id is fatal. The maintainer's row is classified as the fatal third case and grounded in the bundle excerpt row (workspace-files at L110-111) with corroborating bundle-only rows like session-controller."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the manual workspace-files insert block (with its stale comment) from the profile's cordis.patch.yml, preserving the bundle's service and the unrelated external-plugin inserts, and states any config adjustment must use an override by id rather than a second insert. No rename, no bundle deletion, no additional insert proposed."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash occurs at loader-entry apply before any plugin code runs, so the plugin is not at fault and no plugin-side change can remove the duplicate declaration. Also states removing the duplicate only restores the boot and does not cure the original resource-read failure, which is kept as a separate problem with a verification path (dump-config, refresh, 0.1.5 contract triage) and an explicit warning not to re-add the row."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Prevention section tells the maintainer to grep the installed bundle patch files (web-app and other composing bundles) for the id before any insert, using a concrete Select-String command and dump-config check, and to distinguish override from insert. Proposes an improved boot error naming workspace-files, both declaration origins with file and line, and pointing to deleting the redundant profile block and overriding config instead."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is to delete the profile-side duplicate block; the retain-as-redundancy comment is quoted only to be rejected as the trap, silent merging is explicitly denied (fatal, not last-wins), and plugin-side fixes are explicitly ruled out, so no affirmative bad advice appears."
+    }
+  ]
+}

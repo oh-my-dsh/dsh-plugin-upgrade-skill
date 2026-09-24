@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "The report reconstructs the full corridor history: baseline retention semantics, alpha.1 temporarily removing the marker, alpha.2 restoring it as an explicit revert, then applies the resulting net state to produceExternalEvent in the fixture's src/events.ts to conclude the defense is obsolete at the target. Grounded in the fixture file and both version cards, with pre-alpha.1 history honestly flagged unconfirmed rather than guessed.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete of the cast ignorable property in produceExternalEvent, rejects both claims of the comment as inverted (alpha.1's defect was host-side non-retention; on alpha.2 the marker is what lets readers skip unknown events), recommends deleting the defense and correcting its rationale, distinguishes removing the stripping statement from not faking or removing the marker itself, and correctly notes the delete is a no-op because the literal never carries the field.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Explains the marker may be set only for informational events whose semantics an old reader can omit without breaking Session reconstruction, that unknown required events fail closed so they must stay required, that retention is not a consumer-side filtering directive and marked events persist in the loaded log after reload, and applies this to the third-party/informational event while respecting the live-append limitation.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that the public live Session.append has no supported ignorable parameter, forbids faking a marked entry via casts, object tricks, or hand-edited logs, recommends recording the producer seam as a capability gap and deferring the exact integration until a supported marker mechanism ships, and proposes persist-then-cold-load verification without claiming it was executed.",
+      "points": 25,
+      "awarded": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the alpha.1 defense entirely; the old code and comment appear only as quoted material for diagnosis and rejection, and the report never endorses keeping the defense or continuing marker deletion on alpha.2.",
+      "total": 10
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "74ee113a4743e4eec862dabfc95f51eb2a71749068cb717735f5d4e394cb48a5"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "90de00b02f3d79f3077edbb780e50270f57f332eca821e8310c8a949a22c1402",
+  "judge_input_sha256": "ac7836f8cdeecf858cc0f507fa8632d73998f09fde2aa0e42948ef19ea040e24"
+}

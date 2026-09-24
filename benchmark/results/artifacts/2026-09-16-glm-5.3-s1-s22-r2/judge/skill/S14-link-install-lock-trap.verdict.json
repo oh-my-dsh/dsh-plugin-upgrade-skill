@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt Junction/Target and the cordis.patch.yml link marker; states the profile entry is the same directory as the repo, repo edits are the deployment, and Copy-Item was never right for this mode, contrasted with a copied dependency."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Grounds both locks in the running dsh host: the host serves client.js and holds lib/index.js open, so closing the browser tab releases nothing; separately explains browser caching of the served bundle requiring cache-bypassing refresh after host restart, without calling caching a filesystem lock or generalizing to all DSH versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains both paths are the same physical directory via the junction, so renaming renamed the source files and the follow-up copy found no source. Recovery: stop host (precaution), rename client.js.old2/index.js.old2 back preserving contents, verify with node --check on both, then activate; does not require renaming while locked or recreating files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct dependency order: fully stop the host process (not the browser), restart dsh web, hard-refresh with cache bypass because the browser may still serve cached client.js, then verify the feature marker, route behavior, and absence of load errors; states restart of the browser alone is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Presents a pre-flight Get-Item LinkType/Target check plus the cordis.patch.yml link: marker before any file operation, distinguishes linked from copied installs, and explains why copy-into-node_modules advice is actively harmful for link installs (copies repo onto itself; EBUSY workarounds mutate the source)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "All copying advice is quoted only as the rejected mistake; the final recovery explicitly renames .old2 back, forbids any copy step, and treats both paths as one directory."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The report explicitly rejects browser refresh/tab close as sufficient and its final plan requires stopping and restarting the dsh host process before hard-refresh and verification."
+    }
+  ]
+}

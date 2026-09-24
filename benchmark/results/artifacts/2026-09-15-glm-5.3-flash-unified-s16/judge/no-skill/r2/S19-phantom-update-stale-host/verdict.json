@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Grounds the badge in the build-time PLUGIN_VERSION=\"0.3.6\" inlined before the 16:23 bump, explains the constant is not reread at runtime, rules out mirror integrity via identical SHAs, gives bump-before-build plus a pre-tag grep gate, and correctly keeps the v0.3.8 manifest separate."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe log and lib excerpt to triangulate PNG 200 (route alive), SVG 404 (old in-memory whitelist) and the svg-permitting disk file, attributing staleness to the running host process that registered routes at boot, fixed only by a restart while client refresh suffices for the browser half."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Contrasts the well-formed source, the spliced persisted model-visible text (shared-prefix splice, missing 233-247) and the clean re-read to place corruption in upstream result-text assembly; treats the payload as untrusted, calls the traced file innocent, and rejects repairing it."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain with justifications: disk-bytes asset route first, session payload only after a DOMParser/parsererror check, a sandboxed iframe without allow-scripts that still runs SMIL, and an explicit error state; malformed payload never passes unchecked to the iframe."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding all concatenated zstd frames (manual frame split or a direct concatenated decoder) preserving order, recovering the exact stored splice and diffing it against the source, reporting the upstream bug, and adds the checklist: bump-before-build, shipped-constant grep, per-mirror SHA checks, plus plane-specific probes and error states."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirmatively requires bump-before-build, a host restart for host-plane changes, payload rendering only behind XML validation, a script-free iframe, and explicitly rejects editing the clean SVG; no bad recommendation is endorsed."
+    }
+  ]
+}

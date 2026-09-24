@@ -1,0 +1,79 @@
+{
+  "task": "S20-msvc-flock-trap",
+  "arm": "with-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:09:40.523Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "awarded": 10,
+      "points": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "awarded": 5,
+      "points": 5
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan affirmatively forbids installing Visual Studio or Build Tools; MSVC is only described as the missing toolchain causing the failure.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as insufficient (section 2) and the plan makes the statically imported entry loadable via the pure-JS fallback, not merely skipping the build.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses the repository-managed pnpm patch mechanism and explicitly rules out forking, version bumps, or upstream edits.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking remains on the named semaphore and POSIX keeps real flock; the warn-once no-op fallback exists only so the import resolves on Windows and is flagged as a visible signal, not a universal lock bypass.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

@@ -8,7 +8,7 @@
 
 ## 这个仓库里有什么
 
-- **127 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.0-rc.8 一路到 0.1.5-rc.2（alpha.5→rc.1 无插件面变更，0 张卡；alpha.2→alpha.3 有 2 张卡（1 张新增能力卡 + SQLite 移除回填）；alpha.3→alpha.4 有 6 张；rc.8→rc.1 为 9 张草稿卡；0.1.2-rc.1→0.1.3-alpha.1 有 8 张（2 张 session-log 实测 + 1 张 Windows 安装 fs-ext 实测 + 3 张钉 tag + A1-07/08 源码宿主配方与运行时复核）、0.1.3-alpha.1→0.1.3-alpha.2 有 5 张草稿卡、0.1.3-alpha.2→0.1.5-alpha.1 有 20 张草稿卡、0.1.5-alpha.1→0.1.5-alpha.2 有 24 张草稿卡（其中 12 张覆盖客户端与打包面）、0.1.5-alpha.2→0.1.5-rc.1 有 5 张草稿卡、0.1.5-rc.1→0.1.5-rc.2 有 6 张草稿卡）。
+- **165 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来源是哪个版本。按版本排好序，从 0.1.0-rc.8 一路到 0.1.6-alpha.1（alpha.5→rc.1 无插件面变更，0 张卡；alpha.2→alpha.3 有 2 张卡（1 张新增能力卡 + SQLite 移除回填）；alpha.3→alpha.4 有 6 张；rc.8→rc.1 为 9 张草稿卡；0.1.2-rc.1→0.1.3-alpha.1 有 8 张（2 张 session-log 实测 + 1 张 Windows 安装 fs-ext 实测 + 3 张钉 tag + A1-07/08 源码宿主配方与运行时复核）、0.1.3-alpha.1→0.1.3-alpha.2 有 5 张草稿卡、0.1.3-alpha.2→0.1.5-alpha.1 有 20 张草稿卡、0.1.5-alpha.1→0.1.5-alpha.2 有 24 张草稿卡（其中 12 张覆盖客户端与打包面）、0.1.5-alpha.2→0.1.5-rc.1 有 5 张草稿卡、0.1.5-rc.1→0.1.5-rc.2 有 6 张草稿卡、0.1.5-rc.2→0.1.6-alpha.1 有 38 张草稿卡（目前最宽的一条边：800 个提交、4015 个改动文件））。
 - **13 条通用对策**：有些坑和版本无关（比如"先备份再动手""新旧版本怎么共存"），这些写成了一份对策清单。
 - **9 个 skill**：一个统一工作流负责选择和编排，另外八个分别负责查升级、写新插件、测插件、发插件、对比两个版本的差别、排查运行时故障、给轻量插件接入重依赖，以及把插件升级经验提取成 benchmark 考题。
 - **56 道考题（benchmark）**：用来测"AI 装了我们的 skill 之后到底会不会升级插件"，每道题都有自动判分；其中包含 dsh-web v0.3.8 → v0.3.9 和 dsh-data-agent v0.1.3 → v0.1.4 两道真实迁移。
@@ -147,8 +147,9 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | 0.1.5-alpha.2 → 0.1.5-rc.1 | 📝 草稿 | [v0.1.5-rc.1.md](skills/plugin-upgrade/references/v0.1.5-rc.1.md) | 5 张草稿卡（base 默认模型 id 改 `deepseek-flash`；适配器目录新增 V41 Flash（图片输入、历史系统提示词、不探测网关）；文档渲染器新增必填 `scrollportRef`；侧栏 guide 条目新增可选 `description`；含"未改动面"负面证据与 17 仓库舰队核对记录）。本边只有 17 个提交 |
 | 0.1.5-rc.1 → 0.1.5-rc.2 | 📝 草稿 | [v0.1.5-rc.2.md](skills/plugin-upgrade/references/v0.1.5-rc.2.md) | 6 张草稿卡（反馈面注入契约去掉 `toggle`/`acknowledge`、`openDialog` 加必填 `rating`；点赞/点踩都改为弹窗确认、提交失败转 6s 警告 toast；`FileTypeIcon` 48 个代码分类换设计导出 artwork；回合尾动作条与文件区 20/16/20px 间距契约；`service-stability` 中英文文案改字；以及"宿主面零行为变更"的负面证据） |
 | 跨版本通用对策 | ✅ 完成 | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 13 条（新旧共存、先备份、启动卡死怎么办等） |
+| 0.1.5-rc.2 → 0.1.6-alpha.1 | 📝 草稿 | [v0.1.6-alpha.1.md](skills/plugin-upgrade/references/v0.1.6-alpha.1.md) | 38 张草稿卡（目前最宽的一条边：800 个提交、4015 个改动文件。宿主面：`agent/session-start` 删除、`agent/created` 改串行可等待并携带 `source`/`signal`、`auditStartupEntries` 取代 `assertEntries*`、会话事件同步读取弃用、新增 `registerMessageProjection()` 与"无解释器即拒读"、session-log 默认上传；运行时：`codeRuntime`→`ptcRuntime` 且 `run` 拆成 `resolve`/`run`、`SandboxProvider.confine` 与 `ShellExecutor.start` 异步化、子进程 provider 新增 `terminalEnvironment()` 与可选控制通道、`workflow-ptc` 取代 worker-thread、MCP 升 2.0 SDK、新增 `ctx.mcpResources` 与 `ctx.ssh`；LLM：适配器改为上报 `IMAGE_OFFLOAD_REQUIRED`、`deepseek-official` 默认 Anthropic Messages 协议、图片进 v41 token 网格、投影 stateVersion 5、`AssistantProvenance`→`AssistantProviderMetadata`；客户端：provenance→producer/provider metadata、`CommandClaim.name` 必填、新增 `conversation.input.permission` 与 keyed guide slot、`reconnectLabel` 移除、diff 带上下文、`?fixture` 模式退役；打包面：base 行替换、默认挂载 `image-offload`（`image/offload` 必读事件）与 `mcp-resources`、默认关闭 `tool-ralph`、Web 包去掉 `code-runtime` 行、+22/−7 包账单、headless `--session-id`/`--json`、公共包清单重建、实验包改黑名单发布、原生依赖下限 `^0.1.4`→`^0.1.6`；并附"未改动面"负面证据） |
 | 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（npm `latest` 仍是 rc.1；走廊已延伸到 0.1.5-rc.2，draft 卡），正式版发布后我们要复核一遍 |
-| 0.1.5-rc.2 → 更新版本（0.1.5 正式版等） | 📝 等社区认领 | — | 想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
+| 0.1.6-alpha.1 → 更新版本（0.1.5/0.1.6 正式版等） | 📝 等社区认领 | — | 想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
 
 ## 考题（benchmark）
 

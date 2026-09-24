@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in release-log.md and client-bundle-excerpt.js: build at 16:22 preceded the 16:23 bump, baking PLUGIN_VERSION 0.3.6 into the shipped v0.3.7 bundle; explains tsdown inlined package.json at build time and it is not reread at runtime; explains mirror/tag SHA integrity only proves which bytes were pushed, not their content; gives the corrected bump-before-build order, a pre-push grep of the emitted constant, and retains mirror verification; does not conflate v0.3.8's manifest with the earlier build."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js correctly: PNG 200 shows the live route, the SVG 404 'unsupported image type' is the old in-memory whitelist, disk lib already whitelists svg, pinning staleness to the running host process loaded at boot/activation. Explains client re-fetch on refresh versus host boot-time registration, concludes a host restart is required for this linked install, and keeps the claim specific to this host lifecycle rather than all hot-reload mechanisms."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in session-log-excerpt.txt: clean well-formed source, spliced persisted model-visible text at the shared 'stro' prefix with lines 233-247 absent, clean typed result and clean re-read, locating corruption in upstream result-text assembly before session-log persistence. Correctly concludes the plugin must treat the payload as untrusted rendering input and that editing the innocent traced SVG would corrupt a good file and hide the upstream bug."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the full ordered chain with per-level justification: authoritative disk bytes via the asset route first; session payload only after DOMParser parse with <parsererror> check (cites the fixture's actual parsererror verdict); sandboxed iframe last-render fallback with scripts blocked while SMIL still runs; explicit labeled error state instead of a silent broken image. Parse failure demotes to the next level or error, so a malformed payload is not passed unchecked to the iframe."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains frame-by-frame decoding of the concatenated-Zstandard generation file (frame boundaries via magic number or consumed-byte APIs), walking decoded entries to the read-result event, extracting and diffing the stored splice against a fresh disk read, and reporting the upstream bug with the evidence. Checklist covers bump-before-build, grep of the shipped baked constant, per-mirror tag SHA verification, plane-specific runtime probes, and reporting rather than papering over the corruption; no execution was required."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "All final advice is the opposite of the cap's triggers: bump before build is mandated, mirror repush alone is not claimed to fix the baked constant, browser refresh is explicitly stated not to update the host route (restart required), the clean SVG must not be edited, the payload is validated before render, and scripts stay blocked in the iframe fallback."
+    }
+  ]
+}

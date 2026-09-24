@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Report locates the upper-only/lower-only branches in renderer-excerpt.ts, explains that fg-only SGR leaves the previous cell's 48;2 background active which bleeds into the empty half of a half-filled glyph, proposes ESC[49m (plus 39) per cell with an equivalent always-emit-both-pens formulation, notes the row-end trim/RESET acts too late, and ties the mechanism to the right-edge phantom-pixel symptoms rather than blaming artwork or the terminal."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Report explains the trailing transparent-space trim (row.replace(/[ ]+$/)) plus the text-diff/trailing-whitespace pipeline that lets surplus columns of a wider previous frame survive, and proposes full 40-cell row padding combined with per-row ESC[K erase-to-EOL (or explicit bounding-box clearing), keeping SGR state controlled and noting either half alone is insufficient."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Report uses frames-digest-report.txt: tail2 as the single mismatch with the full 23-cell diff (not just the visible shifted cluster), distinguishes hand-port data drift from renderer artifacts, explains the excerpt-based regression for a different frame could not see it, and prescribes sha256 digests of every frame's full row data checked against source-derived digests, noting excerpt checks are only supplementary."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "partial",
+      "reason": "Correctly grounded in ci-hang-evidence.txt: self-re-arming planner setTimeout chain, CI hosts that finish without unmounting, TTY/stdin keeping the interactive product alive, timeline matching the default flip. However the headline fix is clearTimeout at unmount-time, which the evidence itself says these hosts never reach; timer.unref() on each newly scheduled tick — the fix that keeps animation alive without keeping probes alive by itself — is only offered as a fallback variant rather than the requirement's primary remedy."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Section 5 consolidates both-pens background reset, fixed-width output and erase-on-shrink, balanced SGR state with row-final reset, and source-backed all-frame digest gating into a renderer checklist, plus a pre-default-on rollout audit of timers and every mounting host (including finishing probes) and an event-loop drain/exit regression test."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The report's final advice affirms resetting half-cell background via 49/39, full-width plus ESC[K clearing, source-backed full-frame digest checks, and endorses timer.unref as an acceptable fix; no affirmative bad advice, and it does not blame the terminal emulator."
+    }
+  ]
+}

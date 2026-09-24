@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Report cites fixture/package.json and README, distinguishes the declared ^0.1.2-alpha.1 from the brief's published list (rc.1, rc.2, alpha.2 only; alpha.1 unpublished, alpha.2 published), derives nothing from a root package or dist-tag, and proposes package-specific registry verification (npm view dist-tags) explicitly marked unconfirmed for this closed-book task."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains ^0.1.2-alpha.1 desugars to >=0.1.2-alpha.1 <0.2.0-0, applies npm's prerelease comparator rule so rc versions fail but 0.1.2-alpha.2 matches, concludes install will not fail and silently resolves to alpha.2, grounded in fixture/package.json. Identifies the silent type-baseline drift and prerelease peer-floor compatibility uncertainty; never claims all alphas are missing."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A is a complete feasible plan: exact pin to published 0.1.2-alpha.2, explicit acknowledgment that it never validates alpha.1, with tradeoff and exit path. Path B additionally materializes alpha.1 from a verified upstream source ref via local tarballs and cohort overrides, also with tradeoffs."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Stays on one package manager (pnpm), addresses lockfile reproducibility (exact pin; for tarball overrides, lockfile/CI coupling with a materialization script), proposes typecheck against the intended baseline, and gives explicit exit paths for removing overrides/pins; unverified items (tag name, peer floors, pnpm behavior, live registry state) are honestly marked unconfirmed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing alpha.1 from npm as if published; Path B builds local tarballs from an upstream source ref and Path A deliberately targets published alpha.2, so no affirmative unpublished-registry-install prescription appears."
+    }
+  ]
+}
