@@ -397,6 +397,26 @@ Other groups & Resource usage not recorded in a comparable form across the 2026-
 A sixth pairing, gpt-5.6-luna, shows the largest nominal gain ($+15.17$ points) but its no-skill arm is contaminated: two trajectories read the agent's native skill catalog despite no skill being mounted.
 It is reported as a sensitivity analysis in Appendix~\ref{app:sensitivity}, not in the main table.
 
+\subsection{Robustness of the GLM contrast}
+\label{sec:glm-robustness}
+
+The two GLM groups in the main table share the 22-task pool S1--S22 and both were reduced per task with three rounds per condition, so their per-task difference can be contrasted directly.
+Comparing the two groups' significance verdicts is not that contrast: one group reaching significance while the other does not is not a test of whether the two effects differ.
+We therefore analyse the per-task difference of differences, $d_t = (\text{flash skill} - \text{flash no-skill}) - (\text{strong skill} - \text{strong no-skill})$, over the shared tasks, resampled at the task level with the same seed and replicate count as the main analysis.
+The historical direct contrast is $\bar d_t = +6.23$ points with a 95\% task-bootstrap interval $[+2.59, +10.05]$, so the historical right-side difference is positive on these data; as with all rows, this is exploratory and uncorrected for multiplicity.
+Leave-one-task-out re-estimation keeps the contrast inside $[+5.33, +7.00]$, so no single task carries the sign: the largest upward influence is S4-legacy-client-imports and the largest downward influence is S11-mermaid-lazyload-trap, and the full range is reported in Table~\ref{tab:glm-robustness} rather than a peak-preserving subset.
+Round-specific mean deltas are $+6.32$, $+8.82$, $+9.82$ for glm-5.3-flash and $+1.55$, $+1.64$, $+5.00$ for glm-5.2; these are descriptive per-round summaries, not independent replications of the task set.
+Averaging repeats instead of median-reducing them gives group deltas of $+8.32$ and $+2.73$, i.e.\ a contrast of $+5.59$ points; this is a point estimate only (no interval was computed for the mean-reduced variant), so it shows the sign does not depend on the reduction rule but does not re-establish the interval under that rule.
+Within each group, higher no-skill baselines co-occur with smaller gains (Spearman $\rho = -0.74$ and $-0.64$); because the baseline and the delta share the no-skill score term, this correlation is partly mechanical, and we report it as a descriptive headroom diagnostic rather than as a ceiling mechanism.
+A later three-round glm-5.3 run on the same pool is a further within-family point, but it is not pooled into this contrast: at its base commit (\texttt{e0a9ff5}) all 22 tasks are LLM-report-judged (glm-5.2 used keyword judges for three of them), and its judge changes across rounds (glm-5.3-flash in rounds 1--2, glm-5.3 itself --- the solver model --- in round 3), so its three-round per-task median lift of $+1.59$ points on a 97.0-point no-skill median is supplementary descriptive evidence under a mixed-judge configuration rather than a third arm of the contrast.
+That smaller lift at a higher baseline is directionally consistent with that headroom diagnostic, but it is not tested here and does not by itself locate glm-5.3 on the curve.
+
+These checks strengthen the historical contrast between the two GLM configurations, not the whole curve: the remaining points come from different task pools, graders, harnesses, budgets, and skill lineages (Section~\ref{sec:paired}), and no comparable pairing exists between them.
+Sharing a task pool likewise does not make the two executions a controlled comparison, since budget, material revision, grader setup, and runtime still differ, and the scores were produced largely by same-family judges (all glm-5.3-flash tasks, and 19 of the 22 glm-5.2 tasks; the other three used deterministic keyword judges); we therefore do not read the contrast as proof that medium-capability models benefit more.
+Within these two historical GLM configurations, the observed absolute skill gain was larger for the lower-baseline configuration.
+
+\input{../generated/glm-robustness-table.tex}
+
 \subsection{Historical evidence categories}
 \label{sec:evidence}
 
