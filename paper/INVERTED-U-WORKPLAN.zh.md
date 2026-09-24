@@ -42,7 +42,7 @@
 
 优先复核支撑中间峰值的 GLM-5.3-flash，而不是再增加模型。
 
-**匿名复核包已备妥，人工评分尚未开始**（`humanReviewStatus: not-started`，已提交复核 0 份）：种子 20260916，固定 16 题 / 32 份答案；轮次规则为优先第 2 轮，缺失时按 1 → 3 确定性回退，不按分数选轮；按历史逐题差值符号分层（目标 正 7 / 零 6 / 负 3，负层为空时按固定最近层规则补足，实际落为 正 7 / 零 9 / 负 0）；仅做元数据盲化，答案内容仍可能暴露条件，不声称双盲。见 `audit/blind-grade-review-v1/`，脚本 `npm run generate:blind-grade-review` / `validate:blind-grade-review` / `test:blind-grade-review`。PR #240 的定向 AI 复核与此独立，不作为人工验证。
+**匿名复核包已备妥，人工评分尚未开始**（`humanReviewStatus: not-started`，已提交复核 0 份）：种子 20260916，固定 16 题 / 32 份答案；轮次规则为优先第 2 轮，缺失时按 1 → 3 确定性回退，不按分数选轮；按历史逐题差值符号分层（目标 正 7 / 零 6 / 负 3，负层为空时按固定最近层规则补足，实际落为 正 7 / 零 9 / 负 0）；评审者只拿到自包含的 `reviewer-packet/`（答案 + 任务材料 + 空白表格），id↔臂/原分/来源路径只在协调者专用的 `coordinator/`；答案对两臂统一做词级脱敏（技能名、references/ 卡片路径、Mode 词汇、含技能仓库名的本地路径 → `[redacted]`，替换明细记于 `coordinator/masking-log.json`），风格等残余线索仍在，不声称双盲。设计披露：候选池无负中位差值任务，且按第 2 轮规则抽出的配对中没有技能臂输的轮次，故无法检验退步样本的评分；另有 4 份无技能答案触发脱敏规则（如引用“the skill's version index”、含技能仓库名的本地路径），具体 id 只列在 `coordinator/README.md` 待协调者核查是否存在来源污染。评审者不得运行生成脚本（种子公开，可重建映射）。见 `audit/blind-grade-review-v1/`，脚本 `npm run generate:blind-grade-review` / `validate:blind-grade-review` / `test:blind-grade-review`。PR #240 的定向 AI 复核与此独立，不作为人工验证。
 
 - [ ] 邀请熟悉迁移契约、尽量未参与原评分的人；如实记录身份/角色、参与过什么。
 - [ ] 开始复核前固定抽样与轮次选择：可先抽 12–16 题、每题两臂各一份答案，共约 24–32 份；覆盖提升、退步和零差异。

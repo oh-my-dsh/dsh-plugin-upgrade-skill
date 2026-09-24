@@ -4,20 +4,28 @@
 // review packet (paper/audit/blind-grade-review-v1/). It answers two questions:
 //
 //   A. LEAKAGE — can a reviewer see anything that unblinds the packet?
-//      The reviewer-visible package must carry no arm/condition/skill label,
-//      no model identity, no original score or reward, no judge verdict, no
-//      delta, and no historical conclusion. Checks are token-aware: a phrase
-//      like "conditional" must not trip the condition pattern, the word
-//      "scorer" must not trip a naive score substring match, and an answer
-//      body mentioning the skill as its subject matter is content, not a leak.
-//      Only file names, JSON keys, Markdown headers/metadata, and the two
-//      authored reviewer-facing documents are scanned for text leaks.
+//      Everything under reviewer-packet/ is reviewer-reachable. Every file in
+//      it (answers, task materials, README, rubric, forms) is scanned in full
+//      for answer-key material: arm/condition labels, arm/score/source JSON
+//      keys, source-artifact paths (…/skill/… or …/noskill/…), original-score
+//      references, and unmasked skill identity (skill name, SKILL.md,
+//      references/ paths, skill-repo paths). Answers and the authored
+//      documents are additionally checked for the bare word "skill" used as a
+//      tool reference and for skill mode vocabulary; the authored documents
+//      also for model identity, verdict/delta/conclusion vocabulary, and any
+//      pointer outside the packet (../, coordinator/, manifest names).
+//      Checks are token-aware: "conditional" does not trip the condition
+//      pattern, "scorer" does not trip a score pattern, and the plugin-manifest
+//      "skill name" / "skill provider" is task content.
 //
 //   B. INTEGRITY — is the packet internally consistent and still unreviewed?
-//      16 tasks, 32 answers, strata coverage, per-answer sha256 matching the
-//      source artifact byte-for-byte, a bijective coordinator map, blank
+//      16 tasks, 32 answers, strata coverage, every source artifact matching
+//      its recorded sha256, every packet answer equal to the deterministic
+//      masking of its source (and NOT byte-identical to it), task materials
+//      matching their recorded hashes, a bijective coordinator map, blank
 //      reviewer CSVs, humanReviewStatus not-started, 0 reviews submitted, and
-//      no fabricated rating anywhere.
+//      no fabricated rating anywhere. The coordinator-only files live in
+//      coordinator/ and are the only place reviewId↔arm may appear.
 //
 // No model calls, no network. Usage:
 //   node paper/scripts/validate-blind-grade-review.mjs [--check] [repo-root]
@@ -30,8 +38,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createHash } from 'node:crypto'
 import {
   ANSWER_COUNT, ARMS, COORDINATOR_MAP_PATH, HUMAN_REVIEW_STATUS, MANIFEST_PATH,
-  PACKET_DIR, REVIEWER_CSV_COLUMNS, REVIEWER_CSV_PATHS, REVIEWER_VISIBLE_DIR,
-  RUBRIC_PATH, SELECTION_SEED, STRATUM_TARGETS, STRATA, TASK_COUNT, anonymousId,
+  MASKING_LOG_PATH, PACKET_DIR, REVIEWER_ANSWERS_DIR, REVIEWER_CSV_COLUMNS,
+  REVIEWER_CSV_PATHS, REVIEWER_PACKET_DIR, REVIEWER_README_PATH, REVIEWER_RUBRIC_PATH,
+  REVIEWER_TASKS_DIR, SELECTION_SEED, STRATUM_TARGETS, STRATA, TASK_COUNT,
+  anonymousId, maskAnswer, maskTaskMaterial, renderAnswerFile,
 } from './prepare-blind-grade-review.mjs'
 
 export const FAILURE_PREFIX = '[blind-grade-review]'
@@ -111,6 +121,37 @@ export const LEAKAGE_KEY_PATTERNS = [
   { id: 'arm-key', pattern: /^(?:arm|condition|arms|conditions|treatment|control)$/i, reason: 'arm/condition metadata key' },
   { id: 'outcome-key', pattern: /^(?:original_?score|historical_?score|reward|rewards|mean_?score|median_?score|judge_?verdict|verdict|delta|mean_?delta)$/i, reason: 'outcome metadata key' },
   { id: 'model-key', pattern: /^(?:model|model_?name|model_?id|provider)$/i, reason: 'model identity metadata key' },
+]
+
+/**
+ * Answer-key patterns: applied to the FULL TEXT of every reviewer-reachable
+ * file, including frozen answers and task materials. Any hit means the packet
+ * carries the key (arm, score, source) or an unmasked skill identity.
+ */
+export const ANSWER_KEY_PATTERNS = [
+  { id: 'condition-label', pattern: /\bwith[-_]?skill\b|\bno[-_]skill\b|\bnoskill\b|\bwithout[-_]skill\b/i, reason: 'experimental arm / condition label' },
+  { id: 'arm-json-key', pattern: /"(?:arm|arms|condition|originalScore|original_score|sourcePath|sourceSha256|packetSha256|selectedRoundDelta|historicalPerTaskDelta|maskReplacementCount)"\s*:/, reason: 'answer-key JSON field' },
+  { id: 'arm-source-path', pattern: /(?:^|[\/\\])(?:no)?skill[\/\\]S[0-9]+-/im, reason: 'source path naming an arm folder' },
+  { id: 'artifact-path', pattern: /benchmark[\/\\]results|results[\/\\]artifacts/i, reason: 'source artifact path' },
+  { id: 'original-score', pattern: /\b(?:original|historical)[-\s_]?(?:score|reward|rating)s?\b/i, reason: 'original score/reward reference' },
+  { id: 'skill-identity', pattern: /dsh-plugin-upgrade|\bplugin-upgrade\b|\bSKILL(?:\.zh-CN)?\.md\b|(?:^|[\s`'"(/])references\//i, reason: 'unmasked skill name, entry file, or reference path' },
+]
+
+/**
+ * Unmasked skill-mention patterns: applied to answer files and to the authored
+ * reviewer documents (not to task materials, whose brief legitimately says
+ * "the applicable skill" identically for both arms). Mirrors the masking
+ * rules: the plugin-manifest "skill name" / "skill provider" / "skills" and a
+ * "(skill)" surface label are task content.
+ */
+export const UNMASKED_SKILL_PATTERNS = [
+  { id: 'unmasked-skill-mention', pattern: /(?<!\()\bskill(?:'s|’s)?\b(?![ \t]+(?:name|provider)s?\b)(?!\))/i, reason: 'unmasked "skill" tool reference' },
+  { id: 'unmasked-skill-mode', pattern: /\bMode[ \t]+[A-D]\b|\b[A-D][ \t]*·[ \t]*(?:inspect|update|author-migrate)\b/, reason: 'unmasked skill mode vocabulary' },
+]
+
+/** Authored reviewer documents must never point outside the packet. */
+export const OUTSIDE_POINTER_PATTERNS = [
+  { id: 'outside-pointer', pattern: /\.\.\/|\bcoordinator\/|coordinator-map|sample-manifest|masking-log|prepare-blind-grade-review|reviewer-visible/i, reason: 'pointer to a file outside the reviewer packet' },
 ]
 
 /** Markdown header/metadata lines that must not carry provenance. */
@@ -206,50 +247,72 @@ export function filledRows(rows) {
 
 // ── A. Leakage ───────────────────────────────────────────────────────────────
 
+/** Classify a reviewer-packet file by its role. */
+export function packetFileKind(rel) {
+  if (rel === REVIEWER_README_PATH || rel === REVIEWER_RUBRIC_PATH) return 'authored'
+  if (REVIEWER_CSV_PATHS.includes(rel)) return 'form'
+  if (rel.startsWith(`${REVIEWER_ANSWERS_DIR}/`)) return 'answer'
+  if (rel.startsWith(`${REVIEWER_TASKS_DIR}/`)) return 'task-material'
+  return 'other'
+}
+
 /**
- * Validate that the reviewer-visible package leaks nothing. Scans:
- *   * every path inside reviewer-visible/ (each segment, so a directory named
- *     after a condition, model, or round fails even when the file name is
- *     anonymous);
- *   * every answer file's Markdown headers for provenance vocabulary and its
- *     front-matter (if any) for any provenance key or value;
- *   * the full text of the reviewer-facing README and rubric for provenance
- *     AND content-domain vocabulary, because this pipeline authors them.
+ * Validate that the reviewer packet leaks nothing. Everything under
+ * reviewer-packet/ is reviewer-reachable. Scans:
+ *   * every path segment (a directory named after a condition, model, or
+ *     round fails even when the file name is anonymous);
+ *   * the full text of every file for answer-key material
+ *     (ANSWER_KEY_PATTERNS);
+ *   * answers and authored documents for unmasked skill mentions;
+ *   * Markdown headers and front-matter of answers/authored documents for
+ *     provenance vocabulary;
+ *   * JSON keys of any JSON file in the packet outside task materials;
+ *   * the authored README and rubric for provenance AND content-domain
+ *     vocabulary and for pointers outside the packet.
  */
-export function validateReviewerVisibleLeakage(repoRoot) {
+export function validateReviewerPacketLeakage(repoRoot) {
   const failures = []
-  if (!existsSync(join(repoRoot, REVIEWER_VISIBLE_DIR))) {
-    return [`${FAILURE_PREFIX} missing reviewer-visible package: ${REVIEWER_VISIBLE_DIR}`]
+  if (!existsSync(join(repoRoot, REVIEWER_PACKET_DIR))) {
+    return [`${FAILURE_PREFIX} missing reviewer packet: ${REVIEWER_PACKET_DIR}`]
   }
-  const files = listFiles(repoRoot, REVIEWER_VISIBLE_DIR)
+  const files = listFiles(repoRoot, REVIEWER_PACKET_DIR)
   for (const rel of files) {
-    const relInPackage = rel.slice(REVIEWER_VISIBLE_DIR.length + 1)
+    const relInPackage = rel.slice(REVIEWER_PACKET_DIR.length + 1)
     for (const segment of relInPackage.split('/')) {
       failures.push(...scanText(segment, `${rel} (path segment)`))
     }
-    const abs = join(repoRoot, rel)
-    const text = readText(abs)
-    const isAnswer = ANSWER_FILE_RE.test(basenameOf(rel))
-    // Headers are a metadata surface for every reviewer-visible document.
-    for (const line of markdownHeaderLines(text)) {
-      failures.push(...scanText(line, `${rel} (markdown header)`))
+    const text = readText(join(repoRoot, rel))
+    const kind = packetFileKind(rel)
+    failures.push(...scanText(text, `${rel} (answer key)`, { patterns: ANSWER_KEY_PATTERNS }))
+    if (kind === 'answer' || kind === 'authored' || kind === 'other') {
+      failures.push(...scanText(text, `${rel} (unmasked)`, { patterns: UNMASKED_SKILL_PATTERNS }))
+      for (const line of markdownHeaderLines(text)) {
+        failures.push(...scanText(line, `${rel} (markdown header)`))
+      }
+      for (const leak of frontMatterLeaks(text)) {
+        failures.push(`${FAILURE_PREFIX} LEAK ${rel}: ${leak}`)
+      }
     }
-    for (const leak of frontMatterLeaks(text)) {
-      failures.push(`${FAILURE_PREFIX} LEAK ${rel}: ${leak}`)
+    if (kind !== 'task-material' && rel.endsWith('.json')) {
+      try {
+        failures.push(...scanKeys(JSON.parse(text), rel))
+      } catch {
+        failures.push(`${FAILURE_PREFIX} ${rel}: not valid JSON`)
+      }
     }
-    if (!isAnswer) {
+    if (kind === 'authored' || kind === 'other') {
       // Reviewer-facing prose is authored by this pipeline, so scan it for the
-      // content-domain vocabulary too (model names, verdicts, deltas, ...).
+      // content-domain vocabulary too (model names, verdicts, deltas, ...),
+      // and make sure it never sends the reviewer outside the packet.
       failures.push(...scanText(text, `${rel} (prose)`, { tier: 'authored' }))
+      failures.push(...scanText(text, `${rel} (prose)`, { patterns: OUTSIDE_POINTER_PATTERNS }))
     }
-  }
-  // The reviewer-facing rubric is duplicated at the packet level; that copy
-  // must be clean too even though reviewers are not shown it.
-  if (existsSync(join(repoRoot, RUBRIC_PATH))) {
-    failures.push(...scanText(readText(join(repoRoot, RUBRIC_PATH)), `${RUBRIC_PATH} (prose)`, { tier: 'authored' }))
   }
   return [...new Set(failures)].sort()
 }
+
+/** Backwards-compatible name. */
+export const validateReviewerVisibleLeakage = validateReviewerPacketLeakage
 
 /**
  * Validate that the coordinator map is the only unblinded machine artifact.
@@ -305,11 +368,21 @@ export function validateBlindGradeReview(repoRoot) {
 
   let manifest
   let map
+  let maskingLog
   try {
     manifest = loadJson(repoRoot, MANIFEST_PATH)
     map = loadJson(repoRoot, COORDINATOR_MAP_PATH)
+    maskingLog = loadJson(repoRoot, MASKING_LOG_PATH)
   } catch (error) {
     return [`${FAILURE_PREFIX} ${error.message}`]
+  }
+
+  // ── coordinator-only files must live outside the reviewer packet ──
+  for (const rel of [MANIFEST_PATH, COORDINATOR_MAP_PATH, MASKING_LOG_PATH]) {
+    if (rel.startsWith(`${REVIEWER_PACKET_DIR}/`)) fail(`${rel} is coordinator-only but sits inside the reviewer packet`)
+  }
+  for (const [label, doc] of [['manifest', manifest], ['masking log', maskingLog]]) {
+    if (doc.coordinatorOnly !== true) fail(`${label}: coordinatorOnly must be true`)
   }
 
   // ── manifest status ──
@@ -332,13 +405,9 @@ export function validateBlindGradeReview(repoRoot) {
   if (tasks.length !== TASK_COUNT) fail(`manifest: expected ${TASK_COUNT} task entries, got ${tasks.length}`)
   const taskIds = tasks.map((task) => task?.task)
   if (new Set(taskIds).size !== taskIds.length) fail('manifest: duplicate task ids')
-  const manifestAnswers = tasks.flatMap((task) => (Array.isArray(task?.answers) ? task.answers : []))
-  if (manifestAnswers.length !== ANSWER_COUNT) fail(`manifest: expected ${ANSWER_COUNT} answers, got ${manifestAnswers.length}`)
-  const reviewIds = manifestAnswers.map((answer) => answer?.reviewId)
-  if (new Set(reviewIds).size !== reviewIds.length) fail('manifest: duplicate review ids')
-  const expectedIds = Array.from({ length: ANSWER_COUNT }, (_, index) => anonymousId(index))
-  for (const id of expectedIds) {
-    if (!reviewIds.includes(id)) fail(`manifest: missing review id ${id}`)
+  const taskLabels = tasks.map((task) => task?.taskLabel)
+  if (new Set(taskLabels).size !== taskLabels.length || taskLabels.some((label) => !/^T[0-9]{2}$/.test(label ?? ''))) {
+    fail('manifest: task labels must be unique T01..T16 values')
   }
 
   // ── strata ──
@@ -364,93 +433,113 @@ export function validateBlindGradeReview(repoRoot) {
     fail('manifest: achieved stratum counts do not sum to 16 tasks')
   }
 
-  // ── paired arms per task ──
-  for (const task of tasks) {
-    const arms = (task.answers ?? []).map((answer) => answer.arm)
-    if (arms.length !== ARMS.length || ARMS.some((arm) => !arms.includes(arm))) {
-      fail(`manifest: task ${task.task} must contribute exactly one answer per arm, got ${JSON.stringify(arms)}`)
-    }
-    const rounds = (task.answers ?? []).map((answer) => answer.round)
-    for (const round of rounds) {
-      if (round !== 2) fail(`manifest: task ${task.task} used round ${round}; every answer must use the preferred round (2) or declare a fallback`)
-    }
-  }
-
-  // ── round rule consistency ──
-  const fallbackCount = manifestAnswers.filter((answer) => answer.round !== 2).length
-  if ((manifest.roundRule?.answersUsingFallback ?? 0) !== fallbackCount) {
-    fail(`manifest: roundRule.answersUsingFallback ${manifest.roundRule?.answersUsingFallback} does not match ${fallbackCount} non-round-2 answers`)
-  }
-
   // ── coordinator map: shape + bijection ──
   failures.push(...validateCoordinatorMapShape(map, { allow: coordinatorMapAllowSet(map) }))
   const entries = Array.isArray(map.entries) ? map.entries : []
   if (entries.length !== ANSWER_COUNT) fail(`coordinator map: expected ${ANSWER_COUNT} entries, got ${entries.length}`)
   const mapIds = entries.map((entry) => entry.reviewId)
   if (new Set(mapIds).size !== mapIds.length) fail('coordinator map: duplicate review ids')
-  const sortedMapIds = [...mapIds].sort()
-  const sortedExpected = [...expectedIds].sort()
-  if (sortedMapIds.join(',') !== sortedExpected.join(',')) {
+  const expectedIds = Array.from({ length: ANSWER_COUNT }, (_, index) => anonymousId(index))
+  if ([...mapIds].sort().join(',') !== expectedIds.join(',')) {
     fail('coordinator map: review ids are not exactly R001..R032 (not a bijection)')
   }
-  // Each task must appear exactly twice, once per arm.
+  // Each task must appear exactly twice, once per arm, under one task label.
   const byTask = new Map()
   for (const entry of entries) {
     if (!byTask.has(entry.task)) byTask.set(entry.task, [])
-    byTask.get(entry.task).push(entry.arm)
+    byTask.get(entry.task).push(entry)
   }
   if (byTask.size !== TASK_COUNT) fail(`coordinator map: covers ${byTask.size} tasks, expected ${TASK_COUNT}`)
-  for (const [task, arms] of byTask) {
+  for (const [task, taskEntries] of byTask) {
+    const arms = taskEntries.map((entry) => entry.arm)
     if (arms.length !== ARMS.length || ARMS.some((arm) => !arms.includes(arm))) {
-      fail(`coordinator map: task ${task} arms are ${JSON.stringify(arms.sort())}, expected one per arm`)
+      fail(`coordinator map: task ${task} must contribute exactly one answer per arm, got ${JSON.stringify(arms.sort())}`)
     }
-  }
-  if ([...byTask.keys()].some((task) => !taskIds.includes(task))) {
-    fail('coordinator map: contains a task absent from the manifest')
+    const manifestTask = tasks.find((candidate) => candidate.task === task)
+    if (!manifestTask) fail(`coordinator map: task ${task} is absent from the manifest`)
+    else if (taskEntries.some((entry) => entry.taskLabel !== manifestTask.taskLabel)) {
+      fail(`coordinator map: task ${task} label disagrees with the manifest`)
+    }
   }
 
-  // ── reviewer-visible files: existence, hash, verbatim copy ──
-  const entriesById = new Map(entries.map((entry) => [entry.reviewId, entry]))
-  const expectedVisible = new Set(['README.md', 'rubric.md'])
-  for (const answer of manifestAnswers) {
-    const rel = `${REVIEWER_VISIBLE_DIR}/${answer.reviewId}.md`
-    expectedVisible.add(`${answer.reviewId}.md`)
+  // ── round rule consistency ──
+  for (const entry of entries) {
+    if (entry.round !== 2) fail(`coordinator map: ${entry.reviewId} used round ${entry.round}; every answer must use the preferred round (2) or declare a fallback`)
+  }
+  const fallbackCount = entries.filter((entry) => entry.round !== 2).length
+  if ((manifest.roundRule?.answersUsingFallback ?? 0) !== fallbackCount) {
+    fail(`manifest: roundRule.answersUsingFallback ${manifest.roundRule?.answersUsingFallback} does not match ${fallbackCount} non-round-2 answers`)
+  }
+
+  // ── answers: source hash, deterministic masking, not a verbatim copy ──
+  const expectedPacket = new Set([REVIEWER_README_PATH, REVIEWER_RUBRIC_PATH, ...REVIEWER_CSV_PATHS])
+  const logById = new Map((Array.isArray(maskingLog.entries) ? maskingLog.entries : []).map((entry) => [entry.reviewId, entry]))
+  const sourceHashes = new Set(entries.map((entry) => entry.sourceSha256))
+  for (const entry of entries) {
+    const rel = `${REVIEWER_ANSWERS_DIR}/${entry.reviewId}.md`
+    expectedPacket.add(rel)
+    if (entry.packetPath !== rel) fail(`coordinator map: ${entry.reviewId} packetPath must be ${rel}`)
     const abs = join(repoRoot, rel)
     if (!existsSync(abs)) {
-      fail(`missing reviewer-visible answer file: ${rel}`)
+      fail(`missing reviewer packet answer file: ${rel}`)
       continue
     }
-    const entry = entriesById.get(answer.reviewId)
-    if (!entry) {
-      fail(`answer ${answer.reviewId} has no coordinator-map entry`)
-      continue
-    }
-    if (entry.sourceSha256 !== answer.sourceSha256) {
-      fail(`answer ${answer.reviewId}: manifest sha256 ${answer.sourceSha256} does not match coordinator map ${entry.sourceSha256}`)
-      continue
-    }
-    const sourceAbs = join(repoRoot, entry.sourcePath)
-    if (!existsSync(sourceAbs)) {
-      fail(`missing source artifact for ${answer.reviewId}: ${entry.sourcePath}`)
+    const packetText = readText(abs)
+    const packetHash = sha256File(abs)
+    if (sourceHashes.has(packetHash)) fail(`answer ${entry.reviewId} is byte-identical to a source artifact (hash lookup would unblind it)`)
+    if (packetHash !== entry.packetSha256) fail(`answer ${entry.reviewId}: packet sha256 ${packetHash} does not match coordinator map ${entry.packetSha256}`)
+    const sourceAbs = join(repoRoot, entry.sourcePath ?? '')
+    if (typeof entry.sourcePath !== 'string' || !existsSync(sourceAbs)) {
+      fail(`missing source artifact for ${entry.reviewId}: ${entry.sourcePath}`)
       continue
     }
     const sourceHash = sha256File(sourceAbs)
     if (sourceHash !== entry.sourceSha256) {
-      fail(`source hash mismatch for ${answer.reviewId}: ${entry.sourcePath} is ${sourceHash}, manifest records ${entry.sourceSha256}`)
+      fail(`source hash mismatch for ${entry.reviewId}: ${entry.sourcePath} is ${sourceHash}, map records ${entry.sourceSha256}`)
       continue
     }
-    if (sha256File(abs) !== entry.sourceSha256) {
-      fail(`answer ${answer.reviewId} is not a verbatim copy of its source artifact`)
+    const masked = maskAnswer(readText(sourceAbs))
+    const expected = renderAnswerFile({ reviewId: entry.reviewId, taskLabel: entry.taskLabel, maskedBody: masked.text })
+    if (packetText !== expected) fail(`answer ${entry.reviewId} is not the deterministic masked copy of its source artifact`)
+    const logged = logById.get(entry.reviewId)
+    if (!logged) fail(`masking log: no entry for ${entry.reviewId}`)
+    else if (JSON.stringify(logged.replacements) !== JSON.stringify(masked.replacements)) {
+      fail(`masking log: ${entry.reviewId} replacements do not match the masking rules`)
+    }
+    if (entry.maskReplacementCount !== masked.replacements.length) {
+      fail(`coordinator map: ${entry.reviewId} maskReplacementCount does not match the masking rules`)
     }
   }
-  // No orphan files: a re-sample must never leave a stale or injected answer.
-  for (const rel of listFiles(repoRoot, REVIEWER_VISIBLE_DIR)) {
-    const name = rel.slice(REVIEWER_VISIBLE_DIR.length + 1)
-    if (!expectedVisible.has(name)) fail(`unexpected file in reviewer-visible package: ${name}`)
+
+  // ── task materials: recorded hash, no stray files ──
+  const materialFiles = Array.isArray(manifest.taskMaterials?.files) ? manifest.taskMaterials.files : []
+  const labelsWithBrief = new Set()
+  for (const file of materialFiles) {
+    if (typeof file?.path !== 'string' || !file.path.startsWith(`${REVIEWER_TASKS_DIR}/`)) {
+      fail(`manifest: task material path ${JSON.stringify(file?.path)} is outside ${REVIEWER_TASKS_DIR}`)
+      continue
+    }
+    expectedPacket.add(file.path)
+    if (file.path.endsWith('/instruction.md')) labelsWithBrief.add(file.taskLabel)
+    const abs = join(repoRoot, file.path)
+    if (!existsSync(abs)) {
+      fail(`missing task material: ${file.path}`)
+      continue
+    }
+    if (sha256File(abs) !== file.sha256) fail(`task material hash mismatch: ${file.path}`)
+    if (maskTaskMaterial(readText(abs)).replacements.length > 0) fail(`task material ${file.path} still contains unmasked skill identity`)
+  }
+  for (const label of taskLabels) {
+    if (!labelsWithBrief.has(label)) fail(`task ${label} has no instruction.md in the reviewer packet`)
+  }
+
+  // No orphan files: a re-sample must never leave a stale or injected file.
+  for (const rel of listFiles(repoRoot, REVIEWER_PACKET_DIR)) {
+    if (!expectedPacket.has(rel)) fail(`unexpected file in reviewer packet: ${rel.slice(REVIEWER_PACKET_DIR.length + 1)}`)
   }
 
   // ── no fabricated ratings anywhere ──
-  for (const [key, value] of [['manifest', manifest], ['coordinator map', map]]) {
+  for (const [key, value] of [['manifest', manifest], ['coordinator map', map], ['masking log', maskingLog]]) {
     const flagged = findRatingFields(value)
     for (const path of flagged) fail(`${key}: fabricated rating field at ${path}`)
   }
@@ -478,7 +567,7 @@ export function validateBlindGradeReview(repoRoot) {
     }
   }
 
-  failures.push(...validateReviewerVisibleLeakage(repoRoot))
+  failures.push(...validateReviewerPacketLeakage(repoRoot))
 
   // Deterministic order.
   return [...new Set(failures)].sort()
@@ -554,5 +643,5 @@ if (isMain) {
     for (const failure of failures) console.error(`- ${failure}`)
     process.exit(1)
   }
-  console.log(`${FAILURE_PREFIX} OK: 16 tasks / 32 answers, metadata-blinded, coordinator map bijective, reviewer forms blank, humanReviewStatus=not-started, 0 reviews submitted`)
+  console.log(`${FAILURE_PREFIX} OK: 16 tasks / 32 answers, reviewer packet leak-free and masked, coordinator map bijective, reviewer forms blank, humanReviewStatus=not-started, 0 reviews submitted`)
 }

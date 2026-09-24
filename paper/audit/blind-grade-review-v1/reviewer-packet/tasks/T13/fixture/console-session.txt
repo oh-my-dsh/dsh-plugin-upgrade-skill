@@ -1,0 +1,21 @@
+# Browser session capture — DSH 0.1.2-alpha.3, @org/dsh-attach-input v0.2.3
+# Reproduction of the two user reports (fresh session, empty composer).
+
+[12:39:41] paste #1: clipboard file "screenshot.png" (48.2 KiB)
+[12:39:41]   dock chip rendered: [screenshot.png · 48.2 KiB · ×]
+[12:39:41]   composer chip inserted after the draft text
+[12:39:41]   input.state.getSnapshot() after insert:
+              draft = "[attachment: screenshot.png] "   (length 29)
+              occurrences = [{ offset: 0, length: 28, label: "screenshot.png", clipboardText: "[attachment: screenshot.png]" }]
+[12:39:41]   → OK
+
+[12:40:05] paste #2: clipboard file "screenshot.png" (51.7 KiB)
+[12:40:05]   toast: "The DSH composer changed before the attachment could be inserted"
+[12:40:05]   insertReference returned false; no second chip anywhere
+[12:40:05]   → ERROR (matches user report #2)
+
+[12:40:30] click × on the dock chip
+[12:40:30]   consumeToken(...) returned (not inspected by the plugin code)
+[12:40:30]   dock chip STILL rendered, meta now reads "unavailable"
+[12:40:30]   composer chip still present; records no longer contains the ref
+[12:40:30]   → ERROR (matches user report #3)

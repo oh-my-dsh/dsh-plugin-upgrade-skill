@@ -1,0 +1,22 @@
+# Prior art — the same failure family on 0.1.5-alpha.1 (2026-09-09)
+
+deepseek-ai/deepseek-harness discussion #5999
+(https://github.com/deepseek-ai/deepseek-harness/discussions/5999)
+documents the 0.1.5-alpha.1 round of the same failure family on this deployment:
+
+- An npm-global in-place upgrade onto a profile created under 0.1.2/0.1.3 left the
+  client roster and the served combo inconsistent: the boot roster listed the
+  newly-added ui-sidebar-* modules but the combo route answered 404 for them at the
+  same rev (old modules 200 at that rev) — so every client plugin failed with
+  "loaded without registering" (the first unregistered entry, client-hmr, named
+  innocently).
+- A host restart self-healed the roster/combo mismatch once (the newly-added rows
+  entered the roster), but the sidebar tab's content read STILL failed on that boot
+  (文件资源服务不可用) — the resource-provider chain did not take over.
+- Rollback to the previous published version (npm i -g @deepseek-ai/dsh@0.1.3-alpha.2)
+  was verified as the escape hatch.
+
+The 0.1.5-alpha.2 round on the same profile shows a related-but-narrower symptom:
+modules serve individually (62/62 probes 200), the documentpreview tab opens, but the
+file resource metadata still never arrives. The forensics were appended to #5999 as
+round 2 (comment 18371079).

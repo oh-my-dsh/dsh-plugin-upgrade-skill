@@ -17,20 +17,21 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  ANSWER_COUNT, ARMS, COORDINATOR_MAP_PATH, MANIFEST_PATH, REVIEWER_CSV_COLUMNS,
-  REVIEWER_CSV_PATHS, REVIEWER_VISIBLE_DIR, ROUND_PREFERENCE, RUBRIC_PATH,
+  ANSWER_COUNT, ARMS, COORDINATOR_DIR, COORDINATOR_MAP_PATH, MANIFEST_PATH, MASKING_LOG_PATH,
+  MASK_TOKEN, PACKET_DIR, REVIEWER_ANSWERS_DIR, REVIEWER_CSV_COLUMNS,
+  REVIEWER_CSV_PATHS, REVIEWER_PACKET_DIR, ROUND_PREFERENCE, RUBRIC_PATH,
   SELECTION_SEED, SOURCE_ROOTS, STRATUM_TARGETS, STRATA, TASK_COUNT,
   anonymousId, assignAnonymousIds, buildPackage, chooseAnswers, chooseRound,
-  computeTaskDeltas, deterministicShuffle, loadAggregates, median, mulberry32,
-  orderKey, randomInt, renderCoordinatorMap, renderManifest, selectTasks,
-  sha256, stratumFillOrder, stratumForDelta,
+  computeTaskDeltas, deterministicShuffle, loadAggregates, maskAnswer, maskTaskMaterial,
+  median, mulberry32, orderKey, randomInt, renderCoordinatorMap, renderManifest,
+  selectTasks, sha256, stratumFillOrder, stratumForDelta,
 } from './prepare-blind-grade-review.mjs'
 import {
   ANSWER_FILE_RE, AUTHORED_LEAKAGE_PATTERNS, EXPLICIT_REVIEW_FLAG,
-  LEAKAGE_KEY_PATTERNS, PROVENANCE_PATTERNS, basenameOf, coordinatorMapAllowSet,
+  LEAKAGE_KEY_PATTERNS, basenameOf, coordinatorMapAllowSet,
   filledRows, findRatingFields, frontMatterLeaks, listFiles, markdownHeaderLines,
   parseCsvTemplate, scanKeys, scanText, validateBlindGradeReview,
-  validateCoordinatorMapShape, validateReviewerVisibleLeakage,
+  validateCoordinatorMapShape, validateReviewerPacketLeakage,
 } from './validate-blind-grade-review.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -75,11 +76,17 @@ function buildFixture({ tasks, missing = [], seedClause = true }) {
         const key = `${round}/${arm}/${task.id}`
         if (missing.includes(key)) continue
         // The answer header deliberately names the task but never the arm or
-        // round, so the synthetic packet exercises the same surfaces as the
-        // historical reports.
-        writeFile(root, `${SOURCE_ROOTS[round]}/${arm}/${task.id}/report.md`, `# ${task.id} inspection report\n\nBody paragraph for the fixture.\n`)
+        // round. Skill-arm answers carry the same kind of skill cues the
+        // historical reports do, so the masking path is exercised.
+        const body = arm === 'skill'
+          ? `# ${task.id} inspection report\n\nSkill applied: dsh-plugin-upgrade (Mode A · inspect). Cards from \`references/v0.1.2-alpha.2.md\` and SKILL.md; fixture at E:/work/dsh-plugin-upgrade-skill/benchmark/tasks/${task.id}/environment/fixture.\nPer the skill's pre-flight contract the skill name \`greet\` is fine.\n`
+          : `# ${task.id} inspection report\n\nBody paragraph for the fixture. The skill name \`greet\` and skill provider are checked.\n`
+        writeFile(root, `${SOURCE_ROOTS[round]}/${arm}/${task.id}/report.md`, body)
       }
     }
+    // Task materials (read from the working tree in fixtures).
+    writeFile(root, `benchmark/tasks/${task.id}/instruction.md`, `# ${task.id}\n\nFollow the applicable skill. Inspect /app/fixture/ read-only.\n`)
+    writeFile(root, `benchmark/tasks/${task.id}/environment/fixture/README.md`, `Fixture for ${task.id}; copied from skills/plugin-upgrade/examples.\n`)
   })
   for (const round of [1, 2, 3]) {
     writeFile(root, `${SOURCE_ROOTS[round]}/aggregate.json`, JSON.stringify(roundRecords[round]))
@@ -109,9 +116,13 @@ function deltasFor(tasks) {
   return computeTaskDeltas(rounds)
 }
 
+function build(root) {
+  return buildPackage({ repoRoot: root, taskMaterialRef: null })
+}
+
 function builtFixture(options) {
   const root = buildFixture(options)
-  const built = buildPackage({ repoRoot: root })
+  const built = build(root)
   return { root, built }
 }
 
@@ -410,17 +421,19 @@ test('every sampled task contributes exactly one answer per arm', () => {
   const { built } = builtFixture({ tasks: historicalShape() })
   const manifest = manifestOf(built)
   assert.equal(manifest.tasks.length, 16)
+  const map = mapOf(built)
   for (const task of manifest.tasks) {
-    assert.deepEqual(task.answers.map((answer) => answer.arm).sort(), [...ARMS].sort())
-    assert.equal(new Set(task.answers.map((answer) => answer.reviewId)).size, 2)
+    const entries = map.entries.filter((entry) => entry.task === task.task)
+    assert.deepEqual(entries.map((entry) => entry.arm).sort(), [...ARMS].sort())
+    assert.equal(new Set(entries.map((entry) => entry.reviewId)).size, 2)
   }
 })
 
 test('buildPackage is byte-identical across two runs on the same fixture', () => {
   const tasks = historicalShape()
   const root = buildFixture({ tasks })
-  const first = buildPackage({ repoRoot: root })
-  const second = buildPackage({ repoRoot: root })
+  const first = build(root)
+  const second = build(root)
   assert.deepEqual([...first.files.keys()].sort(), [...second.files.keys()].sort())
   for (const [rel, content] of first.files) {
     assert.equal(second.files.get(rel), content, `${rel} differs between runs`)
@@ -432,7 +445,7 @@ test('committed packet regenerates byte-identically from the real dataset', () =
   for (const [rel, content] of built.files) {
     assert.equal(readFileSync(join(REPO_ROOT, rel), 'utf8'), content, `${rel} is stale; run npm run generate:blind-grade-review`)
   }
-  assert.deepEqual([...built.files.keys()].sort(), listFiles(REPO_ROOT, dirname(MANIFEST_PATH)).sort())
+  assert.deepEqual([...built.files.keys()].sort(), listFiles(REPO_ROOT, PACKET_DIR).sort())
 })
 
 test('the packet content is independent of the checkout commit', () => {
@@ -442,6 +455,8 @@ test('the packet content is independent of the checkout commit', () => {
   for (const [rel, content] of built.files) {
     assert.ok(!/[0-9a-f]{40}/.test(content) || rel.endsWith('.json'), `${rel} unexpectedly embeds a 40-hex run`)
   }
+  // Task materials come from a FIXED commit (never HEAD), recorded in JSON.
+  assert.match(JSON.parse(built.files.get(MANIFEST_PATH)).taskMaterials.gitRef, /^[0-9a-f]{40}$/)
   const manifest = JSON.parse(built.files.get(MANIFEST_PATH))
   assert.equal(manifest.sourceCommit, undefined)
   assert.equal(manifest.provenance.sourceDate, '2026-09-11')
@@ -460,19 +475,33 @@ test('manifest records the seed, frozen provenance, and a frozen round rule', ()
   assert.equal(manifest.roundRule.answersUsingFallback, 0)
 })
 
-test('manifest records per-answer source path, sha256, and round', () => {
+test('coordinator map records per-answer source path, sha256, packet sha256, and round', () => {
+  const { built } = builtFixture({ tasks: historicalShape() })
+  const map = mapOf(built)
+  const sourceById = new Map(built.answers.map((answer) => [answer.reviewId, answer]))
+  for (const entry of map.entries) {
+    const source = sourceById.get(entry.reviewId)
+    assert.equal(entry.sourceSha256, source.sourceSha256)
+    assert.equal(entry.sourcePath, source.sourcePath)
+    assert.equal(entry.sourceSha256, sha256Of(source.body))
+    assert.equal(entry.packetSha256, sha256Of(built.files.get(entry.packetPath)))
+    assert.notEqual(entry.packetSha256, entry.sourceSha256)
+    assert.ok([1, 2, 3].includes(entry.round))
+  }
+})
+
+test('the manifest is coordinator-only and carries no per-answer arm/score/source/text', () => {
   const { built } = builtFixture({ tasks: historicalShape() })
   const manifest = manifestOf(built)
-  const sourceByHash = new Map(built.answers.map((answer) => [answer.reviewId, answer]))
+  assert.equal(manifest.coordinatorOnly, true)
+  assert.ok(MANIFEST_PATH.startsWith(`${COORDINATOR_DIR}/`))
+  assert.equal(manifest.sources.answers, undefined, 'full answer objects must not be written to the manifest')
   for (const task of manifest.tasks) {
-    for (const answer of task.answers) {
-      const source = sourceByHash.get(answer.reviewId)
-      assert.equal(answer.sourceSha256, source.sourceSha256)
-      assert.equal(answer.sourcePath, source.sourcePath)
-      assert.equal(answer.sourceSha256, sha256Of(source.body))
-      assert.ok([1, 2, 3].includes(answer.round))
-    }
+    assert.equal(task.answers, undefined)
+    assert.match(task.taskLabel, /^T[0-9]{2}$/)
   }
+  const text = built.files.get(MANIFEST_PATH)
+  assert.ok(!/"reviewId"|"originalScore"|"body"/.test(text))
 })
 
 test('manifest declares strata targets, achieved counts, and any fallback application', () => {
@@ -521,14 +550,9 @@ test('renderManifest and renderCoordinatorMap are pure functions of their inputs
   const { built } = builtFixture({ tasks: historicalShape() })
   const manifest = manifestOf(built)
   const map = mapOf(built)
-  assert.deepEqual(
-    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs }),
-    renderManifest({ answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs }),
-  )
-  assert.deepEqual(
-    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas }),
-    renderCoordinatorMap({ answers: built.answers, selection: built.selection, deltas: built.deltas }),
-  )
+  const args = { answers: built.answers, selection: built.selection, deltas: built.deltas, inputs: built.inputs, rounds: built.rounds, taskLabels: built.taskLabels, taskMaterialFiles: built.taskMaterialFiles }
+  assert.deepEqual(renderManifest(args), renderManifest(args))
+  assert.deepEqual(renderCoordinatorMap(args), renderCoordinatorMap(args))
   assert.equal(manifest.seed, SELECTION_SEED)
   assert.equal(map.seed, SELECTION_SEED)
 })
@@ -600,10 +624,10 @@ test('markdownHeaderLines collects headers, metadata, and table rows only', () =
 
 test('listFiles and parseCsvTemplate behave deterministically', () => {
   const root = tempRoot()
-  writeFile(root, 'reviewer-visible/R002.md', 'b')
-  writeFile(root, 'reviewer-visible/R001.md', 'a')
-  writeFile(root, 'reviewer-visible/README.md', 'r')
-  assert.deepEqual(listFiles(root, 'reviewer-visible').map((rel) => basenameOf(rel)), ['R001.md', 'R002.md', 'README.md'])
+  writeFile(root, 'reviewer-packet/R002.md', 'b')
+  writeFile(root, 'reviewer-packet/R001.md', 'a')
+  writeFile(root, 'reviewer-packet/README.md', 'r')
+  assert.deepEqual(listFiles(root, 'reviewer-packet').map((rel) => basenameOf(rel)), ['R001.md', 'R002.md', 'README.md'])
   assert.deepEqual(listFiles(root, 'missing-dir'), [])
   assert.deepEqual(parseCsvTemplate(`${REVIEWER_CSV_COLUMNS.join(',')}\n`).rows, [])
   const blank = parseCsvTemplate(`${REVIEWER_CSV_COLUMNS.join(',')}\n,,,\n`)
@@ -623,7 +647,7 @@ function writePacket(root, built) {
 /** Build a complete, valid packet in a fresh temp repo and return its root. */
 function validPacketRepo(options = { tasks: historicalShape() }) {
   const root = buildFixture(options)
-  const built = buildPackage({ repoRoot: root })
+  const built = build(root)
   writePacket(root, built)
   return { root, built }
 }
@@ -700,25 +724,25 @@ test('validator rejects a source hash mismatch', () => {
   rmSync(root, { recursive: true, force: true })
 })
 
-test('validator rejects a reviewer-visible answer that is not a verbatim copy', () => {
+test('validator rejects a packet answer that is not the deterministic masked copy', () => {
   const { root, built } = validPacketRepo()
   const victim = built.answers[0]
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/${victim.reviewId}.md`, 'edited by a human\n')
-  firstFailure(root, 'not a verbatim copy')
+  writeFile(root, `${REVIEWER_ANSWERS_DIR}/${victim.reviewId}.md`, 'edited by a human\n')
+  firstFailure(root, 'not the deterministic masked copy')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a missing answer file and a duplicate answer id', () => {
   const { root, built } = validPacketRepo()
   const victim = built.answers[0]
-  rmSync(join(root, `${REVIEWER_VISIBLE_DIR}/${victim.reviewId}.md`))
-  firstFailure(root, 'missing reviewer-visible answer file')
+  rmSync(join(root, `${REVIEWER_ANSWERS_DIR}/${victim.reviewId}.md`))
+  firstFailure(root, 'missing reviewer packet answer file')
   rmSync(root, { recursive: true, force: true })
 
   const second = validPacketRepo()
   // A file that is not one of R001..R032 is rejected outright.
-  writeFile(second.root, `${REVIEWER_VISIBLE_DIR}/R033.md`, 'body\n')
-  firstFailure(second.root, 'unexpected file in reviewer-visible package')
+  writeFile(second.root, `${REVIEWER_ANSWERS_DIR}/R033.md`, 'body\n')
+  firstFailure(second.root, 'unexpected file in reviewer packet')
   rmSync(second.root, { recursive: true, force: true })
 })
 
@@ -775,7 +799,7 @@ test('validator rejects a fabricated rating embedded in the manifest', () => {
   const { root } = validPacketRepo()
   const manifestPath = join(root, MANIFEST_PATH)
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
-  manifest.tasks[0].answers[0].correctness_score = 91
+  manifest.tasks[0].correctness_score = 91
   writeFile(root, MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`)
   firstFailure(root, 'fabricated rating field')
   rmSync(root, { recursive: true, force: true })
@@ -801,66 +825,66 @@ test('validator rejects a coordinator map that omits an answer', () => {
   rmSync(root, { recursive: true, force: true })
 })
 
-test('validator rejects an arm label in a reviewer-visible answer header', () => {
+test('validator rejects an arm label in a reviewer-packet answer header', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/R001.md`, '# Report (with-skill run)\n\nbody\n')
+  writeFile(root, `${REVIEWER_ANSWERS_DIR}/R001.md`, '# Report (with-skill run)\n\nbody\n')
   firstFailure(root, 'condition-label')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a model name in the reviewer-facing README', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/README.md`, '# Packet\n\nAnswers produced by glm-5.3-flash.\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/README.md`, '# Packet\n\nAnswers produced by glm-5.3-flash.\n')
   firstFailure(root, 'model-identity')
   rmSync(root, { recursive: true, force: true })
 })
 
-test('validator rejects a condition label in a reviewer-visible FILE NAME', () => {
+test('validator rejects a condition label in a reviewer-packet FILE NAME', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/with-skill-R001.md`, 'body\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/with-skill-R001.md`, 'body\n')
   firstFailure(root, 'path segment')
   rmSync(root, { recursive: true, force: true })
 })
 
-test('validator rejects a condition/model/round label in a reviewer-visible directory name', () => {
+test('validator rejects a condition/model/round label in a reviewer-packet directory name', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/noskill/R001.md`, 'body\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/noskill/R001.md`, 'body\n')
   firstFailure(root, 'noskill')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a score or reward leak in reviewer-facing prose', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/README.md`, '# Packet\n\nEach answer scored 0-100 with a mean score of 84.\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/README.md`, '# Packet\n\nEach answer scored 0-100 with a mean score of 84.\n')
   firstFailure(root, 'score')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a judge-verdict leak in the reviewer rubric', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/rubric.md`, '# Rubric\n\nReproduce the llm-rubric verdict for each answer.\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/rubric.md`, '# Rubric\n\nReproduce the llm-rubric verdict for each answer.\n')
   firstFailure(root, 'judge')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a historical-conclusion leak in the reviewer rubric', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/rubric.md`, '# Rubric\n\nThe inverted-U pattern predicts the middle band wins.\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/rubric.md`, '# Rubric\n\nThe inverted-U pattern predicts the middle band wins.\n')
   firstFailure(root, 'historical-conclusion')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects a delta leak in the reviewer rubric', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/rubric.md`, '# Rubric\n\nCompare against the mean delta reported in the paper.\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/rubric.md`, '# Rubric\n\nCompare against the mean delta reported in the paper.\n')
   firstFailure(root, 'delta')
   rmSync(root, { recursive: true, force: true })
 })
 
 test('validator rejects front-matter provenance injected into an answer file', () => {
   const { root } = validPacketRepo()
-  const original = readFileSync(join(root, `${REVIEWER_VISIBLE_DIR}/R001.md`), 'utf8')
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/R001.md`, `---\ncondition: with-skill\n---\n\n${original}`)
+  const original = readFileSync(join(root, `${REVIEWER_ANSWERS_DIR}/R001.md`), 'utf8')
+  writeFile(root, `${REVIEWER_ANSWERS_DIR}/R001.md`, `---\ncondition: with-skill\n---\n\n${original}`)
   firstFailure(root, 'front-matter')
   rmSync(root, { recursive: true, force: true })
 })
@@ -889,10 +913,10 @@ test('validator rejects a manifest whose strata counts do not match its tasks', 
 
 test('validator rejects a task that contributes only one arm', () => {
   const { root } = validPacketRepo()
-  const manifestPath = join(root, MANIFEST_PATH)
-  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
-  manifest.tasks[0].answers = [manifest.tasks[0].answers[0]]
-  writeFile(root, MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`)
+  const map = JSON.parse(readFileSync(join(root, COORDINATOR_MAP_PATH), 'utf8'))
+  const task = map.entries[0].task
+  for (const entry of map.entries.filter((candidate) => candidate.task === task)) entry.arm = ARMS[0]
+  writeFile(root, COORDINATOR_MAP_PATH, `${JSON.stringify(map, null, 2)}\n`)
   firstFailure(root, 'exactly one answer per arm')
   rmSync(root, { recursive: true, force: true })
 })
@@ -904,11 +928,11 @@ test('validator rejects a missing coordinator map or manifest outright', () => {
   rmSync(root, { recursive: true, force: true })
 })
 
-test('validateReviewerVisibleLeakage reports a missing package', () => {
+test('validateReviewerPacketLeakage reports a missing package', () => {
   const root = tempRoot()
-  const failures = validateReviewerVisibleLeakage(root)
+  const failures = validateReviewerPacketLeakage(root)
   assert.equal(failures.length, 1)
-  assert.match(failures[0], /missing reviewer-visible package/)
+  assert.match(failures[0], /missing reviewer packet/)
   rmSync(root, { recursive: true, force: true })
 })
 
@@ -926,7 +950,7 @@ test('validateBlindGradeReview is deterministic and deduplicated', () => {
 
 test('failure lists are sorted and stable when several leaks exist', () => {
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/README.md`, '# Packet\n\nglm-5.3-flash with-skill mean delta\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/README.md`, '# Packet\n\nglm-5.3-flash with-skill mean delta\n')
   const failures = validateBlindGradeReview(root)
   assert.ok(failures.length >= 3)
   assert.deepEqual(failures, [...failures].sort())
@@ -940,7 +964,7 @@ test('the validator CLI accepts --check and exits non-zero only on failure', asy
   const ok = execFileSync('node', [script, '--check'], { cwd: REPO_ROOT, encoding: 'utf8' })
   assert.match(ok, /OK: 16 tasks \/ 32 answers/)
   const { root } = validPacketRepo()
-  writeFile(root, `${REVIEWER_VISIBLE_DIR}/README.md`, '# Packet\n\nclaude with-skill\n')
+  writeFile(root, `${REVIEWER_PACKET_DIR}/README.md`, '# Packet\n\nclaude with-skill\n')
   let exitCode = 0
   try {
     execFileSync('node', [script, root], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
@@ -955,7 +979,7 @@ test('the builder CLI --check and --dry-run agree with buildPackage', async () =
   const { execFileSync } = await import('node:child_process')
   const script = join(HERE, 'prepare-blind-grade-review.mjs')
   const checked = execFileSync('node', [script, '--check'], { cwd: REPO_ROOT, encoding: 'utf8' })
-  assert.match(checked, /up to date \(40 files\)/)
+  assert.match(checked, /up to date \([0-9]+ files\)/)
   const dry = execFileSync('node', [script, '--dry-run'], { cwd: REPO_ROOT, encoding: 'utf8' })
   assert.match(dry, /seed 20260916; 16 tasks; 32 answers/)
   assert.match(dry, /strata targets \{"positive":7,"zero":6,"negative":3\} achieved \{"positive":7,"zero":9,"negative":0\}/)
@@ -981,6 +1005,8 @@ test('the committed README states preparation-only status and the blinding limit
   assert.match(readme, /humanReviewStatus`? \| `?not-started/)
   assert.match(readme, /humanReviewsSubmitted`? \| `?0/)
   assert.match(readme, /content blinding is imperfect/i)
+  assert.match(readme, /No sampled pair comes from a round the skill arm lost/)
+  assert.match(readme, /must not run `npm run generate:blind-grade-review`/)
   assert.match(readme, /not a double-blind review/i)
   assert.match(readme, /frozen before any human review/i)
   assert.match(readme, /PR #240/)
@@ -988,28 +1014,140 @@ test('the committed README states preparation-only status and the blinding limit
   assert.match(readme, /not a double-blind review and must never be described as one/i)
 })
 
-test('the committed reviewer README carries no provenance vocabulary at all', () => {
-  const text = readFileSync(join(REPO_ROOT, REVIEWER_VISIBLE_DIR, 'README.md'), 'utf8')
+test('the committed reviewer README carries no provenance vocabulary and no outside pointer', () => {
+  const text = readFileSync(join(REPO_ROOT, REVIEWER_PACKET_DIR, 'README.md'), 'utf8')
   assert.ok(!/round|arm|skill|glm|delta|verdict|score|reward|judge/i.test(text))
+  assert.ok(!/\.\.\/|coordinator\/|manifest|coordinator-map/i.test(text))
+  assert.match(text, /\[redacted\]/)
 })
 
-test('the committed manifest and coordinator map record the same answer hashes', () => {
-  const manifest = JSON.parse(readFileSync(join(REPO_ROOT, MANIFEST_PATH), 'utf8'))
+test('the committed packet: sources match their hashes and packet answers are masked, not verbatim', () => {
   const map = JSON.parse(readFileSync(join(REPO_ROOT, COORDINATOR_MAP_PATH), 'utf8'))
-  const byId = new Map(map.entries.map((entry) => [entry.reviewId, entry]))
-  for (const task of manifest.tasks) {
-    for (const answer of task.answers) {
-      assert.equal(byId.get(answer.reviewId).sourceSha256, answer.sourceSha256)
-    }
-  }
-})
-
-test('the committed packet hashes match the committed source artifacts', () => {
-  const map = JSON.parse(readFileSync(join(REPO_ROOT, COORDINATOR_MAP_PATH), 'utf8'))
+  const sourceHashes = new Set(map.entries.map((entry) => entry.sourceSha256))
   for (const entry of map.entries) {
     const source = readFileSync(join(REPO_ROOT, entry.sourcePath))
     assert.equal(sha256(source), entry.sourceSha256)
-    const visible = readFileSync(join(REPO_ROOT, REVIEWER_VISIBLE_DIR, `${entry.reviewId}.md`))
-    assert.deepEqual(visible, source)
+    const packet = readFileSync(join(REPO_ROOT, REVIEWER_ANSWERS_DIR, `${entry.reviewId}.md`))
+    assert.notDeepEqual(packet, source)
+    assert.ok(!sourceHashes.has(sha256(packet)), `${entry.reviewId} is findable by source hash`)
+    assert.equal(sha256(packet), entry.packetSha256)
   }
+})
+
+test('the committed reviewer packet contains no arm, score, or skill cue', () => {
+  for (const rel of listFiles(REPO_ROOT, REVIEWER_PACKET_DIR)) {
+    const text = readFileSync(join(REPO_ROOT, rel), 'utf8')
+    assert.ok(!/with-skill|no-skill|noskill|"arm"|originalScore|dsh-plugin-upgrade|plugin-upgrade|SKILL\.md|benchmark\/results/i.test(text), `${rel} leaks`)
+  }
+})
+
+// ── masking ──────────────────────────────────────────────────────────────────
+
+test('maskAnswer masks skill identity, paths, mode vocabulary, and tool-sense "skill"', () => {
+  const input = [
+    'Skill applied: dsh-plugin-upgrade — per the skill\'s troubleshooting table.',
+    'Method: plugin-upgrade skill (Mode A · inspect); see `references/v0.1.2-alpha.2.md`, SKILL.md and rollup-0.1.2.md.',
+    'Mode: **A · inspect**; not Mode B/C work. Fixture at `E:/x/dsh-plugin-upgrade-skill/benchmark/tasks/S1/environment/fixture`.',
+    'Corridor built from the skill\'s version index.',
+  ].join('\n')
+  const { text, replacements } = maskAnswer(input)
+  assert.ok(!/dsh-plugin-upgrade|plugin-upgrade|references\/|SKILL\.md|rollup-0\.1\.2\.md|Mode [A-D]|A · inspect/i.test(text), text)
+  assert.ok(!/\bskill\b/i.test(text), text)
+  assert.ok(text.includes(MASK_TOKEN))
+  assert.equal(text.split('\n').length, input.split('\n').length, 'masking never changes line structure')
+  for (const entry of replacements) {
+    assert.ok(input.split('\n')[entry.line - 1].includes(entry.original), JSON.stringify(entry))
+  }
+  assert.deepEqual(maskAnswer(input), { text, replacements }, 'deterministic')
+})
+
+test('maskAnswer keeps the plugin-manifest sense of "skill" (task content)', () => {
+  const input = '### 4. Skill name: `greet` and skill provider: `acme`\nmultiple "greet" skills; `greet` (skill).\n| 7 | Skill name | `greet` |\n'
+  const { text, replacements } = maskAnswer(input)
+  assert.equal(text, input)
+  assert.deepEqual(replacements, [])
+})
+
+test('maskTaskMaterial masks only skill identity, not the brief\'s generic "applicable skill"', () => {
+  const input = 'Follow the applicable skill. Copy of `skills/plugin-upgrade/examples/`.\n'
+  const { text } = maskTaskMaterial(input)
+  assert.match(text, /applicable skill/)
+  assert.ok(!/plugin-upgrade/.test(text))
+})
+
+test('masking is applied to both arms and the per-answer log lives only in coordinator/', () => {
+  const { built } = builtFixture({ tasks: historicalShape() })
+  assert.ok(MASKING_LOG_PATH.startsWith(`${COORDINATOR_DIR}/`))
+  const log = JSON.parse(built.files.get(MASKING_LOG_PATH))
+  assert.equal(log.coordinatorOnly, true)
+  assert.equal(log.entries.length, ANSWER_COUNT)
+  for (const answer of built.answers) {
+    const packet = built.files.get(answer.packetPath)
+    assert.ok(!/dsh-plugin-upgrade|Skill applied|references\/|SKILL\.md|Mode A/.test(packet), `${answer.reviewId} not masked`)
+    // The plugin-manifest "skill name" survives in both arms.
+    assert.match(packet, /skill name `greet`/)
+  }
+  assert.ok(built.answers.filter((answer) => answer.arm === 'with-skill').every((answer) => answer.maskReplacements.length > 0))
+})
+
+// ── validator: answer-key leak rules (negative fixtures) ─────────────────────
+
+test('validator rejects an answer-key JSON file dropped into the reviewer packet', () => {
+  const { root } = validPacketRepo()
+  writeFile(root, `${REVIEWER_PACKET_DIR}/key.json`, `${JSON.stringify({ reviewId: 'R001', arm: 'no-skill', originalScore: 100 })}\n`)
+  firstFailure(root, 'arm-json-key')
+  firstFailure(root, 'arm-key')
+  firstFailure(root, 'unexpected file in reviewer packet')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator rejects the coordinator map copied into the reviewer packet', () => {
+  const { root } = validPacketRepo()
+  writeFile(root, `${REVIEWER_PACKET_DIR}/coordinator-map.json`, readFileSync(join(root, COORDINATOR_MAP_PATH), 'utf8'))
+  firstFailure(root, 'arm-json-key')
+  firstFailure(root, 'arm-source-path')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator rejects an unmasked skill mention in a packet answer', () => {
+  const { root } = validPacketRepo()
+  const rel = `${REVIEWER_ANSWERS_DIR}/R001.md`
+  writeFile(root, rel, `${readFileSync(join(root, rel), 'utf8')}\nSkill applied: dsh-plugin-upgrade, per the skill's rules.\n`)
+  firstFailure(root, 'skill-identity')
+  firstFailure(root, 'unmasked-skill-mention')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator rejects a source path, score, or outside pointer in the reviewer README', () => {
+  const { root } = validPacketRepo()
+  writeFile(root, `${REVIEWER_PACKET_DIR}/README.md`, '# Packet\n\nSee benchmark/results/artifacts/x/noskill/S1-static-scan/report.md and ../coordinator/coordinator-map.json; original score 100.\n')
+  firstFailure(root, 'artifact-path')
+  firstFailure(root, 'arm-source-path')
+  firstFailure(root, 'outside-pointer')
+  firstFailure(root, 'original-score')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator rejects a packet answer that is a verbatim (hash-findable) source copy', () => {
+  const { root, built } = validPacketRepo()
+  const victim = built.answers.find((answer) => answer.arm === 'no-skill')
+  writeFile(root, victim.packetPath, victim.body)
+  firstFailure(root, 'byte-identical to a source artifact')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator rejects an unmasked skill identity in task materials', () => {
+  const { root, built } = validPacketRepo()
+  const file = built.taskMaterialFiles.find((entry) => entry.path.endsWith('fixture/README.md'))
+  writeFile(root, file.path, 'Copied from skills/plugin-upgrade/examples.\n')
+  firstFailure(root, 'skill-identity')
+  firstFailure(root, 'task material hash mismatch')
+  rmSync(root, { recursive: true, force: true })
+})
+
+test('validator positive fixture: a freshly built synthetic packet with skill cues passes', () => {
+  const { root, built } = validPacketRepo()
+  assert.ok(built.answers.some((answer) => answer.maskReplacements.length > 0), 'fixture must exercise masking')
+  assert.deepEqual(validateBlindGradeReview(root), [])
+  rmSync(root, { recursive: true, force: true })
 })
