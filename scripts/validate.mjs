@@ -128,8 +128,14 @@ for (const entry of skillEntries) {
 
 // Version-card schema, IDs and directed corridor metadata.
 const referencesDir = join(root, 'skills', 'plugin-upgrade', 'references')
-const cardFiles = (await readdir(referencesDir))
+const referenceNames = await readdir(referencesDir)
+const cardFiles = referenceNames
   .filter((name) => /^v.*\.md$/.test(name))
+  .map((name) => join(referencesDir, name))
+// Version-jump companions (jump-*.md) use the same card schema and share the repo-wide card-ID
+// namespace, but they are not corridor edges: plan-migration.mjs only walks the v*.md files.
+const jumpFiles = referenceNames
+  .filter((name) => /^jump-.*\.md$/.test(name))
   .map((name) => join(referencesDir, name))
 const requiredMeta = ['kind', 'schema', 'from', 'to', 'status', 'coverage', 'cardCount', 'idPrefix', 'verifiedAt']
 const requiredFields = ['Type', 'Applies to', 'Touchpoints', 'Action level', 'Symptoms', 'Migration recipe', 'Verification', 'Source']
@@ -141,19 +147,24 @@ const edges = new Map()
 let totalCards = 0
 const indexText = await readFile(join(referencesDir, 'README.md'), 'utf8')
 
-for (const file of cardFiles) {
+for (const [file, kind] of [
+  ...cardFiles.map((file) => [file, 'dsh-version-card-set']),
+  ...jumpFiles.map((file) => [file, 'dsh-version-jump-card-set']),
+]) {
   const text = await readFile(file, 'utf8')
   const { meta, body } = parseFrontmatter(text, file)
   for (const key of requiredMeta) if (meta[key] === undefined || meta[key] === '') fail(file, `missing metadata: ${key}`)
-  if (meta.kind !== 'dsh-version-card-set') fail(file, 'kind must be dsh-version-card-set')
+  if (meta.kind !== kind) fail(file, `kind must be ${kind}`)
   if (meta.schema !== 1) fail(file, 'schema must be 1')
   if (!tag.test(String(meta.from))) fail(file, `invalid from tag: ${meta.from}`)
   if (!tag.test(String(meta.to))) fail(file, `invalid to tag: ${meta.to}`)
   if (meta.from === meta.to) fail(file, 'from and to must differ')
   if (!['draft', 'reviewed'].includes(meta.status)) fail(file, `invalid status: ${meta.status}`)
   if (!['curated', 'complete'].includes(meta.coverage)) fail(file, `invalid coverage: ${meta.coverage}`)
-  if (edges.has(meta.from)) fail(file, `duplicate corridor edge from ${meta.from}`)
-  edges.set(meta.from, meta.to)
+  if (kind === 'dsh-version-card-set') {
+    if (edges.has(meta.from)) fail(file, `duplicate corridor edge from ${meta.from}`)
+    edges.set(meta.from, meta.to)
+  }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(meta.verifiedAt))) fail(file, `verifiedAt must be an ISO date (YYYY-MM-DD), got: ${meta.verifiedAt}`)
 
   const headings = [...body.matchAll(/^###\s+([A-Za-z0-9.-]+)\s+·\s+.+$/gm)]
@@ -215,7 +226,7 @@ for (const start of edges.keys()) {
 // Every full card reference in Markdown must resolve; retired short IDs are forbidden.
 for (const file of markdownFiles) {
   const text = await readFile(file, 'utf8')
-  for (const match of text.matchAll(/\bDSH-\d+\.\d+\.\d+-A\d+-\d{2}\b/g)) {
+  for (const match of text.matchAll(/\bDSH-\d+\.\d+\.\d+-(?:A|J)\d+-\d{2}\b/g)) {
     if (!allCardIds.has(match[0])) fail(file, `unknown card reference: ${match[0]}`)
   }
   if (/\bALPHA[12]-\d{2}\b/.test(text)) fail(file, 'contains retired short card ID')
@@ -314,4 +325,4 @@ if (failures.length) {
   process.exit(1)
 }
 
-console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only migration and workflow planners, offline ghost-host classifier, offline naming validator, read-only registry v2 query`)
+console.log(`Validation OK: ${skillEntries.length} skill, ${cardFiles.length} card sets, ${jumpFiles.length} jump card sets, ${totalCards} cards, ${markdownFiles.length} Markdown files, 7 touchpoint fixtures, 2 face contracts, read-only migration and workflow planners, offline ghost-host classifier, offline naming validator, read-only registry v2 query`)
