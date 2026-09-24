@@ -17,6 +17,8 @@ import {
   OUTPUT_PATH,
   buildReport,
   completenessFor,
+  median,
+  summarizePerTask,
   ratioFor,
   renderReport,
   run,
@@ -25,6 +27,7 @@ import {
 import {
   OUTPUT_PATH as TABLE_OUTPUT_PATH,
   fmtCoverage,
+  fmtMedianPooled,
   fmtRatio,
   generate as generateTable,
   loadReport,
@@ -39,6 +42,15 @@ const TERRA_PATH = 'benchmark/results/artifacts/2026-09-01-codex-gpt-5.6-terra/p
 const GLM53_PATH = 'benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22/aggregate.json'
 const GLM52_PATH = 'benchmark/results/artifacts/2026-09-13-glm-5.2-s1-s22/aggregate.json'
 const USAGE_PATH = EXTRA_SOURCES['glm-5.3-flash'][0]
+const QWEN_CSV_PATH = EXTRA_SOURCES['qwen3.8-27b'][0]
+
+const DEFAULT_QWEN_CSV = [
+  'task,condition,trials,rewards,trial_seconds_sum,input_tokens,cached_input_tokens,output_tokens',
+  'H1,with-skill,2,1|1,20,100,75,10',
+  'H1,no-skill,2,1|1,10,50,40,5',
+  'H2,with-skill,2,0|1,20,100,75,10',
+  'H2,no-skill,2,0|-,10,50,40,5',
+].join('\n') + '\n'
 
 function sha256(text) {
   return createHash('sha256').update(text).digest('hex')
@@ -68,7 +80,7 @@ function defaultUsage() {
 }
 
 /** Minimal repo with the five main sources and a hash-consistent authority. */
-function fixtureRepo({ qwen = qwenFixture(), usage = defaultUsage(), taskCounts = {}, sensitivity = {} } = {}) {
+function fixtureRepo({ qwen = qwenFixture(), qwenCsv = DEFAULT_QWEN_CSV, usage = defaultUsage(), taskCounts = {}, sensitivity = {} } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'resource-overhead-'))
   const write = (rel, content) => {
     mkdirSync(dirname(join(root, rel)), { recursive: true })
@@ -80,6 +92,7 @@ function fixtureRepo({ qwen = qwenFixture(), usage = defaultUsage(), taskCounts 
   write(GLM53_PATH, [{ task: 'S1', noskill: 0, skill: 1 }])
   write(GLM52_PATH, [{ task: 'S1', noskill: 0, skill: 1 }])
   write(USAGE_PATH, usage)
+  write(QWEN_CSV_PATH, qwenCsv)
   const paths = { 'qwen3.8-27b': QWEN_PATH, 'deepseek-v4-flash': DEEPSEEK_PATH, 'gpt-5.6-terra': TERRA_PATH, 'glm-5.3-flash': GLM53_PATH, 'glm-5.2': GLM52_PATH }
   const tasks = { 'qwen3.8-27b': 56, 'deepseek-v4-flash': 23, 'gpt-5.6-terra': 21, 'glm-5.3-flash': 22, 'glm-5.2': 22 }
   const authority = {
@@ -290,7 +303,7 @@ test('real report: unavailable groups carry null ratios with reasons', () => {
   for (const label of ['deepseek-v4-flash', 'gpt-5.6-terra', 'glm-5.2']) {
     const group = report.groups.find((g) => g.label === label)
     assert.equal(group.ratios.inputTokens.value, null)
-    assert.match(group.ratios.inputTokens.reason, /no machine-readable resource fields|not recorded/)
+    assert.match(group.ratios.inputTokens.reason, /no per-arm usage fields|not recorded/)
   }
 })
 
@@ -363,10 +376,68 @@ test('a task-count mismatch is surfaced in completeness expectations', () => {
   assert.equal(qwen.taskCount, 99)
 })
 
-test('qwen trial-count asymmetry is disclosed in the notes', () => {
+test('qwen trial-count asymmetry is disclosed and the ratio basis matches the code (totals, not per-trial means)', () => {
   const report = buildReport(REPO_ROOT)
   const qwen = report.groups.find((g) => g.label === 'qwen3.8-27b')
-  assert.ok(qwen.notes.some((note) => /one more trial/.test(note)))
+  assert.ok(qwen.notes.some((note) => /168 vs 167 scored trials/.test(note)))
+  assert.ok(qwen.notes.some((note) => /not per-trial means/.test(note)))
+  assert.ok(!qwen.notes.some((note) => /per-trial means use/.test(note)))
+  // The pooled ratio is literally the ratio of the arm totals.
+  assert.equal(qwen.ratios.inputTokens.value, Number((qwen.arms.skill.inputTokens / qwen.arms.noskill.inputTokens).toFixed(4)))
+})
+
+// ── per-task medians and the S3 retry ────────────────────────────────────────
+
+test('median handles odd, even and empty inputs', () => {
+  assert.equal(median([3, 1, 2]), 2)
+  assert.equal(median([4, 1, 3, 2]), 2.5)
+  assert.equal(median([]), null)
+})
+
+test('summarizePerTask takes the median of per-task ratios and lists retried tasks', () => {
+  const perTask = new Map([
+    ['A', { skill: { sessions: 1, inputTokens: 20 }, noskill: { sessions: 1, inputTokens: 10 } }],
+    ['B', { skill: { sessions: 1, inputTokens: 30 }, noskill: { sessions: 2, inputTokens: 100 } }],
+    ['C', { skill: { sessions: 1, inputTokens: 40 }, noskill: { sessions: 1, inputTokens: 10 } }],
+  ])
+  const summary = summarizePerTask(perTask)
+  assert.equal(summary.medianRatios.inputTokens.value, 2)
+  assert.equal(summary.medianRatios.inputTokens.tasks, 3)
+  assert.equal(summary.medianRatios.outputTokens.value, null) // missing, not 0
+  assert.deepEqual(summary.retriedTasks, [{ task: 'B', arm: 'noskill', sessions: 2 }])
+})
+
+test('real glm-5.3-flash: the ~2.2x figure reproduces as the median per-task fresh-input ratio', () => {
+  const glm = buildReport(REPO_ROOT).groups.find((g) => g.label === 'glm-5.3-flash')
+  assert.equal(glm.perTask.pairedTasks, 22)
+  assert.equal(glm.perTask.medianRatios.inputTokens.value, 2.2339)
+  assert.equal(glm.perTask.medianRatios.totalTokens.value, 1.3343)
+  assert.ok(glm.notes.some((note) => /reproduces as the median per-task ratio of fresh/.test(note)))
+})
+
+test('real glm-5.3-flash: the S3 no-skill retry is flagged and drives the pooled total below 1', () => {
+  const glm = buildReport(REPO_ROOT).groups.find((g) => g.label === 'glm-5.3-flash')
+  assert.deepEqual(glm.perTask.retriedTasks, [{ task: 'S3-snapshot-migration', arm: 'noskill', sessions: 2 }])
+  assert.ok(glm.ratios.totalTokens.value < 1)
+  const excluded = glm.retrySensitivity.excludingRetriedTasks
+  assert.deepEqual(excluded.excludedTasks, ['S3-snapshot-migration'])
+  assert.equal(excluded.totalTokens, 1.2665)
+  assert.equal(excluded.inputTokens, 1.5038)
+  const dropped = glm.retrySensitivity.droppingOneRetrySession.map((row) => row.totalTokens)
+  assert.deepEqual(dropped, [1.0584, 1.1414])
+  for (const value of dropped) assert.ok(value > 1)
+})
+
+test('real qwen: per-task medians come from the CSV companion', () => {
+  const qwen = buildReport(REPO_ROOT).groups.find((g) => g.label === 'qwen3.8-27b')
+  assert.equal(qwen.perTask.pairedTasks, 56)
+  assert.equal(qwen.perTask.medianRatios.inputTokens.value, 1.3147)
+  assert.deepEqual(qwen.perTask.retriedTasks, [])
+})
+
+test('the report declares the per-task median as the headline statistic', () => {
+  const report = buildReport(REPO_ROOT)
+  assert.match(report.accountingSemantics.headlineStatistic, /median of per-task/)
 })
 
 // ── source integrity ──────────────────────────────────────────────────────────
@@ -459,7 +530,8 @@ test('fmtRatio renders ok ratios and dashes everything else', () => {
 })
 
 test('fmtCoverage distinguishes complete, partial and unavailable', () => {
-  assert.equal(fmtCoverage({ usageKind: 'solver-only', completeness: { inputTokens: { status: 'complete' } }, arms: { skill: { recordedTrials: 3 }, noskill: { recordedTrials: 2 } } }), 'complete (2 vs 3 trials)')
+  // Coverage order follows the ratio direction: with-skill first.
+  assert.equal(fmtCoverage({ usageKind: 'solver-only', completeness: { inputTokens: { status: 'complete' } }, arms: { skill: { recordedTrials: 3 }, noskill: { recordedTrials: 2 } } }), 'complete (3 vs 2 scored trials)')
   assert.match(fmtCoverage({ usageKind: 'separated', completeness: { inputTokens: { status: 'partial', note: '1 of 3 rounds recorded' } } }), /partial/)
   assert.equal(fmtCoverage({ usageKind: 'unavailable' }), 'unavailable')
 })
@@ -473,8 +545,15 @@ test('the table renders all five main groups, including unavailable rows', () =>
 
 test('the table renders only within-configuration ratios', () => {
   const tex = renderTable(loadReport(REPO_ROOT))
-  assert.match(tex, /qwen3\.8-27b & 1\.21\$\\times\$ & 1\.01\$\\times\$ & 1\.06\$\\times\$/)
-  assert.match(tex, /glm-5\.3-flash & 1\.13\$\\times\$ & 1\.14\$\\times\$ & 1\.05\$\\times\$/)
+  assert.match(tex, /qwen3\.8-27b & 1\.31 \/ 1\.21 & 0\.98 \/ 1\.01 & 1\.01 \/ 1\.06 & complete \(168 vs 167 scored trials\)/)
+  assert.match(tex, /glm-5\.3-flash & 2\.23 \/ 1\.13 & 1\.24 \/ 1\.14 & 1\.26 \/ 1\.05/)
+  assert.match(tex, /S3-snapshot-migration/)
+})
+
+test('fmtMedianPooled renders median / pooled and dashes missing halves', () => {
+  assert.equal(fmtMedianPooled({ perTask: { medianRatios: { inputTokens: { value: 2.2339 } } }, ratios: { inputTokens: { status: 'ok', value: 1.1297 } } }, 'inputTokens'), '2.23 / 1.13')
+  assert.equal(fmtMedianPooled({ perTask: null, ratios: { inputTokens: { status: 'ok', value: 1.1297 } } }, 'inputTokens'), '-- / 1.13')
+  assert.equal(fmtMedianPooled({ perTask: null, ratios: { inputTokens: { status: 'unavailable', value: null } } }, 'inputTokens'), '--')
 })
 
 test('the table caption states the two accounting caveats', () => {
@@ -512,4 +591,13 @@ test('the table contains no timestamps or host paths', () => {
 
 test('the table label is stable for the paper cross-reference', () => {
   assert.match(renderTable(loadReport(REPO_ROOT)), /\\label\{tab:resource-overhead\}/)
+})
+
+test('paper resource text uses per-task medians and no longer calls 2.2x irreproducible', () => {
+  const paper = readFileSync(join(REPO_ROOT, 'paper/latex/acl_latex.tex'), 'utf8')
+  assert.doesNotMatch(paper, /not reproducible/)
+  assert.doesNotMatch(paper, /2\.2-times session-token overhead/)
+  assert.doesNotMatch(paper, /token totals vs\.\\ session-level ratios/)
+  assert.match(paper, /reproduces as this median per-task fresh-input ratio/)
+  assert.match(paper, /S3-snapshot-migration run has two sessions/)
 })

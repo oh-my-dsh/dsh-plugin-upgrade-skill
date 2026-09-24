@@ -376,9 +376,11 @@ The task S19-phantom-update-stale-host illustrates the discrimination: glm-5.3-f
 The lowest-baseline group also records increased resource use with the skill (Table~\ref{tab:resources}).
 Its with-skill arm consumed 20.6\% more input tokens, 6.2\% more solver time, and timed out 22 more times than the no-skill arm (108 of 168 vs.\ 86 of 167 trials; one no-skill trial was never scored), so the skill's context and instruction overhead coincides with its negative trend.
 This group is infrastructure-confounded: 64\% of with-skill trials hit the timeout under local serving, and we cannot separate model capability from the timeout policy, so we report the association without a causal reading.
-For glm-5.3-flash, the committed round-1 usage records are partial (one of three rounds) and use an accounting convention in which cached input is recorded separately rather than as a subset of input; under that convention the with-skill arm records 13\% more input tokens, 14\% more output tokens and 5\% more summed solver duration, while its cached-input share is lower, so the total across input, output and cached input is 12\% \emph{lower} for the with-skill arm.
-An earlier prose figure of roughly $2.2\times$ session tokens is not reproducible from the committed artifacts, and we no longer rely on it.
-Table~\ref{tab:resource-overhead} reports within-configuration skill/no-skill ratios wherever a historical source records machine-readable usage; three of the five main groups record none, and those rows are marked unavailable rather than omitted.
+For glm-5.3-flash, the committed round-1 usage records are partial (one of three rounds) and record cached input separately from fresh input.
+Per task, the with-skill arm's median ratios are $2.23\times$ for fresh input tokens, $1.24\times$ for output, $1.33\times$ for total tokens, and $1.26\times$ for summed solver duration; the earlier prose figure of roughly $2.2\times$ reproduces as this median per-task fresh-input ratio, not as a ratio of session-token totals.
+Pooled arm totals are much flatter ($1.13\times$ fresh input, $1.14\times$ output, $1.05\times$ duration) and put total tokens \emph{below} parity ($0.88\times$), but that total hinges on one task: the no-skill S3-snapshot-migration run has two sessions (a retry, about 2.6M tokens combined), dropping either session raises the pooled total ratio to $1.06$ or $1.14$, and excluding S3 gives $1.27\times$ total and $1.50\times$ fresh input.
+We therefore read per-task medians as the headline and the pooled ratios as a sensitivity.
+Table~\ref{tab:resource-overhead} reports within-configuration skill/no-skill ratios wherever a historical source records per-arm usage, as median per-task ratios alongside pooled arm-total ratios; three of the five main groups record none, and those rows are marked unavailable rather than omitted.
 Ratios are computed only inside a configuration, under that source's own convention, and absolute token counts are not comparable across models, providers, or tokenizers.
 
 \begin{table}[t]
@@ -388,12 +390,12 @@ Ratios are computed only inside a configuration, under that source's own convent
 \hline
 Group & Recorded resource finding\\
 \hline
-qwen3.8-27b & With-skill arm: +20.6\% input tokens (409.8M vs.\ 339.9M, cached input included), +6.2\% solver time, 108 vs.\ 86 timeouts of 168 vs.\ 167 trials. Computed from archived run totals (Appendix~\ref{app:raw}).\\
-glm-5.3-flash & Round-1 committed usage only (1 of 3 rounds): +13\% input, +14\% output, +5\% summed solver duration, but $-12\%$ across input+output+cached input, because cached input is recorded separately and falls. An earlier $\approx$2.2$\times$ session-token prose figure is not reproducible from the artifacts.\\
-Other groups & DeepSeek-v4-flash, gpt-5.6-terra and glm-5.2 record scores but no machine-readable resource fields; reported as unavailable, never as zero.\\
+qwen3.8-27b & With-skill arm: +20.6\% input tokens (409.8M vs.\ 339.9M, cached input included; per-task median ratio $1.31\times$), +6.2\% solver time, 108 vs.\ 86 timeouts of 168 intended trials per arm (168 vs.\ 167 scored). Computed from archived run totals and per-task rows (Appendix~\ref{app:raw}).\\
+glm-5.3-flash & Round-1 committed usage only (1 of 3 rounds), cached input recorded separately: median per-task ratios $2.23\times$ fresh input (the source of the earlier $\approx$2.2$\times$ figure), $1.24\times$ output, $1.33\times$ total tokens. Pooled totals ($1.13\times$ input, $0.88\times$ total) are dominated by a retried no-skill S3 task ($1.27\times$ total without it).\\
+Other groups & DeepSeek-v4-flash, gpt-5.6-terra and glm-5.2 record scores but no per-arm usage fields; reported as unavailable, never as zero.\\
 \hline
 \end{tabular}
-\caption{Resource findings as recorded by each group's own artifacts. Accounting definitions differ between the two sources (token totals vs.\ session-level ratios), so the rows are not pooled into a single metric.}
+\caption{Resource findings as recorded by each group's own artifacts. The two sources use different cached-input conventions (qwen3.8-27b counts cached input inside input; glm-5.3-flash records it separately), so the rows are not pooled into a single metric. Per-task medians are the headline; pooled arm-total ratios are sensitivity (Table~\ref{tab:resource-overhead}).}
 \label{tab:resources}
 \end{table}
 
@@ -453,7 +455,7 @@ Additional historical runs are described in Appendix~\ref{app:corroboration}; th
 
 \paragraph{Resource tradeoffs.}
 The available resource records show higher recorded input, output and summed solver duration in both a negative-estimate and a positive-estimate group, under accounting conventions that differ between sources and are never pooled (Tables~\ref{tab:resources} and~\ref{tab:resource-overhead}).
-The lowest-baseline group's with-skill arm paid more tokens and timeouts while scoring lower, and the GLM-5.3-flash group's significant gain came with the roughly 2.2-times session-token overhead recorded in its round-1 report.
+The lowest-baseline group's with-skill arm paid more tokens and timeouts while scoring lower, and the GLM-5.3-flash group's significant gain came with higher per-task usage in its round-1 records (median per-task ratios of $2.23\times$ for fresh input and $1.33\times$ for total tokens), although its pooled totals are dominated by one retried task.
 An association between reading overhead and outcomes does not identify the cause: claims about prompt length, forced reading, or budget exhaustion require additional matched interventions.
 The source-matched D--C contrast would estimate incremental guidance utility over shared references; distinguishing prompt length from content would require additional controls.
 

@@ -25,6 +25,13 @@
 //     convention; otherwise it is null with an explicit reason.
 //   * missing is never zero, and cost is emitted only when the source itself
 //     records a cost with a currency (no retroactive token x price inference).
+//   * the HEADLINE summary is the median of per-task skill/no-skill ratios
+//     (each task's arm usage summed over its recorded sessions/trials); pooled
+//     arm-total ratios are kept alongside because a single long or retried
+//     session can dominate a pooled total (glm-5.3-flash round 1: the no-skill
+//     S3-snapshot-migration retry). Tasks with more than one recorded session
+//     in an arm are listed explicitly, and pooled ratios excluding them are
+//     reported as a sensitivity, never as a replacement.
 //
 // Usage:
 //   node benchmark/scripts/analyze-paired-resource-overhead.mjs [--check]
@@ -41,7 +48,55 @@ export const MAIN_GROUPS = ['qwen3.8-27b', 'deepseek-v4-flash', 'gpt-5.6-terra',
 
 /** Sources the authority does not hash itself but this analysis consumes. */
 export const EXTRA_SOURCES = {
+  'qwen3.8-27b': ['benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.csv'],
   'glm-5.3-flash': ['benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22/agent-usage.json'],
+}
+
+/** Fields summarised per task (median of per-task skill/no-skill ratios). */
+export const PER_TASK_FIELDS = ['inputTokens', 'outputTokens', 'cachedInputTokens', 'totalTokens', 'summedTrialSeconds']
+
+/** Median of finite numbers; null for an empty input. */
+export function median(values) {
+  const sorted = values.filter((v) => typeof v === 'number' && Number.isFinite(v)).sort((a, b) => a - b)
+  if (sorted.length === 0) return null
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+}
+
+/**
+ * Per-task usage table → per-task ratio summary. `perTask` maps task →
+ * { skill: {field: number|null, sessions}, noskill: {...} }. A task enters a
+ * field's median only when both arms record that field and the no-skill value
+ * is non-zero; the count of contributing tasks is reported per field.
+ */
+export function summarizePerTask(perTask) {
+  const tasks = [...perTask.keys()].sort()
+  const medianRatios = {}
+  for (const field of PER_TASK_FIELDS) {
+    const ratios = []
+    for (const task of tasks) {
+      const { skill, noskill } = perTask.get(task)
+      const a = skill?.[field]
+      const b = noskill?.[field]
+      if (typeof a !== 'number' || typeof b !== 'number' || b === 0) continue
+      ratios.push(a / b)
+    }
+    const value = median(ratios)
+    medianRatios[field] = { value: value === null ? null : Number(value.toFixed(4)), tasks: ratios.length }
+  }
+  const retriedTasks = []
+  for (const task of tasks) {
+    for (const arm of ['skill', 'noskill']) {
+      const sessions = perTask.get(task)[arm]?.sessions ?? 0
+      if (sessions > 1) retriedTasks.push({ task, arm, sessions })
+    }
+  }
+  return {
+    statistic: 'median over tasks of (with-skill usage / no-skill usage), each arm summed over its recorded sessions for that task',
+    pairedTasks: tasks.filter((task) => perTask.get(task).skill && perTask.get(task).noskill).length,
+    medianRatios,
+    retriedTasks,
+  }
 }
 
 export const FIELD_NAMES = ['inputTokens', 'cachedInputTokens', 'outputTokens', 'summedTrialSeconds', 'wallIntervalSeconds', 'cost']
@@ -75,6 +130,7 @@ export function parseQwen(repoRoot, entry) {
   return {
     sourcePath: entry.path,
     sourceSha256: entry.sha256,
+    perTask: qwenPerTask(repoRoot),
     cachedInputConvention: 'cached-included-in-input',
     cachedInputEvidence: 'cache_hit_rate = cached_input_tokens / input_tokens in the source totals',
     usageKind: 'solver-only',
@@ -82,6 +138,59 @@ export function parseQwen(repoRoot, entry) {
     planningNote: null,
     arms,
   }
+}
+
+/** Minimal CSV reader for the qwen companion (quoted fields, no embedded newlines). */
+export function parseSimpleCsv(text) {
+  const lines = String(text).replaceAll('\r\n', '\n').split('\n').filter((line) => line !== '')
+  const split = (line) => {
+    const cells = []
+    let cell = ''
+    let quoted = false
+    for (let i = 0; i < line.length; i += 1) {
+      const ch = line[i]
+      if (quoted) {
+        if (ch === '"' && line[i + 1] === '"') { cell += '"'; i += 1 } else if (ch === '"') quoted = false
+        else cell += ch
+      } else if (ch === '"') quoted = true
+      else if (ch === ',') { cells.push(cell); cell = '' } else cell += ch
+    }
+    cells.push(cell)
+    return cells
+  }
+  const header = split(lines[0])
+  return lines.slice(1).map((line) => Object.fromEntries(split(line).map((cell, i) => [header[i], cell])))
+}
+
+function usageCell(cell) {
+  if (cell === undefined || cell === null || String(cell).trim() === '') return null
+  const value = Number(cell)
+  return Number.isFinite(value) ? value : null
+}
+
+/** qwen per-task usage from the CSV companion (cached is a subset of input, so
+ *  total = input + output). Missing cells stay null, never 0. */
+export function qwenPerTask(repoRoot) {
+  const csvPath = join(repoRoot, EXTRA_SOURCES['qwen3.8-27b'][0])
+  if (!existsSync(csvPath)) return null
+  const perTask = new Map()
+  for (const row of parseSimpleCsv(readFileSync(csvPath, 'utf8'))) {
+    const arm = row.condition === 'with-skill' ? 'skill' : row.condition === 'no-skill' ? 'noskill' : null
+    if (arm === null) continue
+    const input = usageCell(row.input_tokens)
+    const output = usageCell(row.output_tokens)
+    const record = {
+      sessions: 1,
+      inputTokens: input,
+      outputTokens: output,
+      cachedInputTokens: usageCell(row.cached_input_tokens),
+      totalTokens: input === null || output === null ? null : input + output,
+      summedTrialSeconds: usageCell(row.trial_seconds_sum),
+    }
+    if (!perTask.has(row.task)) perTask.set(row.task, {})
+    perTask.get(row.task)[arm] = record
+  }
+  return summarizePerTask(perTask)
 }
 
 /** glm-5.3-flash round 1 records per-entry usage under cond=skill|noskill|judge.
@@ -93,9 +202,22 @@ export function parseGlm53(repoRoot, entry) {
   const entries = readJson(file)
   if (!Array.isArray(entries) || entries.length === 0) return unavailableGroup(entry, 'usage source is empty')
   const buckets = { skill: emptyBucket(), noskill: emptyBucket(), judge: emptyBucket() }
+  const perTask = new Map()
   for (const item of entries) {
     const bucket = buckets[item?.cond]
     if (!bucket) return unavailableGroup(entry, `unexpected usage condition ${JSON.stringify(item?.cond)}`)
+    if (item.cond !== 'judge') {
+      if (!perTask.has(item.task)) perTask.set(item.task, {})
+      const slot = perTask.get(item.task)
+      slot[item.cond] ??= { sessions: 0, inputTokens: 0, outputTokens: 0, cachedInputTokens: 0, totalTokens: 0, summedTrialSeconds: 0 }
+      const t = slot[item.cond]
+      t.sessions += 1
+      t.inputTokens += item.in ?? 0
+      t.outputTokens += item.out ?? 0
+      t.cachedInputTokens += item.cache ?? 0
+      t.totalTokens += item.total ?? 0
+      t.summedTrialSeconds += (item.ms ?? 0) / 1000
+    }
     bucket.entries += 1
     bucket.inputTokens += item.in ?? 0
     bucket.cachedInputTokens += item.cache ?? 0
@@ -106,6 +228,39 @@ export function parseGlm53(repoRoot, entry) {
   }
   const roundsWithUsage = 1
   const roundsPlanned = 3
+  const perTaskSummary = summarizePerTask(perTask)
+  const skillEntries = entries.filter((item) => item.cond === 'skill')
+  const noskillEntries = entries.filter((item) => item.cond === 'noskill')
+  const pooled = (skillItems, noskillItems, key) => {
+    const a = skillItems.reduce((sum, item) => sum + (item[key] ?? 0), 0)
+    const b = noskillItems.reduce((sum, item) => sum + (item[key] ?? 0), 0)
+    return b === 0 ? null : Number((a / b).toFixed(4))
+  }
+  const retried = new Set(perTaskSummary.retriedTasks.map((row) => row.task))
+  const retrySensitivity = {
+    note: 'pooled arm-total ratios are sensitive to single sessions; these rows show how much one retried task moves them and are sensitivity only',
+    excludingRetriedTasks: {
+      excludedTasks: [...retried].sort(),
+      inputTokens: pooled(skillEntries.filter((i) => !retried.has(i.task)), noskillEntries.filter((i) => !retried.has(i.task)), 'in'),
+      outputTokens: pooled(skillEntries.filter((i) => !retried.has(i.task)), noskillEntries.filter((i) => !retried.has(i.task)), 'out'),
+      totalTokens: pooled(skillEntries.filter((i) => !retried.has(i.task)), noskillEntries.filter((i) => !retried.has(i.task)), 'total'),
+    },
+    droppingOneRetrySession: perTaskSummary.retriedTasks.flatMap(({ task, arm }) => {
+      const armEntries = arm === 'skill' ? skillEntries : noskillEntries
+      return armEntries
+        .filter((item) => item.task === task)
+        .map((item, sessionIndex) => {
+          const kept = armEntries.filter((other) => other !== item)
+          return {
+            task,
+            arm,
+            droppedSession: sessionIndex + 1,
+            droppedSessionTotalTokens: item.total ?? null,
+            totalTokens: arm === 'skill' ? pooled(kept, noskillEntries, 'total') : pooled(skillEntries, kept, 'total'),
+          }
+        })
+    }),
+  }
   return {
     sourcePath: usagePath,
     sourceSha256: sha256File(file),
@@ -116,6 +271,8 @@ export function parseGlm53(repoRoot, entry) {
     judgeUsage: finalizeBucket(buckets.judge, { withJudge: false }),
     planningNote: `only round 1 of ${roundsPlanned} rounds ships a usage file; rounds 2 and 3 record none`,
     coverage: { roundsWithUsage, roundsPlanned },
+    perTask: perTaskSummary,
+    retrySensitivity,
     arms: {
       skill: finalizeBucket(buckets.skill, {}),
       noskill: finalizeBucket(buckets.noskill, {}),
@@ -181,8 +338,9 @@ export function ratioFor(parsed, field) {
   return { value: Number((skill / noskill).toFixed(4)), numerator: skill, denominator: noskill, status: 'ok', reason: null }
 }
 
-export function completenessFor(parsed, field, expectedPerArm) {
-  if (!parsed.arms) return { status: 'unavailable', observed: 0, expected: expectedPerArm }
+/** Arm-level completeness of one field: `expected` is the two arms, not tasks. */
+export function completenessFor(parsed, field) {
+  if (!parsed.arms) return { status: 'unavailable', observed: 0, expected: 2 }
   const observed = ['skill', 'noskill'].filter((arm) => {
     const value = parsed.arms[arm]?.[field]
     return value !== null && value !== undefined
@@ -191,7 +349,7 @@ export function completenessFor(parsed, field, expectedPerArm) {
     // both arms recorded, but a partial-round source is still partial
     const coverage = parsed.coverage
     if (coverage && coverage.roundsWithUsage < coverage.roundsPlanned) {
-      return { status: 'partial', observed, expected: 2, note: `${coverage.roundsWithUsage} of ${coverage.roundsPlanned} rounds recorded` }
+      return { status: 'partial', observed, expected: 2, note: `${coverage.roundsWithUsage} of ${coverage.roundsPlanned} rounds` }
     }
     return { status: 'complete', observed, expected: 2 }
   }
@@ -219,8 +377,7 @@ export function buildReport(repoRoot) {
     const parser = PARSERS[label]
     const parsed = parser
       ? parser(repoRoot, primary)
-      : unavailableFromAuthority(primary, 'source records scores only; no machine-readable resource fields')
-    const expectedPerArm = entry.tasks
+      : unavailableFromAuthority(primary, 'source records scores only; no per-arm usage fields')
     groups.push({
       label,
       sensitivity: entry.sensitivity === true,
@@ -235,7 +392,9 @@ export function buildReport(repoRoot) {
       unavailableReason: parsed.unavailableReason ?? null,
       arms: parsed.arms,
       judgeUsage: parsed.judgeUsage ?? null,
-      completeness: Object.fromEntries(FIELD_NAMES.map((field) => [field, completenessFor(parsed, field, expectedPerArm)])),
+      perTask: parsed.perTask ?? null,
+      retrySensitivity: parsed.retrySensitivity ?? null,
+      completeness: Object.fromEntries(FIELD_NAMES.map((field) => [field, completenessFor(parsed, field)])),
       ratios: {
         inputTokens: ratioFor(parsed, 'inputTokens'),
         outputTokens: ratioFor(parsed, 'outputTokens'),
@@ -262,6 +421,7 @@ export function buildReport(repoRoot) {
         'cached-included-in-input': 'cached input is a subset of input; total = input + output',
         'cached-separate-from-input': 'cached input is recorded separately; total = input + output + cached',
       },
+      headlineStatistic: 'median of per-task skill/no-skill ratios; pooled arm-total ratios are reported alongside and can be dominated by one long or retried session',
       crossConventionPooling: 'never pooled: ratios are only produced within one group under one declared convention',
       summedTrialSecondsIsNotWallClock: true,
       costPolicy: 'cost is reported only when the source itself records it with a currency; no retroactive token x price inference',
@@ -277,16 +437,16 @@ export function buildReport(repoRoot) {
 function groupNotes(label, parsed) {
   const notes = []
   if (parsed.usageKind === 'unavailable') {
-    notes.push('no machine-readable resource fields in the committed source; reported as unavailable rather than 0')
+    notes.push('no per-arm usage fields in the committed source; reported as unavailable rather than 0')
   }
   if (label === 'glm-5.3-flash') {
     notes.push('round-1 usage only: rounds 2 and 3 ship no usage file, so this row is partial coverage')
     notes.push('judge usage is recorded separately in the same file and excluded from the solver totals')
-    notes.push('no-skill has one retry entry for S3-snapshot-migration, so its entry count exceeds the task count; retries are real consumption and are kept')
-    notes.push('under this source convention the cached-input share falls for the skill arm, so the honest total is lower even though input, output and duration are higher')
+    notes.push('no-skill has two sessions (a retry) for S3-snapshot-migration, so its entry count exceeds the task count; retries are real consumption and are kept in the pooled totals, but they dominate them: the pooled total-token ratio is below 1 only because of this task (see retrySensitivity)')
+    notes.push('the headline is the per-task median ratio; the earlier ~2.2x prose figure reproduces as the median per-task ratio of fresh (non-cached) input tokens')
   }
   if (label === 'qwen3.8-27b') {
-    notes.push('the with-skill arm records one more trial than the no-skill arm (168 vs 167); per-trial means use each arm\'s own recorded trial count')
+    notes.push('the source counts 168 vs 167 scored trials (one no-skill attempt was never scored), but its token and duration totals cover all 168 attempts per arm; ratios compare arm totals and per-task sums, not per-trial means')
     notes.push('summed trial seconds are not wall-clock time; the source also records a wall interval, kept under its own name')
   }
   return notes

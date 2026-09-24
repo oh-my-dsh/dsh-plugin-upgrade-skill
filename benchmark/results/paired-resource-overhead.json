@@ -19,6 +19,7 @@
       "cached-included-in-input": "cached input is a subset of input; total = input + output",
       "cached-separate-from-input": "cached input is recorded separately; total = input + output + cached"
     },
+    "headlineStatistic": "median of per-task skill/no-skill ratios; pooled arm-total ratios are reported alongside and can be dominated by one long or retried session",
     "crossConventionPooling": "never pooled: ratios are only produced within one group under one declared convention",
     "summedTrialSecondsIsNotWallClock": true,
     "costPolicy": "cost is reported only when the source itself records it with a currency; no retroactive token x price inference",
@@ -27,6 +28,10 @@
     "solverJudgeSeparation": "solver and judge usage are reported separately; a source that cannot separate them is marked mixed-or-unknown"
   },
   "extraInputs": [
+    {
+      "path": "benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.csv",
+      "sha256": "bbe4c6f8369df24c62f8a83a943db49a59e3d793a752325c6a49f2d884504fd6"
+    },
     {
       "path": "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22/agent-usage.json",
       "sha256": "d024f15acb79ba5f37859fb4900013d63c63512c8397494562e58235bb8e7466"
@@ -68,6 +73,34 @@
         }
       },
       "judgeUsage": null,
+      "perTask": {
+        "statistic": "median over tasks of (with-skill usage / no-skill usage), each arm summed over its recorded sessions for that task",
+        "pairedTasks": 56,
+        "medianRatios": {
+          "inputTokens": {
+            "value": 1.3147,
+            "tasks": 56
+          },
+          "outputTokens": {
+            "value": 0.9822,
+            "tasks": 56
+          },
+          "cachedInputTokens": {
+            "value": 1.3167,
+            "tasks": 56
+          },
+          "totalTokens": {
+            "value": 1.3126,
+            "tasks": 56
+          },
+          "summedTrialSeconds": {
+            "value": 1.0052,
+            "tasks": 56
+          }
+        },
+        "retriedTasks": []
+      },
+      "retrySensitivity": null,
       "completeness": {
         "inputTokens": {
           "status": "complete",
@@ -125,7 +158,7 @@
         }
       },
       "notes": [
-        "the with-skill arm records one more trial than the no-skill arm (168 vs 167); per-trial means use each arm's own recorded trial count",
+        "the source counts 168 vs 167 scored trials (one no-skill attempt was never scored), but its token and duration totals cover all 168 attempts per arm; ratios compare arm totals and per-task sums, not per-trial means",
         "summed trial seconds are not wall-clock time; the source also records a wall interval, kept under its own name"
       ]
     },
@@ -140,39 +173,41 @@
       "cachedInputEvidence": null,
       "usageKind": "unavailable",
       "planningNote": null,
-      "unavailableReason": "source records scores only; no machine-readable resource fields",
+      "unavailableReason": "source records scores only; no per-arm usage fields",
       "arms": null,
       "judgeUsage": null,
+      "perTask": null,
+      "retrySensitivity": null,
       "completeness": {
         "inputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         },
         "cachedInputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         },
         "outputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         },
         "summedTrialSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         },
         "wallIntervalSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         },
         "cost": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 23
+          "expected": 2
         }
       },
       "ratios": {
@@ -181,14 +216,14 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "outputTokens": {
           "value": null,
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "totalTokens": null,
         "summedTrialSeconds": {
@@ -196,11 +231,11 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         }
       },
       "notes": [
-        "no machine-readable resource fields in the committed source; reported as unavailable rather than 0"
+        "no per-arm usage fields in the committed source; reported as unavailable rather than 0"
       ]
     },
     {
@@ -214,39 +249,41 @@
       "cachedInputEvidence": null,
       "usageKind": "unavailable",
       "planningNote": null,
-      "unavailableReason": "source records scores only; no machine-readable resource fields",
+      "unavailableReason": "source records scores only; no per-arm usage fields",
       "arms": null,
       "judgeUsage": null,
+      "perTask": null,
+      "retrySensitivity": null,
       "completeness": {
         "inputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         },
         "cachedInputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         },
         "outputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         },
         "summedTrialSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         },
         "wallIntervalSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         },
         "cost": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 21
+          "expected": 2
         }
       },
       "ratios": {
@@ -255,14 +292,14 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "outputTokens": {
           "value": null,
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "totalTokens": null,
         "summedTrialSeconds": {
@@ -270,11 +307,11 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         }
       },
       "notes": [
-        "no machine-readable resource fields in the committed source; reported as unavailable rather than 0"
+        "no per-arm usage fields in the committed source; reported as unavailable rather than 0"
       ]
     },
     {
@@ -327,30 +364,90 @@
         "cost": null,
         "currency": null
       },
+      "perTask": {
+        "statistic": "median over tasks of (with-skill usage / no-skill usage), each arm summed over its recorded sessions for that task",
+        "pairedTasks": 22,
+        "medianRatios": {
+          "inputTokens": {
+            "value": 2.2339,
+            "tasks": 22
+          },
+          "outputTokens": {
+            "value": 1.2408,
+            "tasks": 22
+          },
+          "cachedInputTokens": {
+            "value": 1.2701,
+            "tasks": 22
+          },
+          "totalTokens": {
+            "value": 1.3343,
+            "tasks": 22
+          },
+          "summedTrialSeconds": {
+            "value": 1.2615,
+            "tasks": 22
+          }
+        },
+        "retriedTasks": [
+          {
+            "task": "S3-snapshot-migration",
+            "arm": "noskill",
+            "sessions": 2
+          }
+        ]
+      },
+      "retrySensitivity": {
+        "note": "pooled arm-total ratios are sensitive to single sessions; these rows show how much one retried task moves them and are sensitivity only",
+        "excludingRetriedTasks": {
+          "excludedTasks": [
+            "S3-snapshot-migration"
+          ],
+          "inputTokens": 1.5038,
+          "outputTokens": 1.3191,
+          "totalTokens": 1.2665
+        },
+        "droppingOneRetrySession": [
+          {
+            "task": "S3-snapshot-migration",
+            "arm": "noskill",
+            "droppedSession": 1,
+            "droppedSessionTotalTokens": 1099227,
+            "totalTokens": 1.0584
+          },
+          {
+            "task": "S3-snapshot-migration",
+            "arm": "noskill",
+            "droppedSession": 2,
+            "droppedSessionTotalTokens": 1500049,
+            "totalTokens": 1.1414
+          }
+        ]
+      },
       "completeness": {
         "inputTokens": {
           "status": "partial",
           "observed": 2,
           "expected": 2,
-          "note": "1 of 3 rounds recorded"
+          "note": "1 of 3 rounds"
         },
         "cachedInputTokens": {
           "status": "partial",
           "observed": 2,
           "expected": 2,
-          "note": "1 of 3 rounds recorded"
+          "note": "1 of 3 rounds"
         },
         "outputTokens": {
           "status": "partial",
           "observed": 2,
           "expected": 2,
-          "note": "1 of 3 rounds recorded"
+          "note": "1 of 3 rounds"
         },
         "summedTrialSeconds": {
           "status": "partial",
           "observed": 2,
           "expected": 2,
-          "note": "1 of 3 rounds recorded"
+          "note": "1 of 3 rounds"
         },
         "wallIntervalSeconds": {
           "status": "unavailable",
@@ -396,8 +493,8 @@
       "notes": [
         "round-1 usage only: rounds 2 and 3 ship no usage file, so this row is partial coverage",
         "judge usage is recorded separately in the same file and excluded from the solver totals",
-        "no-skill has one retry entry for S3-snapshot-migration, so its entry count exceeds the task count; retries are real consumption and are kept",
-        "under this source convention the cached-input share falls for the skill arm, so the honest total is lower even though input, output and duration are higher"
+        "no-skill has two sessions (a retry) for S3-snapshot-migration, so its entry count exceeds the task count; retries are real consumption and are kept in the pooled totals, but they dominate them: the pooled total-token ratio is below 1 only because of this task (see retrySensitivity)",
+        "the headline is the per-task median ratio; the earlier ~2.2x prose figure reproduces as the median per-task ratio of fresh (non-cached) input tokens"
       ]
     },
     {
@@ -411,39 +508,41 @@
       "cachedInputEvidence": null,
       "usageKind": "unavailable",
       "planningNote": null,
-      "unavailableReason": "source records scores only; no machine-readable resource fields",
+      "unavailableReason": "source records scores only; no per-arm usage fields",
       "arms": null,
       "judgeUsage": null,
+      "perTask": null,
+      "retrySensitivity": null,
       "completeness": {
         "inputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         },
         "cachedInputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         },
         "outputTokens": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         },
         "summedTrialSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         },
         "wallIntervalSeconds": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         },
         "cost": {
           "status": "unavailable",
           "observed": 0,
-          "expected": 22
+          "expected": 2
         }
       },
       "ratios": {
@@ -452,14 +551,14 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "outputTokens": {
           "value": null,
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         },
         "totalTokens": null,
         "summedTrialSeconds": {
@@ -467,11 +566,11 @@
           "numerator": null,
           "denominator": null,
           "status": "unavailable",
-          "reason": "source records scores only; no machine-readable resource fields"
+          "reason": "source records scores only; no per-arm usage fields"
         }
       },
       "notes": [
-        "no machine-readable resource fields in the committed source; reported as unavailable rather than 0"
+        "no per-arm usage fields in the committed source; reported as unavailable rather than 0"
       ]
     }
   ]

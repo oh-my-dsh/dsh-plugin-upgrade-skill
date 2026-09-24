@@ -39,15 +39,15 @@ npm run measure:benchmark-paired   # 重算统计并写 JSON
 npm run generate:paper-paired      # 从 JSON 渲染 .tex
 npm run check:paper-paired         # CI 门禁：两者字节级漂移检查
 npm run test:benchmark-paired      # 统计脚本单元测试 + golden 校验
+```
 
-资源开销表（`paper/generated/resource-overhead-table.tex`）由 `benchmark/results/paired-resource-overhead.json` 渲染，只读取已提交的历史 usage 字段：缓存输入不重复计；两套缓存口径（含入 input / 单列）不混算；solver 与 judge 用量分列；summed trial seconds 不等于 wall-clock；缺失记 unavailable 而不是 0；不做回溯定价。
+资源开销表（`paper/generated/resource-overhead-table.tex`）由 `benchmark/results/paired-resource-overhead.json` 渲染，只读取已提交的历史 usage 字段：缓存输入不重复计；两套缓存口径（含入 input / 单列）不混算；solver 与 judge 用量分列；summed trial seconds 不等于 wall-clock；缺失记 unavailable 而不是 0；不做回溯定价。表中每格为“逐任务比值中位数 / 合并总量比值”，以逐任务中位数为主口径（glm-5.3-flash 的 no-skill S3 有一次重试，会主导合并总量）。
 
 ```bash
 npm run analyze:paper-resource-overhead    # 从历史 artifacts 重算 JSON
 npm run generate:paper-resource-overhead   # 渲染 LaTeX 表
 npm run check:paper-resource-overhead      # CI 门禁：JSON 与表漂移检查
 npm run test:paper-resource-overhead       # 口径/缺失/确定性单元测试
-```
 ```
 
 ## 当前状态

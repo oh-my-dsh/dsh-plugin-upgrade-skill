@@ -4,7 +4,10 @@
 // (produced by benchmark/scripts/analyze-paired-resource-overhead.mjs). The
 // table is intentionally narrow: it shows only within-configuration
 // skill/no-skill ratios plus coverage, keeps every main group as a row, and
-// renders `--` for anything the historical sources do not record.
+// renders `--` for anything the historical sources do not record. Each ratio
+// cell is "median per-task ratio / pooled arm-total ratio": the per-task median
+// is the headline, the pooled ratio is kept because the two can diverge when a
+// single long or retried session dominates an arm total.
 //
 // Usage:
 //   node paper/scripts/generate-resource-overhead-table.mjs [--check]
@@ -22,6 +25,17 @@ export function fmtRatio(ratio) {
   return `${Number(ratio.value).toFixed(2)}$\\times$`
 }
 
+/** "median / pooled" cell; a missing half renders as a dash, never 0. */
+export function fmtMedianPooled(group, field) {
+  const medianValue = group.perTask?.medianRatios?.[field]?.value
+  const pooled = group.ratios?.[field]
+  const pooledOk = pooled && pooled.status === 'ok' && pooled.value !== null && pooled.value !== undefined
+  if ((medianValue === null || medianValue === undefined) && !pooledOk) return PLACEHOLDER
+  const left = medianValue === null || medianValue === undefined ? PLACEHOLDER : Number(medianValue).toFixed(2)
+  const right = pooledOk ? Number(pooled.value).toFixed(2) : PLACEHOLDER
+  return `${left} / ${right}`
+}
+
 export function fmtCoverage(group) {
   if (group.usageKind === 'unavailable') return 'unavailable'
   const input = group.completeness?.inputTokens
@@ -32,7 +46,8 @@ export function fmtCoverage(group) {
   }
   const skill = group.arms?.skill?.recordedTrials
   const noskill = group.arms?.noskill?.recordedTrials
-  if (skill !== undefined && noskill !== undefined) return `complete (${noskill} vs ${skill} trials)`
+  // Same order as the ratios: with-skill first, then no-skill.
+  if (skill !== undefined && noskill !== undefined) return `complete (${skill} vs ${noskill} scored trials)`
   return input.status
 }
 
@@ -63,9 +78,9 @@ export function esc(text) {
 export function renderTable(report) {
   const rows = report.groups.map((group) => [
     esc(group.label),
-    fmtRatio(group.ratios?.inputTokens),
-    fmtRatio(group.ratios?.outputTokens),
-    fmtRatio(group.ratios?.summedTrialSeconds),
+    fmtMedianPooled(group, 'inputTokens'),
+    fmtMedianPooled(group, 'outputTokens'),
+    fmtMedianPooled(group, 'summedTrialSeconds'),
     esc(fmtCoverage(group)),
   ])
   const body = rows.map((cells) => `${cells.join(' & ')} \\\\`).join('\n')
@@ -75,20 +90,25 @@ export function renderTable(report) {
     '\\begin{table}[t]',
     '\\centering',
     '\\small',
+    '\\resizebox{\\columnwidth}{!}{%',
     '\\begin{tabular}{l r r r l}',
     '\\toprule',
-    'Configuration & Input & Output & Solver & Coverage \\\\',
-    ' & ratio & ratio & duration & \\\\',
+    'Configuration & Input & Output & Solver time & Coverage \\\\',
+    ' & \\multicolumn{3}{c}{median per-task / pooled ratio} & \\\\',
     '\\midrule',
     body,
     '\\bottomrule',
-    '\\end{tabular}',
+    '\\end{tabular}}',
     '\\caption{Within-configuration resource use of the with-skill arm relative to the no-skill arm '
-      + '(1.00$\\times$ = identical). Ratios are computed only inside a configuration, under that '
+      + '(1.00 = identical). Each cell gives the median of per-task with-skill/no-skill ratios (headline) '
+      + 'and the ratio of pooled arm totals. The two diverge when one session dominates an arm total: '
+      + 'glm-5.3-flash input counts fresh (non-cached) tokens only, and its no-skill arm includes a '
+      + 'retried S3-snapshot-migration task with two sessions, so its pooled ratios should be read '
+      + 'with the per-task medians. Ratios are computed only inside a configuration, under that '
       + "source's own accounting convention; cached input is never added twice and the two recorded "
       + 'conventions (cached included in input vs.\\ recorded separately) are never pooled. '
       + '``Solver duration\'\' is the sum of recorded per-trial durations, not wall-clock time. '
-      + 'A dash means the historical source records no machine-readable resource field for that '
+      + 'A dash means the historical source records no per-arm usage field for that '
       + 'configuration; it is not a zero and not an omission. Absolute token counts are not '
       + 'comparable across models, providers, or tokenizers, so the table supports no '
       + 'cross-configuration efficiency or capability ranking.}',
