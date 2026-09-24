@@ -1,0 +1,55 @@
+{
+  "task": "S18-terminal-sprite-render-trap",
+  "arm": "with-skill",
+  "repeat": 2,
+  "score": 90,
+  "reward": 0.9,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T03:44:06.632Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "partial",
+      "awarded": 10,
+      "points": 20
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice mandates the half-cell background reset, explicit erase-to-EOL clearing, source-backed all-frame digest checks, and retiring the timer chain; it blames the renderer code rather than the terminal and never endorses keeping the timer referenced.",
+      "total": 0
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

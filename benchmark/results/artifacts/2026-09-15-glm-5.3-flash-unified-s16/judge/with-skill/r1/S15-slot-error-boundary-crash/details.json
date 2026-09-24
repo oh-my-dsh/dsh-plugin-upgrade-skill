@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Locates the exact disabled expression in plugin-dock-chips.js, shows busy is AttachButton's useState local and unbound in AttachmentChips, and explains empty occurrences return null before the map while a present chip in plain phase makes the guard false, evaluating busy and throwing ReferenceError.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the slot error boundary unmounts the entire dock entry on the render throw rather than just the remove button, the attach-button slot survives with its own boundary, and the error appears only in the browser console with no user-facing banner.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 expression to place busy in the baseline, proposes both a hunk-level rollback/re-add bisect and a minimal data-present plain-phase mount, and grounds the diff-vs-baseline disabled-line inconsistency plus the imageItem-before-record/status scoping defect without forcing the diff as harmless or overclaiming historical first-exercise timing.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling busy reference while preserving the phase guard (offering a properly-owned-state alternative), scopes the hover lookup inside the map callback where record/status are defined, and adds record?.items ?? [] defensive reads plus optional-chained closest with a safe element check, explaining why these are cheap insurance in slot components.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a plain-phase render smoke with one occurrence asserting the chip and remove button render with no error-boundary capture, explains the empty state returns null before the throwing line and that node --check only parses without resolving identifiers, and includes the data-present smoke as the mandatory pre-ship gate.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "2a38a687bab4be691a8c98febbd83c821747a888f748a90a42c80bbcef4f7b50"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "b13320d86d85716b6499dcea96c1eef279a5d8022e8db543705ab2585f64260b",
+  "judge_input_sha256": "65448cabe87b09b3b83653b29a1cb616ccda1b60780c4a745f79b304434acdfe"
+}

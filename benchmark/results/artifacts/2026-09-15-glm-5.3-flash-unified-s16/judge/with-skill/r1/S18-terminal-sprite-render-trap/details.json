@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Locates the up-only/lo-only branches in renderer-excerpt.ts that emit fg only, explains the previous cell's SGR 48;2 background persisting and painting the empty half, ties it to the right-edge/outline/sleep-Z/heart symptoms without blaming the emulator, notes the row-end reset fires too late, and gives the ESC[49m complete-state fix.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains the trailing transparent-space trim and downstream whitespace stripping that leave a narrower frame's surplus columns unwritten, and proposes erase-to-EOL after RESET (with optional full-canvas-width output) plus verbatim pipeline transport so clearing survives trimming and SGR state stays controlled.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses the digest report to identify tail2 as the only mismatch with 23 differing cells including stray extras beyond the visible shifted cluster, distinguishes hand-port data drift from renderer artifacts, explains the later different-frame excerpt regression missed it, and gates every frame against source-art digests rather than the drifted port.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounded in ci-hang-evidence.txt: the planner re-arms a referenced setTimeout per tick while channel-ui hosts mount the header without unmounting, keeping the loop alive after PASS; the interactive product stays alive via TTY/stdin regardless; proposes the one-line timer.unref() so animation continues but finished probes can exit.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Checklist consolidates complete SGR state per run, erase-complete rows/verbatim transport, full-frame repaint, and source-backed whole-frame digests; the pre-rollout audit enumerates every mounting host including probes that never unmount, requires unref or teardown, and adds a self-exit-after-PASS liveness regression.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirmatively requires the half-cell background reset, explicit erase plus verbatim transport, source-backed all-frame checks, and timer.unref, and attributes the defect to the renderer's sticky SGR state rather than the terminal emulator; no endorsed contradictory claims.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "67ad6db77079a752aea2e26a823e2763d9ec625e18740cc392696a467c399751"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "953c5bb48270513f4fbe73e1dedd06429e81b01d1a377cde1fb0c3b3404f2b1a",
+  "judge_input_sha256": "106e54abcc820c347114a02623239668b1ecf7668bbd9c4918332f2f25d3ca85"
+}

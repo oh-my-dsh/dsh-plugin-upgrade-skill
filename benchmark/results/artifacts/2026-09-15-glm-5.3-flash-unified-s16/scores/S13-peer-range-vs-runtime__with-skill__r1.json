@@ -1,0 +1,55 @@
+{
+  "task": "S13-peer-range-vs-runtime",
+  "arm": "with-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T01:57:57.314Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report does the opposite: it states a silent install proves nothing about runtime compatibility and affirms the documented Session.events removal; no affirmative claim that peer satisfaction establishes runtime compatibility.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

@@ -1,0 +1,85 @@
+{
+  "status": "scored",
+  "score": 55,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates the patch declaration in cordis.patch.yml, the patch.yml surface targeting the SessionView source, and the applier script, separates the composition declaration from the patch surface/applier, and ties the dead patch target to the session-view decomposition.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "events",
+      "verdict": "partial",
+      "reason": "Finds the producer, consumer and ignorable:true and correctly applies corridor folding (alpha.1 removal, alpha.2 restoration, verify only), but never explains omission-safe informational semantics versus a required-event whitelist; makes no false Session.append claim.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "Locates both apiProxy calls and its removal, but gives only a vague 'public facade' migration and omits the key distinction between host-plane domain-service injection (llm/listProviders) and Web Client Remote; at least it prescribes no nonexistent Host remote service.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Pinpoints the hard-coded homedir/.dsh/profiles/default write and prescribes switching to host/runtime-provided profile resolution instead of hardcoded user directories, without claiming --profile is new in alpha.1.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "ui",
+      "verdict": "partial",
+      "reason": "Locates both the internal SessionView import and the command registration and links them to the UI decomposition, but the post-split owner/seam verification guidance is thin and the section pads with unsupported invented claims (command-registration API change, invalid 'enhanced' option).",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Finds the dormant loopback server on 127.0.0.1:43121 serving /api/legacy, recognizes it answers outside the host gateway auth model so loopback is not protection, and contrasts registered host-managed channels with this raw route.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "subprocess",
+      "verdict": "partial",
+      "reason": "Finds both dsh invocations and both stdout JSON.parse sites and knows stdout is final text, but never mentions the stderr reasoning/progress channel and frames the issue as a corridor output-contract change rather than an assumption that was already wrong in rc.2.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "mapping",
+      "verdict": "fail",
+      "reason": "Couplings are located, but the report invents its own card-ID scheme (group = touchpoint number), so required mappings to A1-01, A1-02+A2-01, A1-04, A1-08 and A1-05 are absent and several cards are fabricated with invented content; only the A1-03 session-view association is right, which is not substantively correct mapping.",
+      "points": 20,
+      "awarded": 0
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Accounts for all seven hit categories with per-category negative evidence and gives a thorough statement of static-scan limits, but never proposes the target-version build/typecheck, isolated boot, and functional-path verification plan.",
+      "points": 10,
+      "awarded": 5
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "032f4cc064b2bf19260e8e9277fef19fa3cbfb0fd87b825072de1ad18afd002e"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+  "judge_input_sha256": "7e352b51ac28ec092934e899697b6d8082f6a87a2655dea3998f99201c116da3"
+}

@@ -1,0 +1,230 @@
+{
+  "status": "scored",
+  "score": 60,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates the patch declaration (cordis.patch.yml), the surface/target (patch.yml on SessionView.ts) and the apply script plus npm wiring; separates the manifest composition key from Host-tree source patching, and explains the private session-view coupling as anchor rot against the UI-split change.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "events",
+      "verdict": "partial",
+      "reason": "Producer, consumer and ignorable:true are located, and the alpha.1 removal / alpha.2 restoration corridor folding to a net-neutral verdict is correct, but the report never explains the marker's semantics — that it preserves omission-safe informational events rather than acting as a whitelist that would admit required events.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "Both ctx.get('apiProxy') call sites with session.rename and llm.providers are located and the locator-key removal is understood, but the report never distinguishes host-plane domain-service injection (llm/listProviders) from Web Client Remote, offering only a vague 'plugin-facing Host API'; it at least prescribes no nonexistent Host remote service.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "host-path",
+      "verdict": "partial",
+      "reason": "The hardcoded join(homedir(), '.dsh','profiles','default') write is located correctly, but the remediation gestures at an invented 'storage/profile-dir API' instead of explaining use of runtime DSH_HOME/profile resolution; it makes no false claim that --profile was introduced in alpha.1.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "ui",
+      "verdict": "partial",
+      "reason": "Both the /internal SessionView import and the ctx.contributes.registerCommand site are located and tied to the UI decomposition, but public owner/seam verification after the split is only gestured at ('public contribution surface') without explaining verification against owning modules or marking no-stable-seam items.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "The loopback listener on 127.0.0.1:43121 is located; the report correctly treats the raw route as an unauthenticated channel that loopback binding does not protect, contrasts it with re-registration through the Host Gateway's authenticated channels, and honestly flags the dead-code status as still a static hit.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "subprocess",
+      "verdict": "partial",
+      "reason": "Both dsh subprocess sites and the stdout JSON.parse are located with correct breakage analysis, but the report invents a corridor stdout format change ('frames gone' in the target) instead of recognizing the JSONL assumption was already wrong in rc.2, and it never mentions the stderr progress/reasoning channel.",
+      "points": 10,
+      "awarded": 5
+    },
+    {
+      "id": "mapping",
+      "verdict": "partial",
+      "reason": "Content-level mappings are substantively correct for the events fold, apiProxy removal, profile path, UI split and channel auth cards, but no concrete card IDs (A1-01, A1-02+A2-01, A1-03, A1-04, A1-08) are ever produced — only placeholders plus a catalog-unavailable disclaimer — the primary #1 card is invented, and #7 is mis-framed as a stdout format change.",
+      "points": 20,
+      "awarded": 10
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "All seven categories are correctly accounted for as hits, requirement 3 is answered properly, and scan limits are thoroughly stated; however, no target-version verification plan (build/typecheck, isolated boot, functional path) is proposed — build-time provability is only mentioned in passing.",
+      "points": 10,
+      "awarded": 5
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "patch.yml:3",
+      "path": "patch.yml",
+      "start": 3,
+      "end": 3,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:14",
+      "path": "src/index.ts",
+      "start": 14,
+      "end": 14,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:13–22",
+      "path": "src/index.ts",
+      "start": 13,
+      "end": 22,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:9",
+      "path": "src/index.ts",
+      "start": 9,
+      "end": 9,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:11",
+      "path": "scripts/apply-patch.mjs",
+      "start": 11,
+      "end": 11,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:14",
+      "path": "src/index.ts",
+      "start": 14,
+      "end": 14,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "patch.yml:5",
+      "path": "patch.yml",
+      "start": 5,
+      "end": 5,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:14",
+      "path": "src/index.ts",
+      "start": 14,
+      "end": 14,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:14",
+      "path": "src/index.ts",
+      "start": 14,
+      "end": 14,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:13–22",
+      "path": "src/index.ts",
+      "start": 13,
+      "end": 22,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:36–37",
+      "path": "src/index.ts",
+      "start": 36,
+      "end": 37,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:10",
+      "path": "src/index.ts",
+      "start": 10,
+      "end": 10,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:41–43",
+      "path": "src/index.ts",
+      "start": 41,
+      "end": 43,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:47–54",
+      "path": "src/index.ts",
+      "start": 47,
+      "end": 54,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:11",
+      "path": "scripts/apply-patch.mjs",
+      "start": 11,
+      "end": 11,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:56",
+      "path": "src/index.ts",
+      "start": 56,
+      "end": 56,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "src/index.ts:59–64",
+      "path": "src/index.ts",
+      "start": 59,
+      "end": 64,
+      "valid": true
+    },
+    {
+      "report": "report.md",
+      "citation": "scripts/apply-patch.mjs:12–19",
+      "path": "scripts/apply-patch.mjs",
+      "start": 12,
+      "end": 19,
+      "valid": true
+    }
+  ],
+  "reports": {
+    "report.md": "589c44feb2035569f2a1b6ebb8bb03aabbaf10ccd673ace57a50e2b10e6dea02"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eef702a513f80d606f41340e0c473f6867b80e50d66a71942135871666220f02",
+  "judge_input_sha256": "e1a578c5960ad6385255cce2550889c503b3b56b6ac289af1ba27b47fd84640b"
+}

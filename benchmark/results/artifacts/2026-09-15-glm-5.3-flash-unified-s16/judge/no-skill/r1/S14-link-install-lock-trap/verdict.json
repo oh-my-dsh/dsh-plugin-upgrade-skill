@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction/Target and the cordis.patch.yml link marker to establish the profile entry resolves to the repo tree, concludes repo edits already deploy and copying is a self-copy through the junction, and explicitly contrasts copied-dependency installs."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes both EBUSY and stale serving to the running dsh host holding lib/index.js and serving client.js, cites the copy-session.txt retry after tab closure, and separately explains browser HTTP caching requiring a hard refresh after host restart without conflating it with the filesystem lock or extrapolating to all versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the junction made rename-aside rename the repo's only entry files, causing the source copy to fail; recovery stops the host as a precaution, renames client.js.old2/index.js.old2 back preserving contents, verifies both with node --check, then activates, without requiring file recreation or deletion."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the host, restart dsh web, hard-refresh to bypass browser cache, then verify the new host route, error-free load, and fresh client.js; states browser-only restart is insufficient and syntax check alone is only pre-flight."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Prescribes a LinkType/Target probe plus the cordis.patch.yml link marker before any file operation, branches linked vs copied installs, and explains why generic copy-into-node_modules advice caused the incident (self-copy, host EBUSY, rename-aside destroying the source)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan explicitly forbids copying and recovers by renaming the .old2 files back to their original names rather than deleting them or treating the two paths as independent copies; the copy steps appear only as quoted, rejected bad examples."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires fully stopping and restarting the dsh host before a hard refresh, and explicitly states closing the browser tab released nothing; browser-only action appears only as the rejected mistake."
+    }
+  ]
+}

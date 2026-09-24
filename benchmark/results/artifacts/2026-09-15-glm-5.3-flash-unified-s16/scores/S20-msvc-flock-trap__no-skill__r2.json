@@ -1,0 +1,79 @@
+{
+  "task": "S20-msvc-flock-trap",
+  "arm": "no-skill",
+  "repeat": 2,
+  "score": 97.5,
+  "reward": 0.975,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T03:42:10.539Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "awarded": 10,
+      "points": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "partial",
+      "awarded": 2.5,
+      "points": 5
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan explicitly avoids installing Visual Studio and makes the Windows build a no-op; VS is only mentioned as the missing toolchain diagnosis and as a rejected path.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as insufficient and its plan both skips the build and makes the statically imported entry loadable via the stub.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses only the repository-managed patchedDependencies mechanism and explicitly lists upstream edits and dynamic-import refactors as forbidden rejected alternatives.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking stays on the named semaphore and POSIX keeps real flock; the win32-only throwing stub never weakens actual write ownership on either platform.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

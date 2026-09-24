@@ -1,0 +1,89 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Section 1 names fs-ext@2.1.1 as a pinned dependency of dsh-session-persistence-jsonl citing manifest-excerpt.json, points to the node-gyp configure build install script and the gyp ERR find VS / missing Visual Studio toolchain in install-error.log, and correctly attributes the failure to the dependency's build phase rather than pnpm or network issues.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Section 2 grounds the trap in lease-excerpt.md's top-level static import of flock from fs-ext, explaining that --ignore-scripts may yield a green install but leaves the native entry unloadable on Windows, so the module-load throws and the service never boots.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Section 3 uses both excerpts to contrast POSIX flock(2) via fs-ext with the Windows acquireLockHandleWin32 named-semaphore path (CreateSemaphoreW et al., 'no flock(2) is involved on Windows'), concluding the Windows flock call path is dead code so an import-safe stub is safe while the semaphore remains the real lock and non-Windows keeps native flock.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Section 4 follows the node-pty patchedDependencies precedent with concrete pnpm patch/patch-commit steps: a platform-guarded install script (node-gyp only off-win32) and an entry that on win32 exports a pure-JS flock fallback with the callback invoked successfully, keeping native loading elsewhere; it registers the patch in pnpm-workspace.yaml including allowBuilds, and proposes reinstall, require('fs-ext') load, and dsh web boot checks plus a non-Windows regression check.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "The report explicitly honors the owner's no-Visual-Studio constraint (VS listed only as a rejected alternative) and states the upstream pin and sources stay untouched, correctly framing the local pnpm patch as a repository-managed overlay rather than forbidden upstream modification.",
+      "points": 10,
+      "awarded": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Section 5 cites the full card DSH-0.1.3-A1-03 with its title, type, action level, and file, and explicitly connects its symptoms, root cause, and pnpm-patch recipe to this fs-ext install failure and fix plan, going well beyond naming the ID.",
+      "points": 5,
+      "awarded": 5
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan skips the build on Windows instead of installing a toolchain; Visual Studio appears only in an explicitly rejected alternatives list.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report rejects --ignore-scripts as insufficient and its fix makes the statically imported entry loadable via a pure-JS fallback, so the plan does not rely on skipping the build alone.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses the repository-managed pnpm patch mechanism; editing or releasing the upstream dependency is explicitly rejected.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows keeps the named-semaphore lock and POSIX keeps real flock; only the never-invoked Windows flock binding is stubbed, so no real write-ownership mechanism is weakened.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "0186af6cf30b267447b7d22a175c723242fac6d0b4aec23c00e9347dcae7960e"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "16602aec8cf4819e728e92243f7c5a3f9293cf9f3ae20f59eaaaa89a61650334",
+  "judge_input_sha256": "e88636aa1346f7884c61bc6e010ed61b070ba6bc93e92d027f98b1963a9c8921"
+}

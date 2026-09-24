@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report reconstructs the full corridor history (alpha.1 removal per A1-02, alpha.2 restoration of retention semantics per A2-01, plus pre-alpha.1 inference and later-corridor corroboration) with quoted evidence rather than bare card names, and applies the final alpha.2 net state to produceExternalEvent in the identified fixture file src/events.ts.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Report locates delete (event as any).ignorable in src/events.ts, shows the comment's premise is inverted (stripping the marker causes, not prevents, reader rejection), recommends deleting the defense and its obsolete rationale, distinguishes removing the stripping code from the marker itself, and notes the shown literal has no marker so the delete is a no-op while still rejecting the stripping policy.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Report explains ignorable:true is only for auxiliary/informational events an old reader may omit without breaking reconstruction, that retention is not a consumer-side filtering directive, and that marked events remain in the loaded log after reload; it applies this to the third-party/informational producer while respecting the live append limitation.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Report states the public live Session.append has no supported ignorable parameter, forbids faking an entry via casts, thawed objects or hand-edited JSONL, records the producer seam as a capability gap, and defers integration until a supported mechanism exists, marking the exact runtime signature unconfirmed.",
+      "points": 25,
+      "awarded": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the defense line and its comment, not to keep stripping; the no-op observation is paired with an explicit rejection of the stripping policy, and quoting the old code serves diagnosis only.",
+      "total": 10
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "e6b871f96c72233b4271c501c3b0568b05a6764bac3f338ff29113b6cb64448c"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "90de00b02f3d79f3077edbb780e50270f57f332eca821e8310c8a949a22c1402",
+  "judge_input_sha256": "4d6e862df20d875efa922e6454fe44e0ca2746c18138c7b065422b9faec4b46d"
+}

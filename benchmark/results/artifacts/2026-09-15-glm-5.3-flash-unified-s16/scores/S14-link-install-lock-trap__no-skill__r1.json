@@ -1,0 +1,61 @@
+{
+  "task": "S14-link-install-lock-trap",
+  "arm": "no-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:54:51.324Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan explicitly forbids copying and recovers by renaming the .old2 files back to their original names rather than deleting them or treating the two paths as independent copies; the copy steps appear only as quoted, rejected bad examples.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires fully stopping and restarting the dsh host before a hard refresh, and explicitly states closing the browser tab released nothing; browser-only action appears only as the rejected mistake.",
+      "total": 40
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

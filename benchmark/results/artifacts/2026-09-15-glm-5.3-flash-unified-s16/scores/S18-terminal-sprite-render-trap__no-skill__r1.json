@@ -1,0 +1,55 @@
+{
+  "task": "S18-terminal-sprite-render-trap",
+  "arm": "no-skill",
+  "repeat": 1,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:39:28.216Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "The final advice affirms resetting the half-cell background, proposes erase/full-width clearing that survives trimming, requires source-backed all-frame digest checks, and recommends unref on the planner timer; it never blames the terminal emulator.",
+      "total": 0
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

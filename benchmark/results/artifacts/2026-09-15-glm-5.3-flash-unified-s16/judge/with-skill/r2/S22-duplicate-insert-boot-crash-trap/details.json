@@ -1,0 +1,105 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report compares both excerpts showing the same workspace-files insert in bundle and profile, pins rejection at cordis-plugin-loader EntryGroup.update via dsh-app-boot Include._apply during boot, states duplicate insert is fatal rather than silent last-wins, and explicitly rejects the maintainer's harmless-redundancy comment as the trap. Diagnosis is grounded in the named fixture files; invalid audited line numbers are near-obsolete references into the crash log and do not undermine the correctly located diagnosis.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A table distinguishes all three operations: config override by existing id is safe, inserting an unprovided id is safe (dsh-file-trace, dsh-profiles examples), inserting a bundle-shipped id is fatal. The maintainer's row is classified as the fatal third case and grounded in the bundle excerpt row (workspace-files at L110-111) with corroborating bundle-only rows like session-controller.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the manual workspace-files insert block (with its stale comment) from the profile's cordis.patch.yml, preserving the bundle's service and the unrelated external-plugin inserts, and states any config adjustment must use an override by id rather than a second insert. No rename, no bundle deletion, no additional insert proposed.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash occurs at loader-entry apply before any plugin code runs, so the plugin is not at fault and no plugin-side change can remove the duplicate declaration. Also states removing the duplicate only restores the boot and does not cure the original resource-read failure, which is kept as a separate problem with a verification path (dump-config, refresh, 0.1.5 contract triage) and an explicit warning not to re-add the row.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Prevention section tells the maintainer to grep the installed bundle patch files (web-app and other composing bundles) for the id before any insert, using a concrete Select-String command and dump-config check, and to distinguish override from insert. Proposes an improved boot error naming workspace-files, both declaration origins with file and line, and pointing to deleting the redundant profile block and overriding config instead.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is to delete the profile-side duplicate block; the retain-as-redundancy comment is quoted only to be rejected as the trap, silent merging is explicitly denied (fatal, not last-wins), and plugin-side fixes are explicitly ruled out, so no affirmative bad advice appears.",
+      "total": 20
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [
+    {
+      "report": "report.md",
+      "citation": "lib/index.js:91",
+      "path": "lib/index.js",
+      "start": 91,
+      "end": 91,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "lib/index.js:240",
+      "path": "lib/index.js",
+      "start": 240,
+      "end": 240,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "lib/index.js:1534",
+      "path": "lib/index.js",
+      "start": 1534,
+      "end": 1534,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:110",
+      "path": "cordis.patch.yml",
+      "start": 110,
+      "end": 110,
+      "valid": false
+    },
+    {
+      "report": "report.md",
+      "citation": "cordis.patch.yml:18",
+      "path": "cordis.patch.yml",
+      "start": 18,
+      "end": 18,
+      "valid": false
+    }
+  ],
+  "reports": {
+    "report.md": "75810a9cb15b6b9dffea381170984ff77db4b7599d1f04513abe1b207c882afa"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "f920b1ef85fe90d26bf940c37251e6e6dc8e672b3fc87122d8e6def6a0ef0afa",
+  "judge_input_sha256": "7e9237f45bee7f26290890d5e04c0253243979cf77eb43235e23346ff67f039f"
+}

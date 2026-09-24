@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in the bundle excerpt (PLUGIN_VERSION \"0.3.6\" inlined by tsdown at build time, not reread at runtime) and the release log (build at 16:22 before the 16:23 bump), explaining the self-referential badge via compareSemver against the newest tag. Notes identical tag SHAs across mirrors to show distribution integrity is irrelevant, gives the corrected bump-before-build order, and proposes a pre-tag gate that greps the built artifact for the constant, without confusing the v0.3.8 manifest with the earlier build.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe file (PNG 200 proves the route/handler is alive, SVG 404 unsupported-type) plus the disk whitelist permitting svg to conclude the running host process predates the whitelist change. Explains client code is re-fetched on refresh while the host route handler is registered once at boot/apply time and closes over the old CONTENT_TYPES, so this linked install needs a host restart; the conclusion stays specific to this lifecycle rather than generalizing about all hot-reload mechanisms.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Contrasts the well-formed source file and clean typed read result with the spliced model-visible log text (line 232 joined to line 247's tail at the shared prefix) and the clean re-read, locating the corruption in upstream result-text assembly before it reaches the plugin. Treats the session payload as untrusted input requiring validation and correctly rejects editing or repairing the innocent, well-formed SVG.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs and justifies the ordered chain: authoritative disk bytes via the asset route first, session payload only after DOMParser/parsererror XML well-formedness validation, a sandboxed iframe fallback without allow-scripts that still permits SMIL, and an explicit typed error state. Validation failure routes to the error state rather than passing the malformed payload unchecked to the iframe.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-Zstandard generation file frame-by-frame in original write order (noting zstd -dc handles concatenated frames directly, with magic-byte scanning as an optional alternative), locating the read-result event, extracting the exact stored splice, diffing it against the source, and reporting the upstream bug with the decoded frame. Checklist covers bump-before-build, grepping the shipped constant, per-mirror tag SHA verification, and plane-specific runtime probes (restart plus PNG/SVG re-probe).",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The report affirmatively recommends bump-before-build, a host restart for host-plane changes, XML validation before rendering session payload, scripts blocked in the iframe fallback, and leaving the clean SVG untouched; bump-after-build, mirror-repush-only fixes, refresh-without-restart, and file editing appear only as rejected or contrasted positions.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "7203ef0ac6c1bd1e4f9f1ec525d6d47864be2fd2746fa56b102906c6b3660ec8"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "84ebd605289bd27405c1c50cd4979e7c5c3eb8f0ebf688a3ba154a9f0749201a",
+  "judge_input_sha256": "fe02695246c7eefbd07755d2381c3ce4d34961b5ade9405f0aa7e8c513d7c5e2"
+}

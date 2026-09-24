@@ -1,0 +1,79 @@
+{
+  "task": "S20-msvc-flock-trap",
+  "arm": "no-skill",
+  "repeat": 1,
+  "score": 97.5,
+  "reward": 0.975,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:13:38.898Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "awarded": 10,
+      "points": 10
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "partial",
+      "awarded": 2.5,
+      "points": 5
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan explicitly refuses to install Visual Studio; nothing in the final advice depends on a toolchain.",
+      "total": 50
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The plan rejects --ignore-scripts and pairs the build skip with a patched, loadable entry file, so it does not rely on script suppression alone.",
+      "total": 40
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The fix uses the repository's existing pnpm patch mechanism; no upstream repository or published dependency is edited or released.",
+      "total": 40
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking stays on the named kernel semaphore and POSIX keeps real flock; the Windows fs-ext stub throws if ever invoked rather than acting as a universal no-op.",
+      "total": 20
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

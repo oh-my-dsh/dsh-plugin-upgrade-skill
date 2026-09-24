@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 80,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Correctly ties the top-level ESM import in client.js to the single concatenated classic-script combo failing compilation as a whole, so no loader entry registers and even the stock plugins vanish; reads the named typert-registry entry as the first awaited victim blamed at the await point while position 1:1 identifies the real bundle, and keeps ESM illegality scoped to classic scripts only.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "partial",
+      "reason": "Bisecting the profile insert rows and the full packaging contract (ModuleLoader.load({id, factory}) with package-name id, host React obtained via require inside the factory, module.exports apply plus inject declaration) are correct, but the cheap static check relies on node --check, which the sealed contract deems insufficient because it can accept ESM, and only a grep heuristic is offered instead of a vm.Script-style classic-goal parse.",
+      "points": 20,
+      "awarded": 10
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "Correctly assigns slot declaration to the owning parent entry, bars declaration-owned kind/scope from registrants, and gives a concrete slots.inject-based fix, but shows inject(slot, component) directly rather than the required deferred callback form whose registration waits for the declaration, never addresses that apply ordering is not guaranteed, and treats a descriptor-style name as forbidden even though registrants may supply name/id/order.",
+      "points": 20,
+      "awarded": 10
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in the boot log and restart notes: the combo is composed once per boot so file edits and hard refresh have no effect, each iteration needs a full stop/start with port release verified, taskkill /PID <pid> /T /F for orphaned Windows processes, then refresh and plugin-list verification, and EADDRINUSE is explained as the old process retaining the port rather than a plugin packaging defect.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes concrete host-side prevention: per-bundle classic-script dry-run parsing at composition/combo-failure time with attribution to the owning plugin id, insert row, path and line:column, plus per-entry error re-attribution instead of blaming the first awaited entry; the authoring template and checklist cover the loader factory, host-provided React, apply/inject exports, cross-entry slot contribution rules, and host restart with Windows tree cleanup.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report's affirmative advice forbids top-level ESM in the classic combo, keeps and centers slots.inject for slot contribution, explicitly instructs registrants not to set kind/scope, and insists on full host restarts rather than HMR or browser refresh; no contradicting recommendation is endorsed.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "4cf48d3d3df04b044520b417e36683a85ea5b40f54caf8c2b97ae5f2a9d1405e"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "c64101e573c8a79aa969c4d1a9a43b60cbdd5eed3a621d1b811f5f997de2884c",
+  "judge_input_sha256": "7a6f62c79eb280ea391a14df8915bcd9f78fdb4ba751cb97802a08116a1d8e41"
+}

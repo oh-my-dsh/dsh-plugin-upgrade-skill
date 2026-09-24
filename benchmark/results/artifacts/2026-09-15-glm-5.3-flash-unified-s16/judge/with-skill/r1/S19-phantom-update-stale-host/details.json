@@ -1,0 +1,64 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Grounds the self-badge in the release log's build-before-bump order and the bundle excerpt's build-time-inlined stale constant, notes package.json is not reread at runtime, explains why identical mirror SHAs cannot catch a stale constant, prescribes bump-before-build plus a grep/assert gate on the emitted bundle while retaining mirror verification, and correctly keeps v0.3.7 separate from the later v0.3.8 manifest.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe file and lib excerpt to show PNG 200 proves the handler is alive, SVG 404 unsupported-type shows the running whitelist is old, and the disk copy already whitelists svg, pinning staleness to the unrestarted host process; explains client re-fetch vs boot/apply-time route registration, requires a host restart for the change to take effect, and scopes the hot-update exception to this lifecycle.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Contrasts the well-formed disk source and clean typed read result with the spliced persisted text and clean re-read from the session-log excerpt, describes the shared-prefix splice precisely, locates corruption in upstream result-text assembly rather than the plugin or file, treats the payload as untrusted rendering input, and argues against repairing the intact traced file.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain with justifications: disk bytes via the asset route first, session payload only after DOMParser/parsererror well-formedness checking with failures discarded, a sandboxed iframe without allow-scripts that still permits SMIL, and an explicit error state instead of a silent broken image; malformed payloads never reach the iframe unchecked.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-Zstandard log frame-by-frame with a concatenation-aware decoder, reconstructing the JSONL read-result event in order, diffing the stored splice against the source, and reporting the upstream bug; checklist covers bump-before-build, grepping the shipped constant, per-mirror tag SHA as necessary-not-sufficient, and plane-specific re-probing after restart.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The final advice affirms bump-before-build, host restart for route changes, keeping the clean SVG untouched, XML validation before rendering any session payload, and a script-free sandboxed fallback; no affirmative statement endorses the forbidden alternatives.",
+      "total": 0
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "aecf9badba98a55c77296b3421b1e90f7b265a0354a439f6de2e91d807452e13"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "84ebd605289bd27405c1c50cd4979e7c5c3eb8f0ebf688a3ba154a9f0749201a",
+  "judge_input_sha256": "8726b8f1ab703ca458785e00a0f120586d628dcc456a9a1d8bf81db91492452b"
+}

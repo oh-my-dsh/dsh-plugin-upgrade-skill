@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report pins the throwing `|| busy` operand in AttachmentChips, shows busy is bound only in sibling AttachButton's useState and unbound in this scope, and gives a correct matrix: empty dock returns null before the map; present occurrence in plain phase makes the guard false and reads busy, raising ReferenceError.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render-time throw is caught by the per-entry slot error boundary which unmounts the entire dock entry (not just the remove button), that AttachButton is a separate slot entry that survives, and that the diagnostic is console-only with no user-facing banner, grounded in the maintainer note.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 file plus maintainer confirmation to show busy already existed in the baseline, proposes rollback/re-add bisect and data-present minimal mounts in both phases, supplies a discriminator table, flags the diff's stale-base inconsistency about the disabled line and the imageItem block reading status/record before their callback-scoped declarations, and caveats that absence of reports cannot date first user exposure.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling reference while keeping the phase guard, notes any busy-like state must be genuinely owned by this component, scopes the hover lookup inside the map after record/status, adds record?.items ?? [] defensive reads and optional-chained/safe-check closest() access, and justifies both as cheap insurance given the silent whole-entry unmount failure mode.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a jsdom smoke mounting the dock with an occurrence in plain phase, asserting the chip and remove control exist and that no error boundary or console.error fired; explains empty-state tests and parse-only node --check cannot resolve free identifiers or execute the component, and includes a data-present slot smoke in the pre-ship release gate.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "e3d00fd80d97e98ddcc595ba63689b6a48d0c94caeb85364764c2cc2afe8ce00"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "b13320d86d85716b6499dcea96c1eef279a5d8022e8db543705ab2585f64260b",
+  "judge_input_sha256": "fda5e327df530bf682ced2a19e742f48a2073a5a0c6ee72f8a72a7fc297cd4aa"
+}

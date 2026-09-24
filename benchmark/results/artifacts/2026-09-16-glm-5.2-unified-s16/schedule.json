@@ -1,0 +1,567 @@
+{
+  "schemaVersion": "unified-run-schedule-v1",
+  "seed": 20260915,
+  "model": "GLM-5.2",
+  "arms": [
+    "no-skill",
+    "with-skill"
+  ],
+  "repeats": 2,
+  "totalTrials": 64,
+  "halves": {
+    "A": [
+      "S11-mermaid-lazyload-trap",
+      "S13-peer-range-vs-runtime",
+      "S14-link-install-lock-trap",
+      "S15-slot-error-boundary-crash",
+      "S19-phantom-update-stale-host",
+      "S2-negative-scan",
+      "S21-resource-service-unavailable-trap",
+      "S5-negative-naming"
+    ],
+    "B": [
+      "S1-static-scan",
+      "S12-global-upgrade-ebusy-trap",
+      "S17-external-ui-plugin-onboarding-trap",
+      "S18-terminal-sprite-render-trap",
+      "S20-msvc-flock-trap",
+      "S22-duplicate-insert-boot-crash-trap",
+      "S6-corridor-net-state",
+      "S9-composer-coordinate-trap"
+    ]
+  },
+  "jobOrder": [
+    "r1-noskill-a",
+    "r1-withskill-a",
+    "r1-noskill-b",
+    "r1-withskill-b",
+    "r2-withskill-b",
+    "r2-noskill-b",
+    "r2-withskill-a",
+    "r2-noskill-a"
+  ],
+  "jobs": [
+    {
+      "id": "r1-noskill-a",
+      "half": "A",
+      "arm": "no-skill",
+      "round": 1,
+      "tasks": [
+        "S2-negative-scan",
+        "S21-resource-service-unavailable-trap",
+        "S19-phantom-update-stale-host",
+        "S13-peer-range-vs-runtime",
+        "S5-negative-naming",
+        "S15-slot-error-boundary-crash",
+        "S14-link-install-lock-trap",
+        "S11-mermaid-lazyload-trap"
+      ]
+    },
+    {
+      "id": "r1-withskill-a",
+      "half": "A",
+      "arm": "with-skill",
+      "round": 1,
+      "tasks": [
+        "S13-peer-range-vs-runtime",
+        "S2-negative-scan",
+        "S19-phantom-update-stale-host",
+        "S5-negative-naming",
+        "S21-resource-service-unavailable-trap",
+        "S11-mermaid-lazyload-trap",
+        "S15-slot-error-boundary-crash",
+        "S14-link-install-lock-trap"
+      ]
+    },
+    {
+      "id": "r1-noskill-b",
+      "half": "B",
+      "arm": "no-skill",
+      "round": 1,
+      "tasks": [
+        "S22-duplicate-insert-boot-crash-trap",
+        "S6-corridor-net-state",
+        "S20-msvc-flock-trap",
+        "S12-global-upgrade-ebusy-trap",
+        "S9-composer-coordinate-trap",
+        "S18-terminal-sprite-render-trap",
+        "S17-external-ui-plugin-onboarding-trap",
+        "S1-static-scan"
+      ]
+    },
+    {
+      "id": "r1-withskill-b",
+      "half": "B",
+      "arm": "with-skill",
+      "round": 1,
+      "tasks": [
+        "S12-global-upgrade-ebusy-trap",
+        "S22-duplicate-insert-boot-crash-trap",
+        "S20-msvc-flock-trap",
+        "S9-composer-coordinate-trap",
+        "S6-corridor-net-state",
+        "S1-static-scan",
+        "S18-terminal-sprite-render-trap",
+        "S17-external-ui-plugin-onboarding-trap"
+      ]
+    },
+    {
+      "id": "r2-withskill-b",
+      "half": "B",
+      "arm": "with-skill",
+      "round": 2,
+      "tasks": [
+        "S9-composer-coordinate-trap",
+        "S18-terminal-sprite-render-trap",
+        "S6-corridor-net-state",
+        "S12-global-upgrade-ebusy-trap",
+        "S22-duplicate-insert-boot-crash-trap",
+        "S17-external-ui-plugin-onboarding-trap",
+        "S1-static-scan",
+        "S20-msvc-flock-trap"
+      ]
+    },
+    {
+      "id": "r2-noskill-b",
+      "half": "B",
+      "arm": "no-skill",
+      "round": 2,
+      "tasks": [
+        "S1-static-scan",
+        "S20-msvc-flock-trap",
+        "S22-duplicate-insert-boot-crash-trap",
+        "S6-corridor-net-state",
+        "S12-global-upgrade-ebusy-trap",
+        "S17-external-ui-plugin-onboarding-trap",
+        "S9-composer-coordinate-trap",
+        "S18-terminal-sprite-render-trap"
+      ]
+    },
+    {
+      "id": "r2-withskill-a",
+      "half": "A",
+      "arm": "with-skill",
+      "round": 2,
+      "tasks": [
+        "S5-negative-naming",
+        "S15-slot-error-boundary-crash",
+        "S21-resource-service-unavailable-trap",
+        "S13-peer-range-vs-runtime",
+        "S2-negative-scan",
+        "S14-link-install-lock-trap",
+        "S11-mermaid-lazyload-trap",
+        "S19-phantom-update-stale-host"
+      ]
+    },
+    {
+      "id": "r2-noskill-a",
+      "half": "A",
+      "arm": "no-skill",
+      "round": 2,
+      "tasks": [
+        "S11-mermaid-lazyload-trap",
+        "S19-phantom-update-stale-host",
+        "S2-negative-scan",
+        "S21-resource-service-unavailable-trap",
+        "S13-peer-range-vs-runtime",
+        "S14-link-install-lock-trap",
+        "S5-negative-naming",
+        "S15-slot-error-boundary-crash"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "task": "S2-negative-scan",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-a"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-a"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "no-skill",
+      "repeat": 1,
+      "job": "r1-noskill-b"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "job": "r1-withskill-b"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-b"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-b"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "with-skill",
+      "repeat": 2,
+      "job": "r2-withskill-a"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "no-skill",
+      "repeat": 2,
+      "job": "r2-noskill-a"
+    }
+  ],
+  "armLedger": {
+    "noSkill": 32,
+    "withSkill": 32
+  },
+  "budgetPolicy": {
+    "taskTomlTimeoutSec": "frozen at pinned commit; pilot must confirm before formal runs",
+    "pilot": "run jobs r1-noskill-a and r1-withskill-a first as the pilot; if any trial hits the timeout ceiling, stop, pre-register a raised timeout as a committed task.toml change applied to both arms, then restart the formal run"
+  }
+}

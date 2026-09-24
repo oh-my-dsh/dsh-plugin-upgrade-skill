@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Grounds the two coordinate systems in both host files: draft/Occurrence offsets are clipboard-text projection with chips expanded to clipboardText, while insertReference/consumeToken spans use detectText where a chip is one U+FFFC; also accounts for the separator space and identical plain text.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length as the span source in add, shows empty-composer coordinates coincide (first paste ok) and that after one chip span {29,29} overshoots the 2-char detect doc so insertReference returns false, producing the toast; explicitly rejects a real concurrent-edit interpretation.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing occurrence.offset/length unconverted, the ignored false return, and the unconditional records.delete that makes the render ternary yield 'unavailable' while the composer chip survives; explicitly ties both symptoms to the same clipboard-vs-detect misread rather than an upload failure.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detectPos = p - sum(length-1) with sanity checks, applies it at both call sites (end-of-draft insert over all preceding occurrences; removal mapped to a one-detect-char span), keeps the draftRev guard, and gates record deletion on a true verb result.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "T2 asserts two successive pastes with both chips present; T6 removes a chip with another chip preceding while the other survives; T5 asserts composer chip, occurrence, dock chip and record removed together; T7 covers declined-consumption bookkeeping and T8 the empty-again variant.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "1db7144d06ed5d01b19944c982f790afabcce61fd2832f83f56214576afdecc5"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "eca3984f1c94f3ff5770c686ae84e515e2364834e15b4ebcd21467077efb85a3",
+  "judge_input_sha256": "e2ff5a75602b8ae77358ca3d3c64ab95f4c68aa12457c6f1215bbc220e27cb1a"
+}

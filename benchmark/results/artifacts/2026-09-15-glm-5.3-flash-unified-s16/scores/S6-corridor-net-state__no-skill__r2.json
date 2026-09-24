@@ -1,0 +1,49 @@
+{
+  "task": "S6-corridor-net-state",
+  "arm": "no-skill",
+  "repeat": 2,
+  "score": 87.5,
+  "reward": 0.875,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T03:59:36.183Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "awarded": 12.5,
+      "points": 25
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the defense code and remove the delete statement; the old comment is quoted only to reject it, so the cap's condition is not met.",
+      "total": 10
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

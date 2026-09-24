@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 87.5,
+  "max": 100,
+  "passed": false,
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet in dsh-plugin.naming.json's pluginNames, distinguishes it from the coordinate acme/greet and package dsh-greet, and judges it a valid official short name with no compatibility error; treats the existing namespace as sufficient and defers uniqueness to registry context rather than demanding a prefix repair.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies the unprefixed service search in the manifest, explains the shadowing/collision risk from its generic unprefixed form, and classifies it as a collision recommendation explicitly not an error; no strict-mode nonzero exit is cited as proof of incompatibility.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Locates web-search/ready and treats it as an informational shared channel; conditions any real conflict on channel owner/schema and registry context (unknown, not checked) instead of the matching name alone, and makes no global-uniqueness claim.",
+      "points": 25,
+      "awarded": 25
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "partial",
+      "reason": "Covers every remaining surface (loader, tool, command, skill, provider, settings, route) with grounded verdicts, cleanly separates offline compatibility from unqueried registry occupancy, marks registry-dependent items unknown/not checked, and explicitly rejects all-clear/reserved/globally-available claims; however it presents private:true as a publish blocker the author must resolve, although the fixture marks it as test material and the rubric forbids turning it into an error.",
+      "points": 25,
+      "awarded": 12.5
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report makes no blanket clearance claim: it states no name was verified as reserved, free, or globally available and that a clean offline review does not imply the names are free.",
+      "total": 30
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "c57c9e6f58f999db4369663d98bf55b6dc7c026a2319862ecbc4b85d8941c81e"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "71f7cda32498747d32f06381cab8be01f6d777a3c3d5516dd276af97b4619de4",
+  "judge_input_sha256": "d3e0bfa51f56e77655365b341cefd204a17ff23c7ab80f67d6fda460a0820911"
+}
