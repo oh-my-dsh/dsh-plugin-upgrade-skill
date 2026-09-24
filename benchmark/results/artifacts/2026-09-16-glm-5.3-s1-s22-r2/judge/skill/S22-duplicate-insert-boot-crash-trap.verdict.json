@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "The report identifies both colliding rows (bundle cordis.patch.yml insert of id workspace-files and the manually appended identical profile-patch row), grounds the rejection in EntryGroup.update at cordis-plugin-loader/lib/index.js:91 via the Include/cordis:include path from the crash log, explains the id is a unique tree key with fail-closed no-last-write-wins semantics, and explicitly rejects the profile comment's harmless-redundancy claim as wrong and boot-fatal."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A table distinguishes all three cases: config override keyed to the existing entry id (safe), insert of a genuinely new unprovided id like dsh-file-trace/dsh-profiles (safe), and insert of a bundle-provided id (fatal). It classifies the maintainer's row as the third case and grounds it in both excerpts, using the un-duplicated session-controller/settings-controller rows as calibration evidence."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "The fix is precisely to delete the manual workspace-files insert block (and the misleading comment) from C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml, leaving the bundle's row and other plugins untouched; it notes config adjustments would go through a by-id override and explicitly rules out plugin-side or bundle-side edits. No rename, no extra insert, no bundle deletion is proposed."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "The report states the crash occurs in the loader before any plugin activates, so the plugin package is innocent and no plugin-side change can legalize a duplicate id; it also separates the earlier 文件资源服务不可用 symptom as an unverified residual problem needing its own evidence if it persists after the fix."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Prevention says to read/grep the installed web-app bundle's cordis.patch.yml for the entry id before hand-inserting (with the concrete node_modules path) and distinguishes config-override from insert. The proposed host diagnostic names workspace-files and both declaration origins with paths/line order, points to deleting the profile-patch block, and adds an optional preflight warning."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The final advice removes the duplicate row; the redundant-keep comment is quoted only to reject it, and no claim of silent merge or plugin-side cure appears as affirmative advice."
+    }
+  ]
+}

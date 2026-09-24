@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Designs paste_image/paste_file base names with (2),(3)… inserted before the extension, incremented until a free name is found, reserving names both within one batch and across live attachments (numbering derived from the live name set, not a per-batch counter). Renaming is explicitly scoped to the clipboard acquisition path before items enter the shared add() funnel/validateItems duplicate check, and drop/picker paths keep real item.path verbatim. Grounded in the fixture's label = item.path and validateItems excerpt."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Names input.state.getSnapshot().occurrences as the authoritative occupied-name source and explains concretely why the records subscription deletes cache entries on any momentary empty snapshot (transient re-render) while the attachment may still be live, freeing a name for reuse. Accounts for current paste-batch/in-flight reservations via supplementing with the records Map, and states records cannot replace live state (cache lost on reload, only sees own inserts)."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache HIT, age 178, max-age=60/s-maxage=300, cached page listing only v0.2.9 while v0.2.10/v0.2.11 exist per ls-remote) plus the renderCurrentChip(tag) behavior of printing the fetched tag to explain the stale 'already latest v0.2.9' label and its later self-correction. States the fix as a semantic comparison: show update chip with the remote tag only when remote > local, otherwise render the running PLUGIN_VERSION, never an older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes concrete tests with expected names: same-batch double image.png paste yielding paste_image.png/paste_image(2).png with matching upload bodies; sequential pastes continuing numbering; a test where the alive-subscription retires a record on a momentary empty snapshot and the name must not be reused (live occurrence blocks a name with an emptied records cache); drop/picker names preserved verbatim. Chip tests cover older remote (0.2.9 vs 0.2.10), equal tag, genuinely newer tag (0.2.11), and offline."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires synchronizing package.json version with the hand-inlined PLUGIN_VERSION in the distributed lib artifact (with a release check/test comparing them), running node --check on the shipped lib file plus the behavioral regressions, and explains deployment: publish the updated package artifact to the registry, then tag, then browser hard refresh/reinstall — explicitly noting the chip and git tag alone do not install anything and there is no host-side update endpoint."
+    }
+  ],
+  "caps": []
+}

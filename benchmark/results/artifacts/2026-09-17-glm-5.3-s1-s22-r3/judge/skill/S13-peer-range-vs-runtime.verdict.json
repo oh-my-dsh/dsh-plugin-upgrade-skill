@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report cites the changelog entry for removal of the eagerly materialized Session.events at 0.1.2-alpha.4 and its replacement by seq/eventAt()/snapshotEvents(), ties the crash to plugin-source-excerpt.js session.events reads (lines 734/6685 etc.) and crash-stack.txt 'events is not iterable' in prepareReplayEvents during apply, and correctly explains undefined property flowing into iteration."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Using npm-install-output.txt, explains ^0.1.2-alpha.2 resolves to >=0.1.2-alpha.2 <0.2.0-0 so alpha.5 satisfies it by same-tuple prerelease ordering, and that npm only compares declared version metadata — never API existence or runtime behavior — and that a peer declaration is an author claim, not evidence of testing."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives two genuinely distinct classes: removed/renamed API surface (this case) and behavioral/contract changes on unchanged names (sync-to-async, added required parameters, return shape changes), plus additional concrete instances like renamed Cordis services."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing the actual target versions (floor and top of range in a clean profile, CI matrix), then a compatibility policy: either narrow the peer range to exclude alpha.4+ or implement verified runtime feature detection with correct old/new paths; also explains metadata (peer/engines encodes tested corridor) versus runtime guards, noting engines does not test API behavior."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives concrete pre-install checks: download the tarball via npm pack/view and grep for session.events usage (42 hits), cross-check hits against changelog removals between peer floor and installed target, or typecheck plugin sources against installed host type declarations — explicitly tied to this Session.events incident and the API-subset boundary npm never checks."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's conclusions consistently state the opposite: satisfied peer ranges and warning-free installs prove nothing about runtime API compatibility, and it affirms the documented Session.events removal. No affirmative bad advice found."
+    }
+  ]
+}

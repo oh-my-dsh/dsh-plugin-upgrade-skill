@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry chunk got 200 while sibling imports resolved relative to the chunk URL and 404ed because they were never shipped, so the atomic dynamic import fails naming the entry; fix is a single self-contained chunk with code splitting disabled (inlineDynamicImports) plus a ship-all-siblings alternative accounting for every dependency."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Compares the E: LIB_DIR against the e: realpath from the debug print and shows the case-sensitive startsWith rejects a contained file; explains API-by-API casing behavior, why Linux passes via identical bytes and the laptop via accidental casing agreement, and explicitly rejects the 'Windows paths are unreliable' folklore without claiming realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes equivalent safe containment: realpath-canonicalize both base and target, case-fold only on win32 (preserving case-sensitive semantics on Linux), keep the +sep suffix and realpath resolution to defeat traversal, lib-evil prefixing and symlink escapes; also explicitly preserves the required JavaScript MIME type."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains wheel bubbling lets the modal zoom handler and the window-level host font handler both act on one Ctrl+scroll; grants the modal exclusive ownership via preventDefault, stopPropagation, passive:false and listener removal on close, with a host-side stand-down for an open modal covering the ancestor-capture case."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "Proposes concrete checks with expected outcomes for all three incidents (self-containment packaging/runtime tests, case-differing Windows path serves while traversal/symlink escape refuses, modal zoom without pane font change), but omits the rubric's enumerated check that a failed import preserves the code-block fallback."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The recommended fix keeps realpath containment, the separator-suffixed prefix check and traversal/symlink rejection, folding case only on case-insensitive Windows; it never disables the guard or advises serving paths outside the plugin resource root."
+    }
+  ]
+}

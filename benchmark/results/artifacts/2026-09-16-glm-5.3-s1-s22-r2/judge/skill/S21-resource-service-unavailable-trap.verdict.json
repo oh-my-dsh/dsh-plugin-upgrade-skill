@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "Report uses symptom-log plus the contrast probe: the session tab is claimed/titled from the parsed address while meta.status stays 'none', and file-trace's own RPC reads the same file fine. It explicitly localizes the fault to the api-workspace-files Remote/service seam (resource-provider chain not taking over), rules out disk existence, permissions, cwd/workspace-root resolution and the renderer, notes the host row is declared but that static serving does not prove activation, and demands no unseen internal failing function."
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "Correctly separates the valid per-module 62/62 sweep from the invalid 4-5 KB all-joined 404, explains the loader fetches manifest URLs verbatim/host-generated combos and never constructs an all-entries join, and flags citing the 404 as 'modules missing' as the trap. However it never addresses the manifest-excerpt 60 vs probe 62 discrepancy, which the criterion asks to be treated evidence-boundedly."
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "Separates the dsh-paste-input fold-skip warnings as an independent warning family from a different plugin, uses boot-manifest-excerpt to explain textpreview→documentpreview and the session-only canOpen scope, applies that scope to the absolute-address claim failure (Symptom A) and explicitly distinguishes it from Symptom B's stalled metadata, without demanding the fold-parser fix version or END-marker cause."
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "Gives restart first, then pinned-version rollback (0.1.3-alpha.2 verified escape hatch per #5999), then upstream follow-up, and explicitly rejects plugin-side rewrite/retry/fallback and duplicating the host resource surface. It treats the alpha.1 roster/combo mismatch as prior art while making clear modules now serve individually and the 404 join is non-evidence, so no missing-bytes claim for alpha.2."
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "Lists complete forensics: versions/channel/profile provenance, exact addresses and symptoms, roster census, valid sweep with the join caveat, same-file contrast with meta.status, console excerpt, and host-side activation/lookup state. Proposes named diagnostics: boot-time roster/serving consistency gate and an end-to-end workspace-files health read after composition, plus UI fail-loud improvements."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report affirmatively rejects treating the oversized joined 404 as proof of missing modules, calling it exactly the trap and asserting the 62/62 sweep shows serving is healthy; the 404-as-missing-bytes reading appears only as a rejected example."
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The report affirmatively rules out plugin-side rewrite, retry loops, or fallback readers and refuses to duplicate the host resource surface; these appear only as rejected bad remedies, with the final recommendation being restart/rollback/upstream."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "job_name": "glm53flash-unified-r2-withskill-b",
+  "jobs_dir": "<local-run>/jobs",
+  "n_concurrent_trials": 3,
+  "n_attempts": 1,
+  "environment": {
+    "type": "docker",
+    "force_build": true
+  },
+  "agents": [
+    {
+      "name": "terminus-2",
+      "model_name": "anthropic/glm-5.3-flash",
+      "n_concurrent": 3,
+      "skills": [
+        "<repo-root>/skills/plugin-upgrade"
+      ],
+      "env": {
+        "ANTHROPIC_BASE_URL": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_AUTH_TOKEN": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_MODEL": "glm-5.3-flash",
+        "ANTHROPIC_API_KEY": "REDACTED-set-via-config-local-or-env",
+        "ANTHROPIC_SMALL_FAST_MODEL": "glm-5.3-flash",
+        "DISABLE_PROMPT_CACHING": "1"
+      }
+    }
+  ],
+  "skills": [],
+  "extra_instructions": []
+}

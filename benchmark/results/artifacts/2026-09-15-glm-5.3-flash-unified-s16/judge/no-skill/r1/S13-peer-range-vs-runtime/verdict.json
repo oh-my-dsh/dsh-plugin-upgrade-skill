@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in all three fixtures: cites the changelog for Session.events removal in 0.1.2-alpha.4 replaced by seq/eventAt()/snapshotEvents(), points to the plugin's .events reads in plugin-source-excerpt.js, and explains that the removed property yields undefined whose iteration throws the 'events is not iterable' TypeError from crash-stack.txt. The flagged channel.js line citations are stack-frame numbers from the crash log and do not undermine the located diagnosis."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses the npm-install-output.txt data (silent install, ^0.1.2-alpha.2 peer deps, alpha.5 in range) to show same-tuple prerelease ordering admits alpha.4/5, and explains npm only performs version-string vs range arithmetic on author-declared metadata, never inspecting exports or executing code, so the declaration is a claim rather than evidence any version was tested."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives four genuinely distinct classes: removed/renamed APIs (the Session.events case), type/shape changes including sync-to-promise and return-shape swaps (SessionSeq/SessionLogOffset), signature/arity changes, and behavioral/lifecycle contract changes, each explained beyond a mere label."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing the actual target versions (CI smoke test at the range tip plus a matrix across range endpoints and changelog monitoring) and gives an actionable compatibility policy: narrow the peer range to exclude alpha.4+ and add a load-time feature-detection guard checking both old (session.events) and new (snapshotEvents) paths, with a bridged dual-era implementation."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Offers concrete pre-install checks tied to this incident: read the changelog for every release between the peer floor and the installed version (surfacing the alpha.4 Session.events removal before install) and npm pack plus grep the plugin for the removed symbol; goes beyond merely re-checking peer-range acceptance."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's conclusion asserts the opposite: peer-range satisfaction is a static metadata check that was never a guarantee of runtime compatibility, and it affirms the documented Session.events removal; no affirmative claim that a satisfied peer range or warning-free install proves runtime compatibility."
+    }
+  ]
+}

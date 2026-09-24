@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Correctly grounds attempt 1 in ls-remote-tags.txt (v0.9.5 absent from the mirror) and sync-script.sh (only HEAD:main pushed, no tags), and explicitly rules out network/typo causes."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and compat-table.md to state v0.9.7 targets the newer 0.1.2-alpha.1 client API whose useConversation seat is missing on the older rc.2 runtime, and notes install success does not imply API compatibility."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Correctly selects v0.9.3 via its rc.1 verification plus the additive rc.2 note and honors the freeze (no runtime upgrade), but contradicts the fixture by claiming the v0.9.3 tag 'does exist on the mirror' and presents the absent tag as immediately installable, missing the required condition on maintainer tag publication or a verified-commit alternative."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit tag pushing per release (--follow-tags or explicit tag refs) grounded in the branch-only sync script, plus a fail-loud ls-remote verification step that checks each documented tag resolves on every mirror; branch sync alone is not relied on."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Requires per-runtime install commands pinning the artifact matching the runtime line (rc.2 users get v0.9.3, v0.9.7 reserved for the 0.1.2-alpha client via the compat table), adds runtime-version metadata validation at activation, and does not generalize to untested future alphas."
+    }
+  ],
+  "caps": []
+}

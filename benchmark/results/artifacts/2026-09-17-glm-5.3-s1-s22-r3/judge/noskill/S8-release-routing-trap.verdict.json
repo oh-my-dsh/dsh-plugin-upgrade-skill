@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Grounded in ls-remote-tags.txt (tag list jumps v0.9.1 → v0.9.7) and sync-script.sh's HEAD:main-only push; explains v0.9.5 was never distributed to mirrors and explicitly rules out network fault or consumer typo as the attempt-1 cause."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and compat-table.md (v0.9.7 targets 0.1.2-alpha.1) to explain the direction: a newer-client-API artifact running on an older runtime lacks the useConversation seat; notes install success and restarts cannot fix a missing runtime API."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Correctly selects v0.9.3 using the rc.1 verification plus the additive rc.2 note, notices v0.9.3 is also absent from the mirror, and keeps the freeze. But its primary remedy claims the canonical origin repo has complete release history and is installable now — an invented reachability fact not in the sealed evidence; the packet-required framing (install after maintainer tag publication, or a verified reachable commit as a conditional alternative) appears only as a secondary fallback."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit per-mirror tag pushes (git push <remote> --tags or --follow-tags for origin/public/mirror2) grounded in the branch-only sync script, and adds ls-remote --tags post-sync verification that documented tags resolve on every mirror."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Routes README install commands by consumer DSH version (0.1.1-rc.x → #v0.9.3, 0.1.2-alpha.1 → #v0.9.7), includes the compatibility matrix inline, and suggests a metadata-level runtime/peer constraint so mismatches fail loudly; no blanket support for untested future alphas."
+    }
+  ],
+  "caps": []
+}

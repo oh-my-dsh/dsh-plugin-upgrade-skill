@@ -1,0 +1,70 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Quotes the introspection (LinkType Junction, Target E:\\dev\\dsh-attach-input, cordis.patch.yml link: marker) to conclude the repo tree is the installed copy, states edits are already deployed and copying is never right for this mode, and contrasts with a copied/registry install in section 5.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Grounds the EBUSY in the running dsh web host holding the loaded lib files and old module state, explains tab closure releases nothing since the browser holds no file handle, and separately attributes post-restart staleness to browser HTTP cache needing a bypassing refresh; keeps the two lock kinds distinct and does not generalize serving behavior to all versions.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the rename traversed the junction and hit the single physical file, so the follow-up copy's source no longer existed; recovery renames both .old2 files back preserving their edited contents, verifies with node --check, then activates, with no copy, delete, or locked-rename requirement.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the host, start dsh web, then hard refresh with cache bypass, then verify the hover-preview feature, the new host route, and a clean console; treats the syntax check as a precondition, not activation, and notes browser-only action is insufficient.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Requires a read-only LinkType/Target probe and cordis.patch.yml marker check before any file operation, branches the procedure for linked vs copied installs, and step-by-step explains why generic copy-into-node_modules advice is redundant, invites EBUSY, and triggers the rename-aside corruption.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan contains no copy, no deletion of the .old2 files (they are renamed back), and consistently treats both paths as the same physical directory; copying is only described as the rejected bad example.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The final plan always fully stops and restarts the host before the hard refresh and explicitly states a browser refresh/close is not a host stop and releases nothing; browser-only advice appears only as the quoted mistake.",
+      "total": 40
+    }
+  ],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "508e1fd10214ee3fd286027d65fcea270c867d7c136d43fbeeccbca0494eabb3"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "992a5dece3a1a15cfaff888e0cccd344ac0ef33ab7b4a6adffe5a1e794290f61",
+  "judge_input_sha256": "b8d55c2e8a7687828c23636bb1afbfe5b19c9f82fdbfb3a08630035d6f69d2e4"
+}

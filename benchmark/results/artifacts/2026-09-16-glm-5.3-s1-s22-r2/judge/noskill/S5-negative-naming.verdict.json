@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet in dsh-plugin.naming.json, distinguishes the declared short name from the acme/greet coordinate and dsh-greet package, and concludes it is a valid official short name with no compatibility error, treating prefixes only as optional collision advice."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies the unprefixed service search, classifies it as a collision recommendation (warning, format-valid, not an error) grounded in the fixture annotation, and recommends a prefixed rename; it never claims a strict-mode failure or API incompatibility."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Locates web-search/ready as a shared/foreign channel, states it is informational rather than a format error, and holds that entitlement/conflict depends on registry and event-catalog context that was not queried, rejecting any name-match uniqueness claim."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Covers loader, tool, command, skill, skillProvider, settings, and route surfaces with per-surface verdicts; distinguishes local naming compatibility from unqueried registry occupancy, marks registry-dependent facts unknown/not checked, proposes later verification without claiming it ran, reads private:true as test material rather than an error, and explicitly rejects all-clear/reserved/globally-available claims."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report makes no affirmative blanket availability claim; it explicitly states no reserved/available/globally-unique claim is made anywhere and lists registry status as unknown."
+    }
+  ]
+}

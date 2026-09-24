@@ -1,0 +1,61 @@
+{
+  "task": "S14-link-install-lock-trap",
+  "arm": "no-skill",
+  "repeat": 2,
+  "score": 100,
+  "reward": 1,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T04:13:02.546Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "awarded": 20,
+      "points": 20
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan skips any copy for link installs and restores by renaming the .old2 files back to their original names; copying appears only as an explicitly rejected bad example, and the two paths are treated as the same directory throughout.",
+      "total": 40
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The report affirms the opposite: the host process must be fully stopped and restarted for the lock to release and host-side edits to take effect; it explicitly states closing browser tabs or refreshing alone does nothing for the host lock.",
+      "total": 40
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

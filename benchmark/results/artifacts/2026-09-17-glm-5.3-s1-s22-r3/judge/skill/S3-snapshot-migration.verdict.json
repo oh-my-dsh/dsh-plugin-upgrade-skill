@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Report locates the three flat-snapshot reads in Pet.tsx (partial via isThinking lines 13-15, runningCalls line 21, turnEnds line 23) and explains both stages: temporary compatibility through the chat view legacy projection (views.get('chat')?.legacy still carrying partial/runningCalls/turnEnds, citing the A1-03 field note's two-step approach) and the target keyed ChatSnapshot/useChat reads via API-10, including node iteration over snapshot.order with nodes.get(id). It goes beyond 'legacy is insufficient' by explaining why each field silently folds to false/undefined and deferring exact block discriminants to the target tag rather than inventing them."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "H7 pinpoints useSession(s => s.running) at Pet.tsx line 19 and correctly classifies it as a Session/useSession lifecycle field that the legacy projection does not carry, so it must stay on the useSession seat during staging and is not part of the useChat transcript migration. The report never claims the useSession call itself must be renamed for running."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Report locates both removed dsh-client-runtime imports (Pet.tsx line 8 ConversationSnapshot, index.ts line 6 ClientContext) and the package.json client.inject entry listing dsh-client-runtime, explains the silent pending-boot-graph symptom, and gives concrete targets: Context as ClientContext from scoped @deepseek-ai/cordis, ChatSnapshot from dsh-client-ui-chat/client, inject list reduced to real service packages. It does not claim cordis exports the snapshot types and explicitly defers unknown exact snapshot symbols (reasoning block discriminants) to the target tag's contract types."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "The report locates the scoped slots.register call in index.ts, documents the inject ordering edge ('slots','conversation','locale'), preserves the slot name conversation.session.header.actions and the registration lifetime, and flags verification at the target tag. However it treats the surface as a pure non-hit: it never explains wrapping the registration in slots.inject, nor the ui-renderer/client Context augmentation or service ownership behind the slots service in 0.1.2, so the required migration-shape analysis for this seam is missing."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Every located snapshot read, import, inject, and scan-contract hit is tied to the full card DSH-0.1.2-A1-03 (with its field-note projection semantics), with DSH-0.1.2-A1-25 correctly used as the package-removal card and API-10 for the alpha.2 net state. Section 3's classification table explicitly separates what can stage through the legacy projection (partial/runningCalls/turnEnds) from day-one changes (removed package imports, inject row, lifecycle seat, scan ids), plus a concrete sequencing and validation plan. Citations are substantive recipe applications, not bare card IDs."
+    }
+  ],
+  "caps": []
+}

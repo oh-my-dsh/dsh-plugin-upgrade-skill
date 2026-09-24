@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Locates index.js inject=[\"apiProxy\"] and ctx.apiProxy.llm.providers() with line numbers, maps the break to DSH-0.1.2-A1-01, explains the llm.providers → listProviders/listConfigurableProviders split (not a 1:1 rename), and grounds the dead @deepseek-ai/dsh-host-apiproxy dependency in package.json with its pending-service and install-time failure consequences; more than a card name."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "Each of the other six categories gets a no-hit conclusion with concrete scan evidence (specific absent APIs/files). session-notes.js is identified as a pure string/array utility by its exports, and cordis.patch.yml is correctly classified as ordinary loader composition, explicitly noting the 'patch' filename is not a host-source patch hit."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly argues zero hits cannot establish compatibility: the scan is heuristic pattern matching, the dependency/config plane sits outside the seven source classes, and runtime behavior needs separate evidence. Clearly separates the decisive A1-01 apiProxy break from the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies post-migration build/typecheck, an isolated target-version (0.1.2-alpha.2) cold boot checking no service stays pending, and an actual provider-listing call with a failure branch, plus lockfile-level dependency resolution; all framed as proposed steps, not executed, matching the non-runnable fixture."
+    }
+  ],
+  "caps": []
+}

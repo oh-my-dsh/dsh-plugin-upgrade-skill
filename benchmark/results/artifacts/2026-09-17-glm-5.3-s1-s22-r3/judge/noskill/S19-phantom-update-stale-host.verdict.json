@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Report cites release-log.md and client-bundle-excerpt.js to show the 16:22 build preceded the 16:23 bump, baking PLUGIN_VERSION \"0.3.6\" into the shipped v0.3.7 bundle; explains the constant is inlined at build time and package.json is not reread at runtime; prescribes bump-before-build, a pre-tag/push check of the emitted constant, and keeping mirror tag-SHA verification while noting it is orthogonal; correctly avoids confusing v0.3.8's later manifest with the earlier build."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js: PNG 200 proves the route is alive, SVG 404 'unsupported image type' is the old in-memory whitelist, while disk already permits svg. Explains the host half's boot/apply-time route-registration closure is not replaced by a client refresh and this linked install needs a host restart, and explicitly scopes the hot-update caveat to this host lifecycle rather than all plugin reload mechanisms."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in session-log-excerpt.txt: clean typed result and clean disk source versus spliced persisted model-visible text (line 232 splice at shared 'stro' prefix, lines 233-247 absent) plus clean reread locate the corruption in upstream result-text assembly before persistence; the traced disk file is innocent; concludes the payload is untrusted input and the good SVG must not be repaired; does not invent an unseen internal function."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain: authoritative disk bytes via the asset route first; session payload only after DOMParser well-formedness check with parsererror detection (rendering only if well-formed, so malformed payload never reaches the iframe unchecked); sandboxed iframe fallback with scripts blocked while noting SMIL still runs; and an explicit named error state for content/validation/rendering failures — each level justified."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding all concatenated zstd frames (frame-walk or concat-aware decoder, order preserved), reconstructing the JSONL read-result event containing the exact stored splice, diffing against the disk source, and reporting the upstream bug; checklist covers bump-before-build, verifying the shipped baked constant, per-mirror tag SHA verification, and plane-specific runtime probes plus post-release host restart/re-probe; no decode claimed as executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms bump-before-build, a baked-constant gate, host restart for host-plane changes, leaving the clean traced SVG unedited, and XML validation before rendering the session payload with a no-scripts sandboxed iframe; none of the enumerated bad conclusions (bump-after-build acceptable, repush fixes the constant, refresh replaces restart, editing the SVG, unvalidated rendering or allow-scripts) appears affirmatively."
+    }
+  ]
+}

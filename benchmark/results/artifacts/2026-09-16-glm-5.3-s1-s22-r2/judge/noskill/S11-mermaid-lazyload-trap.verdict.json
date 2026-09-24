@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in console-split-chunks.txt: entry chunk 200s but sibling imports resolve relative to the fetched chunk URL, the siblings were never shipped, so import() rejects despite HTTP 200; proposes a self-contained single-file bundle with code splitting disabled (inlineDynamicImports / no manualChunks) and notes the full-asset alternative."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Cites chunk-route.ts and the ci-note.md debug print: case-sensitive startsWith compares LIB_DIR's uppercase E:\\ (from fileURLToPath/import.meta.url) against realpathSync's OS-reported lowercase e:\\, rejecting a contained file; explains Linux passes because no component casing is rewritten and the laptop passed by coincidence. Explicitly rejects the maintainer's 'Windows paths are unreliable' folklore rather than endorsing it."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes canonicalizing both sides via realpathSync (root once, file per request) then path.relative-based containment rejecting empty/'..'/absolute results; realpath resolution also covers symlink escapes and symlinked LIB_DIR, and win32-lowercasing is applied only to both canonicalized sides. Explicitly preserves the application/javascript MIME type required by dynamic import. Grounded in the fixture route source; no executed test needed."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both wheel handlers act on the same bubbling Ctrl+wheel with no arbitration, gives the modal exclusive ownership while open (preventDefault + stopPropagation/stopImmediate, capture on overlay root), and has the pane stand down via composedPath/overlay-open checks, restoring ownership on close."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned checks with expected outcomes for all three incidents: build-artifact gate asserting the emitted chunk has no unshipped sibling specifiers (or every referenced file ships under the route); guard tests with a case-differing drive-letter fixture expecting 200 while traversal/encoded/absolute/symlink escapes expect 403/404; DOM wheel test asserting modal zoom with preventDefault, pane font handler not invoked while modal is open, and pane handler firing again after close."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The proposed fix strengthens containment (dual realpath canonicalization plus relative-based traversal/escape rejection); serving outside the resource root appears only as rejected traversal test cases, not as advice."
+    }
+  ]
+}

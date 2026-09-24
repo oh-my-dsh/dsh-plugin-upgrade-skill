@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Report pinpoints the upper-only/lower-only branches in renderer-excerpt.ts as emitting fg-only sequences that leave the prior cell's 48;2 background sticky and paint the empty half, notes the row-end/transparent-cell RESET comes too late, prescribes ESC[49m in both single-pixel branches, and ties the mechanism to the staggered right-edge symptoms without blaming the terminal emulator."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Report identifies the trailing-transparent trim in the renderer and explains the pipeline writes shorter rows without erasing surplus columns, leaving prior-frame glyphs and SGR; proposes full-sprite-width row output plus reset-then-ESC[0K erase per row, with correct reset-before-erase ordering for BCE, so SGR state stays controlled."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Report uses frames-digest-report.txt to name the tail2 MISMATCH with 23 differing cells (explicitly noting the visible 6-pixel cluster is only part of the diff), attributes it to hand-port transcription drift rather than a renderer artifact, explains the later excerpt regression for a different frame missed it, and requires whole-frame digests of every frame against source art as a blocking CI gate."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Report grounds the hang in ci-hang-evidence.txt: the planner's self-rescheduling referenced setTimeout chain keeps the loop alive because CI hosts mount the header and finish without unmounting, while the interactive product stays alive via TTY/stdin handles; the fix is .unref() at the scheduling site covering every re-arm, with animation continuing, and no suggestion of longer CI timeouts or disabling animation."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Checklist consolidates per-cell fg+bg/ESC[49m reset, dedup safety, erase-after-reset, full-width rows plus row-terminating erase, and all-frame source-backed digest gates; the pre-rollout audit inventories every mounting host (flagging mounts-without-unmount probes), runs headless event-loop drain checks, and adds a CI process-exit liveness regression."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms resetting the half-cell background with ESC[49m, full-width rows plus erase-to-EOL instead of retaining trimming, source-backed whole-frame digest checks, and unref'ing the planner timer; the defect is attributed to the renderer, not the terminal emulator, with no affirmative contradictory claims."
+    }
+  ]
+}

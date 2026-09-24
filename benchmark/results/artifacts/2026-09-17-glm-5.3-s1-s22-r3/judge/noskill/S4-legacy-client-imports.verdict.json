@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the ClientContext import from the removed @deepseek-ai/dsh-client-runtime/client at src/client/index.ts:1, maps DSH-0.1.2-A1-25, correctly states the Web Client impact and that module resolution fails outright despite being a type-only import, and directs replacing it with the successor owning client-context package, marking the exact path unconfirmed as the closed-book rubric permits."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Correctly compares the loader id 'pet-legacy-bundle' at src/client/index.ts:10 with package.json name dsh-pet-session-bench, maps A1-26, and requires exact name alignment with the concrete fix. However it proposes no client activation verification (boot-graph/entries check or equivalent), which the criterion requires."
+    },
+    {
+      "id": "session-content",
+      "verdict": "partial",
+      "reason": "Locates useSession() flat nodes destructuring at src/client/index.ts:12-13, maps A1-27, and correctly states the flat nodes snapshot is no longer provided without claiming the old API stays supported. But the migration direction is generic ('migrate to the new session snapshot API') and omits the required preservation of node ordering when reading content."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "partial",
+      "reason": "Locates ctx.connection.api.agentPresets.list at src/client/index.ts:11, maps A1-30, and requires removing the deleted face. The replacement direction ('package-private host methods / successor connection face') is vague and partially misdirected — the reference removes the connection face entirely and points to remote/public domain surfaces — though it is honestly marked unconfirmed rather than invented."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never asserts that apply should move to setup/activate or that service inject entries must move into a manifest; it treats the existing inject list as a non-touchpoint and marks unknown replacements unconfirmed instead of inventing lifecycle changes."
+    }
+  ]
+}

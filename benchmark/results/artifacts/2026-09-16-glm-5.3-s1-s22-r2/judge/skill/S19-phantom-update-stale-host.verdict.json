@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Cites release-log.md's 16:22 build vs 16:23 bump and client-bundle-excerpt.js's PLUGIN_VERSION \"0.3.6\" inlined at build time, explicitly states package.json is not reread at runtime, explains the badge via newerTag(\"v0.3.7\") > 0.3.6, rules out mirror/tag mismatch using git-tags.txt's identical SHAs, gives the corrected bump-before-build order adopted for v0.3.8, and proposes a post-build grep gate comparing the baked constant to package.json and the tag. Does not confuse the later v0.3.8 manifest with the earlier build."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js: PNG 200 proves the route handler is alive, SVG 404 'unsupported image type' identifies the running old whitelist rejection branch, and the shipped lib at v0.3.8 already whitelists svg. Explains client half loads on browser re-fetch while the host half's route registration is bound at host boot/plugin activation, so the linked install needs a host restart, and keeps the hot-update exception scoped to this host lifecycle rather than all plugins."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in session-log-excerpt.txt: spliced payload line 232 at the shared 'stro' prefix with lines 233-247 absent, well-formed disk source (clean XmlDocument load), clean non-deterministic re-read, and the parsererror verdict. Locates corruption in upstream read-result text assembly, declares the traced disk file innocent, requires the plugin to treat the session payload as untrusted durable-boundary input, and argues against repairing the good SVG."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain exactly: disk bytes via the asset route first (source of truth), session payload only after a DOMParser text/xml gate rejecting on parsererror, a sandboxed iframe without allow-scripts that still permits SMIL animations as the render fallback, and an explicit error card naming the failing stage with a retry action. States the iframe never bypasses the Level 2 validation gate, so malformed payload cannot reach it unchecked; the plan is appropriately unexecuted for a static task."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-Zstandard generation file frame-by-frame, preserving record order, projecting events to the read-result JSONL record, extracting the stored text verbatim, diffing against a fresh disk read, and attaching the XML verdicts as evidence for reporting the upstream bug — noting a streaming decoder handling concatenated frames is acceptable. Checklist covers bump-before-build, grep of the shipped baked constant vs manifest/tag, per-mirror tag SHA verification, plane-specific host-route probes, and filing the upstream splice bug; no actual decode is required and none is claimed as executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The report's affirmative conclusions all match the sealed analysis: bump before build, keep per-mirror SHA verification while noting it cannot catch build-input defects, host restart required for the asset route, never edit the clean traced SVG, and the session payload is rendered only after XML validation with scripts blocked in the iframe fallback. No bad example is endorsed; rejected alternatives are cited only as what to avoid."
+    }
+  ]
+}

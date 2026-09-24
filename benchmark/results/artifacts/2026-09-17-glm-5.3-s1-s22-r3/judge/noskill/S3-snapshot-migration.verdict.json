@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates the partial/runningCalls/turnEnds reads in Pet.tsx (lines 11-13, 21, 23) with the reasoning-block, tool-in-flight and last-turn-end semantics; explains the temporary views.get('chat')?.legacy projection as step one and the field-by-field move to chat view/useChat and timeline surfaces as step two, including keyed-store ordering caveats — not merely 'legacy'."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates running at Pet.tsx:19, correctly states it is Session lifecycle state outside the chat snapshot and not in the legacy projection, keeps it on the useSession seat, and explicitly says the existing useSession call needs no renaming — only separation from the chat selectors."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates both removed dsh-client-runtime imports (index.ts:9, Pet.tsx:6) and the package.json client.inject entry (line 8); repoints ClientContext to cordis Context, assigns the snapshot type to its chat-domain owner (ChatSnapshot) while stating snapshot types are not cordis exports and deferring exact symbols to target-tag exports; removes the phantom inject entry and notes the skipLibCheck augmentation hazard."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register in index.ts (40-48); wraps it in slots.inject, adds the ui-renderer/client Context augmentation for the slots service typing, and preserves the slot name, registration id, order, component and scoped lifetime; keeps the locale dictionary effect unchanged."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties snapshot reads, lifecycle seat and slot registration to full DSH-0.1.2-A1-03 and the runtime-package removal to DSH-0.1.2-A1-25 with API-10 as supplementary exact mapping — no bare card IDs; clearly separates projection-first fields (partial/runningCalls/turnEnds) from immediate type/inject/lifecycle changes in a dedicated section and summary table."
+    }
+  ],
+  "caps": []
+}

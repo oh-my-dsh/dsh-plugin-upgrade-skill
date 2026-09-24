@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Designs paste_image/paste_file base names with (2), (3)… inserted before the extension until an unused name is found, evaluated against live composer state plus earlier items of the same batch. Renaming is scoped to the paste acquisition path (explicit paste-only source flag at the top of add()) so drop and picker keep item.path verbatim, and the renamed value feeds both record.label and the upload path. Grounded in plugin-attachment-flow.js functions add(), validateItems(), record.label and the upload body. The extension/MIME and display details are correctly framed as unscored guidance without being treated as scored claims."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Explicitly identifies input.state.getSnapshot().occurrences as the authoritative occupied-name source and explains that the records alive-subscription fires records.delete(ref) on any momentary empty snapshot while an attachment remains live, so the Map under-counts. Also accounts for in-batch reservations by unioning the snapshot with names already assigned to earlier items in the same add() call."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured tags-api-response.txt (x-cache: HIT, age: 178, cached page listing only v0.2.9) and renderCurrentChip(tag) to explain the stale 'latest v0.2.9' label, and gives a semantic comparison of fetched tag vs running PLUGIN_VERSION: update chip only when fetched > running, running version shown on equality, and an older fetched tag treated as stale data and never displayed as latest — matching the required rule including the remote > / <= split."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes concrete tests with expected names/assertions: sequential and same-batch pastes yield distinct paste_image.png/(2)/(3) with matching upload paths; a retired records entry after a momentary empty snapshot still blocks reuse (numbering consults the snapshot, not the Map); drop/picker names stay image.png; and version-chip tests for stale older tag, equal tag (asserting the running constant is displayed) and a genuinely newer v0.2.11 update chip."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires bumping package.json and the hand-inlined PLUGIN_VERSION in lib/client.js in the same release, running a syntax check (node --check over lib/) plus behavioral regressions, and explains deployment: there is no host-side update endpoint and a tag/chip alone cannot install the artifact — users must reinstall/copy the new lib bundle on the host and hard-refresh the page. Grounded in the fixture's lib-only, no-build-step facts."
+    }
+  ],
+  "caps": []
+}

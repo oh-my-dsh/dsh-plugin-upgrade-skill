@@ -1,0 +1,49 @@
+{
+  "task": "S6-corridor-net-state",
+  "arm": "no-skill",
+  "repeat": 1,
+  "score": 87.5,
+  "reward": 0.875,
+  "status": "scored",
+  "reason": null,
+  "judgeModel": "GLM-5.3-Flash",
+  "judgeTransport": "zcode-subagent-v1",
+  "gradedAt": "2026-09-16T02:04:11.521Z",
+  "protocol": "report-judge-v2",
+  "criteria": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "awarded": 12.5,
+      "points": 25
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "awarded": 25,
+      "points": 25
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation affirmatively deletes the defense and its comment entirely; the old code is quoted only for diagnosis and the comment's keep-advice is rejected, so the cap is not met.",
+      "total": 10
+    }
+  ],
+  "notes": [],
+  "judgeModelNote": "restored: driver bug wrote argv[0] ('apply'); every judge call was a GLM-5.3-Flash subagent per execution-log/PROVENANCE"
+}

@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates patch.yml's surface targeting src/session/view/SessionView.ts (renderSessionView rename), the apply-patch.mjs DSH_HARNESS_SOURCE_ROOT runner, and the cordis.patch.yml patch wiring; explicitly distinguishes the composition row from the true source patch and ties the target to the session-view split (A1-03) with exact-tag re-validation advice."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Identifies the ctx.emit producer with ignorable:true and the ctx.on observer in src/index.ts, folds A1-02 removal and A2-01 restoration to a net-retained marker, keeps it as an omission-safe informational marker rather than a filter for required events, and correctly states Session.append has no ignorable parameter, marking the seam a capability gap."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites (session.rename, llm.providers) and the alpha.1 removal; maps llm.providers to the split llm/listProviders + llm/listConfigurableProviders, and correctly resolves the host-plane case via direct domain-service injection while warning that ctx.remote is the client-plane facade and inject:['remote'] would stall on the host."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates join(homedir(), '.dsh', 'profiles', 'default') with the writeFileSync target and prescribes runtime DSH_HOME/profile/official-launcher as source of truth per A1-04; it nowhere claims --profile was introduced in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the '@deepseek-ai/dsh-session-view/internal' import (line 10, also flagged as an undeclared dependency) and the registerCommand('legacy.openView') registration; explains rebuilding imports by owning module against the target tag and migrating to public seams with pending-confirmation for unstable capabilities."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the never-invoked startLegacyBridge loopback http server on 127.0.0.1:43121 and explains per A1-08 that loopback is not an auth exemption, that raw custom routes inherit no auth/CORS/TLS, and that the bridge must be deleted or moved to a Connection-owned carrier with requestRejection; distinguishes host-managed authenticated channels from raw routes."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh headless wrappers (spawn in src/index.ts and execFileSync in apply-patch.mjs) with their per-line JSON.parse; explains stdout is final assistant text with reasoning/status on stderr and success judged by exit code, and correctly notes the JSONL assumption was already wrong in rc.2 rather than inventing an alpha.2 stdout change (A1-05)."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Every mapping is tied to a located coupling rather than a bare card list: #3→A1-01, #2→A1-02+A2-01 folded, #1/#5→A1-03, #4→A1-04, #6→A1-08, plus the valid extra #7→A1-05 stdout mapping, with correct file/line anchors and sensible conditional/not-hit cards separated out."
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "States all seven categories are hit with no no-hit category, records concrete scan limits (heuristic patterns, non-compilable fixture, cards not a full diff), and proposes target-version dependency/typecheck review, an isolated profile cold boot, and functional smoke of migrated call paths — all as future verification without requiring execution of this static fixture."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Grounds the distinction in the fixture package.json declaration (^0.1.2-alpha.1) and the README 'type baseline' claim, states alpha.1 was never published while alpha.2 was, uses the brief-supplied registry fact and explicitly marks it unconfirmed pending a proposed 'npm view' verification, and never infers package existence from a root package or dist-tag."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Correctly explains the desugaring to >=0.1.2-alpha.1 <0.2.0, node-semver's same-tuple prerelease matching, and numeric identifier ordering making alpha.2 satisfy the range despite the missing lower bound; identifies the silent declaration/type-baseline mismatch and floating-baseline risk, and flags the alpha.2-vs-alpha.1 type compatibility as unconfirmed."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A is a complete plan: exact pin to published 0.1.2-alpha.2 with an explicit tradeoff (manual deliberate upgrades, acknowledges the type-level drift versus alpha.1 remains to be diffed), plus a vendored-tarball Path D fallback; alternatives B and C are coherent, and no unavailable tag or guessed command is required."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Uses one package manager (npm) throughout, requires a committed lockfile with npm ci, proposes tsc --noEmit typecheck against the pinned baseline, gives an explicit exit path for the pin plan (deliberate future upgrade with compile pass, manifest+lockfile committed together) and lockfile-refresh exits for the others, and marks registry state and type delta honestly as unconfirmed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing the unpublished alpha.1 from npm; its recommended actions pin or resolve to the published alpha.2, and the alpha.1 reference only appears as the manifest's problematic declaration being analyzed."
+    }
+  ]
+}

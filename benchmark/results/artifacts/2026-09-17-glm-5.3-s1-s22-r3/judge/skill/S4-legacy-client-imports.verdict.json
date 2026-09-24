@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the ClientContext import at src/client/index.ts:1, maps it to A1-25, explains that the type-only import still fails because the module no longer exists (type erasure not harmless), and gives a supported migration direction (Context from the actual target owning package with the needed augmentation), plus checks the dsh.client.inject/package.json cleanup surface against the fixture. No invented successor details beyond the card's mapping."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "Compares the actual loader id 'pet-legacy-bundle' (index.ts:10) with package.json name 'dsh-pet-session-bench', maps A1-26, requires exact id alignment via the tsdown banner PLUGIN_ID and matching future assembly-row naming, and specifies client activation verification via window.__DSH_BOOT__.entries and absence of the 'loaded without registering' assertion."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates the flat useSession()/nodes[0] read at index.ts:12-13, maps A1-27, correctly states the per-session node snapshot is gone and replaces it with the session binding durable event window (sessions.binding, eventSource.getSnapshot().entries, importing SessionBinding/SessionEventLikeEntry from the session-controller client surface), marks the useSession hook's own successor signature as unconfirmed, and never claims the old flat API remains supported."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates ctx.connection.api.agentPresets.list at index.ts:11, maps A1-30, states the removed face throws and the empty then-callback would swallow the error (forever-blank UI), requires routing the operation through a verified successor Remote/route with the exact agentPresets endpoint explicitly pending verification against the target tag, notes inject cleanup is unnecessary since the fixture inject list lacks 'connection', and requires surfacing an error state instead of swallowing."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never asserts an unsupported lifecycle replacement such as renaming apply to setup/activate, nor that service inject entries must move into a manifest; its only inject commentary is legitimate verification that the fixture's inject list needs no cleanup."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "status": "scored",
+  "score": 100,
+  "max": 100,
+  "passed": true,
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Report pins the lock on the dsh web host node.exe PID 42432 from running-processes.txt, explains the loaded native koffi binary stays mapped until that process exits so npm's copyfile fails with EBUSY, and correctly rules out the npm and worker PIDs as holders.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains a refresh only reloads the SPA while the host process keeps the native module loaded, and gives an ordered numbered sequence: stop host and workers, verify no dsh node processes remain, install, verify version, restart.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Grounded in npm-dist-tags.txt: a bare global install resolves via the latest dist-tag to 0.1.1-rc.2 (alpha tag holds 0.1.2-alpha.5), silently replacing alpha.4 instead of preserving or upgrading it; prerelease/latest mechanics are explained correctly.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus @deepseek-harness-tui/dsh-tui after stopping the host, verifies dsh --version prints 0.1.2-alpha.5, then restarts; @alpha is mentioned only as a mutable alternative, not a replacement.",
+      "points": 20,
+      "awarded": 20
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Advises README authors to pin the exact core version in any command that also installs dsh, warns that unpinned latest silently downgrades prerelease users, and requires every package in a combined one-liner to carry its own pin.",
+      "points": 20,
+      "awarded": 20
+    }
+  ],
+  "caps": [],
+  "model": {
+    "requested": "apply",
+    "returned": "apply",
+    "endpoint": "zcode-subagent-v1",
+    "transport": "zcode-subagent-v1"
+  },
+  "citation_audit": [],
+  "reports": {
+    "report.md": "d0d14f64dafaa67b05ce485055850d93745d9e039a3cc8ae933f6fe40266e319"
+  },
+  "protocol": "report-judge-v2",
+  "packet_sha256": "1a57f43c8d4faedddc436b3d9f938d4249d9bf0d7edc7f0261b63abd69261f35",
+  "judge_input_sha256": "187ffe3b996ff9a80480c3ccaa5c34dd0cf75b90ac2bf3e401f59609e0d785db"
+}

@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Grounded in agent-session-log.txt and env-state.txt: the pwsh tool worker and GUI are components of the host process npm was replacing; the remove step killed the host mid-call. It explicitly preserves the log's unknown final tool outcome ('no result was durably recorded. Its outcome is unknown.') and frames the failure as structural self-host dependency rather than a network fluke."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains env-state.txt precisely: rc.1 content present but dsh/dsh.cmd missing and dsh.ps1 stale, so entry points — not content — define the CLI; links the nonstandard, hand-patched tree to the broken shim state and devotes a section to rejecting directory swaps and hand-written shims in favor of npm itself."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounded in repair-notes.md: re-running the formal pinned install (npm install -g @deepseek-ai/dsh@0.1.2-rc.1) from outside the stopped host so npm regenerates the dsh/dsh.cmd/dsh.ps1 shims, verification that dsh --version equals rc.1, and the alpha.5→rc.1 checkout alignment with no local edits demanded. Clearly separates the recorded repair from the candidate's own (static, no-execution) analysis."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Explicitly recognizes the agent is running on the upgrade target and must hand off, never execute the install from that session (including retry variants). The external procedure fully stops all dsh processes first, then runs the pinned exact-version install, restarts the host, hard-refreshes the browser and verifies version/plugins. It distinguishes stop-first, exact pinning, restart/refresh/verify, and formal reinstall as established rules from the new self-host refusal rule."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Proposes a concrete agent-side guard comparing the requested package identity against the running host's own install path, refusing on match. Uses repair-notes.md's alpha.5→rc.1 all-version-bump diff to conclude no plugin re-migration for these tags, checks version markers and actual plugin loading after restart/refresh, and defers dsh-old-* backup cleanup until verification passes — all with no code changes."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The report's final plan explicitly refuses to execute or retry the upgrade from any session/tool worker on the target host and hands the user an external stop-first procedure; in-session execution appears only as the rejected failure being analyzed."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and hand-written shims are discussed only as the failed user attempt and are explicitly rejected; the report's final fix is the formal external pinned npm install that regenerates the shims."
+    }
+  ]
+}

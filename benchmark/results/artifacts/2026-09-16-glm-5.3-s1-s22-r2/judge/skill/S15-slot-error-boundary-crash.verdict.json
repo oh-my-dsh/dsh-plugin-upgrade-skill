@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report cites fixture/plugin-dock-chips.js and quotes the exact disabled expression in AttachmentChips, explains busy is AttachButton's local state unbound in AttachmentChips/module scope, and shows empty occurrences return null before the map while a plain-phase present occurrence makes the left guard false so busy evaluates and throws ReferenceError. Table reproduces the short-circuit truth behavior; source grounding is satisfied by the named file and unambiguous component/line."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Section 1.4 explains the slot-level React error boundary catches the render exception and unmounts the entire slot entry (whole dock tree, not just the remove button), that the attach button survives as a separate input.left slot entry, and that the error appears only in the browser console with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses shipped v0.2.10 source plus the maintainer note to establish busy predates v0.2.11, treats the diff's old-side hunk as an artifact, and proposes both a rollback/re-add bisect and a minimal data-present plain-phase mount on v0.2.10 code with a distinguishing-evidence table (stack location, invariance to reverting the diff). It does not claim the diff is harmless: it flags the diff as inconsistent with the baseline on the old disabled line and identifies the imageItem line referencing status/record before the map callback declares them, crediting these extra defects. It also explicitly notes historical usage frequency is inferred rather than proven."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Fix removes the dangling busy reference (or lifts shared/pending state as a properly owned prop) while preserving the phase guard; hardening adds record?.items ?? [] before .find (explaining the TypeError on a record without items) and event.target.closest?.() with rationale; the imageItem lookup is moved inside the map callback where record/status are scoped. Equivalent safe fixes, no execution required."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a jsdom render smoke of AttachmentDock with a matching occurrence in plain phase asserting .chip and .remove exist and no error-boundary/console.error capture, and explains why the empty state passes vacuously through return null and why node --check/syntax gates cannot catch free identifiers (legal parse, runtime-only failure). Includes the data-present render smoke as a minimum pre-ship check for slot-rendering lib-only plugins; no actual test run demanded."
+    }
+  ],
+  "caps": []
+}

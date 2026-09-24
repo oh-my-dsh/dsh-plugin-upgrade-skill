@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry chunk 200 but sibling imports (src-*.js, pie-*.js, 97 siblings) resolve relative to the chunk URL and were never shipped, so dynamic import fails; proposes self-contained single-file bundle with splitting disabled (inlineDynamicImports/splitting:false) and notes the full-asset-dir alternative covers every dependency."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Correctly compares chunk-route.ts's startsWith guard with ci-note.md: LIB_DIR uppercase E: from import.meta.url vs realpath canonical lowercase e:; ordinal case-sensitive comparison rejects a contained file. Explains Linux and laptop pass by string-case coincidence, and explicitly rejects the 'Windows paths are unreliable' takeaway without claiming realpath always lowercases everywhere."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes path.relative containment on canonical realpath-resolved paths with non-empty/non-'..'/non-absolute rejection, one-time case fold of both sides on win32 only, symlink escape re-checked after realpath, first guard fixed consistently, and JavaScript MIME type preserved for module import."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains pane ancestor handler and modal descendant handler both receive the same bubbling Ctrl+wheel; gives the modal exclusive ownership via stopPropagation plus preventDefault, with the pane handler also standing down for events targeted inside the modal."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Complete planned matrix with expected outcomes: shipped-artifact import-specifier assertion plus e2e with zero 4xx and SVG fallback; route unit test asserting 200 with JS MIME for case-differing contained path while traversal/absolute/symlink escapes stay 403; modal wheel test asserting zoom fires and pane font-size spy does not, with non-overreach complement."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "Final advice strengthens containment (path.relative plus case fold, escape suite must keep failing); no affirmative recommendation to disable the guard or serve outside the lib root."
+    }
+  ]
+}
