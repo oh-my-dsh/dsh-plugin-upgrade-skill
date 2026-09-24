@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report identifies both workspace-files insert rows (bundle web-app patch and profile patch), cites EntryGroup.update in cordis-plugin-loader via Include._apply from the crash stack, and explains insert is additive-by-identity with no last-write-wins, explicitly rejecting the profile comment claiming the duplicate is harmless redundancy."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes all three: config change by existing id safe, insert of a genuinely new id safe (with the profile's own dsh-file-trace/dsh-profiles examples), insert of a bundle-shipped id fatal; classifies the maintainer's row as the third case grounded in both excerpts plus the session-controller/settings-controller contrast."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Fix is deleting only the manual workspace-files insert block from the profile cordis.patch.yml, preserving the bundle service and unrelated rows; notes config adjustments should use id-targeted override not a second insert, and rejects renaming/adding alternatives."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a profile composition error in the loader before plugin resolution/apply, so plugin code changes cannot fix it, and separately notes removing the duplicate only restores boot possibility while the original resource-read failure remains unverified and distinct."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping the installed web-app bundle cordis.patch.yml (and other composing layers/resolver manifest) for the id and distinguishing override from insert; proposes a host diagnostic naming workspace-files, both declaration origins with file paths, and a concrete delete pointer, plus a pre-flight dedupe check."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The report explicitly rejects the profile comment's 'keep as redundancy' advice and never endorses keeping, adding, or silently merging duplicates; all final advice is to remove the redundant block."
+    }
+  ]
+}

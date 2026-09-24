@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in console-split-chunks.txt and its shipped-lib note: entry chunk fetched 200 while unshipped sibling imports 404, making the atomic dynamic import fail; proposes disabling code splitting into a single self-contained chunk (inlineDynamicImports / esbuild no-splitting), with ship-all-chunks as an alternative."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Quotes ci-note.md's LIB_DIR=E:\\... vs realpath=e:\\... debug print and chunk-route.ts's case-sensitive startsWith guard; explains fileURLToPath preserves the URL's drive-letter case while realpathSync canonicalizes lowercase on Windows, and why Linux (no drive letters) and the lowercase-c: laptop pass coincidentally, rejecting the 'Windows paths unreliable' folklore."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes comparing against realpathSync(LIB_DIR) so both operands share canonicalization, or path.relative with rejection of '', '..' prefixes and absolute results; keeps the file's realpath to defeat symlink escapes and correctly notes win32.relative is case-insensitive vs posix case-sensitive; explicitly preserves the JavaScript MIME type as the other serving requirement."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains one bubbling Ctrl+wheel event reaching both the pane font handler and the modal zoom handler on overlapping scopes; gives the innermost active layer exclusive ownership, has the pane handler stand down (scoped to its subtree), and the modal stopPropagation+preventDefault, noting later stopping cannot undo an ancestor capture-phase listener."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Proposes planned checks with expected outcomes for all three incidents: emitted-import-graph/ship-completeness test failing on attempt 1 and route-level 200 checks; a unit/e2e case with uppercase LIB_DIR vs lowercase realpath asserting 200 for contained files while traversal and symlink escape still 403/404; and a DOM test asserting modal Ctrl+wheel changes diagram scale but not pane font size, plus a symmetric font-size test."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The proposed fixes preserve containment: both variants keep realpathing the requested file and reject traversal, absolute, and symlink escapes; nothing in the report recommends disabling the guard or serving paths outside the plugin lib root."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt Junction/Target and the cordis.patch.yml link marker, explains that repo edits are already the installed copy, that copying through the junction is self-overwrite, and explicitly distinguishes copied-dependency installs from link installs."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Grounds the EBUSY in copy-session.txt open handles held by the running dsh host, notes closing the browser tab releases nothing, and separately explains browser HTTP-cache staleness requiring hard refresh after host restart — without conflating the two or overgeneralizing to all DSH versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the rename went through the junction to the sole physical files, making the source copy fail; restores client.js.old2/index.js.old2 to their original names preserving contents, verifies with node --check, then activates, with host stop first as a precaution. Does not require renaming while locked or deleting the files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the full semantic order: fully stop host, restore/verify files, restart dsh web, hard-refresh bypassing cache, then verify the new hover-preview feature/route and absence of load errors; explicitly notes syntax checking alone is not activation and browser-only restart is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Prescribes checking LinkType/Target and the cordis.patch.yml link marker before any file operation, branching linked vs copied procedure, and explains that generic copy-into-node_modules advice caused the self-overwrite/EBUSY and source destruction."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan renames the .old2 files back in place and explicitly states no copying is ever performed for a link install; copying appears only as a rejected bad example."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The final plan always stops and restarts the host; browser refresh is presented as insufficient alone and as the final cache-bypass step after host restart."
+    }
+  ]
+}

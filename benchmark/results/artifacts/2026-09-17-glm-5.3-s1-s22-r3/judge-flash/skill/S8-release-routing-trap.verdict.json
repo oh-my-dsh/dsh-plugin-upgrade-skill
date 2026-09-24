@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Report reads ls-remote-tags.txt (v0.9.5 absent; tags stop at v0.9.1 then jump to v0.9.7) and grounds the cause in sync-script.sh pushing only HEAD:main with no tag push, explicitly rejecting network/typo explanations and tying it to the attempt-1 ref resolution failure."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and the compat table to explain v0.9.7 targets the 0.1.2-alpha.1 client API with the useConversation seat, so the older rc.2 runtime lacks the export and install/restart success does not imply compatibility; direction stated explicitly. Minor extraneous citations to a skill corridor reference add color but the core diagnosis rests on the sealed fixtures."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Honors the freeze, selects v0.9.3 via its rc.1 verification plus the additive rc.2 note, explicitly notices v0.9.3 is also absent from the public-org mirror, and gives a #v0.9.3 install command conditioned on maintainer tag publication (or a verified remote carrying the tag); no invented SHA, no runtime upgrade, and the v0.9.1 fallback is flagged as unverified rather than presented as installable."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Grounds the repair in the branch-only sync script: per-release tag distribution (push --follow-tags with explicit fallback for lightweight tags), one-time git push --tags reconciliation, and a verification gate diffing git ls-remote --tags against local tags per remote and failing the release on any missing tag."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Proposes routing README install commands by consumer DSH version with a published compatibility matrix and per-corridor commands (rc.x → v0.9.3, alpha.1 → v0.9.7), rejects a single newest-tag default, and does not generalize support to untested future alphas; a manifest compatibility field adds an install-time loud failure."
+    }
+  ],
+  "caps": []
+}

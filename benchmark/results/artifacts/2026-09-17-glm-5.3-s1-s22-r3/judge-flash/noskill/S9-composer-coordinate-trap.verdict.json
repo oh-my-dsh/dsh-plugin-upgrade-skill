@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report grounds the two-projection distinction in host-input-contract.ts (draft/Occurrence offsets are clipboard-text, chips expanded) and in host-input-facade.ts (insertReference TokenSpan splices/consumes detectText; tail lookahead reads detectText), correctly stating a chip occupies one U+FFFC in detect coordinates and that plain text and separator spaces count equally in both. No invented APIs; an equivalent description of the contract."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Report identifies snapshot.draft.length in add as the miscomputed value and explains: with an empty composer both projections coincide so paste #1 works; after a chip, clipboard length (29) overshoots the 2-char detect span, insertReference returns false, and the plugin throws the changed-composer toast. It explicitly rejects the concurrency/race reading by noting the rev CAS passes. Grounded in plugin-client.js, the session capture and the facade."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Report traces remove: occurrence.offset/length (clipboard coordinates) passed unconverted to consumeToken, false return ignored, records.delete runs unconditionally, so the live occurrence stays while the dock's record===undefined branch renders 'unavailable' and the composer chip persists. It explicitly ties both symptoms to the same coordinate mismatch rather than a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Report derives a concrete toDetectPos rule (subtract Σ(length−1) for occurrences entirely before the position), applies it at both call sites — insertion caret at draft end using all preceding occurrences, and removal mapped offset plus a one-detect-character span replacing occurrence.length — keeps the revision guard with re-read discipline, and retires records only after consumeToken returns true (with error state on false). Exceeds 'merely saying convert offsets'."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Regression plan asserts two successive pastes with both chips present, then removing a chip with another preceding chip (remove A with B surviving) asserting occurrence, dock chip and record removed together while the other chip survives. It adds guard-refusal/records-retained, empty-again and phase-guard variants with concrete executable-style assertions, matching the required sequences."
+    }
+  ],
+  "caps": []
+}

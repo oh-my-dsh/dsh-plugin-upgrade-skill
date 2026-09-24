@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates session.events reads in plugin-source-excerpt.js (42 references, lines 734/6685/657/2685/3004), the 'events is not iterable' failure in crash-stack.txt inside prepareReplayEvents/apply, and cites dsh-changelog-excerpt.md for removal at 0.1.2-alpha.4 with replacement by seq/eventAt()/snapshotEvents(). Correctly explains the mechanism: removed property reads undefined, then iteration throws TypeError, failing the loader entry."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt: ^0.1.2-alpha.2 means >=0.1.2-alpha.2 <0.2.0-0 and same-base prerelease ordering puts alpha.5 inside the range. Explains npm's check is a static metadata semver comparison that never loads code, and that the peer range is an untested author claim, not evidence any version was validated at runtime."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives two genuinely distinct classes: (1) removed/renamed API surface (this case) and (2) behavioral/contract changes with unchanged names such as sync-to-async, added required parameters, or array-to-cursor return-shape changes. Both are concretely explained with failure symptoms."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against actual supported endpoints (floor alpha.2 and current top alpha.5) in a clean profile, then an actionable policy: narrow the declared range (>=0.1.2-alpha.2 <0.1.2-alpha.4) or implement runtime feature detection with correct old/new paths (snapshotEvents vs .events) or migrate and raise the floor. Explicitly explains metadata encodes the tested corridor while runtime guards cover what the range cannot pin."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install checks: fetch and unpack the plugin tarball without executing it and grep for session.events (42 hits flag the removed API), or typecheck plugin sources against the installed host's declarations ('Property events does not exist on type Session'). Directly tied to this Session.events incident and its alpha.3-to-alpha.4 compatibility boundary."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's final conclusions state the opposite: peer satisfaction is a static metadata check that guarantees nothing about API existence, and the range here was simply wrong. No affirmative claim that peer-range satisfaction or a warning-free install proves runtime compatibility, and the documented removal is affirmed, not denied."
+    }
+  ]
+}

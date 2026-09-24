@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry returns 200 but sibling relative imports resolve against the chunk URL and the siblings were never shipped, so instantiation fails as 'Failed to fetch dynamically imported module'; proposes disabling code splitting (inlineDynamicImports / splitting: false) or shipping the whole emitted asset dir, which accounts for all dependencies."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Correctly attributes the 403 to the case-sensitive startsWith comparing LIB_DIR's 'E:' against realpathSync's canonical lowercase 'e:' per ci-note.md, explains Linux and the C:\\ laptop pass only by string-equality coincidence, and explicitly rejects the 'Windows paths are unreliable' takeaway without claiming intrinsic unreliability."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes path.relative-based containment (non-empty, not '..', not absolute) on canonical realpath output, case-folding only on win32 (not on case-sensitive POSIX), reapplies the check to catch traversal and symlink escapes, and explicitly preserves the application/javascript MIME type required for dynamic import."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both handlers act on one Ctrl+wheel via one propagation path, gives the modal exclusive ownership (preventDefault + stopPropagation), and adds the required pane-side stand-down (ancestor ignores events targeted inside the modal), acknowledging that an ancestor handler cannot be undone by a later stop."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned checks with expected outcomes for all three incidents: packaging/self-containment assertion plus fallback preserved with zero 4xx; case-differing contained path serves 200 with JS MIME while traversal, absolute, and symlink escapes stay refused; modal Ctrl+wheel zooms once with pane font-size untouched and pane chrome still zooming. Framed as planned tests, not executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final recommendation strengthens containment: path.relative plus realpath re-check rejects traversal, absolute, and symlink escapes; guard removal is only discussed as something the regression suite must prevent."
+    }
+  ]
+}

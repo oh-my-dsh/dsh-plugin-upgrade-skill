@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "Uses symptom-log and contrast-probe: tab claimed/titled correctly, meta.status stays 'none' while file-trace's own RPC reads the same file; localizes the fault to the api-workspace-files Remote→host resource-provider/metadata chain, explicitly rules out disk existence and the renderer, and notes the declared host row does not prove activation. Does not demand an unseen internal function."
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "Correctly treats the 62/62 per-module sweep as authoritative and explicitly rejects the joined 4–5 KB 404 as a non-loader access pattern rather than missing modules. However it never mentions the loader's bounded URL limit driving partitioning (attributes the 404 only to malformed/unsupported joins) and does not address the manifest's 60-entries vs probe's 62 discrepancy at all."
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "Separates the dsh-paste-input fold warnings as an independent benign warning family unrelated to the resource read, and uses the boot manifest to explain the textpreview→documentpreview rename and the session-only canOpen scope, correctly tying that scope to the outside/absolute-address claim failure while stating it does not explain the session tab's stalled metadata."
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "Orders: clean host restart once → rollback to the #5999-verified 0.1.3-alpha.2 escape hatch → upstream follow-up appended to discussion #5999; explicitly rejects plugin rewrite/retry/fallback as masking the host defect; contrasts the alpha.2 round (62/62 200, static serving fine) with the alpha.1 roster mismatch to treat it as prior art, not proof alpha.2 lacks bytes. Only proposed actions, no execution."
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "Lists a complete forensic pack (versions/history, OS, junction-linked plugins, full boot manifest and HTML census, probe results with the invalid-join caveat, contrast probe with meta.status, console excerpt, workspace-root inputs) and proposes named host diagnostics: boot-time cross-plane service/Remote consistency assertion and a Remote liveness handshake, which are meaningful failing-chain readiness checks."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "The report affirmatively concludes the opposite: the joined-URL 404 is an invalid hand-crafted access pattern that must never be cited as missing modules, while the per-module sweep proves all artifacts serve."
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "The report explicitly rejects plugin-side rewrite/retry/fallback as a cure, arguing it would mask the host defect and duplicate the capability; only host restart/rollback/upstream are recommended."
+    }
+  ]
+}

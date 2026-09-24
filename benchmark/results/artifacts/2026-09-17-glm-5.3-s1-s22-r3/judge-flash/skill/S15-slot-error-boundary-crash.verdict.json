@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report locates the exact disabled expression, correctly identifies busy as AttachButton's local useState never declared in AttachmentChips, explains the early null return before the map and the short-circuit that only reads busy when an occurrence exists in plain phase, producing a ReferenceError. Grounded in the fixture files."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render exception is caught by the slot error boundary which unmounts the whole dock entry rather than the remove button alone; attach button survives in its separate input.left slot entry; the diagnostic appears only in the browser console with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 file (and maintainer note) to establish busy already exists in the baseline; proposes a v0.2.10 data-present plain-phase mount and a rollback/re-add bisection to isolate it; records the feature.diff/baseline inconsistency about the old disabled line and flags imageItem being computed before the callback-scoped status/record; explicitly notes production history of when users first hit the path is unknowable from the evidence."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Proposes deleting || busy or threading busy as an explicitly owned prop while preserving the phase guard; hardens items with record?.items ?? [] and event targets with closest?.-style optional chaining; moves the imageItem lookup inside the map callback where record/status are scoped. Equivalent safe fixes, no execution required."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Specifies a render/mount test with an occurrence present in plain phase asserting the chip exists and no error-boundary capture; explains the empty state returns null before the throwing line so an empty-state-only test misses it, and that node --check/syntax gates cannot resolve free identifiers or execute the component; recommends the data-present slot smoke as a pre-ship gate."
+    }
+  ],
+  "caps": []
+}

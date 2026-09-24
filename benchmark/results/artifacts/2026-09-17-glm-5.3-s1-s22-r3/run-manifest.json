@@ -7,5 +7,25 @@
   "judge_model": "zai/glm-5.3",
   "judge_deviation": "R3 used GLM-5.3, the solver model, rather than the GLM-5.3-Flash judge used in R1/R2. Direction/magnitude of evaluator bias is not measured. The median does not remove the protocol difference.",
   "notes": "R3 of the historical three-round series; 44 reports and verdicts; original concurrency/quota/relaunch disclosures retained in the validation report. Corrected totals: noskill 2012.5 / skill 2157.5 / lift 145 (6.5909 pp). S17 no-skill retains cap=0. Mixed-judge three-round median: noskill 2135 / skill 2170 / lift 35 (1.5909 pp); descriptive only.",
-  "arithmetic_correction": "2026-09-17: preserve rubric half-points; all 44 original verdicts recomputed against e0a9ff5. Reports and verdicts unchanged."
+  "arithmetic_correction": "2026-09-17: preserve rubric half-points; all 44 original verdicts recomputed against e0a9ff5. Reports and verdicts unchanged.",
+  "rejudge": {
+    "date": "2026-09-17",
+    "judge_model": "zai/glm-5.3-flash",
+    "rubric_commit": "e0a9ff5",
+    "rubric_note": "S1-S22 tests/packet.json and benchmark/report-judge/judge.mjs scoring are unchanged between e0a9ff5 (solver base) and f8ab014 (re-judge base).",
+    "scope": "all 44 round-3 reports re-judged; reports and original judge/ verdicts unchanged",
+    "verdicts": "judge-flash/{noskill,skill}/",
+    "aggregate": "aggregate-flash-rejudge.json",
+    "totals": {
+      "noskill": 2092.5,
+      "skill": 2185,
+      "lift": 92.5
+    },
+    "three_round_median_with_rejudged_r3": {
+      "noskill": 2112.5,
+      "skill": 2190,
+      "lift": 77.5
+    },
+    "canonical_for_cross_round": true
+  }
 }

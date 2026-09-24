@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Correctly locates the upper-only/lower-only branches in renderer-excerpt.ts, explains that fg-only sequences leave the previous cell's 48;2 background sticky and bleed into the empty half of the half-filled cell, ties it to the right-edge symptoms (outline, Zs, heart) rather than artwork/emulator, notes the row-end reset is too late, and gives the ESC[49m fix plus the symmetric 39 variant."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains the trailing [ ]+$ trim drops surplus columns and a diff-style text pipeline never rewrites them, so a narrower frame leaves ghost columns; proposes padded full-40-column rows plus ESC[K erase-to-EOL with SGR kept controlled, correctly treating padding and explicit erase as a two-part fix."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt to pin tail2 as the sole MISMATCH with 23 differing cells in the upper-right cluster (1-col shift plus extra cells), distinguishes hand-port data drift from renderer artifacts, explains the excerpt-based regression on a different frame missed it, and proposes per-frame sha256 digests against source art as the gate."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounds the hang in ci-hang-evidence.txt: self-re-arming planner setTimeout chain keeps Timeout handles live, CI hosts mount without unmounting so checks pass but the loop never drains, interactive TTY/stdin keeps the product alive regardless; proposes timer.unref as the one-line fix (with unmount-clear as ownership variant) without endorsing longer CI timeouts."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Ships a renderer contract checklist covering per-cell pen pinning (39/49), fixed output geometry, erase-on-shrink, row-final reset, SGR balance, full-frame digest integrity and lifecycle disposal; the pre-flip audit inventories mounting hosts, adds an event-loop drain/exit regression and frame-switch sweep. No execution needed for this static criterion."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms resetting the half-cell background, full-width output with explicit erase, source-backed per-frame digests, and unref-ing the planner timers; the terminal pipeline is blamed only where the evidence supports it, and no bad advice is endorsed."
+    }
+  ]
+}

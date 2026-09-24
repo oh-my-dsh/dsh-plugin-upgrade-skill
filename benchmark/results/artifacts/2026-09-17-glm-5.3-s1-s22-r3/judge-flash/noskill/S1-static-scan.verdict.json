@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates patch.yml:3-6 and scripts/apply-patch.mjs, correctly classifies cordis.patch.yml as composition rather than a source patch, and grounds the private session-view coupling in the patch target src/session/view/SessionView.ts."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Finds the informational producer/consumer with ignorable:true, explains the A1-02 removal and A2-01 restoration with correct corridor folding to A2-01 net state, and explicitly notes the public Session.append still cannot write the marker without claiming it does."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites and the A1-01 removal; correctly distinguishes host-plane domain-service injection (llm.listProviders) from client-plane Remote and warns against injecting a nonexistent Host remote service."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hardcoded join(homedir(), '.dsh', 'profiles', 'default') write and explains using runtime DSH_HOME/profile plus the official launcher; makes no false claim about --profile being introduced in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the private SessionView internal import and the registerCommand construction, and explains post-split verification by owning module/public seam, including checking the packed artifact rather than the checkout."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the private loopback server and /api/legacy route, states loopback does not bypass auth requirements, and distinguishes host-managed authenticated channels from raw custom routes with the correct gating guidance."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh subprocess calls and the stdout JSON.parse; correctly explains stdout final text vs stderr reasoning/progress, that the JSONL assumption was already wrong at rc.2, and invents no alpha.2 stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps each located coupling to A1-01 (#3), A1-02+A2-01 folded to net A2-01 (#2), A1-03 (#1, #5), A1-04 (#4, secondary), A1-08 (#6), and A1-05 (#7) with per-mapping reasoning grounded in the code, not a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "Explicitly accounts for all seven categories (all hit, none no-hit) and notes static line-level scan limits, but never proposes target-version build/typecheck, isolated boot, or a functional-path verification for the migration as a whole (only an events persist/reload note)."
+    }
+  ],
+  "caps": []
+}
