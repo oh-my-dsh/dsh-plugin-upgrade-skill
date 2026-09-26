@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report quotes the exact disabled expression in AttachmentChips, states busy is React state local to sibling AttachButton (plugin-dock-chips.js:7 vs line 34), gives the OR truth table: empty occurrences return null before the map, non-plain phase short-circuits true, plain phase (also default) evaluates busy and throws ReferenceError."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Report explains the render exception during the map unmounts the whole dock slot entry via the InputZone error boundary, not just the remove button; the attach button slot and paste survive, and the diagnostic is console-only with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Report uses the shipped v0.2.10 line to show busy is pre-existing, flags the feature.diff inconsistency (diff depicts adding || busy while v0.2.10 excerpt says it existed), proposes a data-present plain-phase v0.2.10 baseline mount and rollback/re-add isolation, credits the additional defect that imageItem sits outside the map before record/status are scoped, and explicitly notes the evidence cannot establish when historical users first exercised the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Minimal fix drops the dangling busy read while preserving the phase guard, offers properly owned shared state as an alternative; hardens arrays with record?.items ?? [], DOM with event.target?.closest?.('.remove') (correctly noting !== null alone is wrong), and scopes imageItem into the occurrence callback where record/status are defined."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes mounting the shipped dock component with a SOURCE-matching occurrence in plain phase under an error-boundary spy, asserting chip and remove button render and the boundary captured nothing; explains empty-state-only tests return null before the throwing line and node --check only parses without resolving free identifiers; includes the data-present slot smoke in minimum pre-ship checks."
+    }
+  ],
+  "caps": []
+}

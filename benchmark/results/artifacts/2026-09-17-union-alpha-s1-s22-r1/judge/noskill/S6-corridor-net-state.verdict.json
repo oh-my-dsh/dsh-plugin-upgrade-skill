@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "The report reconstructs the full corridor as retention → alpha.1 removal of SessionEvent.ignorable → alpha.2 restoration of retention semantics, using the fixture README and src/events.ts, and applies the final alpha.2 state to produceExternalEvent in src/events.ts, concluding the alpha.1 defense is obsolete. Card names are not relied on; the history itself is stated."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "It locates `delete (event as any).ignorable` at src/events.ts:6, rejects the comment's keep-the-defense instruction as an obsolete trap, recommends deleting the stripping line and stale comment while keeping session.append (distinguishing removing the stripping code from removing the marker), and additionally notes the delete is a no-op because the fresh literal never carries ignorable."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "It correctly explains that an ignorable marker is appropriate only for events genuinely optional for log interpretation/replay, not merely because they are third-party/informational, and that stripping would discard retention metadata. However, it does not affirm that retention is not a reader-side filtering directive and that marked events remain in the loaded log after reload, hedging these alpha.2 semantics as unconfirmed, and applies the producer rule only as 'do not set or delete blindly' without the required-events-must-not-be-ignorable contrast."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "It recognizes the API risk: session: any masks the signature, asserts it would be unjustified to claim append accepts an ignorable option, forbids faking the marker via a cast, an extra flag or a guessed field, and defers producer/persistence integration pending target API verification. But it frames the gap as unverifiable rather than affirmatively identifying that the public live Session.append has no supported ignorable parameter, partly echoing the brief's hint."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the alpha.1 defense and the stale comment on alpha.2; the stripping advice appears only as quoted, rejected material."
+    }
+  ]
+}

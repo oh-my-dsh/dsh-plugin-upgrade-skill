@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Correctly attributes the badge to PLUGIN_VERSION=\"0.3.6\" baked at build time (tsdown inlined before the 16:23 bump per release-log.md), explains package.json is not reread at runtime, shows mirror/tag integrity is irrelevant, and prescribes bump-before-build plus a grep-the-artifact gate while retaining mirror verification and not confusing v0.3.8's later manifest with the earlier build."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe and lib excerpt precisely: PNG 200 proves the live route, SVG 404 'unsupported image type' shows the running whitelist is old while disk has svg, so staleness is pinned to the never-restarted host process. Explains client re-fetch on reload vs host boot-time route registration and correctly scopes the 'plugins hot-update' rule to the client plane, requiring a host restart."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Locates corruption in upstream result-text assembly (model-visible persisted block), grounded in the clean typed read, well-formed disk source, non-well-formed spliced payload, and clean re-read. Treats the payload as untrusted rendering input and rejects editing/repairing the innocent traced file, explaining why that would paper over the real defect."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the exact ordered chain with justification: disk-bytes asset route first, session payload only behind a DOMParser/parsererror XML well-formedness gate, sandboxed iframe (no allow-scripts, CSP script-src 'none') letting SMIL run, and an explicit error state; validation failure routes to the error state, never unchecked into the iframe."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding concatenated zstd frames (streaming decoder or frame loop) preserving per-frame boundaries, reconstructing the JSONL event envelope's exact stored text, comparing with disk plus XML verdict as reportable evidence, and reporting the upstream bug. Checklist covers bump-before-build, grepping the shipped constant, per-mirror tag SHA verification, plane-specific liveness probes, and no decode/post is claimed as executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice consistently requires bump-before-build, host restart for host-plane changes, unedited clean SVG, XML validation before any payload render, and no scripts in the iframe; the only statements of bad practices are quoted or explicitly rejected diagnoses."
+    }
+  ]
+}

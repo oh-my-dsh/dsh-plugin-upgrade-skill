@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Grounded in ls-remote-tags.txt (v0.9.5 absent between v0.9.1 and v0.9.7) and sync-script.sh (only 'git push --force-with-lease HEAD:main', a branch refspec that distributes no tags), tied to attempt 1's unresolvable README pin, and explicitly rules out network fault, typo and package-manager defect."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and compat-table.md (v0.9.7 targets dsh 0.1.2-alpha.1) to explain attempt 2 as a newer-client-API artifact on an older runtime lacking the required useConversation seat; states install/restart success does not establish API compatibility and explains the direction rather than echoing the error."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Honors the production freeze by keeping DSH 0.1.1-rc.2 and selecting v0.9.3 via its rc.1 verification plus the additive rc.2 note; explicitly flags v0.9.3 as also absent from the mirror, gives the pinned #v0.9.3 install command conditioned on maintainer tag publication, offers only a conditional verified-commit alternative without inventing a SHA, and requires no DSH upgrade."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit non-forced tag refspec pushes (git push refs/tags/v0.9.3:refs/tags/v0.9.3) to every configured remote including both public mirrors, grounded in the branch-only sync script; accepts controlled --tags as an equivalent option, and gates release completion on each advertised mirror resolving every advertised tag, with no force-moving of existing tags."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Requires routing README install commands by consumer DSH version via a runtime-first chooser (dsh --version) plus an explicit compatibility matrix: rc.1/rc.2 users get v0.9.3, alpha.1 users get v0.9.7; replaces the single newest-tag default, documents the wrong-line symptom, and explicitly disclaims generalizing to untested future alphas."
+    }
+  ],
+  "caps": []
+}

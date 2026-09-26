@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates cordis.patch.yml:5-6, patch.yml:2-6 target src/session/view/SessionView.ts and apply-patch.mjs; explicitly distinguishes composition rows from the real patch declaration and explains the private session-view coupling under A1-03."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Locates the legacy/informational-note producer with ignorable:true at src/index.ts:17, explains alpha.1 removal and alpha.2 restoration, concludes the marker must be preserved (corridor folding), rejects consumer whitelists, and correctly notes public Session.append has no ignorable parameter."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates ctx.get('apiProxy') with session.rename and llm.providers at src/index.ts:25-32, maps removal to A1-01, distinguishes Host domain injection (ctx.llm.listProviders) from Client-side ctx.remote and explicitly warns against inject:['remote'] on the Host plane."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates homedir()/.dsh/profiles/default at src/index.ts:35-38, explains the write bypasses runtime DSH_HOME and selected profile per A1-04, and does not claim --profile was new in alpha.1."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates both the private SessionView import from @deepseek-ai/dsh-session-view/internal (line 10) and ctx.contributes.registerCommand('legacy.openView') (lines 41-43), and explains owner-by-owner public-seam verification after the A1-03 split without inventing new paths."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the raw Node loopback HTTP server on 127.0.0.1:43121 (lines 47-53), explains loopback does not exempt it from auth, and distinguishes Connection-gated official /api routes from raw routes needing explicit gate wiring per A1-08."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh headless spawn (src/index.ts:57-67) and execFileSync JSON.parse (apply-patch.mjs:12-19), correctly states stdout was already final text so the JSONL assumption is a pre-existing error, and identifies alpha.1's stderr reasoning segment as the corridor change without inventing a stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Complete grounded mapping: #1/#5 to A1-03, #2 to A1-02+A2-01 with corridor folding, #3 to A1-01, #4 to A1-04, #6 to A1-08, #7 to A1-05; each mapping is tied to located lines, not a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "Accounts for all seven categories as hits, rules out narrower surfaces with negative evidence, states scan and runtime limits, and proposes build/typecheck baseline, isolated cold boot and a core functional path as future validation without executing the fixture."
+    }
+  ],
+  "caps": []
+}

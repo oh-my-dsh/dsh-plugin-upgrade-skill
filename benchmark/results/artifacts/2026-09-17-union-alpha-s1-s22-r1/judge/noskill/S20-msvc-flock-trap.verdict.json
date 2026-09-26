@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes the failure to fs-ext@2.1.1's node-gyp configure build failing on missing Visual Studio, tied to the manifest's dsh-session-persistence-jsonl dependency; explicitly rejects network/pnpm-general/lock-contention explanations and notes msvs_version/VCINSTALLDIR hints cannot conjure an absent compiler."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Grounds the argument in lease-excerpt.md's top-level `import { flock } from 'fs-ext'` and its note that the loader must resolve fs-ext even on Windows, concluding --ignore-scripts only moves the failure from install to boot; adds that changing only the entry or only the install script is each insufficient."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes POSIX flock(2) via fs-ext on session.lock from the Windows named-kernel-semaphore path (CreateSemaphoreW/WaitForSingleObject/ReleaseSemaphore wrapped by acquireLockHandleWin32, no flock involved), concluding fs-ext is dead code on Windows so an import-safe stub is permissible while the semaphore must stay and POSIX keeps real flock; adds branch meaning, not just mentions."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the README node-pty patchedDependencies precedent: a pnpm patch for fs-ext@2.1.1 that skips node-gyp on win32, keeps the native build elsewhere, exports an import-safe pure-JS shim preserving the flock named export and callable shape without evaluating the native loader, stores patches/fs-ext@2.1.1.patch, registers it in pnpm-workspace.yaml, regenerates the lockfile, and proposes install, module-load, boot, contention and POSIX-regression checks."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly respects the owner's no-Visual-Studio constraint and frames the change as a repository-managed downstream patch (patches/ + pnpm-workspace.yaml), stating it is not an upstream edit, release, or fork publication."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "partial",
+      "reason": "The report identifies the corridor card's prefix (DSH-0.1.3-A1-…), maps the semantic finding (Windows fs-ext native build and static-import trap in 0.1.3-alpha.1 persistence) to the install-channel failure and patch plan, but explicitly declines to state the full card ID DSH-0.1.3-A1-03, so the required complete citation is absent."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The report names installing Visual Studio only as a rejected option and concludes 'Do not install Visual Studio'; the plan never depends on it."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "--ignore-scripts is analyzed and rejected as merely moving the failure to boot; the affirmative plan patches both the install script and the entry so the statically imported module loads."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses the repository-managed pnpm patch mechanism and explicitly disclaims upstream edits, releases, or fork publication."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "The plan preserves the Windows named semaphore and POSIX flock; the stub's unsupported operations fail loudly and the report rejects silent successful locking."
+    }
+  ]
+}
