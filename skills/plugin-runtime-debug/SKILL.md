@@ -1,6 +1,6 @@
 ---
 name: plugin-runtime-debug
-description: Use when an installed DSH Web plugin misbehaves only at runtime in the browser — paste/attachment/composer features that work once then fail, chips or panels showing stale placeholder state, update chips claiming the wrong version — and the fix must be diagnosed against the exact host API semantics rather than guessed from names. Also use when reviewing a plugin's calls into input-machine or facade verbs (insert, consume, remove, subscribe) before a release.
+description: Use when an installed DSH Web plugin misbehaves only at runtime in the browser — paste/attachment/composer features that work once then fail, chips or panels showing stale placeholder state, update chips claiming the wrong version, a surface working in one browser engine but not another — and the fix must be diagnosed against the exact host API semantics rather than guessed from names. Also use when reviewing a plugin's calls into input-machine or facade verbs (insert, consume, remove, subscribe) before a release.
 ---
 
 # Debug DSH Web Plugin Runtime Behavior
@@ -15,7 +15,7 @@ diagnosis must come from the host source, never from the API's name.
 Before changing any call into a host API, open the implementing package in
 the DSH source checkout (`~/.dsh/source/current`, or the vendored copy) and
 read the actual method — its doc comment, its guards, and the types it
-compares against. Repeat for every value the plugin passes. Three questions
+compares against. Repeat for every value the plugin passes. Four questions
 cover most incidents:
 
 1. **Which text does an offset count into?** When a verb takes a span or an
@@ -35,6 +35,21 @@ cover most incidents:
    own bookkeeping anyway, and the UI renders a "missing/unavailable"
    placeholder next to an object that never went away. Audit every call site
    for the "fire, ignore the result, clean up state anyway" shape.
+4. **Which engine evaluates this line?** Web-platform behavior that tests
+   run under Node never exercise can differ in the user's browser, because
+   older engines predate the current standard. The known family: URL
+   parsing of non-special schemes — the WHATWG URL Standard requires
+   `new URL('dsh-resource://file/…').hostname` to be `"file"`, which Node
+   and current Chromium return, but Chromium before its standards-compliant
+   non-special URL parsing change returned `""`, so an older Chromium-based
+   Edge build returns `""`, silently. Record the exact browser version when
+   you see this. Any host or
+   plugin code that routes by `URL.hostname`/`.pathname` on a custom scheme
+   works in every Node-based test and fails only in affected real browsers.
+   Before trusting a URL property on a custom scheme, assert it in the
+   actual browser engine (see
+   [references/browser-forensics.md](references/browser-forensics.md)), or
+   parse the string by hand.
 
 ## Symptom families and where they point
 
@@ -59,6 +74,24 @@ cover most incidents:
   a fetched remote value as ground truth when it can be older than the
   running build; decide "current vs update" against the running version and
   display the newer of the two.
+- **A built-in surface shows its generic "service unavailable" fallback
+  in the user's browser while registration, composition, and module
+  activation all verify clean** — stop auditing registration and start
+  auditing what the failing code reads from its platform. Real case
+  (0.1.6-alpha.2, 2026-09): the right-sidebar document preview showed
+  「文件资源服务不可用。」 for every file; the `file` resource provider
+  WAS registered, `__DSH_BOOT__` was complete, and zero activation
+  failures existed — the provider router had asked `new URL(address)
+  .hostname` for the protocol of a `dsh-resource://` address and gotten
+  `""` on the user's Edge, so lookup always missed and no request was
+  ever sent. The placeholder copy names the feature, not the failure
+  layer; only instrumenting the router produced the decisive line
+  (`parsedHost=""`). When a fallback string is all the user can report,
+  reproduce with instrumented bundles in a driven browser (see
+  [references/browser-forensics.md](references/browser-forensics.md))
+  before concluding anything about registration state — an earlier
+  misdiagnosis of this exact incident blamed "provider silently
+  unregistered".
 - **A whole slot's UI silently vanishes after a release** — a throwing
   expression inside a slot component (classically a dangling identifier:
   another component's state variable referenced out of scope) is caught by
@@ -115,17 +148,24 @@ cover most incidents:
    chip labels, console output) — they are the contract of the bug report.
 2. Map each string to the code path that emitted it; identify the host verb
    at the boundary.
-3. Open the host source for that verb; answer the three standing questions.
+3. Open the host source for that verb; answer the four standing questions.
 4. State the mismatch precisely (which representation, which guard, which
    call sites) before writing any fix; if you cannot state it, you have not
    read enough source.
-5. Fix every call site that passes representation-dependent values, not only
+5. When the mismatch is not visible in any console output — generic
+   fallback copy, silent no-op, or a divergence only the user's browser
+   shows — reproduce it in a driven browser with temporarily instrumented
+   bundles (backup, patch with one decisive log line, verify, revert),
+   following [references/browser-forensics.md](references/browser-forensics.md).
+   A user-pasted DevTools screenshot is evidence of the symptom, never of
+   the cause.
+6. Fix every call site that passes representation-dependent values, not only
    the reported symptom; the same mismatch usually breaks two features
    through two different verbs.
-6. Prove the fix with the interaction sequence that failed: repeat the
+7. Prove the fix with the interaction sequence that failed: repeat the
    action twice in a row and assert both attempts behave identically, and
    assert the removal path clears every view of the object.
-7. For lib-only plugin bundles (no build step): keep hand-inlined version
+8. For lib-only plugin bundles (no build step): keep hand-inlined version
    constants in sync with `package.json`, syntax-check the bundle
    (`node --check`), and verify in the browser after a hard refresh — the
    served artifact is the file you edited.
