@@ -3,22 +3,34 @@
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  scale only axis,width=10.3cm,height=5.9cm,
-  xmin=-1,xmax=21,ymin=0.5,ymax=5.6,
-  xtick={0,5,10,15,20},ytick={5,4,3,2,1},
-  yticklabels={{GLM (original)},{Claude Opus 5.5},{GPT-5.5},{All three: mean},{Claude + GPT: mean}},
+  scale only axis, width=10.3cm, height=6.8cm,
+  xmin=-1, xmax=21, ymin=-1.55, ymax=4.6,
+  xtick={0,5,10,15,20}, ytick={4,3,2,0.2,-0.8},
+  yticklabels={{GLM (original)},{Claude Opus 5.5},{GPT-5.5},{Mean of all judges},{Mean of Claude + GPT}},
   tick label style={font=\footnotesize},
   xlabel={Mean paired gain (reward points)},
-  xmajorgrids,grid style={gray!20},axis lines*=left]
-\addplot[black,dashed,forget plot] coordinates {(0,0.5) (0,5.5)};
-\addplot[gray!60,densely dotted,forget plot] coordinates {(-1,2.5) (21,2.5)};
-\addplot+[only marks,black,mark=square*,mark size=3pt,error bars/.cd,x dir=both,x explicit,error bar style={thick}] coordinates {(4.9219,5) += (5.937475,0) -= (4.6094,0)};
-\addplot+[only marks,oiblue,mark=triangle*,mark size=3pt,error bars/.cd,x dir=both,x explicit,error bar style={thick}] coordinates {(10.625,4) += (8.515625,0) -= (7.1875,0)};
-\addplot+[only marks,vermillion,mark=diamond*,mark size=3pt,error bars/.cd,x dir=both,x explicit,error bar style={thick}] coordinates {(6.0938,3) += (4.99995,0) -= (4.5313,0)};
-\addplot+[only marks,gray!70!black,mark=o,mark size=3pt,error bars/.cd,x dir=both,x explicit,error bar style={thick}] coordinates {(7.2131,2) += (6.249399999999999,0) -= (5.23435,0)};
-\addplot+[only marks,gray!70!black,mark=o,mark size=3pt,error bars/.cd,x dir=both,x explicit,error bar style={thick}] coordinates {(8.3588,1) += (6.601825,0) -= (5.7025500000000005,0)};
+  xmajorgrids, grid style={gray!15}, axis y line*=left, axis x line*=bottom,
+  axis line style={black!45, semithick},
+  clip=false]
+\addplot[black!60, semithick, dashed, forget plot] coordinates {(0,-1.55) (0,4.6)};
+\addplot[semithick, black!60, mark=|, mark size=2.8pt] coordinates {(0.312500,4) (10.859375,4)};
+\addplot[only marks, mark=*, mark size=3.4pt, fill=black!75, draw=white, semithick] coordinates {(4.921900,4)};
+\node[font=\footnotesize, gray!50!black, anchor=south west, inner sep=1pt] at (axis cs:4.921900,4+0.16) {+4.9};
+\addplot[semithick, black!60, mark=|, mark size=2.8pt] coordinates {(3.437500,3) (19.140625,3)};
+\addplot[only marks, mark=*, mark size=3.4pt, fill=oiblue, draw=white, semithick] coordinates {(10.625000,3)};
+\node[font=\footnotesize, gray!50!black, anchor=south west, inner sep=1pt] at (axis cs:10.625000,3+0.16) {+10.6};
+\addplot[semithick, black!60, mark=|, mark size=2.8pt] coordinates {(1.562500,2) (11.093750,2)};
+\addplot[only marks, mark=*, mark size=3.4pt, fill=vermillion, draw=white, semithick] coordinates {(6.093800,2)};
+\node[font=\footnotesize, gray!50!black, anchor=south west, inner sep=1pt] at (axis cs:6.093800,2+0.16) {+6.1};
+\addplot[gray!60, densely dotted, forget plot] coordinates {(-1,1.1) (21,1.1)};
+\addplot[semithick, black!60, mark=|, mark size=2.8pt] coordinates {(1.978750,0.2) (13.462500,0.2)};
+\addplot[only marks, mark=*, mark size=3.4pt, fill=white, draw=black!70, semithick] coordinates {(7.213100,0.2)};
+\node[font=\footnotesize, gray!50!black, anchor=south west, inner sep=1pt] at (axis cs:7.213100,0.2+0.16) {+7.2};
+\addplot[semithick, black!60, mark=|, mark size=2.8pt] coordinates {(2.656250,-0.8) (14.960625,-0.8)};
+\addplot[only marks, mark=*, mark size=3.4pt, fill=white, draw=black!70, semithick] coordinates {(8.358800,-0.8)};
+\node[font=\footnotesize, gray!50!black, anchor=south west, inner sep=1pt] at (axis cs:8.358800,-0.8+0.16) {+8.4};
 \end{axis}
 \end{tikzpicture}
-\caption{All three judges retain a positive mean gain, while its size depends on the judge. Filled markers show the original GLM score and the two complete LLM re-judgments of the same 64 reports; open markers below the dotted separator average judges within each report and are not additional independent judges. Whiskers are 95\% percentile intervals from 10,000 paired-task bootstrap samples over the same 16 tasks (seed 20260915). All rows share the original rubric and reports; these intervals describe task resampling, not uncertainty over judge populations.}
+\caption{All three judges retain a positive mean gain, while its size depends on the judge. Whiskers are 95\% percentile intervals from 10,000 paired-task bootstrap samples over the same 16 tasks (seed 20260915); the averages are within-report means, not additional independent judges.}
 \label{fig:judge_sensitivity}
 \end{figure}

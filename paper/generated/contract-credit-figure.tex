@@ -3,27 +3,43 @@
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  scale only axis, width=10.3cm, height=5.9cm,
-  xmin=0, xmax=103, ymin=0.5, ymax=6.6,
+  xbar, bar width=5.5pt, scale only axis, width=10.3cm, height=6.2cm,
+  xmin=0, xmax=150, ymin=0.45, ymax=6.55,
   xtick={0,20,40,60,80,100}, ytick={6,5,4,3,2,1},
   yticklabels={{Version / release ($n=12$)},{API / data / ownership ($n=46$)},{Lifecycle / deployment ($n=26$)},{Safety / boundaries ($n=10$)},{Failure attribution ($n=32$)},{Evidence / verification ($n=38$)}},
   tick label style={font=\footnotesize},
   xlabel={Original full-credit decisions (\%)},
   xmajorgrids, grid style={gray!20}, axis lines*=left,
-  legend style={at={(0.02,1.04)},anchor=south west,draw=none,font=\footnotesize,legend columns=2},
+  legend style={at={(0.985,0.04)},anchor=south east,draw=none,font=\scriptsize},
   clip=false]
-\addplot[gray!60, thick, forget plot] coordinates {(66.66666666666667,6) (100,6)};
-\addplot[gray!60, thick, forget plot] coordinates {(76.08695652173913,5) (97.82608695652173,5)};
-\addplot[gray!60, thick, forget plot] coordinates {(92.3076923076923,4) (96.15384615384616,4)};
-\addplot[gray!60, thick, forget plot] coordinates {(100,3) (100,3)};
-\addplot[gray!60, thick, forget plot] coordinates {(100,2) (100,2)};
-\addplot[gray!60, thick, forget plot] coordinates {(81.57894736842105,1) (94.73684210526316,1)};
-\addplot[only marks,mark=o,mark size=3.6pt,very thick,color=oiblue] coordinates {(66.666667,6) (76.086957,5) (92.307692,4) (100.000000,3) (100.000000,2) (81.578947,1)};
-\addlegendentry{No skill (circle)}
-\addplot[only marks,mark=triangle*,mark size=2.6pt,color=vermillion] coordinates {(100.000000,6) (97.826087,5) (96.153846,4) (100.000000,3) (100.000000,2) (94.736842,1)};
-\addlegendentry{With skill (triangle)}
+\addplot[area legend, fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(66.666667,6)};
+\addlegendentry{\textcolor{gray!50!black}{No skill}}
+\node[font=\scriptsize, anchor=west] at (axis cs:66.666667,6+0.19) {66.7\%};
+\addplot[area legend, fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(100.000000,6)};
+\addlegendentry{\textcolor{oiblue!80!black}{With skill}}
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:100.000000,6-0.19) {100.0\%};
+\addplot[fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(76.086957,5)};
+\node[font=\scriptsize, anchor=west] at (axis cs:76.086957,5+0.19) {76.1\%};
+\addplot[fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(97.826087,5)};
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:97.826087,5-0.19) {97.8\%};
+\addplot[fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(92.307692,4)};
+\node[font=\scriptsize, anchor=west] at (axis cs:92.307692,4+0.19) {92.3\%};
+\addplot[fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(96.153846,4)};
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:96.153846,4-0.19) {96.2\%};
+\addplot[fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(100.000000,3)};
+\node[font=\scriptsize, anchor=west] at (axis cs:100.000000,3+0.19) {100.0\%};
+\addplot[fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(100.000000,3)};
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:100.000000,3-0.19) {100.0\%};
+\addplot[fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(100.000000,2)};
+\node[font=\scriptsize, anchor=west] at (axis cs:100.000000,2+0.19) {100.0\%};
+\addplot[fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(100.000000,2)};
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:100.000000,2-0.19) {100.0\%};
+\addplot[fill=gray!45, draw=gray!70!black, xbar, bar shift=3.4pt] coordinates {(81.578947,1)};
+\node[font=\scriptsize, anchor=west] at (axis cs:81.578947,1+0.19) {81.6\%};
+\addplot[fill=oiblue, draw=oiblue!70!black, xbar, bar shift=-3.4pt] coordinates {(94.736842,1)};
+\node[font=\scriptsize, oiblue!80!black, anchor=west] at (axis cs:94.736842,1-0.19) {94.7\%};
 \end{axis}
 \end{tikzpicture}
-\caption{Original full-credit proportions rise in four contract domains and remain at 100\% in two. Points summarize all 328 criterion decisions across 64 reports; $n$ is the number of criterion decisions per arm, including both repeats. Circles and triangles overlap at 100\% for safety/boundaries and failure attribution. These are finite-cohort descriptions of the original judge, not correctness rates or independent samples; the reviewed S11 boundary defect remains despite full original boundary credit.}
+\caption{Original full-credit proportions rise in four contract domains and remain at 100\% in two. Bars summarize all 328 criterion decisions across 64 reports; $n$ is the number of criterion decisions per arm, including both repeats. Both arms reach 100\% in safety/boundaries and failure attribution. These are finite-cohort descriptions of the original judge, not correctness rates or independent samples; the reviewed S11 boundary defect remains despite full original boundary credit.}
 \label{fig:contract_credit}
 \end{figure}

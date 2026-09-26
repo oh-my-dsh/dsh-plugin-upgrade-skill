@@ -245,6 +245,7 @@ All reviewed replacements &93.05&98.44&5.39&[0.00, 11.80]\\
   ymin=-10, ymax=50,
   ymajorgrids, grid style={gray!30},
   axis y line*=left, axis x line*=bottom,
+  axis line style={black!45, semithick},
   legend style={font=\footnotesize, at={(0.98,0.98)}, anchor=north east, draw=none},
 ]
 \addplot+[fill=oiblue, draw=oiblue!70!black] coordinates {(S2,10) (S5,6.25) (S6,12.5) (S9,0) (S11,-5) (S12,0) (S13,0) (S14,0) (S15,0) (S17,15) (S18,-5) (S19,0) (S20,2.5) (S21,0) (S22,0)};
@@ -288,25 +289,28 @@ Both reviewed S12 answers retain 100: they connect a Windows file lock to the na
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}
 \begin{axis}[
-  width=\columnwidth, height=4.6cm,
+  width=\columnwidth, height=4.9cm,
   xlabel={Mean paired $\Delta$ (skill $-$ no skill)},
-  symbolic y coords={All reviewed replacements, Earlier S11 replacement, Original judgments},
-  ytick=data, y tick label style={font=\small},
-  xmin=-1.5, xmax=13,
-  xmajorgrids, grid style={gray!30},
+  xmin=-1.5, xmax=13, ymin=-0.55, ymax=2.55,
+  ytick={0,1,2},
+  yticklabels={All reviewed replacements, Earlier S11 replacement, Original judgments},
+  y tick label style={font=\small},
+  xmajorgrids, grid style={gray!15},
   axis y line*=left, axis x line*=bottom,
 ]
-\addplot[gray, dashed, no markers, forget plot] coordinates {(0,Original judgments) (0,All reviewed replacements)};
-\addplot+[only marks, mark=*, mark size=1.8pt, color=oiblue, error bars/.cd, x dir=both, x explicit, error bar style={thick}]
-coordinates {
-  (4.92,Original judgments) +- (4.61,5.94)
-  (4.61,Earlier S11 replacement) +- (4.84,6.02)
-  (5.39,All reviewed replacements) +- (5.39,6.41)
-};
+\addplot[black!60, semithick, dashed, forget plot] coordinates {(0,-0.55) (0,2.55)};
+\addplot[semithick, black!65, mark=|, mark size=2.8pt] coordinates {(0.3125,2) (10.8594,2)};
+\addplot[only marks, mark=*, mark size=3.2pt, fill=oiblue, draw=white, semithick] coordinates {(4.9219,2)};
+\node[font=\footnotesize, oiblue!80!black, anchor=south west, inner sep=1pt] at (axis cs:4.9219,2.14) {4.92};
+\addplot[semithick, black!65, mark=|, mark size=2.8pt] coordinates {(-0.2344,1) (10.6250,1)};
+\addplot[only marks, mark=*, mark size=3.2pt, fill=oiblue, draw=white, semithick] coordinates {(4.6094,1)};
+\node[font=\footnotesize, oiblue!80!black, anchor=south west, inner sep=1pt] at (axis cs:4.6094,1.14) {4.61};
+\addplot[semithick, black!65, mark=|, mark size=2.8pt] coordinates {(0.0000,0) (11.7969,0)};
+\addplot[only marks, mark=*, mark size=3.2pt, fill=oiblue, draw=white, semithick] coordinates {(5.3906,0)};
+\node[font=\footnotesize, oiblue!80!black, anchor=south west, inner sep=1pt] at (axis cs:5.3906,0.14) {5.39};
 \end{axis}
-\end{tikzpicture}
-}
-\caption{Grading sensitivity of the focal gain. Replacing reviewed criterion decisions moves the mean change between 4.61 and 5.39 points; the earlier S11-replacement interval crosses zero and the all-reviewed interval touches it (dashed line), so the positive direction survives while the strength of evidence depends on grading decisions. Whiskers are 95\% task-bootstrap intervals.}
+\end{tikzpicture}}
+\caption{Grading sensitivity of the focal gain. Replacing reviewed criterion decisions moves the mean change between 4.61 and 5.39 points; the earlier S11-replacement interval crosses zero and the all-reviewed interval touches it. Whiskers are 95\% task-bootstrap intervals.}
 \label{fig:sensitivity}
 \end{figure}
 
