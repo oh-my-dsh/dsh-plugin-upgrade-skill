@@ -1,0 +1,100 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S20-msvc-flock-trap",
+  "source_commit": null,
+  "instruction": "# S20 · Windows Install Blocker: A Native Build the Runtime Never Calls\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task statement itself is the user's explicit authorization and confirmation for the solution and execution needed to complete the task: perform the necessary analysis and planning on your own, and proceed with execution immediately once the plan takes shape — do not pause to wait for \"confirmation\", and do not ask the user follow-up questions. This confirmation continues to apply to the concrete plan you produce based on the applicable skill, but only within the following scope:\n\n- You may read `/app/fixture/`, local in-container documentation, and local tools; you may write to the designated `/app/agent-output/` directory as specified by the task;\n- You may create throwaway local verification profiles and temporary files, and run local tests, builds, and dsh commands;\n- You may not modify the skill, the verifier, or the reference solution; you may not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nA teammate is upgrading our dsh installation on a Windows 11 machine that has **no Visual Studio Build Tools**, and the machine owner refuses to install them. `pnpm install` now fails. This is a static diagnosis task: `/app/fixture/` must remain completely unchanged. Diagnose the failure from the evidence and write a fix plan to `/app/agent-output/S20-msvc-flock-trap/report.md`.\n\nThe fixture holds the evidence:\n\n- `install-error.log` — the install failure transcript;\n- `manifest-excerpt.json` — the dependency declaration of the package that pulls the failing module;\n- `lease-excerpt.md` — the source documentation of the write-lock acquisition, plus the failing static import;\n- `win32-excerpt.ts` — the Windows lock bindings;\n- `README.md` — the machine constraints and the repository's existing patch precedent for native dependencies.\n\nThe report must answer, each backed by the fixture evidence:\n\n1. What exactly fails, and why (package, install step, missing toolchain);\n2. Why `pnpm install --ignore-scripts` cannot fix this;\n3. Which lock path Windows actually takes at runtime, and what that implies about the failing native module;\n4. A concrete, least-invasive fix plan that does **not** install Visual Studio and does **not** modify upstream dependencies — following the repository's existing patch mechanism for native dependencies;\n5. Which corridor card covers this finding (cite the full card id, e.g. `DSH-0.1.3-A1-…`).\n\nThere is only one goal: the plan must let `pnpm install` complete on that machine and the service boot, without Visual Studio and without touching upstream. Files outside `/app/fixture/` (read-only) and your own `/app/agent-output/` are not part of this task — leave them alone.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "native-install-failure",
+        "points": 20,
+        "requirement": "Use install-error.log and manifest-excerpt.json: fs-ext@2.1.1 is pulled by dsh-session-persistence-jsonl, its install script runs node-gyp configure build, and missing Windows Visual Studio/MSVC causes the failure. Attribute the failing dependency/build phase, not general pnpm or network unreliability.",
+        "sourceRequired": true
+      },
+      {
+        "id": "static-import-trap",
+        "points": 20,
+        "requirement": "Use lease-excerpt.md’s top-level flock import: skipping install scripts leaves fs-ext’s native entry unloadable; module loading still happens on Windows before runtime branch selection. Thus --ignore-scripts alone may avoid a build step but cannot achieve the required working service boot.",
+        "sourceRequired": true
+      },
+      {
+        "id": "platform-lock-contract",
+        "points": 20,
+        "requirement": "Use lease-excerpt.md and win32-excerpt.ts to distinguish Windows acquireLockHandleWin32/named kernel semaphore from POSIX flock. The unused Windows fs-ext call path permits an import-safe Windows stub, but Windows locking must still use the semaphore; Linux/macOS must keep real flock. Mere mentions of semaphore and flock without branch meaning are partial at best.",
+        "sourceRequired": true
+      },
+      {
+        "id": "reproducible-local-patch",
+        "points": 25,
+        "requirement": "Follow README.md’s pnpm patchedDependencies/node-pty precedent: patch fs-ext locally so win32 skips node-gyp and its entry exports an import-safe pure-JS fallback with compatible callable/callback shape, while non-Windows keeps the native module. Register the patch in pnpm-workspace.yaml and account for build permissions where needed; propose reinstall, module-load and service-boot checks. A conditional loading sketch is sufficient, but skipping only the build is not a complete fix. Do not require the candidate to execute commands or produce a patch file.",
+        "sourceRequired": true
+      },
+      {
+        "id": "machine-and-upstream-boundaries",
+        "points": 10,
+        "requirement": "Explicitly respect the machine owner’s no-Visual-Studio constraint and use the repository-managed patch without changing the upstream repository/published dependency. A local pnpm patch necessarily transforms installed dependency files and is allowed by the requested plan; do not mistake that for forbidden upstream modification.",
+        "sourceRequired": false
+      },
+      {
+        "id": "corridor-mapping",
+        "points": 5,
+        "requirement": "Cite full DSH-0.1.3-A1-03 and connect it to this install-channel fs-ext failure and Windows patch plan. The card ID by itself earns no credit.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "requires-visual-studio",
+        "total": 50,
+        "requirement": "The proposed plan depends on installing Visual Studio/MSVC on this machine, contrary to the owner’s constraint, even if it also mentions pnpm patch. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      },
+      {
+        "id": "ignore-scripts-only",
+        "total": 40,
+        "requirement": "The plan relies on --ignore-scripts alone or skips the build without making the statically imported entry loadable. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      },
+      {
+        "id": "upstream-edit-required",
+        "total": 40,
+        "requirement": "The plan requires editing/releasing an upstream repository instead of using the existing repository-managed patch mechanism. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      },
+      {
+        "id": "lock-bypass",
+        "total": 20,
+        "requirement": "The proposed workaround removes the Windows semaphore or replaces POSIX flock with a universal no-op, weakening real write ownership. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": "DSH-0.1.3-A1-03",
+      "path": "skills/plugin-upgrade/references/v0.1.3-alpha.1.md",
+      "source_sha256": "13e74668a615fa2798493a9451f6f9184f12b9f66f23072300edb36250c5dc46",
+      "start": 130,
+      "end": 164,
+      "text": "### DSH-0.1.3-A1-03 · Windows install fails on the `fs-ext` native build; the runtime never calls `flock` on Windows\n\n- **Type**: breaking\n- **Applies to**: profile wrappers / packaging; any Windows machine without Visual Studio\n  Build Tools upgrading to 0.1.3-alpha.1\n- **Touchpoints**: none (packaging/install surface)\n- **Action level**: required-if-hit\n- **Symptoms**: `pnpm install` exits 1. `fs-ext@2.1.1` runs its `node-gyp configure build`\n  install script and fails with `gyp ERR! find VS … You need to install the latest version of\n  Visual Studio (including the \"Desktop development with C++\" workload)`. `fs-ext` is a pinned\n  dependency of `@deepseek-ai/dsh-session-persistence-jsonl` and is statically imported from\n  `src/lease.ts`, so `pnpm install --ignore-scripts` cannot skip it — the module must exist\n  and load.\n- **Migration recipe**:\n  1. Confirm the platform path first: on Windows, `lease.ts` takes `acquireLockHandleWin32`\n     (a named kernel semaphore via `CreateSemaphoreW`) and holds \"never a file lock or\n     handle\"; `flock` is only the POSIX branch. The native module is dead code on Windows.\n  2. Add a pnpm patch (the repository already patches native packages this way, e.g.\n     `patches/node-pty@*`): rewrite the install script to run `node-gyp` only on non-Windows,\n     and give the entry a pure-JS `flock` fallback (warn once, no-op). Linux/macOS keep the\n     native build.\n  3. Register the patch in `pnpm-workspace.yaml` (`patchedDependencies` and `allowBuilds`)\n     and re-run `pnpm install`.\n  Do not install Visual Studio just for this, do not patch upstream, and do not rely on\n  `--ignore-scripts` alone.\n- **Verification**: `pnpm install` completes; `require('fs-ext')` loads and the flock callback\n  path warns once instead of throwing; `dsh web --no-open` boots and answers HTTP 200.\n- **Source**: [dsh-v0.1.3-alpha.1](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.1.3-alpha.1)\n  (`d347e70`): `packages/session/session-persistence-jsonl/package.json` pins `\"fs-ext\": \"2.1.1\"`;\n  `src/lease.ts` statically imports `flock` from `fs-ext` and routes Windows through\n  `acquireLockHandleWin32`; `src/win32.ts` carries the named-semaphore bindings ·\n  single-host field report (Windows 11 without MSVC, 2026-09-07)\n\n---"
+    }
+  ],
+  "fixture": {
+    "README.md": {
+      "sha256": "457616c017d1281fe36cd81cb0fbdef056ac66c72f84237a6168c477e45e330b",
+      "text": "# Upgrade machine facts (Windows 11, no MSVC)\n\n- The machine has **no Visual Studio / Build Tools installation** (no\n  `vswhere.exe`, no VS directory). The owner refuses to install them.\n- Node and corepack/pnpm are installed and working; every previous dsh\n  upgrade on this machine installed fine.\n- The repository already patches native dependencies through pnpm's\n  `patchedDependencies` mechanism (see the existing `patches/node-pty@*.patch`\n  precedent): a patch can rewrite a package's install script and entry file,\n  and `pnpm-workspace.yaml` registers it.\n\nExam material only, **do not publish**.\n"
+    },
+    "install-error.log": {
+      "sha256": "45e5c35dfb7a0d69846f3db5a304be4f6f0b0918a7457f7ea6368be43d3e5cd8",
+      "text": "$ pnpm install\n...\nfs-ext@2.1.1 install: node-gyp configure build\nfs-ext@2.1.1 install: gyp ERR! find VS\nfs-ext@2.1.1 install: gyp ERR! find VS msvs_version not set from command line or npm config\nfs-ext@2.1.1 install: gyp ERR! find VS VCINSTALLDIR not set, not running in VS Command Prompt\nfs-ext@2.1.1 install: gyp ERR! find VS could not use PowerShell to find Visual Studio 2017 or newer\nfs-ext@2.1.1 install: gyp ERR! find VS You need to install the latest version of Visual Studio\nfs-ext@2.1.1 install: gyp ERR! find VS including the \"Desktop development with C++\" workload.\nfs-ext@2.1.1 install: gyp ERR! configure error\nfs-ext@2.1.1 install: gyp ERR! stack Error: Could not find any Visual Studio installation to use\nfs-ext@2.1.1 install: Failed\npnpm: Command failed with exit code 1: ... pnpm install\ndsh 退出码: 1\n"
+    },
+    "lease-excerpt.md": {
+      "sha256": "7a5372357906dc02d3caed8855e10b62152cce515ada615df69be3f7e71b0562",
+      "text": "# src/lease.ts — cross-process write-ownership lock (excerpt)\n\n> Cross-process write-ownership lock for one session's artifact directory,\n> held for the whole life of a write handle. The arbiter is the kernel:\n> POSIX takes a non-blocking `flock(2)` (through fs-ext) on `session.lock`\n> beside the log, and **Windows holds a named kernel semaphore derived from\n> that path — never a file lock or handle**, so readers, searches, and\n> directory removal proceed freely while the lock is held. …\n\n```ts\nimport { flock } from 'fs-ext'\nimport { acquireLockHandleWin32, releaseLockHandleWin32 } from './win32.ts'\n```\n\n> … **Windows has no lock file at all.** Readers never touch the lock. …\n\nNote: `flock` is imported statically at module top — the package loader must\nresolve and load `fs-ext` even on Windows, where the `flock` branch is never\ntaken.\n"
+    },
+    "manifest-excerpt.json": {
+      "sha256": "cc73fcc5acef0c08e276c751175d167602e6e5288e2f56732802bd3489b7ba1a",
+      "text": "{\n  \"name\": \"@deepseek-ai/dsh-session-persistence-jsonl\",\n  \"version\": \"0.1.3-alpha.1\",\n  \"dependencies\": {\n    \"fs-ext\": \"2.1.1\"\n  },\n  \"devDependencies\": {\n    \"@types/fs-ext\": \"2.0.3\"\n  }\n}\n"
+    },
+    "win32-excerpt.ts": {
+      "sha256": "6381509b8b56631d78437672d4368dd09f72460f25d943227e3309f10a384113",
+      "text": "// src/win32.ts — Windows durable namespace + lock bindings (excerpt)\n//\n// POSIX publishes a newly-created log by creating a directory entry and then\n// fsyncing the parent directory. Windows does not expose that parent-directory\n// fsync contract through Node, so the Windows path uses the native durable\n// namespace primitive instead: …\n\ntype MoveFileExW = (existing: string, replacement: string, flags: number) => number\ntype CreateSemaphoreW = (security: null, initial: number, maximum: number, name: string) => number\ntype WaitForSingleObject = (handle: number, milliseconds: number) => number\ntype ReleaseSemaphore = (handle: number, count: number, previous: null) => number\ntype CloseHandle = (handle: number) => number\ntype GetLastError = () => number\n\ninterface Win32Bindings {\n  moveFileExW: MoveFileExW\n  createSemaphoreW: CreateSemaphoreW\n  waitForSingleObject: WaitForSingleObject\n  releaseSemaphore: ReleaseSemaphore\n  // …\n}\n\n// acquireLockHandleWin32 / releaseLockHandleWin32 wrap these named-semaphore\n// primitives; no flock(2) is involved on Windows.\n"
+    }
+  }
+}

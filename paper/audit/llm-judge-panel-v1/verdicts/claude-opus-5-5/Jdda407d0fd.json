@@ -1,0 +1,14 @@
+{"decisions":[
+{"id":"native-install-failure","verdict":"pass","reason":"Uses the install log and manifest to show that fs-ext@2.1.1, pulled in by dsh-session-persistence-jsonl, fails in its node-gyp configure build script because no Visual Studio/MSVC is present."},
+{"id":"static-import-trap","verdict":"pass","reason":"Cites the top-level flock import in lease.ts. Explains that --ignore-scripts leaves no native binary, so the import throws at load time on Windows before any branch runs, and the service cannot boot."},
+{"id":"platform-lock-contract","verdict":"pass","reason":"Distinguishes the Windows path (acquireLockHandleWin32 using a named kernel semaphore) from the POSIX flock path. Concludes a win32-only import-safe stub is safe because Windows keeps its semaphore and POSIX keeps real flock."},
+{"id":"reproducible-local-patch","verdict":"pass","reason":"Follows the node-pty precedent with pnpm patch. Guards the install script to skip node-gyp on win32 and gives the entry a win32 pure-JS flock fallback with a compatible callback shape, keeping native on other platforms. Registers the patch under patchedDependencies with allowBuilds, and proposes reinstall, module-load and boot checks."},
+{"id":"machine-and-upstream-boundaries","verdict":"pass","reason":"Explicitly respects the no-Visual-Studio constraint and treats the local pnpm patch as a repository overlay, leaving upstream sources and the pin untouched."},
+{"id":"corridor-mapping","verdict":"pass","reason":"Cites DSH-0.1.3-A1-03 in full and ties it to the fs-ext install failure and the Windows patch recipe."}
+],
+"caps":[
+{"id":"requires-visual-studio","triggered":false,"reason":"Installing Visual Studio is explicitly rejected."},
+{"id":"ignore-scripts-only","triggered":false,"reason":"--ignore-scripts is rejected, and the plan makes the entry loadable with a fallback."},
+{"id":"upstream-edit-required","triggered":false,"reason":"The plan uses the local patchedDependencies mechanism and requires no upstream edit."},
+{"id":"lock-bypass","triggered":false,"reason":"The no-op stub applies to win32 only. The Windows semaphore and POSIX flock are both preserved."}
+]}

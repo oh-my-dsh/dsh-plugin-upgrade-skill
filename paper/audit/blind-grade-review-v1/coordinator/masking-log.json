@@ -1,0 +1,634 @@
+{
+  "schemaVersion": 1,
+  "id": "blind-grade-review-v1-masking-log",
+  "coordinatorOnly": true,
+  "warning": "COORDINATOR-ONLY: the original text of every masked span. Replacement density differs by arm, so this file unblinds the packet.",
+  "token": "[redacted]",
+  "rules": [
+    {
+      "id": "skill-repo-path",
+      "pattern": "(?:[A-Za-z]:)?[^\\s`'\"()<>[\\]]*dsh-plugin-upgrade-skill[^\\s`'\"()<>[\\]]*",
+      "flags": "g",
+      "description": "absolute/local path containing the skill repository folder name"
+    },
+    {
+      "id": "skill-reference-path",
+      "pattern": "(?:[\\w.-]+\\/)*references\\/[\\w./-]*",
+      "flags": "g",
+      "description": "path into the skill references/ folder"
+    },
+    {
+      "id": "skill-entry-file",
+      "pattern": "\\bSKILL(?:\\.zh-CN)?\\.md\\b",
+      "flags": "g",
+      "description": "skill entry-point file name"
+    },
+    {
+      "id": "skill-reference-file",
+      "pattern": "\\b(?:v0\\.\\d+\\.\\d+-(?:alpha|beta|rc)\\.\\d+|rollup-\\d+\\.\\d+(?:\\.\\d+)?|api-migration-[\\w.-]+?|troubleshooting|pre-flight|precision-checklist|migration-hygiene|host-plane-probes|rc-0\\.1\\.3-runtime-verification)\\.md\\b",
+      "flags": "g",
+      "description": "bare file name of a skill reference card file"
+    },
+    {
+      "id": "skill-name",
+      "pattern": "`?\\b(?:dsh-)?plugin-upgrade\\b`?(?:[ \\t]+skill(?:'s|’s)?\\b)?",
+      "flags": "gi",
+      "description": "skill name (dsh-plugin-upgrade / plugin-upgrade), with a trailing \"skill\" if present"
+    },
+    {
+      "id": "skill-mode",
+      "pattern": "\\bMode[ \\t]+[A-D](?:\\/[A-D])*\\b(?:[ \\t]*·[ \\t]*[a-z-]+)?|\\b[A-D][ \\t]*·[ \\t]*(?:inspect|update|author-migrate)\\b",
+      "flags": "g",
+      "description": "skill operating-mode vocabulary (Mode A/B/C, \"A · inspect\")"
+    },
+    {
+      "id": "skill-word",
+      "pattern": "\\bskill(?:'s|’s)?\\b(?![ \\t]+(?:name|provider)s?\\b)(?!(?<=\\(skill)\\))",
+      "flags": "gi",
+      "description": "the word \"skill\" used as a tool reference (not \"skill name\"/\"skill provider\"/\"skills\"/\"(skill)\" surface labels)"
+    }
+  ],
+  "entries": [
+    {
+      "reviewId": "R001",
+      "replacements": []
+    },
+    {
+      "reviewId": "R002",
+      "replacements": []
+    },
+    {
+      "reviewId": "R003",
+      "replacements": [
+        {
+          "rule": "skill-reference-path",
+          "line": 3,
+          "original": "plugin-upgrade/references/v0.1.5-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 3,
+          "original": "v0.1.5-alpha.1.md"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 1,
+          "original": "Mode A"
+        },
+        {
+          "rule": "skill-word",
+          "line": 3,
+          "original": "Skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 47,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R004",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "dsh-plugin-upgrade"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 33,
+          "original": "Mode B/C"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 39,
+          "original": "Mode B/C"
+        },
+        {
+          "rule": "skill-word",
+          "line": 3,
+          "original": "Skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 14,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 25,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 29,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 33,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 39,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 43,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R005",
+      "replacements": []
+    },
+    {
+      "reviewId": "R006",
+      "replacements": [
+        {
+          "rule": "skill-repo-path",
+          "line": 4,
+          "original": "E:/deepseek-harness/dsh-plugin-upgrade-skill/benchmark/tasks/S1-static-scan/environment/fixture"
+        },
+        {
+          "rule": "skill-reference-path",
+          "line": 17,
+          "original": "references/README.md"
+        },
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "dsh-plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A"
+        }
+      ]
+    },
+    {
+      "reviewId": "R007",
+      "replacements": [
+        {
+          "rule": "skill-reference-path",
+          "line": 32,
+          "original": "references/v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-path",
+          "line": 92,
+          "original": "references/rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-reference-path",
+          "line": 92,
+          "original": "references/v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-entry-file",
+          "line": 92,
+          "original": "SKILL.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 5,
+          "original": "rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 5,
+          "original": "v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 15,
+          "original": "rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 21,
+          "original": "rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 33,
+          "original": "v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 82,
+          "original": "rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 84,
+          "original": "rollup-0.1.2.md"
+        },
+        {
+          "rule": "skill-name",
+          "line": 5,
+          "original": "`dsh-plugin-upgrade` skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 5,
+          "original": "A · inspect"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 92,
+          "original": "A · inspect"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 94,
+          "original": "Mode C"
+        },
+        {
+          "rule": "skill-word",
+          "line": 3,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 92,
+          "original": "skill"
+        }
+      ]
+    },
+    {
+      "reviewId": "R008",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 4,
+          "original": "plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 4,
+          "original": "Mode A · inspect"
+        },
+        {
+          "rule": "skill-word",
+          "line": 5,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 35,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 86,
+          "original": "Skill"
+        }
+      ]
+    },
+    {
+      "reviewId": "R009",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A"
+        }
+      ]
+    },
+    {
+      "reviewId": "R010",
+      "replacements": []
+    },
+    {
+      "reviewId": "R011",
+      "replacements": []
+    },
+    {
+      "reviewId": "R012",
+      "replacements": [
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A · inspect"
+        },
+        {
+          "rule": "skill-word",
+          "line": 40,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R013",
+      "replacements": [
+        {
+          "rule": "skill-repo-path",
+          "line": 3,
+          "original": "E:/deepseek-harness/dsh-plugin-upgrade-skill/.../environment/fixture/"
+        }
+      ]
+    },
+    {
+      "reviewId": "R014",
+      "replacements": []
+    },
+    {
+      "reviewId": "R015",
+      "replacements": []
+    },
+    {
+      "reviewId": "R016",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "dsh-plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A · inspect"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 76,
+          "original": "Mode A"
+        },
+        {
+          "rule": "skill-word",
+          "line": 55,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 62,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 76,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 81,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R017",
+      "replacements": []
+    },
+    {
+      "reviewId": "R018",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 25,
+          "original": "plugin-upgrade skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R019",
+      "replacements": [
+        {
+          "rule": "skill-reference-file",
+          "line": 21,
+          "original": "api-migration-0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 35,
+          "original": "api-migration-0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 75,
+          "original": "v0.1.2-alpha.1.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 75,
+          "original": "v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-reference-file",
+          "line": 75,
+          "original": "api-migration-0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-word",
+          "line": 4,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 75,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R020",
+      "replacements": [
+        {
+          "rule": "skill-reference-path",
+          "line": 41,
+          "original": "references/v0.1.3-alpha.1.md"
+        },
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A"
+        }
+      ]
+    },
+    {
+      "reviewId": "R021",
+      "replacements": []
+    },
+    {
+      "reviewId": "R022",
+      "replacements": []
+    },
+    {
+      "reviewId": "R023",
+      "replacements": [
+        {
+          "rule": "skill-repo-path",
+          "line": 4,
+          "original": "E:/deepseek-harness/dsh-plugin-upgrade-skill/benchmark/tasks/S7-unpublished-cohort/environment/fixture"
+        }
+      ]
+    },
+    {
+      "reviewId": "R024",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-name",
+          "line": 37,
+          "original": "plugin-upgrade skill's"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "A · inspect"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 39,
+          "original": "Mode A"
+        },
+        {
+          "rule": "skill-word",
+          "line": 3,
+          "original": "skill's"
+        },
+        {
+          "rule": "skill-word",
+          "line": 18,
+          "original": "skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 31,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R025",
+      "replacements": []
+    },
+    {
+      "reviewId": "R026",
+      "replacements": [
+        {
+          "rule": "skill-reference-file",
+          "line": 85,
+          "original": "pre-flight.md"
+        },
+        {
+          "rule": "skill-word",
+          "line": 5,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R027",
+      "replacements": []
+    },
+    {
+      "reviewId": "R028",
+      "replacements": []
+    },
+    {
+      "reviewId": "R029",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-name",
+          "line": 28,
+          "original": "plugin-upgrade skill's"
+        },
+        {
+          "rule": "skill-name",
+          "line": 55,
+          "original": "plugin-upgrade skill's"
+        },
+        {
+          "rule": "skill-name",
+          "line": 68,
+          "original": "plugin-upgrade skill's"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A"
+        },
+        {
+          "rule": "skill-word",
+          "line": 70,
+          "original": "skill's"
+        }
+      ]
+    },
+    {
+      "reviewId": "R030",
+      "replacements": [
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "plugin-upgrade"
+        }
+      ]
+    },
+    {
+      "reviewId": "R031",
+      "replacements": [
+        {
+          "rule": "skill-reference-path",
+          "line": 28,
+          "original": "references/v0.1.2-alpha.1.md"
+        },
+        {
+          "rule": "skill-reference-path",
+          "line": 29,
+          "original": "references/v0.1.2-alpha.2.md"
+        },
+        {
+          "rule": "skill-name",
+          "line": 3,
+          "original": "dsh-plugin-upgrade skill"
+        },
+        {
+          "rule": "skill-mode",
+          "line": 3,
+          "original": "Mode A"
+        },
+        {
+          "rule": "skill-word",
+          "line": 3,
+          "original": "Skill"
+        },
+        {
+          "rule": "skill-word",
+          "line": 26,
+          "original": "skill"
+        }
+      ]
+    },
+    {
+      "reviewId": "R032",
+      "replacements": []
+    }
+  ]
+}

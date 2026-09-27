@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report locates index.js `export const inject = [\"apiProxy\"]` and `ctx.apiProxy.llm.providers()`, maps category #3 to breaking card DSH-0.1.2-A1-01, explains the llm.providers split into two listing results, and grounds the install-time failure in the pinned @deepseek-ai/dsh-host-apiproxy dependency in package.json. Line numbers are off by one but the diagnosis is fully grounded in the cited fixture functions."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "Each of the other six categories gets an explicit no-hit conclusion with per-category scan evidence (no ctx.on/events, no fs access, no commands/tools/UI, no servers/WS/DOM, no subprocess parsing). session-notes.js is correctly identified as pure string/array utilities with zero hits, and cordis.patch.yml is classified as ordinary loader composition, not a host-source patch, without denying the file's existence."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 'Question 3' argues zero hits prove nothing: the scan is heuristic pattern-based with no lockfile/tests/CI evidence, the single hit is itself a fatal breaking card, and the dependency/configuration plane lies outside the seven source classes. It clearly distinguishes the decisive apiProxy break from the six negative categories and concludes the plugin is not compatible as-is."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Proposes four post-migration checks: isolated dependency resolution with lockfile scan, build/typecheck of migrated source, isolated cold boot on exact 0.1.2-alpha.2 with no service left pending, and a functional provider-listing probe call including its failure branch. Explicitly framed as steps the task does not run on the non-executable static copy."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Uses the session log (16:41 npm sequence, GUI death, no durable tool result) and env-state to show the session/tool worker ran inside the host npm was replacing, frames it as a structural self-replacement dependency rather than a network fluke, preserves the unknown final tool outcome, and explicitly avoids a universal every-platform crash claim."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains env-state: rc.1 content present but dsh and dsh.cmd missing with dsh.ps1 stale, content presence does not prove bin linking completed (linkStuff entered, not finished), and explicitly rejects directory swapping, backup reuse, and hand-written shims as repair, grounded in the fixture files."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounds the remedy in repair-notes.md: rerun npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from an external executor outside the dead host so npm regenerates the shims, verify dsh --version equals rc.1, accounts for aligning the reference checkout to the rc.1 tag without unrelated source edits, and clearly separates the recorded repair from actions the candidate performed."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Requires the agent to recognize it runs on the upgrade target and decline to execute, gives an ordered external procedure that fully stops the host before the exact pinned install then restarts, hard-refreshes and verifies, classifies stop-first and exact pinning as established rules and self-host refusal as the new rule, and notes that a tool/background child of the host is not an independent handoff."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Describes a guard that classifies destructive operations against the resolved global prefix and host provenance relative to its own runtime, uses the repair notes' alpha.5→rc.1 version-only diff (252 files, zero API changes, no re-migration), requires checking displayed version and actual plugin loading after restart/refresh with optional dsh-old-* cleanup only after verification, all as a no-code-change conclusion tied to the supplied tags."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The report's final plan explicitly refuses to run the global install from the session and mandates an independent terminal after the host is stopped; in-session execution appears only as the rejected historical mistake."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and handmade shims are presented only as the user's failed attempt and are explicitly rejected in favor of the formal external pinned registry install."
+    }
+  ]
+}

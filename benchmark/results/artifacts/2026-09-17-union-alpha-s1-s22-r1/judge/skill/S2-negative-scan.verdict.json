@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report locates index.js:3 (inject=[\"apiProxy\"]) and index.js:9 (ctx.apiProxy.llm.providers()), maps the break to DSH-0.1.2-A1-01, explains the llm/listProviders + listConfigurableProviders split and the host-plane 'inject llm directly, not remote' recipe, and analyzes the dead @deepseek-ai/dsh-host-apiproxy row at package.json:17 (R-05, removed in rc.2→alpha.1). Grounded, not a card name alone."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six other categories get explicit NO verdicts with concrete scanned-file evidence (table plus no-hit notes covering all five fixture files). Correctly treats src/session-notes.js as a pure string/array utility with zero host coupling, and classifies cordis.patch.yml as ordinary composition rather than a host-source patch, without denying the composition file's existence or misclassifying its insert as a source modification. No invented coupling from filenames."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 3 explicitly answers 'No': zero hits cannot establish compatibility because the scan is heuristic, cards are curated not a complete diff, the seven classes miss dependency/composition/install surfaces, and failures in this corridor are often silent (pending rows, swallowed errors). It also distinguishes the one decisive apiProxy hit (#3/A1-01) from the six negative categories and states the plugin is incompatible as-is."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Section 3's validation ladder specifies build/typecheck against target declarations, an isolated-profile cold boot with --dump-config showing nothing pending, and an actual llm providers-listing call covering success/failure/cancellation — all clearly proposed as post-migration steps deliberately not executed in the non-runnable static fixture."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "The report explicitly distinguishes the clipboard-text projection (draft/Occurrence.offset/length, chip expanded to clipboardText) from the detect-text projection (chip = one U+FFFC, plain text 1:1), grounds it in host-input-contract.ts (EditorProjection JSDoc) and host-input-facade.ts (detectText slice in insertReference, $replaceDetectSpanWithText in consumeToken), and correctly notes separating spaces/text keep normal width."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length as the plugin's span source in add(), ties paste #2's failure to the detect-span splice: on an empty composer both coordinates coincide (0,0), after the first chip clipboard length 29 overshoots the 2-char detect text, insertReference returns false and the plugin shows its changed-composer toast. Explicitly rules out a real concurrent edit and notes the revision CAS passes."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): occurrence.offset/length passed unconverted to consumeToken, its false result never inspected, records.delete runs unconditionally; composer chip stays, missing record renders 'unavailable' in the dock. Explicitly ties both symptoms to the same coordinate mismatch rather than treating unavailable as an upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detect(X) = X − Σ(length−1) over preceding chips from the projection contract, applies it at both call sites (end-of-draft insert over all preceding occurrences; removal maps offset then uses a one-detect-character span), keeps the revision guard from the same snapshot, and retires records only after a true return with a conflict branch — with sanity checks against the captured numbers (29−27=2)."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes R1 two successive pastes with both chips present, and R6 removing a chip with another chip present (also R3/R4 cover the removal triple: occurrence gone, dock chip removed, record deleted, other chip survives); code-style assertions and natural-language equivalences are given, including declined-consumption (R4) and empty-again (R7) variants. Item 5 host-source discipline is present but treated as unscored guidance."
+    }
+  ],
+  "caps": []
+}

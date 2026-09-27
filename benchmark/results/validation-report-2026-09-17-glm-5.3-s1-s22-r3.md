@@ -6,7 +6,7 @@
 
 - **Solver**: `zai/glm-5.3` in the dsh web harness (in-session subagents, one attempt per task per condition, no score-driven retries). Concurrency 1 (serial) for most of the run, raised to 4 after the second quota window opened; base `e0a9ff5`.
 - **Judges**: 44 subagents scoring each report against the sealed `packet.json` rubric and caps with the official `benchmark/report-judge/judge.mjs` SYSTEM contract and deterministic aggregation (pass = 1, partial = 0.5, triggered caps clamp).
-- **⚠ Judge-model deviation (important)**: R3 was judged by **`zai/glm-5.3` — the same model as the solver** — because the judging session did not switch models, unlike R1/R2 (and all earlier GLM rounds) which used `glm-5.3-flash` judges. Same-model grading introduces a self-evaluation concern whose magnitude or direction is not measured here, and the judge is not held constant across the three rounds. Cross-round comparisons and the 3-round median inherit this inconsistency; regrading existing R3 reports with the earlier judge could align that part of the protocol, but would not establish independent human validation or eliminate other cross-run differences. No such regrade is included.
+- **⚠ Judge-model deviation (important)**: R3 was judged by **`zai/glm-5.3` — the same model as the solver** — because the judging session did not switch models, unlike R1/R2 (and all earlier GLM rounds) which used `glm-5.3-flash` judges. Same-model grading introduces a self-evaluation concern whose magnitude or direction is not measured here, and the judge is not held constant across the three rounds. Cross-round comparisons and the 3-round median inherit this inconsistency; regrading existing R3 reports with the earlier judge could align that part of the protocol, but would not establish independent human validation or eliminate other cross-run differences. The original results below are the same-model grading; a glm-5.3-flash regrade was added afterwards (see [Re-judge](#re-judge-2026-09-17-glm-53-flash)).
 - **Execution**: 44/44 reports verified on disk; the benchmark repository stayed clean. One 5-hour API-quota interruption hit during skill S6 — the subagent failed silently and was relaunched exactly once per protocol (no other relaunches).
 
 ## Results
@@ -45,3 +45,16 @@ The corrected per-task median lift is **35 / 22 = 1.5909 pp**. Historical Flash 
 ## Offline arithmetic correction (2026-09-17)
 
 All 44 verdicts were recomputed using the scoring function and packets at `e0a9ff5`. Half-point values are preserved before aggregation. Original reports and criterion verdicts are unchanged; no new model calls or retries were made.
+
+## Re-judge (2026-09-17, glm-5.3-flash)
+
+The round-3 reports were fully re-judged by glm-5.3-flash (the canonical judge used in rounds 1-2); verdicts and the re-judged aggregate live in `artifacts/2026-09-17-glm-5.3-s1-s22-r3/judge-flash/` and `aggregate-flash-rejudge.json` (see `REJUDGE.md` there). The original same-model aggregate is retained unchanged.
+
+| Aggregate | zero-skill | with-skill | lift |
+|---|---:|---:|---:|
+| glm-5.3 judge (original, disclosed deviation) | 2012.5 (91.5%) | 2157.5 (98.1%) | +145 (+6.59 pp) |
+| **glm-5.3-flash re-judge (canonical)** | **2092.5 (95.1%)** | **2185 (99.3%)** | **+92.5 (+4.2 pp)** |
+
+Per-task, the flash re-judge differs from the original on four zero-skill cells (S17 0 → 90 because the cap does not trigger; S6 75 → 87.5; S4 62.5 → 50, where the one criterion originally passed is downgraded to partial; S16 100 → 90) and six with-skill cells (S3/S11/S18 90 → 100, S5 87.5 → 100, S16 100 → 90, S1 100 → 95): zero-skill +80, with-skill +27.5. The flash judge is therefore not stricter on the zero-skill arm overall; the zero-skill increase comes almost entirely from S17 (excluding it, zero-skill nets −10). Details: `REJUDGE.md`. The three-round per-task medians under the flash-rejudged round 3 are: zero-skill **2112.5 (96.0%)**, with-skill **2190 (99.5%)**, lift **+77.5 (+3.52 pp)**, versus +35 (+1.5909 pp) under the same-model round 3. Judge choice materially moves the top-of-pool estimate; both versions are committed, and cross-round comparisons use the flash-rejudged numbers.
+
+The A2 common-subset / headroom / gain-gap analysis (all three GLM configurations on the identical S1-S22 pool, flash-judged throughout) is committed as `benchmark/scripts/analyze-glm-common-subset.mjs` + `benchmark/results/glm-trio-common-subset.json` (golden tests included): glm-5.3-flash +9.27 (42% of headroom), glm-5.3 +3.52 (89% of headroom), glm-5.2 +3.05 (46%); gain gaps flash−5.2 = +6.23 [2.59, 10.05], flash−5.3 = +5.75 [2.23, 9.32].

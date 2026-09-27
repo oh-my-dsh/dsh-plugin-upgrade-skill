@@ -1,0 +1,332 @@
+{
+  "reviewer": "Human review by the plugin author who created the corresponding task; non-blind",
+  "cases": [
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "no-skill",
+      "repeat": 1,
+      "stratum": "positive",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/no-skill/r1/S6-corridor-net-state/report.md",
+      "sha256": "266c9498c07ac2ebd96e8ccc8504afaf9d2a70230560c83a957bbfa89df6a83b",
+      "reviewScore": 62.5,
+      "decisions": [
+        {
+          "id": "corridor-net-state",
+          "verdict": "pass",
+          "reason": "The history table and src/events.ts correctly apply alpha.2 restoration to this producer.",
+          "evidenceLine": 23,
+          "points": 25,
+          "awarded": 25
+        },
+        {
+          "id": "remove-marker-stripping",
+          "verdict": "pass",
+          "reason": "Explicitly removes the delete statement and obsolete comment; distinguishes deleting the defense from deleting the marker.",
+          "evidenceLine": 39,
+          "points": 25,
+          "awarded": 25
+        },
+        {
+          "id": "informational-producer",
+          "verdict": "fail",
+          "reason": "Section 2 falsely assigns ignorable classification exclusively to the host, omits omission-safety and required-event constraints, and never explains that marked events remain in the loaded log.",
+          "evidenceLine": 51,
+          "points": 25,
+          "awarded": 0
+        },
+        {
+          "id": "public-append-gap",
+          "verdict": "partial",
+          "reason": "Identifies that append has no supported parameter and rejects casts, but recommends plain append of the unknown event rather than deferring the producer/persistence integration; the capability-gap requirement is only partially met.",
+          "evidenceLine": 51,
+          "points": 25,
+          "awarded": 12.5
+        }
+      ],
+      "caps": [
+        {
+          "id": "keep-stripping-marker",
+          "triggered": false,
+          "reason": "The report rejects continued marker stripping; no affirmative cap-triggering recommendation."
+        }
+      ]
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "with-skill",
+      "repeat": 1,
+      "stratum": "positive",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/with-skill/r1/S6-corridor-net-state/report.md",
+      "sha256": "e6b871f96c72233b4271c501c3b0568b05a6764bac3f338ff29113b6cb64448c",
+      "reviewScore": 100,
+      "decisions": [
+        {
+          "id": "corridor-net-state",
+          "verdict": "pass",
+          "reason": "Maps removal and restoration onto the actual produceExternalEvent defense.",
+          "evidenceLine": 10,
+          "points": 25,
+          "awarded": 25
+        },
+        {
+          "id": "remove-marker-stripping",
+          "verdict": "pass",
+          "reason": "Locates the delete and rejects its rationale; correctly treats the shown literal as a no-op while rejecting the policy.",
+          "evidenceLine": 37,
+          "points": 25,
+          "awarded": 25
+        },
+        {
+          "id": "informational-producer",
+          "verdict": "pass",
+          "reason": "Explains informational omission safety, required-event limits and retention rather than filtering; producer constraints are explicit.",
+          "evidenceLine": 46,
+          "points": 25,
+          "awarded": 25
+        },
+        {
+          "id": "public-append-gap",
+          "verdict": "pass",
+          "reason": "States the live append gap, rejects casts and forged entries, and defers target-API integration while recommending separate storage.",
+          "evidenceLine": 46,
+          "points": 25,
+          "awarded": 25
+        }
+      ],
+      "caps": [
+        {
+          "id": "keep-stripping-marker",
+          "triggered": false,
+          "reason": "The report rejects continued marker stripping; no affirmative cap-triggering recommendation."
+        }
+      ]
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "no-skill",
+      "repeat": 2,
+      "stratum": "negative",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/no-skill/r2/S18-terminal-sprite-render-trap/report.md",
+      "sha256": "2ea7d2c76e24955fe8aa9aaf1041a6519ae061d590bc59e97378affc7d8b1601",
+      "reviewScore": 100,
+      "decisions": [
+        {
+          "id": "half-cell-background",
+          "verdict": "pass",
+          "reason": "Grounds stale background in both half-cell branches and prescribes per-cell SGR 49.",
+          "evidenceLine": 21,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-clearing",
+          "verdict": "pass",
+          "reason": "Stops renderer trimming and adds reset then erase-to-EOL, which survives downstream trimming and clears the old frame.",
+          "evidenceLine": 92,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-data-integrity",
+          "verdict": "pass",
+          "reason": "Identifies tail2 and 23 differing cells and requires all-frame digests against source art; an incidental group-count misstatement does not change this criterion.",
+          "evidenceLine": 132,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "timer-liveness",
+          "verdict": "pass",
+          "reason": "Shows unref at the scheduling site covering the initial handle and every rearm, distinguishing probes from TTY-driven lifetime.",
+          "evidenceLine": 174,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "renderer-and-rollout-prevention",
+          "verdict": "pass",
+          "reason": "Combines renderer, SGR, all-frame source checks and mounted-without-unmount host audits with an exit regression.",
+          "evidenceLine": 218,
+          "points": 20,
+          "awarded": 20
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-render-advice",
+          "triggered": false,
+          "reason": "The report rejects continued marker stripping; no affirmative cap-triggering recommendation."
+        }
+      ]
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "with-skill",
+      "repeat": 2,
+      "stratum": "negative",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/with-skill/r2/S18-terminal-sprite-render-trap/report.md",
+      "sha256": "91e0e5e8ccd4fbbc311495c473e22266c80bda912ea379e43548e636b43a5742",
+      "reviewScore": 90.0,
+      "decisions": [
+        {
+          "id": "half-cell-background",
+          "verdict": "pass",
+          "reason": "Identifies both half-filled branches and sticky background; gives per-cell SGR 49 rather than row-end-only reset.",
+          "evidenceLine": 15,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-clearing",
+          "verdict": "pass",
+          "reason": "Explains renderer and downstream trimming; primary fix RESET+EL plus previous-bound erasure is an explicit clearing alternative. Padding alone would not suffice.",
+          "evidenceLine": 83,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "frame-data-integrity",
+          "verdict": "pass",
+          "reason": "Uses tail2 and 23 differing cells, distinguishes drift from rendering, and proposes source-art-backed full-frame checks for all frames.",
+          "evidenceLine": 126,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "timer-liveness",
+          "verdict": "partial",
+          "reason": "Correctly diagnoses referenced rearming timers and mounts without unmount; proposes teardown instead of unref on every scheduled handle, missing the specified liveness contract.",
+          "evidenceLine": 162,
+          "points": 20,
+          "awarded": 10.0
+        },
+        {
+          "id": "renderer-and-rollout-prevention",
+          "verdict": "pass",
+          "reason": "Checklist covers background, clearing, SGR and source-backed frames; audits mounting hosts and proposes actual process-exit regression.",
+          "evidenceLine": 202,
+          "points": 20,
+          "awarded": 20
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-render-advice",
+          "triggered": false,
+          "reason": "No affirmative advice meeting the explicit cap trigger; incomplete or erroneous details are assessed under the criteria."
+        }
+      ],
+      "reusedFrom": "targeted-human-review.json; previously read and graded"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "no-skill",
+      "repeat": 1,
+      "stratum": "zero",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/no-skill/r1/S12-global-upgrade-ebusy-trap/report.md",
+      "sha256": "d0d14f64dafaa67b05ce485055850d93745d9e039a3cc8ae933f6fe40266e319",
+      "reviewScore": 100,
+      "decisions": [
+        {
+          "id": "native-module-owner",
+          "verdict": "pass",
+          "reason": "Names PID 42432 from running-processes.txt and ties the loaded koffi.node image to the Windows replacement failure.",
+          "evidenceLine": 9,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "browser-versus-host-sequence",
+          "verdict": "pass",
+          "reason": "Separates browser refresh from host exit and orders stop/confirm, install and restart without killing unrelated Node processes.",
+          "evidenceLine": 9,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "unpinned-dist-tag-resolution",
+          "verdict": "pass",
+          "reason": "Uses the supplied dist-tags to show that latest resolves to rc.2 and can replace alpha.4; does not confuse maximum version with tag resolution.",
+          "evidenceLine": 59,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "safe-exact-commands",
+          "verdict": "pass",
+          "reason": "Supplies the exact alpha.5 core install plus the TUI package and a version check before restart.",
+          "evidenceLine": 96,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "readme-prevention",
+          "verdict": "pass",
+          "reason": "README guidance preserves an exact core pin through combined installs and warns about silently following latest.",
+          "evidenceLine": 132,
+          "points": 20,
+          "awarded": 20
+        }
+      ],
+      "caps": []
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "with-skill",
+      "repeat": 1,
+      "stratum": "zero",
+      "report": "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/with-skill/r1/S12-global-upgrade-ebusy-trap/report.md",
+      "sha256": "ca04a841341e8cc4bd778181bcb8b6a9674d0e42425ca48300d853532610c2af",
+      "reviewScore": 100,
+      "decisions": [
+        {
+          "id": "native-module-owner",
+          "verdict": "pass",
+          "reason": "Names PID 42432 from running-processes.txt and ties the loaded koffi.node image to the Windows replacement failure.",
+          "evidenceLine": 9,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "browser-versus-host-sequence",
+          "verdict": "pass",
+          "reason": "Separates browser refresh from host exit and orders stop/confirm, install and restart without killing unrelated Node processes.",
+          "evidenceLine": 9,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "unpinned-dist-tag-resolution",
+          "verdict": "pass",
+          "reason": "Uses the supplied dist-tags to show that latest resolves to rc.2 and can replace alpha.4; does not confuse maximum version with tag resolution.",
+          "evidenceLine": 47,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "safe-exact-commands",
+          "verdict": "pass",
+          "reason": "Supplies the exact alpha.5 core install plus the TUI package and a version check before restart.",
+          "evidenceLine": 76,
+          "points": 20,
+          "awarded": 20
+        },
+        {
+          "id": "readme-prevention",
+          "verdict": "pass",
+          "reason": "README guidance preserves an exact core pin through combined installs and warns about silently following latest.",
+          "evidenceLine": 115,
+          "points": 20,
+          "awarded": 20
+        }
+      ],
+      "caps": []
+    }
+  ],
+  "provenance": {
+    "initialAnalysis": "AI-assisted, preserved in fe4db72 history",
+    "subsequentHumanReview": "Reported by the user and recorded in commit 4419da4; non-blind contributing-author review",
+    "alignmentRecord": "paper/audit/contract-review-20260917/human-alignment.json",
+    "independentAgreementMeasured": false
+  }
+}

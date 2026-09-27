@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Ties the plugin's session.events reads to the not-iterable crash in the stack trace and cites the alpha.4 changelog removal with seq, eventAt and snapshotEvents as replacements; explains undefined then failing iteration."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"Uses the npm output to show alpha.5 satisfies the caret range by same-base prerelease ordering, and explains npm only compares version labels against an author's claim, not API existence or behavior."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Explains removed API plus distinct classes such as return shape or sync-to-async changes, signature changes and behavioral contract changes."},
+{"id":"author-prevention","verdict":"pass","reason":"Requires CI testing against actual in-range host versions and gives a policy: narrow the peer range to exclude alpha.4+ and bridge old and new APIs via runtime detection, explaining ranges cannot express symbol existence."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Proposes reading host changelogs between the peer floor and installed version for this Session.events removal, and grepping the packed plugin for .events usage before installing."}
+],"caps":[
+{"id":"peers-prove-runtime","triggered":false,"reason":"Report explicitly states peer satisfaction does not establish runtime compatibility and affirms the documented removal."}
+]}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the ClientContext import at src/client/index.ts:1, maps card A1-25, and requires replacing the deleted-package import with Context from @deepseek-ai/cordis plus per-domain type augmentation imports; notes type-only erasure is not harmless (TS2305, boot-graph symptoms). Exact successor details are framed per the sealed mapping, within the closed-book scope."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "Compares the actual loader id 'pet-legacy-bundle' (index.ts:10, declaration at line 5) with package.json name dsh-pet-session-bench, maps A1-26, and requires the three ids to align on the bare package name via the tsdown PLUGIN_ID banner, with dump-config and __DSH_BOOT__.entries verification named."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates useSession import and the flat nodes read at index.ts:2,12-13, maps A1-27 plus API-10, and requires replacing the flat snapshot with the supported useChat/ChatSnapshot surface, preserving order by iterating ChatSnapshot.order with nodes.get(id); does not claim the old flat nodes API remains, and notes Pet.tsx has no breaking surface."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates ctx.connection.api.agentPresets.list at index.ts:11, maps removal card A1-30, and requires removing the deleted face in favor of a public Remote-domain call, correctly warning that swallowed errors leave a blank UI. The specific successor name is presented via an A1-01 mapping, which is a supported Remote direction and not mandatory under the closed-book rule; unverified composition details are marked unconfirmed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report does not assert any unsupported apply/setup/activate replacement nor that service inject generally must move into a manifest; it explicitly finds the fixture has no dsh.client.inject field and that connection is absent from the existing inject list, requiring no injection change."
+    }
+  ]
+}

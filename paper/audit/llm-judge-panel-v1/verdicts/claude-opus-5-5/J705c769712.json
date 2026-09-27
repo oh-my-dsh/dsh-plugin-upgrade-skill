@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Uses the introspection LinkType Junction/Target and the link marker to show the profile entry resolves to the repo tree, concludes repo edits are already deployed and copying is never needed, and contrasts with a copied dependency."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Attributes the EBUSY to the running dsh host holding loaded lib files, explains tab closure leaves the host running, and separately treats browser HTTP caching of client.js as needing host restart plus hard refresh without calling the cache a file lock."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains renames through the junction renamed the repo's own files, causing the missing-source copy error; recovery stops the host, renames both .old2 files back, verifies via the junction path, runs node --check on both, then activates."},
+{"id":"ordered-activation","verdict":"pass","reason":"Orders syntax check, full host stop, host restart, cache-bypassing refresh, then verification of the host route, clean load logs and freshly fetched client.js with the feature; rejects browser-only steps."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Prescribes read-only LinkType/Target and cordis.patch.yml link-marker checks before any file operation, branches link vs copied procedure, and explains why copy advice produced the EBUSY and rename accident."}
+],
+"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final plan never copies onto the junction target, preserves and renames back the .old2 files, and treats both paths as one directory."},
+{"id":"browser-only-activation","triggered":false,"reason":"Activation explicitly requires stopping and restarting the host; browser closure is said not to release the lock."}
+]}

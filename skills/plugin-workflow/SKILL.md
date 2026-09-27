@@ -52,9 +52,12 @@ Inspect only enough context to make the choices concrete:
 | `full-lifecycle` | Migrate, validate, name, package, and optionally publish | all applicable stages in dependency order |
 | `runtime-debug` | Diagnose and fix Web Client runtime behavior | runtime diagnosis/fix, static, functional and browser proof, rollback |
 | `heavy-dependency` | Integrate a lazy-loaded Web Client dependency | integration, static, functional and browser proof, rollback, package inspection |
+| `fleet-sweep` | Sweep the whole installed plugin fleet against an upgraded host | static and live fleet sweep, per-plugin fix and release loop |
 
-The last two workflows require the `web-client` surface. They can also be added as
-capabilities to a migration. Use `health-check` for a read-only investigation; a
+`runtime-debug` and `heavy-dependency` require the `web-client` surface. They can also be added as
+capabilities to a migration. `fleet-sweep` has no surface gate because a fleet mixes Web Client and
+logic-only plugins; it crosses all three confirmation boundaries because it runs the upgraded host and
+then commits, tags and pushes each fixed plugin. Use `health-check` for a read-only investigation; a
 request to diagnose a symptom does not by itself select a fix workflow.
 
 Then let the user include or exclude these capabilities. Recommend the smallest set that proves their stated outcome and state which recommended items are still unselected.
@@ -75,6 +78,7 @@ Then let the user include or exclude these capabilities. Recommend the smallest 
 | Publish an artifact or release | `release` | Off unless external release intent is explicit |
 | Diagnose and fix Web Client runtime behavior | `runtime-debug` | Off unless selected; requires static, functional and browser proof plus rollback |
 | Integrate a heavy browser dependency | `heavy-dependency` | Off unless selected; requires the same proof plus package inspection |
+| Sweep the installed plugin fleet after a host upgrade | `fleet-sweep` | Off unless selected; requires repository-write, runtime and external-publication confirmation |
 
 After the user chooses, normalize the selection with the bundled read-only planner. Read [`references/workflow-selection.schema.json`](references/workflow-selection.schema.json) when another tool needs to produce the input JSON.
 
@@ -121,6 +125,7 @@ Before executing a stage, load and follow its owning Skill. If the owner is unav
 | DSH host version-to-version evidence | `$dsh-upgrade-audit` | Keep generated evidence separate from plugin source changes |
 | Web Client runtime diagnosis and repair | `$plugin-runtime-debug` | Establish the exact host contract and reproduce the failing interaction |
 | Lazy-loaded browser dependency integration | `$plugin-heavy-dep` | Own chunk loading, host route, fallback and markup handling |
+| Whole-fleet sweep and per-plugin release loop after a host upgrade | `$plugin-fleet-sweep` | Verify on the upgraded host; fix and release one plugin at a time, never as a fleet commit |
 
 Keep one owner per phase. When runtime debugging and dependency integration overlap,
 record the diagnosed contract and let the integration owner consume it instead of

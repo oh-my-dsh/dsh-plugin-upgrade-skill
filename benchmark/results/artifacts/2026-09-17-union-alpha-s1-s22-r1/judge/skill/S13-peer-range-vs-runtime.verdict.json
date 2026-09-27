@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in the fixture chain: plugin channel.js reads session.events (42 references), at alpha.4/5 the property is undefined, and the first iteration in prepareReplayEvents throws 'events is not iterable', failing the loader entry. It cites the alpha.4 changelog entry 'Replace Session.events with on-demand read APIs' naming seq, eventAt() and snapshotEvents() as replacements. Note: it also adds details (ownEvents(), seedLength replacement, version-card line numbers) not present in the sealed fixture, but the required causal chain is correct and located."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt: all peers declare ^0.1.2-alpha.2, installed sub-packages are 0.1.2-alpha.5 which sorts inside the range, so npm's pure metadata comparison passes silently. Explains that a peer range guarantees only version-number fit at resolution time — not symbol existence, not runtime behavior, and that an author claim reflects untested releases. Same-base prerelease ordering, sufficient per the rubric."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives genuinely distinct classes: (1) removed API/property (Session.events deletion, this incident), (2) changed signatures/types (SessionSeq/SessionLogOffset branding, seedLength replacement — argument/shape changes), plus behavioral drift and package moves. Each is explained as passing peer validation yet breaking at runtime; not two names for the same removal."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against the actual target host cohort (build/typecheck at 0.1.2-alpha.4 plus a real cold-start exercising a core path) AND an actionable compatibility policy: narrow/ceiling the peer range to the verified cohort, declare the host corridor via engines, and add a runtime feature-detection guard (typeof session.snapshotEvents check) with old/new paths and a clear error. Both halves present; correctly states metadata cannot test API behavior."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install check: read the changelog for the corridor between the peer floor (alpha.2) and the installed host (alpha.5) for breaking entries in the plugin's touchpoint area — the alpha.4 Session.events line would predict this crash — plus compare the plugin's stated tested cohort and optionally cold-start in a scratch profile. Tied to the Session.events boundary; not merely rerunning npm install."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report consistently argues the opposite: peer-range satisfaction is 'the numbers fit' and explicitly does not guarantee runtime compatibility; the claim that install success implies working behavior is presented only as a trap to avoid, never as affirmative advice."
+    }
+  ]
+}

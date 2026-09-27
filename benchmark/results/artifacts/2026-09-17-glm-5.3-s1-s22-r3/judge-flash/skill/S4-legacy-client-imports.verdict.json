@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Report locates the removed dsh-client-runtime/client type import at src/client/index.ts:1, maps card DSH-0.1.2-A1-25, explains the Web Client build/typecheck impact, and gives the card-backed migration direction (Context as ClientContext from @deepseek-ai/cordis per the card's symbol table), correctly noting the fixture has no dsh.client.inject entry listing the removed package; no invented successors."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "Report identifies the __ModuleLoader__.load('pet-legacy-bundle') id at src/client/index.ts:10, contrasts it with the package.json name dsh-pet-session-bench, maps DSH-0.1.2-A1-26, requires exact name alignment and gives the card's activation verification (window.__DSH_BOOT__.entries, no 'loaded without registering')."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Report locates the flat useSession() nodes read at src/client/index.ts:12-13, maps DSH-0.1.2-A1-27, explains the removed per-session snapshot breakage, and replaces it with the supported SessionBinding durable event window (binding.eventSource.getSnapshot().entries via @deepseek-ai/dsh-api-session-controller/client), preserving ordered entry reads; it marks the useSession signature as unconfirmed rather than inventing a replacement. Pet.tsx correctly raises no finding."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Report locates ctx.connection.api.agentPresets.list() at src/client/index.ts:11, maps DSH-0.1.2-A1-30, explains the removed apiProxy face and the swallowed-error blank-UI risk, requires removal of the dead face in favor of the successor Remote surface, and honestly marks the agentPresets-specific successor endpoint as unconfirmed/pending verification instead of inventing one; inject cleanup correctly assessed as n/a."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never positively asserts an unsupported apply/setup/activate lifecycle replacement or that service inject must generally move into a manifest; it explicitly assesses inject cleanup as not required for this fixture and rejects/bounds invented successors by marking them unconfirmed."
+    }
+  ]
+}

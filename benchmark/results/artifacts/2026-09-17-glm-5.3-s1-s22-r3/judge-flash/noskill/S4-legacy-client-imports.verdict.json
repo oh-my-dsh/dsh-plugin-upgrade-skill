@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "partial",
+      "reason": "Correctly locates index.ts:1, identifies the deleted @deepseek-ai/dsh-client-runtime/client import, Web Client plane, card A1-25, and marks exact successor path unconfirmed. But its migration direction positively asserts a 'successor runtime/client package the harness now exposes' — no such successor runtime package exists (the package was deleted with symbols split by domain, Context type coming from @deepseek-ai/cordis per sealed references), and no defensible owning-package direction is actually given."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Correctly compares loader id 'pet-legacy-bundle' (index.ts:10) against package.json name 'dsh-pet-session-bench', maps DSH-0.1.2-A1-26, and requires exact id alignment to the package name. However it offers no client activation verification step (boot-graph/entry/registration assertion checks per the card)."
+    },
+    {
+      "id": "session-content",
+      "verdict": "partial",
+      "reason": "Locates useSession/nodes destructuring at index.ts:12-13, maps A1-27, and correctly notes Pet.tsx has no breaking surface and does not claim the flat API remains supported. But its migration action is only 'migrate to the new session snapshot API from @deepseek-ai/dsh-client-ui-chat/client and update nodes[0] accordingly' — no supported content-reading direction (SessionBinding event window or keyed order/get ordering) is given, which the criterion requires."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "partial",
+      "reason": "Correctly locates ctx.connection.api.agentPresets.list at index.ts:11, maps A1-30, and diagnoses the removed face. Its migration action, however, positively posits a 'successor connection face' (the face was removed entirely) and vague 'package-private host methods', rather than requiring a verified public target interface such as the remote/public domain APIs; the exact-successor omission is fine to leave unconfirmed, but the direction given is partly invented."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "The report never asserts apply must become setup/activate, nor that service inject must move into a manifest; it explicitly treats the existing inject list as unconfirmed-but-unbroken and performs no such recommendation."
+    }
+  ]
+}

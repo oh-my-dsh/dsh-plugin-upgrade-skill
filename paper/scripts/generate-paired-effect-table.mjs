@@ -14,7 +14,7 @@
 //
 // Outputs (committed to the repo):
 //   paper/generated/paired-effect-table.tex             — booktabs main table,
-//     label tab:paired-effect; the five main groups (sensitivity groups excluded)
+//     label tab:paired_effect; the five main groups (sensitivity groups excluded)
 //   paper/generated/paired-effect-sensitivity-table.tex — one row per
 //     sensitivity group, label tab:paired-effect-sensitivity
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -116,9 +116,9 @@ export function renderPairedEffectTableTex(stats) {
     '\\bottomrule',
     '\\end{tabular}',
     '\\par\\smallskip',
-    '{\\footnotesize Judge identity: in both GLM groups the solver and the grader belong to the same model family --- glm-5.3-flash graded its own runs, and 19 of the 22 glm-5.2 tasks were judged by glm-5.3-flash subagents (the remaining three by official keyword judges) --- so correlated grader bias cannot be excluded (Section~\\ref{sec:related}). glm-5.2\'s CI lower bound touching zero alongside $p = 0.1378$ is a percentile-bootstrap boundary artifact: with 16 of 22 task deltas tied at zero, the lower endpoint of the resampling distribution sits at zero, so the interval brushing zero does not contradict the nonsignificant test.\\par}',
+    '{\\footnotesize Judge identity: in both GLM groups the solver and the grader belong to the same model family: glm-5.3-flash graded its own runs, and 19 of the 22 glm-5.2 tasks were judged by glm-5.3-flash subagents (the remaining three by official keyword judges), so correlated grader bias cannot be excluded (Section~\\ref{sec:related}). glm-5.2\'s CI lower bound touching zero alongside $p = 0.1378$ is a percentile-bootstrap boundary artifact: with 16 of 22 task deltas tied at zero, the lower endpoint of the resampling distribution sits at zero, so the interval brushing zero does not contradict the nonsignificant test.\\par}',
     `\\caption{Task-level paired effect of the plugin-upgrade skill across five historical configurations, ordered by each group's no-skill baseline (an outcome measure, not an independent capability metric; Section~\\ref{sec:paired}). Each cell compares the two conditions on a 0--100 scale: per-task medians of three rounds (glm groups) or three runs (deepseek-v4-flash), per-task means of three scored attempts (qwen3.8-27b, reward means rescaled by 100), or single-shot rewards (gpt-5.6-terra; H8 excluded after verifier timeouts on both arms). Mean paired $\\Delta$ is the mean of per-task with-skill-minus-no-skill deltas; 95\\% CIs are percentile intervals from ${replicates} task-level paired bootstrap replicates (${esc(stats.prng)}, seed ${stats.seed}); $p$ is the two-sided Wilcoxon signed-rank test (zero deltas excluded, tie-corrected normal approximation with continuity correction). Task pools and protocols differ across rows, so cross-row comparisons are descriptive.}`,
-    '\\label{tab:paired-effect}',
+    '\\label{tab:paired_effect}',
     '\\end{table*}',
     '',
   ].join('\n')

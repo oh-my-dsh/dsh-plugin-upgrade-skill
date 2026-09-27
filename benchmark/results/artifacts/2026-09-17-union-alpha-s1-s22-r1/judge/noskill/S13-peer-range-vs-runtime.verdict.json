@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report locates the plugin's session.events reads in plugin-source-excerpt.js (line 734 liveAgent.session.events, line 6685 replayEvents call) and the 'events is not iterable' TypeError in crash-stack.txt's prepareReplayEvents, cites the changelog entry removing Session.events at 0.1.2-alpha.4 with the seq/eventAt()/snapshotEvents() replacements, and explains that iterating the now-absent array throws at startup replay."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt to show alpha.5 satisfies the declared ^0.1.2-alpha.2 caret range (same 0.1.2 prerelease tuple, >=0.1.2-alpha.2 <0.2.0-0) and explains peer validation is a static package-metadata check of the author's declared claim, not a verification of API existence or runtime behavior against the host."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives at least two genuinely distinct classes: removed/renamed API (this incident) and changed return values/calling conventions such as a sync iterable becoming a Promise, plus export-map/entry-point changes — each explained as passing peer checks while failing at runtime, with correct framing that the others are general examples rather than observed fixture failures."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires integration testing against the concrete target version (alpha.5, CI matrix per prerelease, startup/replay coverage) and an actionable compatibility policy: narrowing the peer range to exclude breaking releases and/or runtime feature detection with old/new code paths and actionable failure messages; also correctly notes neither peers nor an engines field test DSH API behavior."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives a concrete pre-install investigation: inspect the plugin's published source/archive, find session .events accesses, and compare them with release notes between the plugin's baseline and the exact host version — tied directly to this Session.events removal, and explicitly noted as achievable without execution."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's conclusions consistently state the opposite: peer-range satisfaction and a warning-free install say nothing about runtime compatibility, and it explicitly attributes the crash to a real API removal rather than denying it."
+    }
+  ]
+}

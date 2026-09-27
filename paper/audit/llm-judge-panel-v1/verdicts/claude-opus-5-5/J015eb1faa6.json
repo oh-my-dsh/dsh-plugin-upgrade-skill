@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"duplicate-loader-attribution","verdict":"pass","reason":"Identifies the bundle and profile insert rows for workspace-files, locates rejection in EntryGroup.update during cordis:include application, explains inserts are not upserts so the duplicate is a hard error, and treats the profile's 'redundant but harmless' hedge as a skipped verification whose block must be deleted."},
+{"id":"three-layering-cases","verdict":"pass","reason":"Table cleanly separates config override by id (safe), new unshipped id (safe), and already-shipped id (fatal), and classifies the maintainer's row as the fatal case grounded in the web-app excerpt row plus the crash text."},
+{"id":"minimal-profile-fix","verdict":"pass","reason":"Deletes only the manual workspace-files block in the profile cordis.patch.yml, keeps external plugin inserts and bundle row, and routes any reconfiguration through a config override rather than reinsertion."},
+{"id":"plugin-and-failure-boundary","verdict":"pass","reason":"States the error arises during patch merging before plugin load so no plugin-side change can help, and separately notes the original content-read failure may persist and must be investigated after boot is restored."},
+{"id":"author-and-host-prevention","verdict":"pass","reason":"Recommends grepping the installed web-app bundle patch for the id and preferring override, and proposes a host error naming the id, both declaration origins and the delete-profile-row remedy, plus an optional pre-boot lint."}
+],
+"caps":[
+{"id":"retain-or-add-duplicate","triggered":false,"reason":"Final advice removes the duplicate, denies silent merging, and explicitly rejects plugin-side fixes."}
+]}

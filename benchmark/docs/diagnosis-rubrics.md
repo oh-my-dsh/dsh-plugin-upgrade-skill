@@ -1,9 +1,10 @@
 # S类诊断题的LLM评分规则
 
-S11、S13、S14、S16、S17、S18、S19、S20、S21、S22默认使用LLM-as-judge。
+S11、S13、S14、S16、S17、S18、S19、S20、S21、S22、S23、S24默认使用LLM-as-judge。
 任务版本为`4.1.0`，协议为`report-judge-v2`。题面、fixture和原参考答案保持不变；
 旧关键词评分及此前不同rubric的LLM结果不能直接与新版分数比较。
 主线#212已迁移其中7题；本次补齐S13、S14、S20，并细化全部10题的判分条件。
+S23、S24为后续新增的0.1.6-alpha.2事故题，直接按本规则的5项×20分结构编写。
 
 规则源文件是[diagnosis-rubrics.mjs](../report-judge/diagnosis-rubrics.mjs)，
 由[rubrics.mjs](../report-judge/rubrics.mjs)统一注册。
@@ -39,6 +40,8 @@ S11、S13、S14、S16、S17、S18、S19、S20、S21、S22默认使用LLM-as-judg
 | S19 版本标记、旧宿主与坏payload | ①先build后bump导致版本常量陈旧；②client刷新和宿主路由闭包的不对称；③干净磁盘与上游文本拼接损坏的归因；④磁盘→经XML校验的payload→禁脚本iframe→明确错误；⑤多帧zstd取证及发布预防 | 认可错误发布顺序、以镜像重推修常量、以刷新修宿主路由、修改干净源文件，或跳过校验/启用脚本：0分 |
 | S21 资源服务不可用 | ①同文件两种reader对照，定位metadata链；②逐模块200与超长组合URL的有效性区别；③fold警告、包重命名及session地址范围的区分；④重启一次→已知可用版本回退→上游；⑤完整取证和provider/RPC失败的可定位诊断 | 将无效join当缺模块证据，或改插件兜底/重试、重复插入已有服务：40分 |
 | S22 重复插入启动崩溃 | ①两份patch同id在EntryGroup被拒绝；②config override、新id insert、重复id insert三种情况；③仅删除profile冗余块；④区分组合错误与原资源读取故障；⑤插入前查bundle和宿主报告两处来源 | 保留/新增重复行、宣称重复会静默merge，或靠改插件代码修此启动错误：20分 |
+| S23 兼容守卫通过但静默失效 | ①resolve()读取已移除的sessions.list快照current字段，守卫的服务存在性检查全部通过而每次按键静默返回；②由alpha1/alpha2类型节选映射到uiSession.adapter.current的{key, ctx}；③同一构建内alpha.2优先、alpha.1回退的双宿主迁移；④守卫改为字段/能力级探针并按需执行；⑤无需完整迁移的验证与“移除字段应显式失败”的预防 | 仅重新注册slot、重声明inject或重装插件而不改当前会话解析代码：40分 |
+| S24 dock同宿主连带崩溃 | ①只有插件A在渲染时调用已从标准套件移除的useSessionPendingInteraction/useSessions而抛错；②dock条目共挂同一DrawerErrorBoundary，A抛错卸载整个子树，input.left中的按钮在另一边界下幸存；③禁用实验证明的与不能证明的，重装B无效，同事“两个插件都中招”说法不成立；④可选调用+稳定空值的静默降级代码及必须不抛错的理由；⑤无需重启宿主的双插件验证、B的粘贴回归及租户/宿主隔离权衡 | 只修/重装无辜的插件B，或认定两处故障是互相独立的插件缺陷：40分 |
 
 S20保留原有分值布局，将判断改成语义评估：
 
@@ -66,6 +69,8 @@ S20封顶：要求安装VS为50分；仅跳过构建而未解决静态加载为4
   允许说明URL受限并分组，而不背出3KB常数。题面未提供fold修复版本，不能将其设为满分条件。
   session-only认领范围解释绝对地址错误，不能解释已打开tab的metadata停滞。
 - S22：删除重复insert只能解决本次组合错误，不等于原来的内容读取问题也解决。
+- S23：sessions.scope(id)在alpha.2仍存在，只是未出现在类型节选中；不能将其当作已移除来扣分或加分。
+- S24：机制需从挂载树与控制台日志推出；禁用实验不能证明插件B在alpha.2其他方面完全兼容。
 
 ## 校准与运行
 

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Report locates the partial (Pet.tsx:11-13), runningCalls (:21) and turnEnds (:23) reads and explains the two-step plan: read them through views.get('chat')?.legacy first with preserved semantics, then field-by-field to the target chat view/useChat and timeline surfaces, noting the keyed ChatSnapshot ordering change and absent-projection handling. This matches the supported migration rather than a bare 'legacy' mention."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates the running read at Pet.tsx:19 and explains it is Session lifecycle state outside the chat legacy projection, belonging to the useSession seat; it explicitly says the existing useSession call must not be renamed or rewritten and only the chat selectors are separated."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates both removed dsh-client-runtime imports (index.ts:9, Pet.tsx:6) and the package.json client.inject entry (:8). Repoints Context as ClientContext to @deepseek-ai/cordis, moves snapshot types to their chat-domain owner with explicit deferral to actual target-tag exports, and does not claim cordis exports snapshot types; also recommends removing the phantom inject entry and adding owning-package augmentations."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register call at index.ts:40-48, wraps registration in scope.slots.inject inside the ctx.inject(['slots','conversation']) dependency scope, preserves the slot name 'conversation.session.header.actions', id, order and scoped lifetime, and adds the ui-renderer Context augmentation — an equivalent supported registration form."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Every surface is tied to full card IDs (DSH-0.1.2-A1-03 for view/slot/lifecycle splits, DSH-0.1.2-A1-25 for the removed runtime package and inject cleanup, with API-10's exact mapping) and the report explicitly separates the temporary legacy projection (item 3 fields) from immediate type/inject/lifecycle/slot changes in a dedicated section."
+    }
+  ],
+  "caps": []
+}

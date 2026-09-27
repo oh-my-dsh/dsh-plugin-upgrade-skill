@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Report pins the exact expression `(props.input?.phase ?? 'plain') !== 'plain' || busy` in AttachmentChips, identifies busy as a sibling AttachButton useState binding that is unbound in AttachmentChips, and explains the trigger table: empty occurrences return null before the map, a plain-phase occurrence makes the left guard false so busy is evaluated and throws ReferenceError. Located with concrete fixture line references."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render exception is caught by the InputZone slot error boundary, which unmounts the whole dock entry (vanishing dock) rather than only breaking the remove button; the attach button lives in a separate input.left slot and survives; the diagnostic is visible only in the browser console, matching the no-banner user symptom. Grounded in user-thread.md and plugin-dock-chips.js references."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 excerpt (and maintainer note) to establish the dangling busy already exists in baseline, so blaming the hover diff is the wrong first conclusion; proposes a data-present plain-phase baseline mount plus a rollback/re-add step isolation under identical mounts, and capturing the console/boundary stack. It also credits the diff inconsistencies the rubric names: feature.diff falsely shows `|| busy` as an addition, and imageItem is computed before the callback-scoped record/status, making status/record out of scope there. Explicitly notes the evidence cannot prove when historical users first exercised the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Proposes removing the dangling busy reference while preserving the phase guard (or supplying properly owned state via props/store, noting two useState calls do not share state). Hardens arrays with `record?.items ?? []` including the correct explanation that optional chaining alone does not guard .find on a present record, scopes the hover derivation inside the occurrence callback after record/status, and hardens DOM targets with `event.target?.closest?.('.remove')`, even catching the `!== null` vs undefined pitfall."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Designs a render smoke mounting AttachmentDock/AttachmentChips with a SOURCE-matching occurrence in plain phase, asserting the chip/label/remove button render, the button is enabled, and the error boundary records zero captures — correctly noting mount-does-not-throw is insufficient because the boundary swallows errors, and keeping empty/non-plain cases only as controls since they short-circuit or return null before the bad line. Explains node --check only parses and cannot resolve free identifiers or execute the component, and includes the data-present slot smoke in minimum pre-ship checks without claiming execution."
+    }
+  ],
+  "caps": []
+}

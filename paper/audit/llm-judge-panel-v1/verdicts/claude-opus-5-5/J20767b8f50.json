@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Ties the plugin's session.events reads in the source excerpt to the iteration TypeError in the crash stack. Cites the alpha.4 changelog removal and its replacement by seq, eventAt and snapshotEvents, and explains that the read yields undefined, which then fails to iterate. The stack-trace line reference is not a location in the excerpt file, but the diagnosis is correctly placed."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"Uses the npm output to explain that alpha.5 satisfies the caret range under same-base prerelease ordering. States that npm checks only declared version metadata, not API existence, and that the floor is an author claim, not proof of testing."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Explains removed APIs and signature or type tightening with runtime enforcement as separate classes, and adds package renames and default-behavior changes."},
+{"id":"author-prevention","verdict":"pass","reason":"Requires typechecking and cold-boot testing against the target version. Proposes an upper-bounded peer range or pin, plus a runtime feature-detection guard and migration. Explains that static metadata cannot certify behavior."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Gives a concrete read-only check: read the changelog between the peer floor and the installed version, then grep the packed tarball for the removed .events usage. Ties both steps to this incident."}
+],
+"caps":[
+{"id":"peers-prove-runtime","triggered":false,"reason":"Explicitly states that a satisfied peer range does not prove runtime compatibility, and affirms the removal."}
+]}

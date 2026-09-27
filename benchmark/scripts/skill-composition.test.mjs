@@ -12,6 +12,7 @@ const cases = [
   ['new plugin lifecycle', 'full-lifecycle', { pluginState: 'new' }, ['plugin-workflow', 'dsh-upgrade-audit', 'plugin-upgrade', 'plugin-write', 'plugin-test', 'plugin-release']],
   ['runtime repair', 'runtime-debug', { surfaces: ['web-client'] }, ['plugin-workflow', 'plugin-runtime-debug', 'plugin-test', 'plugin-upgrade']],
   ['heavy dependency integration', 'heavy-dependency', { surfaces: ['web-client'] }, ['plugin-workflow', 'plugin-heavy-dep', 'plugin-test', 'plugin-upgrade', 'plugin-release']],
+  ['fleet sweep after a host upgrade', 'fleet-sweep', {}, ['plugin-workflow', 'plugin-fleet-sweep']],
   ['explicit registry registration', 'naming-registry', { include: ['registry-register'] }, ['plugin-workflow', 'plugin-write']],
   ['explicit publication', 'package-release', { include: ['release'] }, ['plugin-workflow', 'plugin-test', 'plugin-release']],
   ['test-only scope', 'test-only', {}, ['plugin-workflow', 'plugin-test']],

@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"Uses the process listing to name the dsh web host, PID 42432, as the process that loaded koffi.node, and explains that the loaded binary stays locked until the host exits, so copyfile fails with EBUSY."},
+{"id":"browser-versus-host-sequence","verdict":"pass","reason":"Says a refresh reloads only the SPA while the host keeps running. Gives the order stop, confirm exit, install, verify, restart, and limits termination to dsh-related processes, not all Node."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Explains that an unpinned global install follows latest, which the dist-tags file points at 0.1.1-rc.2 while alpha holds alpha.5, and that this downgraded the alpha.4 install."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"Gives the exact pinned alpha.5 install together with the TUI plugin after stopping the host, verifies dsh --version, then restarts. Mentions @alpha only as a less robust alternative."},
+{"id":"readme-prevention","verdict":"pass","reason":"Tells README authors to pin the exact core version in any combined command and never rely on implicit latest during a prerelease cycle."}
+],
+"caps":[]}

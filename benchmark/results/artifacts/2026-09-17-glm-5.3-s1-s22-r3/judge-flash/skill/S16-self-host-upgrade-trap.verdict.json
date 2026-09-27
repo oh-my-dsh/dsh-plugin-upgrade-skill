@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Section 1 uses the session log and env-state to tie the session and its pwsh tool worker to the host process inside the package tree npm was replacing, explains the host dies first so the tool result was never durably recorded, preserves the unknown outcome, and explicitly frames it as structural ('a process cannot replace the tree it executes from') rather than flakiness, without claiming every platform upgrade must crash."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Section 2 reads env-state.txt correctly: package content present but dsh/dsh.cmd missing and dsh.ps1 stale pointing into the old tree, attributing it to the host dying during linkStuff before bin-link/shim generation; it explains content presence proves nothing about install completeness and rejects hand directory swaps/shim writing because they reproduce the non-standard no-metadata state the repair notes diagnosed."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Section 3 grounds the remedy in repair-notes.md: rerunning npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from an external process so npm regenerates the shim trio, verified by dsh --version = rc.1; it describes the checkout realignment to dsh-v0.1.2-rc.1 without demanding unrelated source edits, and clearly separates the recorded repair from the candidate's own read-only actions."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "partial",
+      "reason": "The report fully delivers the handoff: recognize the target is its own runtime, never execute the global install in-session, and the ordered external procedure (stop all hosts first, pinned exact-version install explaining dist-tag drift, restart, hard-refresh, verify). However, it attributes the stop-before-install, external-shell, and pinned-version rules to existing skill discipline and names the interrupted-install repair corollary as the new part, whereas the rubric's split is that refusing execution from inside the target host is the additional self-host rule — the established-vs-new attribution is partly misaligned."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Section 5 proposes an agent-side guard comparing the install target package directory against the running host's module path and refusing with the structural explanation, grounded in repair-notes.md's alpha.5→rc.1 diff (252 files, all package.json bumps, zero API changes → no re-migration); the checklist covers version markers, actual plugin loading after restart/refresh, ghost-host restarts, and backup cleanup only after rc.1 is confirmed, all specific to the supplied tags with no code change."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The report consistently recommends never executing the global install from inside the target host and treats the in-session attempt as the mistake; no affirmative plan retries or runs the upgrade while the host is live."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and hand-written shims are described only as the user's failed attempt and explicitly rejected; the recommended fix is the formal external pinned registry install."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: entry chunk 200 while hashed siblings 404 and were never shipped; correctly explains that emitted static imports resolve relative to the fetched chunk URL and any graph failure aborts the whole dynamic import; proposes a self-contained single-file entry with code splitting disabled (inlineDynamicImports) plus a build-time no-external-sibling assertion."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Cites chunk-route.ts's startsWith(LIB_DIR + sep) guard and ci-note.md's debug output showing LIB_DIR 'E:' vs realpath 'e:'; explains the case-sensitive string comparison rejects a contained file. Attributes the divergence to fileURLToPath preserving URL spelling vs realpathSync canonicalizing against the volume, and explains why Linux and the agreeing-case laptop pass, without claiming Windows paths are inherently unreliable or realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes path.relative containment on both sides canonicalized via realpathSync, rejecting empty rel, absolute rel (covers traversal and cross-drive), and '..' prefixes, with symlinks handled by resolving both base and target; notes win32 relative compares segments case-insensitively while POSIX stays case-sensitive. Explicitly preserves the JavaScript MIME type required for dynamic import and does not propose removing the guard or blanket lowercasing."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains one Ctrl+wheel event dispatched at a target inside the modal bubbles to the pane's ancestor font handler, so both uncoordinated listeners act on a single gesture. Gives the modal exclusive ownership via stopPropagation plus preventDefault, with an equivalent composedPath-delegated arbitration rule for shared targets; a specific selector or source line is not required by the rubric."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned (not claimed-executed) checks with expected outcomes for all three incidents: bundle-graph scan plus served-import integration test asserting one self-contained file and successful module evaluation; parameterized containment guard cases (case-mismatched contained path 200, traversal, sibling dir, symlink escape refused) run on both platforms; gesture test asserting zoom fires once, font-size spy not called, default prevented, with the inverse pane-only case."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final recommended fix strengthens containment via canonicalized path.relative checks rejecting traversal, sibling-prefix and symlink escapes; containment is never disabled and no serving of paths outside the plugin lib is advised."
+    }
+  ]
+}

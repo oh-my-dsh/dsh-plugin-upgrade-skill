@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in plugin/lib/client.js's top-level ESM import and the boot log's classic-script combo: one compile error stops the whole combo, so no entries register; it identifies typert-registry as the first awaited victim whose name surfaces only as attribution context, and it explicitly states the import syntax is valid ESM (not invalid in every context). It also notes the nested diagnostic pointing at the external bundle's position 1:1."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Gives a concrete bisect procedure over the insert rows/client-bundle membership, uses vm.Script classic-script parsing (claims the fixture check, and notes node --check cannot prove classic compatibility since ESM-classified files pass), and describes the ModuleLoader.load({id, factory}) wrapper, package-name identity, host-provided React via the loader require, and returned inject/apply exports with a correct illustrative shell."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Uses plugin-apply-error.txt to explain the slot is declared by the owning parent entry's children table and apply ordering is not guaranteed; shows the exact ctx.slots.inject('settings.section', () => ctx.slots.register(...)) wrapper returning the registration; limits registrant fields to name/id/order (optional label) and explicitly requires removing the fixture's kind/scope as declaration-owned."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in host-boot-log.txt/restart-notes.txt: combo assembled once at boot, edits and hard refresh do not rebuild it; prescribes full stop/restart per iteration, identifying and force-killing the old Windows process tree with taskkill /PID <pid> /T /F before rebinding, and explains EADDRINUSE as the surviving old process holding the port, not a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes per-input classic-script validation at boot/combo failure with a byte-range manifest so the real culprit is named instead of the first awaited entry, and a detailed author checklist covering the loader factory wrapper, host React and inject/apply exports, deferred cross-entry slot registration, and the restart/Windows tree-cleanup loop."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report never endorses bare ESM in the classic combo, requires slots.inject before cross-entry registration, explicitly strips kind/scope from registrant options, and mandates host restart rather than HMR or browser refresh."
+    }
+  ]
+}

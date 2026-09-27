@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "The report explicitly distinguishes detectText (chip = one U+FFFC in TokenSpan coordinates) from clipboardText/draft (chip expanded to clipboardText), cites host-input-contract.ts for both projections and occurrence offsets/lengths in clipboard coordinates, and notes ordinary text and separating spaces contribute normal width. It grounds insertReference and consumeToken in detect coordinates via the facade excerpt."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates start=end=snapshot.draft.length in the plugin add path, shows the empty composer makes [0,0) valid in both projections (first success), then computes [29,29) vs the valid detect append span [2,2) from the capture, explaining insertReference returning false and the plugin's toast. It explicitly rejects inferring a real concurrent edit or stale revision from the toast."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing the clipboard interval [0,28) unconverted to consumeToken where [0,1) is needed, notes the returned boolean is ignored and records.delete runs unconditionally, so the live occurrence remains while records.get returns undefined and the dock renders 'unavailable'. Both symptoms are tied to the same coordinate mismatch, not a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives the rule detectBoundary(b) = b − sum(o.length−1 for wholly preceding occurrences) from the two host projections, applies it at both call sites (insert end uses all snapshot occurrences; removal maps occurrence.offset and uses a one-detect-character span), keeps the revision guard, and gates record deletion on confirmed consumeToken success. Concrete pseudocode with the captured corrected spans is provided, not just 'convert offsets'."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes exact two-successive-paste sequences asserting both occurrences/chips/records, plus multi-chip removal in both orders asserting the removed occurrence, dock chip and record disappear together while the other chip and its record survive, with additional declined-consumption, middle-chip, text and stale-view variants. Natural-language assertions and code-level span assertions are both given."
+    }
+  ],
+  "caps": []
+}

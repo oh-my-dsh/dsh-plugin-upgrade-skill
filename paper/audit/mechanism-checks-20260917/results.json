@@ -1,0 +1,170 @@
+{
+  "sourceHashes": {
+    "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/with-skill/r1/S11-mermaid-lazyload-trap/report.md": "fbd79b7325825107869b1c1fda520cd1a6c619b5f6cca6b37fdc8b7d8f4c4b5f",
+    "benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/reports/with-skill/r2/S18-terminal-sprite-render-trap/report.md": "91e0e5e8ccd4fbbc311495c473e22266c80bda912ea379e43548e636b43a5742",
+    "benchmark/tasks/S18-terminal-sprite-render-trap/tests/packet.json": "abef8d692090c09bc2350504dfd1aa58f0ce0cf57f6d288574e583cca81aca89"
+  },
+  "extractedFunction": "const contained = (root: string, target: string): boolean => {\n  const rel = relative(root, target)\n  return rel === '' || (!rel.startsWith('..' + sep) && !isAbsolute(rel))\n}",
+  "scope": "Exact S11 pure predicate; reconstructed S18 timer mechanism, not end-to-end repairs.",
+  "containment": [
+    {
+      "flavor": "posix",
+      "name": "root",
+      "root": "/srv/lib",
+      "target": "/srv/lib",
+      "relative": "",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "posix",
+      "name": "descendant",
+      "root": "/srv/lib",
+      "target": "/srv/lib/x.js",
+      "relative": "x.js",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "posix",
+      "name": "parent",
+      "root": "/srv/lib",
+      "target": "/srv",
+      "relative": "..",
+      "expected": false,
+      "actual": true
+    },
+    {
+      "flavor": "posix",
+      "name": "ancestor",
+      "root": "/srv/lib",
+      "target": "/",
+      "relative": "../..",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "flavor": "posix",
+      "name": "sibling-prefix",
+      "root": "/srv/lib",
+      "target": "/srv/library/x.js",
+      "relative": "../library/x.js",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "flavor": "posix",
+      "name": "dotted-descendant",
+      "root": "/srv/lib",
+      "target": "/srv/lib/..cache/x.js",
+      "relative": "..cache/x.js",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "posix",
+      "name": "case-sibling",
+      "root": "/srv/lib",
+      "target": "/srv/LIB/x.js",
+      "relative": "../LIB/x.js",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "flavor": "win32",
+      "name": "root",
+      "root": "E:\\srv\\lib",
+      "target": "E:\\srv\\lib",
+      "relative": "",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "win32",
+      "name": "descendant-case",
+      "root": "E:\\srv\\lib",
+      "target": "e:\\srv\\lib\\x.js",
+      "relative": "x.js",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "win32",
+      "name": "parent",
+      "root": "E:\\srv\\lib",
+      "target": "E:\\srv",
+      "relative": "..",
+      "expected": false,
+      "actual": true
+    },
+    {
+      "flavor": "win32",
+      "name": "ancestor",
+      "root": "E:\\srv\\lib",
+      "target": "E:\\",
+      "relative": "..\\..",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "flavor": "win32",
+      "name": "sibling-prefix",
+      "root": "E:\\srv\\lib",
+      "target": "E:\\srv\\library\\x.js",
+      "relative": "..\\library\\x.js",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "flavor": "win32",
+      "name": "dotted-descendant",
+      "root": "E:\\srv\\lib",
+      "target": "E:\\srv\\lib\\..cache\\x.js",
+      "relative": "..cache\\x.js",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "flavor": "win32",
+      "name": "cross-drive",
+      "root": "E:\\srv\\lib",
+      "target": "C:\\srv\\lib\\x.js",
+      "relative": "C:\\srv\\lib\\x.js",
+      "expected": false,
+      "actual": false
+    }
+  ],
+  "timerObservationMilliseconds": 700,
+  "timerResults": [
+    {
+      "mode": "referenced",
+      "outcome": "alive-at-observation-limit",
+      "exitCode": null,
+      "signal": "SIGKILL"
+    },
+    {
+      "mode": "cleanup-not-invoked",
+      "outcome": "alive-at-observation-limit",
+      "exitCode": null,
+      "signal": "SIGKILL"
+    },
+    {
+      "mode": "unmount",
+      "outcome": "natural-exit",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "mode": "every-unref",
+      "outcome": "natural-exit",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "mode": "first-unref",
+      "outcome": "alive-at-observation-limit",
+      "exitCode": null,
+      "signal": "SIGKILL"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "status": "planning-sensitivity-only; not a registered design or powered-study certification",
+  "method": {
+    "individualContrastAlphaTwoSided": 0.025,
+    "numberOfPlannedContrasts": 2,
+    "individualContrastTargetPower": 0.8,
+    "jointTargetPower": null,
+    "zCritical": 2.241402727604947,
+    "zPower": 0.8416212335729143,
+    "formula": "N ~= ((z_(1-alpha/2) + z_power) * sample_sd / meaningful_gap)^2",
+    "assumptions": "independent identically distributed task differences; normal approximation; historical SD treated as a planning scenario",
+    "limitations": [
+      "Left comparison mixes new Qwen semantic scores with historical GLM scores and different harnesses/repetitions.",
+      "Neither source establishes variance for a new unified protocol; SD itself is uncertain.",
+      "More repeats may reduce within-task noise, not between-task heterogeneity; no variance extrapolation by repetition count is made.",
+      "Related incident tasks reduce effective independence; two 80% marginal powers do not imply 80% joint power.",
+      "Meaningful differences 5/10/15 pp and task counts are sensitivity scenarios, not approved budget or stopping rules."
+    ],
+    "references": [
+      "https://www.itl.nist.gov/div898/handbook/prc/section2/prc222.htm",
+      "https://www.itl.nist.gov/div898/handbook/prc/section4/prc463.htm"
+    ]
+  },
+  "inputs": [
+    {
+      "path": "benchmark/results/paired-effect-stats.json",
+      "sha256": "a57ea74301f7b7306aef88042edf12b2b33f64f549b426767b3010934ed4bbb9"
+    },
+    {
+      "path": "benchmark/results/validation-report-2026-09-16-codex-qwen3.8-27b-medium-s16-paired.json",
+      "sha256": "232827c8724e7acca9bb4d21722bd3607999debc17884fbd000e74dcea0d84dc"
+    }
+  ],
+  "contrasts": [
+    {
+      "label": "Flash minus Qwen; heterogeneous 16-task planning data",
+      "tasks": [
+        "S1-static-scan",
+        "S10-paste-rename-and-version-chip",
+        "S11-mermaid-lazyload-trap",
+        "S12-global-upgrade-ebusy-trap",
+        "S13-peer-range-vs-runtime",
+        "S14-link-install-lock-trap",
+        "S15-slot-error-boundary-crash",
+        "S17-external-ui-plugin-onboarding-trap",
+        "S18-terminal-sprite-render-trap",
+        "S19-phantom-update-stale-host",
+        "S2-negative-scan",
+        "S21-resource-service-unavailable-trap",
+        "S22-duplicate-insert-boot-crash-trap",
+        "S5-negative-naming",
+        "S6-corridor-net-state",
+        "S8-release-routing-trap"
+      ],
+      "n": 16,
+      "meanGapPp": 1.21875,
+      "sampleSdPp": 38.755309,
+      "approximateDetectableGapPp": {
+        "12": 34.491929,
+        "16": 29.870886,
+        "22": 25.473978,
+        "40": 18.892007,
+        "80": 13.358667
+      },
+      "approximateIndependentTasksRequired": {
+        "5": 572,
+        "10": 143,
+        "15": 64
+      }
+    },
+    {
+      "label": "Flash minus GLM-5.2; historical 22-task comparison",
+      "tasks": [
+        "S1-static-scan",
+        "S2-negative-scan",
+        "S3-snapshot-migration",
+        "S4-legacy-client-imports",
+        "S5-negative-naming",
+        "S6-corridor-net-state",
+        "S7-unpublished-cohort",
+        "S8-release-routing-trap",
+        "S9-composer-coordinate-trap",
+        "S10-paste-rename-and-version-chip",
+        "S11-mermaid-lazyload-trap",
+        "S12-global-upgrade-ebusy-trap",
+        "S13-peer-range-vs-runtime",
+        "S14-link-install-lock-trap",
+        "S15-slot-error-boundary-crash",
+        "S16-self-host-upgrade-trap",
+        "S17-external-ui-plugin-onboarding-trap",
+        "S18-terminal-sprite-render-trap",
+        "S19-phantom-update-stale-host",
+        "S20-msvc-flock-trap",
+        "S21-resource-service-unavailable-trap",
+        "S22-duplicate-insert-boot-crash-trap"
+      ],
+      "n": 22,
+      "meanGapPp": 6.227273,
+      "sampleSdPp": 9.242407,
+      "approximateDetectableGapPp": {
+        "12": 8.225671,
+        "16": 7.12364,
+        "22": 6.075061,
+        "40": 4.505386,
+        "80": 3.185789
+      },
+      "approximateIndependentTasksRequired": {
+        "5": 33,
+        "10": 9,
+        "15": 4
+      }
+    }
+  ]
+}

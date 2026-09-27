@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Report locates index.js:3 `inject = [\"apiProxy\"]` and index.js:9 `ctx.apiProxy.llm.providers()` (dot-domain), maps the hit to DSH-0.1.2-A1-01, explains the llm providers split (listProviders + listConfigurableProviders) and the required Host-plane re-injection, and grounds the dead dependency in package.json:17 `@deepseek-ai/dsh-host-apiproxy@0.0.1-rc.1` (deleted in alpha.1). Far beyond a card-name mention."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six non-hit categories have per-category scanned-pattern evidence over the 5 files; session-notes.js is correctly shown as pure string/array utilities with zero host coupling; cordis.patch.yml is classified as ordinary composition (one insert), not a host-source patch, without denying the file exists or misclassifying its insertion."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Section 3 explicitly states zero hits across six categories does not establish compatibility, citing scan-heuristic limits, exclusion of the dependency/config layer, and the curated (non-exhaustive) card set; it contrasts the decisive apiProxy/package-deletion break with the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Proposes baseline build/typecheck before and after migration, an isolated cold boot verifying the plugin activates without pending services, and an actual provider-listing call covering success and failure; explicitly framed as post-migration checks not executed on the non-runnable static fixture."
+    }
+  ],
+  "caps": []
+}

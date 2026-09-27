@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"baked-version-release-order","verdict":"pass","reason":"Uses release-log.md and the bundle excerpt: the build ran before the bump, so 0.3.6 was baked into v0.3.7 and never reread at runtime. Explains why identical mirror SHAs cannot reveal this, orders the fix as bump then build, gates on the emitted constant before tag/push, and keeps mirror verification. It slightly misattributes the re-release to v0.3.8, but that does not confuse the manifests."},
+{"id":"client-host-update-asymmetry","verdict":"pass","reason":"Reads the PNG 200, SVG 404 unsupported type and the on-disk svg whitelist together as a running host with an old boot-time route closure. Says the refreshed client explains the toggle, and a full host restart then re-probe is required. Slight generalisation about hot-update, but anchored to this host."},
+{"id":"payload-corruption-attribution","verdict":"pass","reason":"Uses the session-log excerpt: clean source and clean typed result, spliced persisted text, clean re-read. Places the corruption in upstream result-text assembly, treats the payload as untrusted, and rejects editing the good SVG."},
+{"id":"validated-render-fallbacks","verdict":"pass","reason":"Ordered chain with justification: disk-bytes asset route, then the payload only after a DOMParser parsererror check (failures discarded, not sent on), then a sandboxed iframe without allow-scripts where SMIL still runs, then an explicit error state."},
+{"id":"forensics-and-prevention","verdict":"pass","reason":"Decodes with a concatenation-aware zstd tool or loop, walks the JSONL to the read-result event, and diffs the stored text against the source for an upstream report. Checklist covers bump before build, grepping the baked constant and per-mirror SHA; plane-specific re-probing after host restart appears in the verification steps."}
+],
+"caps":[
+{"id":"contradictory-release-render-advice","triggered":false,"reason":"The final advice requires bump before build and a host restart, validates the payload before rendering, blocks scripts in the iframe, and leaves the traced SVG untouched."}
+]}

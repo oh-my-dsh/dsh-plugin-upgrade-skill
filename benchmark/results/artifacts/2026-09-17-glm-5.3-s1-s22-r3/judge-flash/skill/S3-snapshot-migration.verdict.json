@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates the partial (H4), runningCalls (H5) and turnEnds (H6) reads at exact Pet.tsx lines, explains the temporary chat legacy projection (views.get('chat')?.legacy carrying nodes/partial/runningCalls/turnEnds), and gives the staged two-step plan plus the final useChat keyed views/timeline read path; more than a bare 'use legacy' answer."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates useSession(s => s.running) at Pet.tsx line 19 (H7), correctly classifies it as the Session/useSession lifecycle seat outside chat legacy (not carried by the projection, must stay on useSession immediately), and never claims the existing useSession call itself must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates both dsh-client-runtime type imports (Pet.tsx line 8, index.ts line 6) and the dsh-client-runtime entry in package.json client.inject (H1-H3); repoints Context as ClientContext to @deepseek-ai/cordis and snapshot types to their domain owners (ChatSnapshot from ui-chat/client), explicitly does not claim cordis exports snapshot types, and defers unknown exact symbols (block discriminants) to target-tag exports."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped scope.slots.register call in index.ts and explains the ctx.inject(['slots','conversation']) ordering edge, slot name/lifetime preservation, ui-conversation's apply owning the slot declaration, and Context augmentation via type-only owner imports; correctly concludes from the sealed corridor facts that this seam needs no change (negative evidence, keep-and-verify), which is a supported equivalent answer."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties every snapshot/lifecycle change to the full DSH-0.1.2-A1-03 (citing its field note's legacy projection and two-step approach) plus API-10, and uses DSH-0.1.2-A1-25 for the package/import/inject removals; section 3 explicitly separates legacy-projection-stageable fields (partial/runningCalls/turnEnds) from immediate day-one changes (inject/type/scan ids) and immediate lifecycle (running on useSession). No bare card IDs."
+    }
+  ],
+  "caps": []
+}

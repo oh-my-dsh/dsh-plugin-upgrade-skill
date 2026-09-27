@@ -1,682 +1,424 @@
 \documentclass[11pt]{article}
-
-% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
-% Change to "preprint" to generate a non-anonymous version with page numbers.
-\usepackage[review]{acl}
-
-% Standard package includes
-\usepackage{times}
-\usepackage{latexsym}
-
-% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
 \usepackage[T1]{fontenc}
-% For Vietnamese characters
-% \usepackage[T5]{fontenc}
-% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
-
-% This assumes your files are encoded as UTF8
 \usepackage[utf8]{inputenc}
-
-% This is not strictly necessary, and may be commented out,
-% but it will improve the layout of the manuscript,
-% and will typically save you some space.
-\usepackage{microtype}
-
-% This is also not strictly necessary, and may be commented out.
-% However, it will improve the aesthetics of text in
-% the typewriter font.
-\usepackage{inconsolata}
-
-%Including images in your LaTeX document requires adding
-%additional package(s)
-\usepackage{graphicx}
-\usepackage{array}
-\usepackage{amsmath}
-\usepackage{xurl}
-% booktabs rules used by paper/generated/paired-effect-table.tex
-\usepackage{booktabs}
-% pgfplots for the descriptive baseline-versus-gain scatter
+\usepackage[margin=1in]{geometry}
+\usepackage{times,microtype,graphicx,array,amsmath,booktabs,longtable}
+\usepackage{float}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-
-% If the title and author information does not fit in the area allocated, uncomment the following
-%
-%\setlength\titlebox{<dim>}
-%
-% and set <dim> to something 5cm or larger.
-
+\usetikzlibrary{arrows.meta,calc,positioning}
+\usepackage{amssymb}
+\definecolor{vermillion}{RGB}{213,94,0}
+\definecolor{oiblue}{RGB}{0,114,178}
+\definecolor{bluishgreen}{RGB}{0,158,115}
+\usepackage[round,authoryear]{natbib}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\usepackage{authblk}
+\renewcommand\Authfont{\normalsize}
+\renewcommand\Affilfont{\small}
+\renewcommand\Authands{, }
+\setlength{\affilsep}{0.6em}
+\setlength{\emergencystretch}{2em}
 \newcommand{\framework}{\textsc{dsh}}
-
-% Frozen benchmark metadata: deterministic macros generated from
-% benchmark/snapshots/2026-09-01-main-23.json (task rows, types, and
-% descriptions resolve from git objects at the pinned benchmark commit; the
-% current checkout's task inventory is ignored). Regenerate with
-% `npm run generate:paper-benchmark`; never edit the generated files by hand.
 \input{../generated/benchmark-metadata.tex}
-
-\title{When Does a Migration Skill Help? A Retrospective Study of Version-Pinned Plugin Migration}
-
-% Author information can be set in various styles:
-% For several authors from the same institution:
-% \author{Author 1 \and ... \and Author n \\
-%         Address line \\ ... \\ Address line}
-% if the names do not fit well on one line use
-%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
-% For authors from different institutions:
-% \author{Author 1 \\ Address line \\  ... \\ Address line
-%         \And  ... \And
-%         Author n \\ Address line \\ ... \\ Address line}
-% To start a separate ``row'' of authors use \AND, as in
-% \author{Author 1 \\ Address line \\  ... \\ Address line
-%         \AND
-%         Author 2 \\ Address line \\ ... \\ Address line \And
-%         Author 3 \\ Address line \\ ... \\ Address line}
-
-\author{Beiming Liu \\
-  Tsinghua University \\
-  \texttt{lbm21@tsinghua.org.cn} \\
-  \And
-  Puzhao Zhang \\
-  Dalian Neusoft University of Information \\
-  \texttt{3026418933@qq.com} \\
-  \And
-  Minjie Chen \\
-  PetroChina Southwest Oil \& Gasfield Company \\
-  \texttt{auturnncrow@gmail.com} \\
-  \And
-  William Jin \\
-  Independent Researcher \\
-  \texttt{williamjinq@gmail.com} \\
-  \And
-  Jiming Ye \\
-  Shenzhen University \\
-  \texttt{jiming\_ye@163.com} \\
-  \And
-  Yucheng Xia \\
-  Harbin Engineering University \\
-  \texttt{Fisfzy@qq.com} \\
-  \And
-  Tongtao Wang \\
-  Independent Researcher \\
-  \texttt{tongtao.wang@gmail.com} \\
-  \And
-  Haihao Li \\
-  Fudan University \\
-  \texttt{24302010010@m.fudan.edu.cn} \\}
-
+\title{Evaluating Agent Skills for Version-Specific Plugin Migration: A Retrospective Study}
+% Author order confirmed by the first author on 2026-09-24. Company names for
+% affiliations 11 and 16 are pinyin transliterations pending confirmation.
+\author[1]{Beiming~Liu}
+\author[2]{Haihao~Li\thanks{Equal contribution.}}
+\author[3]{Minjie~Chen\protect\footnotemark[1]}
+\author[4]{Ning~Chen}
+\author[5]{Yiran~Wang}
+\author[6]{Jiming~Ye}
+\author[7]{Puzhao~Zhang}
+\author[8]{Tongtao~Wang}
+\author[9]{Sheng~Gao}
+\author[8]{William~Jin}
+\author[10,11]{Weihao~Mu}
+\author[12]{Chengzhi~Liu}
+\author[13]{Yucheng~Xia}
+\author[14]{Guangren~Wang}
+\author[15,16]{Chaoyang~Fan}
+\author[17]{Changfeng~Huang}
+\author[18]{Xunming~Lin}
+\author[19]{Yuanjie~Shen}
+\author[1]{Qianyu~Xiao\thanks{Corresponding author: \texttt{xiaoqianyu@cfca.com.cn}}}
+\affil[1]{China Financial Certification Authority (CFCA)}
+\affil[2]{Fudan University}
+\affil[3]{PetroChina Southwest Oil \& Gasfield Company}
+\affil[4]{Jilin University}
+\affil[5]{The Frederick Gunn School}
+\affil[6]{Shenzhen University}
+\affil[7]{Dalian Neusoft University of Information}
+\affil[8]{Independent Researcher}
+\affil[9]{University of Chinese Academy of Sciences}
+\affil[10]{Dalian University of Technology}
+\affil[11]{Jiyin Zhiyuan (Shanghai) Technology Co., Ltd.}
+\affil[12]{Lanzhou University of Technology}
+\affil[13]{Harbin Engineering University}
+\affil[14]{Alibaba Cloud}
+\affil[15]{Jianghan University}
+\affil[16]{Jiuxiangxian (Beijing) Technology Co., Ltd.}
+\affil[17]{Sun Yat-sen University}
+\affil[18]{Great Bay University}
+\affil[19]{Beijing Information Science and Technology University}
+\date{}
 \begin{document}
 \maketitle
 \begin{abstract}
-Migration skills package version-specific facts, procedural guidance, and tools, but their practical utility is not guaranteed.
-We study one skill lineage in a community-informed benchmark of version-pinned plugin migration, covering static diagnosis and executable repair.
-Five historical with-skill versus no-skill comparisons show heterogeneous absolute gains: $-3.1$ points for the lowest-baseline configuration, $+8.7$ to $+10.7$ for three intermediate-baseline configurations, and $+3.0$ for the highest-baseline configuration.
-These observations form an exploratory inverted-U pattern when ordered by each group's unaided score.
-The groups differ in task pools, graders, skill revisions, and execution protocols, so the pattern does not establish an effect of model capability.
-The negative estimate is inconclusive and infrastructure-confounded; only the glm-5.3-flash pairing is significant under both reported statistical procedures, and it uses a same-model judge.
-The high-baseline pairing has limited room to improve.
-Resource records additionally show that skill provision can accompany substantial overhead.
-We release task and evaluation artifacts with a reproducible paired analysis and explicit provenance limits.
-The resulting single-ecosystem study documents observed utility and motivates, rather than establishes, a capability-dependent hypothesis.
+Agent skills package version-specific maintenance knowledge for coding agents, but a higher diagnostic score does not by itself show that the resulting migration advice satisfies the target version's contract. We study a shipped plugin-upgrade skill through an archive of 64 reports on 16 static migration tasks, with two attempts per condition and 328 criterion decisions. With the skill, mean recorded reward rises from 93.83 to 98.75, a gain of 4.92 points (95\% task-bootstrap interval [0.31, 10.86]); the gain is concentrated in one task, and eight task pairs are at the ceiling. Tracing every decision to its contract domain and reviewing ten reports in depth exposes grading errors that favor either arm; in one, a containment predicate that accepts the parent directory still receives full credit. Executable probes confirm this defect and show that a working teardown repair is excluded only by a narrower lifecycle rubric. Replacing the reviewed decisions keeps the estimate positive (4.61 to 5.39 points) but moves its interval to or across zero. Re-grading all 64 reports with judges from two other model families, without arm labels or prior scores, agrees with the original judge on 91.8\% and 95.7\% of decisions (weighted $\kappa=0.64$ and $0.72$) and gives gains of 10.63 and 6.09 points. The study contributes a traceable evaluation that connects aggregate reward to contract-level evidence and judge sensitivity, together with concrete review checks for migration advice. Executable end-to-end repairs, independent human annotation, and other frameworks are left to future work.
 \end{abstract}
+\noindent\textbf{Keywords:} software maintenance; plugin migration; agent skills; retrospective evaluation; LLM-as-a-judge
 
 \section{Introduction}
+Software migration requires more than replacing names in source code. API changes routinely break client code~\citep{dig2006apievolve,raemaekers2017semver}, and clients often defer updates because migration is costly~\citep{kula2018update}. A repair must respect the contract of the target version, distinguish public APIs from internal implementation, and preserve runtime behavior. Plugin systems make these requirements particularly visible: a change can affect loading, authentication, rendering, event dispatch, or process shutdown independently. Advice that sounds consistent with a release note may still recommend an unavailable API or omit a boundary condition. In one archived answer studied below, a proposed path-containment predicate accepts the parent directory, and an automated judge still awards it full containment credit (Figure~\ref{fig:motivating}).
 
-Migrating a plugin across a breaking framework release requires identifying the target contract, locating affected code, and verifying the repaired behavior.
-Version-aware code generation and migration benchmarks document the difficulty of adapting to changing interfaces \citep{versicode,codemenv}.
-A migration \emph{skill} packages reference knowledge with guidance on inspection, implementation, and verification.
-Such guidance is attractive for agents deployed under limited resources: a reusable procedure could help them spend a fixed budget on the right actions.
-Reading and following that procedure also consumes resources that could otherwise be spent inspecting code or testing a repair.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  panel/.style={draw=gray!60, rounded corners=2pt, align=left, inner sep=6pt, text width=4.1cm, minimum height=3.4cm, anchor=north west},
+  arr/.style={-{Stealth[length=2.2mm]}, very thick, gray!80},
+]
+\node[panel] (task) at (0,0) {\textbf{Task S11 (static diagnosis)}\\[3pt] Extracted archive paths must stay \emph{inside} the plugin directory.};
+\node[panel, right=0.8cm of task.north east, anchor=north west] (answer) {\textbf{Archived answer (check, simplified)}\\[3pt] for non-absolute relative paths:\\reject if prefixed by \texttt{..} + separator\\[4pt] input \texttt{..} $\Rightarrow$ \textcolor{vermillion}{\textbf{accepted} $\times$}};
+\node[panel, right=0.8cm of answer.north east, anchor=north west] (grade) {\textbf{Grading outcome}\\[3pt] original judge: full containment credit \textcolor{vermillion}{$\times$}\\[4pt] bounded review: partial credit\\parent escape confirmed by probe};
+\draw[arr] (task.east) -- (answer.west);
+\draw[arr] (answer.east) -- (grade.west);
+\end{tikzpicture}
+\caption{A proposed containment guard accepts the parent directory despite full original containment credit. The archived with-skill answer to task S11 proposes a containment predicate that accepts the literal path \texttt{..}, the parent directory, and the original judge still awards full containment credit; bounded review lowers the criterion to partial credit. Sections~\ref{sec:mechanisms} and~\ref{sec:rq2} give the full analysis.}
+\label{fig:motivating}
+\end{figure}
 
-Existing skill benchmarks report heterogeneous utility, including limited gains and regressions \citep{skillsbench,swe-skills-bench}.
-However, a with-skill versus no-skill comparison bundles several interventions: access to previously unavailable facts, procedural guidance, auxiliary tools, and changes in resource consumption.
-It answers whether the package helps, but not whether organizing the same knowledge as a skill adds value over supplying its source documents.
-That distinction is especially relevant when the agent must finish within a fixed budget.
+Large language models (LLMs) now support a wide range of software-engineering tasks~\citep{fan2023llm4se,hou2024llm4se}, and coding agents resolve repository-level issues by inspecting, editing, and testing code~\citep{yang2024sweagent,wang2025openhands,xia2025agentless}. An agent skill bundles instructions, reference material, and sometimes executable tools that such an agent loads when relevant~\citep{anthropic2025agentskills}. Such a package can reduce the effort needed to locate version-specific facts. It can also introduce stale instructions, unnecessary work, or confidence in an incomplete repair. Existing skill benchmarks already demonstrate heterogeneous benefits and overhead~\citep{skillsbench,swe-skills-bench,webdev-skills-bench}. Consequently, the contribution of a maintenance case study cannot rest only on showing that a skill sometimes helps.
 
-We ask: \textbf{What benefits, regressions, and resource costs accompany migration-skill provision in the available historical evaluations?}
-Our primary evidence consists of task-level paired comparisons within five model--execution configurations.
-We additionally examine whether their absolute gains display a common shape, while treating differences across configurations as exploratory rather than as a controlled capability experiment.
+The practical question is whether an observed score gain identifies advice a maintainer can act on. An answer can name the correct migration concept while leaving the required operation unavailable, an edge case unhandled, or a runtime condition unmet. Aggregate reward does not show which of these distinctions was checked.
 
-We study \framework{}, an open-source plugin framework with versioned contracts and a host CLI for testing installed plugins.
-Tasks combine static diagnosis with hands-on repair, including obsolete comments, unrelated failures, and stale artifacts.
-These conditions expose migration difficulties, but performance on them alone does not identify resistance to misleading context.
-The scope is retrospective and open-book within one ecosystem.
+We investigate the shipped plugin-upgrade skill for \framework{}, linking task contracts to archived answers and the judgments that reward them. The available evidence accumulated during development rather than under one prospectively controlled experiment. We retain this history, distinguish incompatible protocols, and give greatest analytical attention to a later comparison with archived outputs, per-criterion judgments, and execution records. The study asks:
+\begin{enumerate}
+\item RQ1: What changes in recorded reward accompany skill availability in the focal comparison, and how are they distributed across tasks?
+\item RQ2: Where does recorded contract credit change, and what do inspected answers show about the adequacy of migration advice and its grading?
+\item RQ3: How do resource accounting and grading sensitivity qualify the apparent benefit?
+\end{enumerate}
 
-The paper contributes:
+The study makes three contributions.
 \begin{itemize}
-\item A community-informed migration benchmark with version-pinned task artifacts, diagnosis rubrics, and executable checks; historical task membership and development exposure are explicitly distinguished.
-\item A reproducible paired analysis of five historical configurations: four multi-run groups and one single-shot group, with a contaminated sixth pairing reported separately.
-\item An exploratory inverted-U observation in absolute score gains, together with its statistical, ceiling, grading, and infrastructure limits and the available resource records.
+\item An auditable within-configuration comparison that links 64 answers to version-pinned tasks, original criterion judgments, and resource records (Sections~\ref{sec:setting} and~\ref{sec:focal-method}).
+\item A two-level account of grading: complete contract-stratified accounting of all 328 decisions, a bounded review that locates judgments missing an operational requirement, and a blinded cross-family re-grading that measures how much the result depends on the judge (Sections~\ref{sec:bounded_review}--\ref{sec:contracts}, \ref{sec:rq2}, and~\ref{sec:rq3}).
+\item Executable predicate and timer checks that separate an observed defect from an alternative repair excluded by a narrower rubric, and three review questions for maintainers derived from these cases (Sections~\ref{sec:mechanisms} and~\ref{sec:review_questions}).
 \end{itemize}
-A source-matched control protocol is provided in Appendix~\ref{sec:setup} as unexecuted future work, not as a validated method or an empirical contribution.
+The findings concern one plugin framework and static diagnosis; Section~\ref{sec:threats} discusses validity and Section~\ref{sec:future} the studies that would extend them.
 
-\section{Related Work}
-\label{sec:related}
+\section{Related Work}\label{sec:related}
+\paragraph{Skills and software engineering.}
+SkillsBench evaluates skills across diverse tasks~\citep{skillsbench}. SWE-Skills-Bench examines their utility in software engineering~\citep{swe-skills-bench}. SkillLens studies skill generation and consumption~\citep{skilllens}, while WebDev-Skills-Bench compares skill conditions in web development, including controls for supplied context~\citep{webdev-skills-bench}. These studies establish that skill benefits are heterogeneous and carry resource overhead. We complement their breadth with depth: an artifact-traceable account of version-contract errors and evaluation sensitivity in one maintained plugin-migration setting.
 
-\paragraph{Agent skill evaluation.}
-SkillsBench evaluates curated skills through paired conditions and deterministic verifiers \citep{skillsbench}.
-SWE-Skills-Bench uses execution-based acceptance tests and reports heterogeneous effects, including regressions associated with version-mismatched guidance \citep{swe-skills-bench}.
-SkillLens studies experience generation, skill extraction, and consumption, finding that utility varies across extractors and consumers \citep{skilllens}.
-Agent benchmarks more broadly measure interactive task completion \citep{swe-bench,agentbench}; our tasks sit closer to the static-diagnosis end, with executable repair checks on the hands-on subset.
-Our focus is retrospective skill utility in version-pinned plugin migration. Unlike a controlled comparison across skill consumers, our heterogeneous runs support a hypothesis about configuration-dependent gains, not a capability law.
+\paragraph{API evolution and migration.}
+Breaking API changes are frequent and costly for clients. Most client-breaking changes in the frameworks studied by \citet{dig2006apievolve} are refactorings; about a third of Maven releases, including minor ones, introduce at least one breaking change~\citep{raemaekers2017semver}; and ecosystems differ in who bears the cost of a break~\citep{bogart2016break}. Library developers break APIs mainly to add features and simplify interfaces~\citep{brito2018whyhow}, whereas clients lag behind API updates~\citep{mcdonnell2013android,kula2018update}, and dependency constraints only partly follow semantic versioning~\citep{decan2021semver}. \citet{lamothe2021apievolution} survey this literature. Migration support has progressed from edits mined from migration histories~\citep{xu2019meditor} to LLM-based migration, from first library-migration results~\citep{almeida2024llmmigration} to industrial migrations at Google~\citep{ziftci2025migrating,nikolov2025google}. VersiCode and CODEMENV benchmark version-controllable code generation and code migration~\citep{versicode,codemenv}. These studies motivate our focus on version contracts: the target of a migration is defined by what the new version exposes and requires, not by the names that changed.
 
-\paragraph{Capability-contingent prompting effects.}
-Prompting interventions do not help uniformly across models.
-Chain-of-thought prompting yields large gains only past an emergent capability threshold \citep{cot-prompting}, and inverse-scaling results show that some interventions degrade as models improve \citep{inverse-scaling}.
-This literature motivates a capability-dependent interpretation of our descriptive pattern; our historical comparisons do not test that interpretation independently of the execution configuration.
+\paragraph{Coding agents and their evaluation.}
+Surveys document the rapid adoption of LLMs across software-engineering tasks~\citep{fan2023llm4se,hou2024llm4se}. Agent frameworks such as SWE-agent and OpenHands give models tools for navigating and editing repositories~\citep{yang2024sweagent,wang2025openhands}, and a simpler localize-repair-validate pipeline is competitive with such agents on SWE-bench Lite~\citep{xia2025agentless}. Evaluations such as SWE-bench and AgentBench emphasize task and environment design~\citep{swe-bench,agentbench}. Our setting combines migration diagnosis with historical executable tasks; the most completely archived comparison consists of static answers, so its reward measures diagnostic advice rather than executable repair success.
 
-\paragraph{Long contexts and conflicting knowledge.}
-Injected guidance consumes context that the model could otherwise spend on the task, and models degrade at retrieving and using information embedded in long contexts \citep{lost-in-the-middle} --- one possible explanation for the lowest-baseline group's negative estimate.
-Open-book injection can also conflict with a model's parametric prior; models vary in how they resolve such conflicts \citep{knowledge-conflicts}, which is one reason we frame our study as open-book and avoid claims about knowledge-free settings.
+\paragraph{LLM judges and measurement validity.}
+LLM judges enable scalable evaluation~\citep{mt-bench-judge,chiang2023llmeval,liu2023geval}, including of code~\citep{zhuo2024icescore}, and their agreement with human scores has been measured for code translation, generation, and summarization~\citep{wang2025llmjudgese}. They exhibit position bias~\citep{wang2024notfair} and favor their own generations~\citep{self-preference}, which matters when solvers and judges share a model family. Recent surveys and a large-scale judge study distinguish agreement and consistency from validity~\citep{gu2024judgesurvey,he2025courtroom,judge-validity}. A panel of judges from different model families reduces single-model bias~\citep{verga2024juries}; our cross-family re-grading applies this idea as a sensitivity analysis (Section~\ref{sec:panel}). For empirical software-engineering studies involving LLMs, contamination, non-determinism, and closed models are recognized threats~\citep{sallou2024breaking,wagner2025towards}. Development exposure is one form of contamination: repeated use of the same task during skill refinement does not create a fresh holdout~\citep{time-travel-contamination}. We record each task's exposure (Section~\ref{sec:exposure}).
 
-\paragraph{LLM-as-a-judge bias.}
-LLM judges exhibit systematic biases \citep{mt-bench-judge}, and evaluators tend to recognize and favor their own generations \citep{self-preference}.
-This caveat applies directly to our two GLM groups, whose solver and grader belong to the same model family (Table~\ref{tab:paired-effect}); we disclose judge identity inline wherever those groups' significance is discussed.
+\section{Setting and Evidence}\label{sec:setting}
+\subsection{Versioned migration and the intervention}\label{sec:intervention}
+\framework{} is a plugin-based framework with a marketplace and frequent releases. Relevant changes include renamed exports, authentication boundaries, build-artifact layouts, session representations, and version-routing rules. Tasks specify an initial state, a target contract, permitted operations, and a deliverable. Static tasks request diagnosis; hands-on tasks require a repair in a version-pinned environment. A host cold boot checks liveness, while task-specific probes exercise additional requirements. Neither establishes correctness beyond the checked behaviors.
 
-\paragraph{Contamination and exposure auditing.}
-Data contamination can inflate benchmark estimates, and audit-timed analyses have been used to trace it \citep{time-travel-contamination}.
-Our exposure ledger (Section~\ref{sec:taxonomy}) follows the same spirit: development exposure is recorded per task rather than assumed away.
+Upgrade cards record symptoms, causes, actions, version applicability, and provenance. For example, card \texttt{DSH-0.1.2-A1-01} concerns removal of the Host APIProxy surface on the 0.1.1-rc.2 to 0.1.2-alpha.1 edge. Correct migration requires locating actual call sites and selecting the corresponding Remote interfaces, rather than applying a client-plane recipe to every plugin. This illustrates why merely mentioning the correct release or card is insufficient.
 
-\paragraph{Resource costs and contextual effects.}
-WebDev-Skills-Bench compares matched conditions, including a length-matched irrelevant control and component ablations, and reports both negative effects and token overhead \citep{webdev-skills-bench}.
-Negative skill effects and resource costs are therefore not unique contributions of our study.
-We examine paired skill effects and available resource records across historical configurations in a version-pinned migration setting.
-A causal claim about prompt length or procedural organization would require an additional matched intervention, which remains future work; source matching alone also does not control prompt length.
+The shipped skill links inspection, version-corridor analysis, implementation, and verification. Cards can inform both the skill and the benchmark. Thus the comparison is an open-book evaluation of the complete package, including access to facts, rather than an isolated test of procedural reasoning. Historical repository states differ, so the intervention is not assumed byte-identical across configurations.
 
-\paragraph{Version-aware migration.}
-VersiCode studies version-specific completion and migration \citep{versicode}, while CODEMENV evaluates compatibility and adaptation across environments \citep{codemenv}.
-Our benchmark emphasizes version-specific plugin contracts; the unexecuted design would compare guidance organization under matched source materials.
-Misleading repository comments are also related to conflicting contextual instructions \citep{indirect-prompt-injection}, although ordinary stale engineering advice need not constitute a deliberate attack.
-A controlled clean/trap study is outside the current primary scope.
+\subsection{Task construction and exposure}\label{sec:exposure}
+Contributors turn migration incidents and version changes into cards, fixtures, instructions, reference solutions, and graders. Contributor self-check and maintainer review constitute development quality control, not independent blinded annotation. The repository's exposure ledger distinguishes feedback used to refine the skill, grader development, and uncleared exposure. We make no claim that the evaluated tasks form an independent holdout.
 
-\section{Setting and Benchmark}
-\label{sec:construction}
+An immutable earlier snapshot contains \BenchmarkTaskCount{} tasks (\BenchmarkStaticCount{} static and \BenchmarkHandsOnCount{} hands-on). Task identifiers carry a type prefix (S for static, M for mixed-mode, H for hands-on), and this snapshot contains S1--S8. The static pool was later extended to 22 tasks (S1--S22); the historical GLM configurations scored that pool in full, and the focal comparison draws its recorded selection of 16 static tasks from it. This inventory is not the denominator of every experiment. Historical configurations use 56, 23, 21, or 22 scored tasks. Repeated attempts are nested within tasks; they do not increase the number of independent migration problems. Related tasks may also share incident sources, limiting task-level uncertainty estimates.
 
-\subsection{Versioned plugin migration}
-\label{sec:scenario}
+\subsection{Evidence tiers}
+We distinguish three evidence tiers. The focal comparison answers the research questions; the other tiers document the available context.
+\begin{enumerate}
+\item Focal archived comparison: 16 tasks, two conditions, and two repeats, with 64 reports, original verdicts, scores, selection and execution records, and an offline integrity audit.
+\item Historical context: five within-configuration paired summaries, with heterogeneous task pools, aggregation, grading, and raw-artifact coverage.
+\item Supplementary evidence: a newer 16-task Qwen comparison with scored records but without archived original answers and judgment reasons, plus three GLM-5.3 rounds with a change of judge in round three. Neither is pooled into the focal estimate.
+\end{enumerate}
 
-\framework{} is a plugin-based framework with a marketplace and frequent releases.
-Relevant changes include renamed exports, authentication boundaries, build-artifact layouts, session representations, and version-routing rules.
-A task specifies the source state, target contract, permitted operations, and expected deliverable.
-Static tasks request diagnosis without source edits; hands-on tasks require a repair that can be checked in a version-pinned environment.
-A host cold boot establishes liveness, while task-specific probes test the required behavior.
-Neither establishes correctness beyond the behaviors exercised.
+\section{Method}\label{sec:method}
+We report the study as a retrospective single-case study~\citep{runeson2009case}; in the terms of \citet{stol2018abc}, it is a field study that favors realism over generalizability, such studies are covered by the case-study standard of the ACM SIGSOFT empirical standards~\citep{ralph2020empirical}. Figure~\ref{fig:overview} summarizes the focal study design end to end: a seeded selection from the static task pool, paired execution under two conditions, criterion-level grading, and the three analyses that answer the research questions. The subsections below follow this flow.
 
-\subsection{Upgrade knowledge and skill materials}
-\label{sec:cards}
-\label{sec:corpus}
-
-Upgrade cards organize practitioner knowledge about a symptom, its cause, a migration action, affected versions, and provenance.
-Cards may support both skill construction and benchmark tasks, so source overlap is expected in an open-book evaluation.
-Each task must still be linked to implementation evidence or explicitly identified as derived or synthetic.
-Table~\ref{tab:card} illustrates the kind of version-sensitive decision captured by the materials.
-
-\begin{table}[t]
+\begin{figure}[H]
 \centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.19\columnwidth}>{\raggedright\arraybackslash}p{0.70\columnwidth}}
-\hline
-Field & Example: APIProxy migration\\
-\hline
-Symptom & Calls through the old Host APIProxy surface stop working.\\
-Contract & The relevant APIProxy surface is removed on the recorded release edge.\\
-Action & Locate actual APIProxy call sites and use the corresponding Remote interfaces; do not apply a client-plane recipe indiscriminately to ordinary plugins.\\
-Versions & Source 0.1.1-rc.2 to target 0.1.2-alpha.1; later target edges require their own checks.\\
-Record & Card \texttt{DSH-0.1.2-A1-01}; its version-card set records the upstream comparison and release.\\
-\hline
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  font=\small,
+  stage/.style={draw=gray!60, rounded corners=2pt, align=center, inner sep=6pt, text width=2.0cm, minimum height=2.4cm},
+  analysis/.style={draw=oiblue!70, rounded corners=2pt, align=left, inner sep=6pt, text width=3.6cm},
+  arr/.style={-{Stealth[length=2.2mm]}, very thick, gray!80},
+]
+\node[stage] (pool) at (0,0) {\textbf{Task pool}\\[2pt] S1--S22 static\\development-exposed};
+\node[stage, right=0.55cm of pool] (sel) {\textbf{Seeded draw}\\[2pt] 16 tasks\\seed 20260915};
+\node[stage, right=0.55cm of sel] (exec) {\textbf{Execution}\\[2pt] 2 arms $\times$ 2 repeats\\64 answers};
+\node[stage, right=0.55cm of exec] (judge) {\textbf{Grading}\\[2pt] 328 rubric decisions\\0--100 reward};
+\node[analysis, anchor=north west] (rq1) at ($(judge.north east)+(0.7,0)$) {\textbf{RQ1} task gains and bootstrap};
+\node[analysis, below=0.25cm of rq1] (rq2) {\textbf{RQ2} contract counts and ten-answer review};
+\node[analysis, below=0.25cm of rq2] (rq3) {\textbf{RQ3} judge and resource sensitivity};
+\draw[arr] (pool) -- (sel);
+\draw[arr] (sel) -- (exec);
+\draw[arr] (exec) -- (judge);
+\draw[arr] (judge.east) -- (rq1.west);
+\draw[arr] (judge.east) -- (rq2.west);
+\draw[arr] (judge.east) -- (rq3.west);
+\end{tikzpicture}
+}
+\caption{Overview of the focal study design. A seeded stratified draw selects 16 of the 22 static tasks; two arms with two repeats produce 64 archived answers, graded by the report-judge-v2 rubric into 328 criterion decisions. Three analyses consume this archive: the focal paired estimand (RQ1), complete contract-stratified accounting and a bounded ten-answer review (RQ2), and grading-sensitivity plus resource accounting (RQ3).}
+\label{fig:overview}
+\end{figure}
+\subsection{Focal comparison and estimand}\label{sec:focal-method}
+The focal run is the archived GLM-5.3-Flash unified S16 comparison; ``S16'' here names the archived configuration of sixteen selected static tasks, not the task identifier S16. The model label is the recorded gateway label, not an independently verified served-weight identity. Each task has two no-skill and two with-skill outputs, run as subagent sessions under the ZCode agent host. The conditions share a prompt template, but workspace paths differ. Two focal tasks (S5 and S6) carried run-time brief wording that described the diagnosis as closed-book, which did not anticipate a mounted skill; the briefs have since been amended to acknowledge harness-mounted materials, and the archived task packets preserve the run-time text under hash.
+
+The selection script draws 16 of the 22 static tasks S1--S22 using seed 20260915, stratifying by problem family and fixture-size tercile with proportional quotas. Balance constraints require at least two hard tasks, two Chinese-prompt tasks, and two large-fixture tasks. The selector reads metadata and fixture sizes rather than scores; it excludes tasks S3, S4, S7, S8, S10, and S16. The selected set contains five static-contract diagnosis, seven runtime/client API, three release/install, and one Cordis profile task (Cordis is the underlying plugin-runtime dependency of \framework{}); 14 prompts are English and two are Chinese. The draw is reproducible, and it is drawn from the development-exposed pool described in Section~\ref{sec:exposure}.
+
+The schedule alternates arm order in task blocks and reverses it in round two; the recorded execution order is retained. Four pilot cells on excluded tasks S4 and S10 are not included in the 64 formal cells. Formal execution used no hard wall-time cap, and all 64 cells produced scored reports.
+
+Let $y_{tar}$ be the original score for task $t$, arm $a$, and repeat $r$. We calculate $\bar y_{ta}=(y_{ta1}+y_{ta2})/2$, $d_t=\bar y_{t,\mathrm{skill}}-\bar y_{t,\mathrm{no}}$, and $\widehat\Delta=16^{-1}\sum_t d_t$. Thus tasks receive equal weight. The focal percentile bootstrap~\citep{efron1993bootstrap} resamples paired tasks 10,000 times (mulberry32, a small deterministic pseudo-random number generator, seed 20260915). It quantifies variability over the observed tasks under resampling assumptions, not uncertainty over arbitrary repositories or model versions.
+
+The report-judge-v2 rubric, the harness's criterion-level grading protocol, assigns a weight to each criterion. A pass receives its full weight, partial receives half, and fail or missing receives zero; declared triggered caps can limit the total. Criteria and frozen reference excerpts are supplied to the judge, which returns decisions and reasons rather than a total. The deterministic scorer calculates the 0--100 reward. Proposed verification can satisfy a static task; describing a test does not establish that it was executed.
+
+The same model family supplies semantic evaluation. The run records describe arm-blind staging with one report per judgment; our later review was not blind. The archive retains original verdicts, including historical transport metadata; corrected provenance records distinguish harness-declared judge identity from independently observed provider identity. Scores are recomputed from rubric decisions. An integrity audit checks all 64 report hashes and all 328 original criterion decisions. Two stored reports require reversal of documented relative-link rewriting to reproduce their original hashes; this transformation is explicit rather than silently ignored.
+
+\subsection{Bounded output review}\label{sec:bounded_review}
+The initial targeted review was AI-assisted and non-blind, separate from the original verdicts. An earlier purposive pass covered five complete answers selected for prominent effects or operational concerns. A subsequent selection was committed before reading the additional full reports: paired answers for a positive task (S6), a negative task (S18), and a zero-change task (S12), at fixed repeats. One answer overlapped with the earlier pass. The combined scope is ten unique answers and 56 criteria.
+
+The initial reviewer had access to task rubrics, reports, and earlier judgments, and selection used known outcomes. Multiple contributing plugin authors, who are domain experts for these plugins rather than independent annotators, subsequently performed the human checking and reported broadly similar assessments; the later repository revision identifies them as non-blind reviewers. The ten archived answers retain the same 56 decisions and replacement scores across these revisions. No separate per-reviewer scoring sheet or item-level confirmation was supplied, so revision stability is not interpreted as measured human--AI agreement or independent blinded validation.
+
+The provenance ledger retains both the initial AI-assisted analysis and the reported human follow-up. Selection, report hashes, criterion-level reasons, and replacement scores are recorded. We keep original results as the primary recorded endpoint and show both the earlier and the combined replacement sensitivities. Replacements affect only reviewed answers; unreviewed scores are not presumed correct.
+
+\subsection{Cross-family judge panel}\label{sec:panel}
+Because the focal solver and judge share a model family, we re-judged all 64 focal reports with judges from other families under a protocol and analysis plan written before any panel verdict existed (Appendix~\ref{app:panel}). Each item contains the unchanged report-judge-v2 system prompt and judge input (task, rubric, frozen excerpts, citation audit, and report), and nothing about arm, repeat, original verdicts, or review outcomes; item identifiers are opaque hashes and the unblinding key is hash-pinned.
+
+Claude Opus 5.5 (\texttt{claude-opus-5-5}) ran as 16 fresh agent sessions of four items each, so that no session saw two answers to the same task. GPT-5.5 (\texttt{openai-gpt-5.5}) processed the 64 items sequentially in one isolated Codex CLI session. Neither judge saw the other's verdicts. Appendix~\ref{app:panel} records session provenance.
+
+Blinding is limited to supplied labels and prior outcomes. Arm is only partly concealed: 18 of 32 with-skill reports mention the skill in their own text, as they did for the original judge. The committed reports include the documented relative-link rewriting noted above.
+
+Following the analysis plan, we measured criterion-level agreement on the credit scale (pass, partial, fail or missing) with linearly weighted Cohen's $\kappa$~\citep{cohen1960coefficient,cohen1968weighted} and recomputed the focal estimand under each judge and under the per-answer judge mean. Agreement with the author review is reported as a reference point; that review started from the original decisions and is not ground truth. The panel measures sensitivity to judge configuration; human validation is discussed in Section~\ref{sec:future}.
+
+\subsection{Complete contract-stratified analysis}\label{sec:contracts}
+We map each of the focal tasks' existing rubric criteria to one primary domain: version/release applicability; API/data/ownership; lifecycle/ordering/deployment; safety/boundary handling; failure attribution; or evidence/verification/provenance. The mapping is retrospective and fixed before generating the domain table. Multi-part criteria receive one primary label to avoid double counting, so these categories are an analytical organization of the rubric rather than an independently validated failure taxonomy.
+
+Every formal report is linked to its task packet and original criterion verdicts through stored hashes. The analysis accounts for all 64 reports and all 328 criterion decisions, including original successes and shortfalls. We report full-credit counts with per-arm criterion denominators and distinct task counts. The counts are recorded judge outcomes; semantic re-grading is the role of the bounded review and the judge panel. Repeats are nested within tasks, tasks can contribute to multiple domains, and we make no domain-level significance claims.
+
+\subsection{Bounded mechanism and robustness checks}\label{sec:mechanisms}
+After case selection and the original analysis, we added offline checks under a recorded retrospective protocol. For S11, we extracted the archived proposed containment function, removing only TypeScript annotations, and exercised seven declared lexical inputs under each of Node's POSIX and Windows path algorithms. Parent and ancestor escapes, ordinary and dotted descendants, prefix siblings, and platform-specific controls distinguish the observed defect from ordinary valid behavior. The probe exercises the predicate itself, not an HTTP route, native Windows filesystem operations, or symlink resolution.
+
+For S18, the fixture describes a timer planner but does not contain its implementation. We therefore reconstructed a minimal self-rearming timer in separate Node child processes. Five conditions compare referenced timers, cleanup that is not invoked, explicit unmount with cancellation, unreferencing every timeout, and unreferencing only the first timeout while another handle initially keeps the process alive. Each child emits a readiness marker; a parent watchdog terminates children still alive 700 milliseconds later. Natural exit is distinguished from watchdog termination. These are mechanism checks with controls, not executions of the original plugin or new scored solver attempts.
+
+For the original and both existing replacement endpoints, we also enumerate all $2^8=256$ sign assignments of the eight nonzero paired task differences. The two-sided tail fraction counts assignments whose absolute sum is at least the observed absolute sum, including ties. This is a descriptive sensitivity under independent, sign-exchangeable task differences; the deterministic arm schedule does not justify a causal randomization test. We additionally report every leave-one-task-out mean and both repeat-wise means. None of these endpoints is selected by its significance.
+
+\section{Results}
+\subsection{RQ1: Recorded reward changes}
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrrl}
+\toprule
+Focal endpoint & No skill & Skill & $\Delta$ & 95\% task-bootstrap interval\\
+\midrule
+Original judgments &93.83&98.75&4.92&[0.31, 10.86]\\
+Earlier S11 replacement &93.83&98.44&4.61&[$-0.23$, 10.63]\\
+All reviewed replacements &93.05&98.44&5.39&[0.00, 11.80]\\
+\bottomrule
 \end{tabular}
-\caption{Paraphrased card example from the maintained materials. Its identifier is provenance, not a substitute for a correct diagnosis.}
-\label{tab:card}
+\caption{Focal 16-task comparison. Original scores remain unchanged in the archive. Replacement rows are partial-review sensitivity analyses, not validated estimates from a fully regraded dataset.}
+\label{tab:focal}
 \end{table}
 
-The executed comparisons use the shipped \emph{plugin-upgrade} skill lineage, whose entry connects inspection, version-corridor analysis, implementation, and verification.
-Repository states differ across historical groups; the analysis therefore does not assume byte-identical interventions.
-The document-only adaptation and source-matched reference packages belong exclusively to the unexecuted protocol in Appendix~\ref{sec:setup}.
-
-\subsection{Task construction and review}
-\label{sec:pipeline}
-\label{sec:qc}
-
-The construction workflow turns migration incidents and version changes into cards, fixtures, task instructions, reference solutions, and graders.
-The project's review practice consists of contributor self-check before submission, followed by maintainer review.
-This is development-stage quality control, not independent double-blind annotation of tasks or model outputs.
-Per-task review coverage and the exact versions reviewed must be documented from submission and revision records before reporting a universal coverage rate.
-We do not infer official framework certification from participation by community contributors.
-
-For the controlled study, task admission additionally requires checks of reference solutions, unchanged fixtures, plausible incorrect solutions, and alternative valid repairs where applicable.
-These checks test whether the grader rewards the intended behavior rather than one particular implementation.
-Automatic validators check registration and execution contracts, but cannot alone establish the validity of a grading criterion.
-Any unresolved admission issue must be resolved or documented before the experimental manifest is frozen.
-
-\subsection{Inventory and development exposure}
-\label{sec:taxonomy}
-\label{sec:teaching-to-test}
-
-The historical analysis uses group-specific task sets: 56 tasks for Qwen, 23 for DeepSeek, 21 scored tasks for Terra, and 22 static tasks for each GLM group.
-Table~\ref{tab:paired-effect} gives the denominators and aggregation rules.
-The separate 56-task annotation inventory is not a certified independent test set, and additions to the living repository do not change historical membership.
-Table~\ref{tab:tasks} and Appendix~\ref{app:tasklist} describe the earlier immutable \BenchmarkTaskCount{}-task snapshot only; they are not the denominator of every experiment.
-
-\begin{table}[t]
-\centering
-\begin{tabular}{lr}
-\hline
-Historical inventory & Count\\
-\hline
-Total tasks & \BenchmarkTaskCount{}\\
-Prefix S / M / H & \BenchmarkPrefixSCount{} / \BenchmarkPrefixMCount{} / \BenchmarkPrefixHCount{}\\
-Static / Hands-on & \BenchmarkStaticCount{} / \BenchmarkHandsOnCount{}\\
-\hline
-\end{tabular}
-\caption{Historical snapshot only. Prefixes are task identifiers, not interaction modes or independent incident counts. The controlled study requires a separate frozen manifest.}
-\label{tab:tasks}
-\end{table}
-
-The exposure ledger distinguishes feedback used to refine the skill, grader-development activity, and tasks whose exposure has not been cleared.
-All three can contribute to a transparently labeled retrospective analysis, but none is automatically free of development exposure.
-Rerunning a task does not remove its development exposure.
-Incident-family labels should follow shared causal or source evidence, with uncertainty recorded; AI-assisted proposals must not be presented as independent human consensus.
-If grouping remains uncertain, alternative defensible groupings should be included in sensitivity analyses.
-
-\subsection{Correctness and grading}
-\label{sec:grading}
-
-The historical endpoint is each group's recorded task reward, reported on a 0--100 scale.
-GLM groups primarily measure static diagnosis; other groups include executable tasks and historical composite rewards.
-These scales share a numeric range, not necessarily a common measurement construct.
-A composite reward including diagnosis or metadata compliance must not be read as a functional pass rate.
-
-Semantic and legacy keyword graders differ across groups, and independent blinded agreement on model-output scores has not been established.
-In both GLM groups the solver and evaluator belong to the same model family; evaluator identities are reported with the results.
-A review of correct paraphrases, keyword-stuffed incorrect answers, contradictory recommendations, and valid alternative repairs remains necessary to assess measurement validity.
-
-The paired analysis preserves recorded scores rather than silently regrading historical outputs.
-Unscored observations and exclusions are reported separately from numeric scores.
-A timeout is a termination status, not by itself proof that the submitted artifact is incorrect.
-For future behavioral evaluation, cold boot, registration, dispatch, and contract-specific acceptance should be reported separately.
-
-\section{Results: Paired Utility and an Exploratory Inverted-U Pattern}
-\label{sec:results}
-
-\subsection{Paired runs at five model points}
-\label{sec:paired}
-
-\paragraph{Intervention.}
-Throughout, the \emph{skill} is the injected material, the \emph{intervention} is mounting it, and \emph{no-skill} and \emph{with-skill} label the two arms of a pairing.
-Every group injected the same \path{skills/plugin-upgrade} skill --- the complete skill as shipped at the time, not the document-only variant, which is material for the unexecuted versioned design only --- but each group ran from a different repository state, and we report this rather than retroactively claiming a single frozen version.
-The deepseek-v4-flash report pins base commit \texttt{2de49059} (2026-09-01); the glm-5.3-flash runs ran at commit \texttt{f32175d} (2026-09-11); the glm-5.2 run manifest pins \texttt{a43afbe} (2026-09-12); the qwen3.8-27b report records its task-source snapshot as \texttt{74af446} (2026-09-07); and the gpt-5.6-terra and gpt-5.6-luna reports name \path{skills/plugin-upgrade} from the working checkout of 2026-09-01 without pinning a commit.
-Whether the skill bytes differed across these states is not fully recorded, so we treat the intervention as one skill lineage, not one frozen artifact.
-
-Table~\ref{tab:paired-effect} reports the completed paired with-skill-versus-no-skill experiments.
-We order groups by their no-skill baseline, which is an outcome measure rather than an independent capability metric; the right half of the pattern is therefore partly mechanical (ceiling and regression-to-the-mean effects), and we interpret it accordingly (Section~\ref{sec:analysis}).
-Protocols differ by row and are stated in the table: the two GLM groups cover the 22 static-diagnosis tasks S1--S22 with three rounds per condition (per-task median); qwen3.8-27b covers the full 56-task pool with three attempts per arm (per-task mean of scored rewards, rescaled by 100); deepseek-v4-flash covers 23 tasks with three runs per arm under the terminus-2 harness and legacy keyword verifiers (per-task median); gpt-5.6-terra is a single-shot pairing over 21 of 22 tasks (H8 excluded after verifier timeouts on both arms).
-Unscored trials and excluded tasks are recorded, never counted as zero.
-Inference is task-level paired: the resampling unit is the task, the statistic is the mean paired delta, and intervals are 95\% percentile intervals from 10{,}000 bootstrap replicates (mulberry32, seed 20260907), accompanied by a two-sided Wilcoxon signed-rank test with midpoint ranks, tie-corrected normal approximation, and continuity correction (zero deltas excluded and reported).
-The analysis script, its golden tests, and the frozen statistics file are in the repository (Appendix~\ref{app:raw}).
-Task pools and protocols differ across rows, so the quantitative pattern below is descriptive across configurations; within-row estimates remain conditional on the recorded scores and run integrity.
-
-\input{../generated/paired-effect-table.tex}
-
-% Coordinates transcribed 2026-09-15 from benchmark/results/paired-effect-stats.json
-% (x = meanNoskill, y = meanDelta, asymmetric y errors = ci95 minus/plus delta).
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.90\columnwidth,
-  height=0.68\columnwidth,
-  xlabel={no-skill baseline (points)},
-  ylabel={mean paired $\Delta$ (points)},
-  xmin=35, xmax=100,
-  ymin=-12, ymax=26,
-  ytick={-10,0,10,20},
-  axis lines=left,
-  clip=false,
-  every axis plot/.append style={only marks, mark=*, mark size=1.6pt},
+  ybar, bar width=5pt, bar shift=0pt,
+  width=\columnwidth, height=5.2cm,
+  symbolic x coords={S1,S2,S5,S6,S9,S11,S12,S13,S14,S15,S17,S18,S19,S20,S21,S22},
+  xtick={S1,S2,S5,S6,S9,S11,S12,S13,S14,S15,S17,S18,S19,S20,S21,S22},
+  x tick label style={rotate=60, anchor=east, font=\footnotesize},
+  ylabel={Mean $\Delta$ (skill $-$ no skill)},
+  ymin=-10, ymax=50,
+  ymajorgrids, grid style={gray!30},
+  axis y line*=left, axis x line*=bottom,
+  legend style={font=\footnotesize, at={(0.98,0.98)}, anchor=north east, draw=none},
 ]
-\addplot+[
-  error bars/.cd, y dir=both, y explicit,
-] table[x=base, y=delta, y error plus=ep, y error minus=em, meta=label] {
-  base  delta  ep     em     label
-  44.67 -3.07  5.06   5.06   {qwen3.8-27b}
-  69.96 10.67  11.44  10.19  {deepseek-v4-flash}
-  71.10 8.67   12.95  12.96  {gpt-5.6-terra}
-  77.77 9.27   6.82   5.32   {glm-5.3-flash}
-  93.32 3.05   4.13   3.05   {glm-5.2}
-};
-\node[font=\scriptsize,anchor=north east] at (axis cs:44.67,-3.07) {A};
-\node[font=\scriptsize,anchor=south east] at (axis cs:69.96,10.67) {B};
-\node[font=\scriptsize,anchor=north east] at (axis cs:71.10,8.67) {C};
-\node[font=\scriptsize,anchor=south west] at (axis cs:77.77,9.27) {D};
-\node[font=\scriptsize,anchor=south west] at (axis cs:93.32,3.05) {E};
-\draw[dashed, gray] (axis cs:35,0) -- (axis cs:100,0);
+\addplot+[fill=oiblue, draw=oiblue!70!black] coordinates {(S2,10) (S5,6.25) (S6,12.5) (S9,0) (S11,-5) (S12,0) (S13,0) (S14,0) (S15,0) (S17,15) (S18,-5) (S19,0) (S20,2.5) (S21,0) (S22,0)};
+\addplot+[fill=vermillion, draw=vermillion!70!black] coordinates {(S1,42.5)};
+\legend{other 15 tasks, S1 (largest gain)}
+\node[font=\footnotesize,anchor=south] at (axis cs:S1,42.5) {42.5};
 \end{axis}
 \end{tikzpicture}
-\caption{Mean paired $\Delta$ against each group's no-skill baseline, with 95\% bootstrap CIs as error bars (values from Table~\ref{tab:paired-effect}). A: Qwen; B: DeepSeek; C: Terra; D: GLM-5.3-flash; E: GLM-5.2. The horizontal axis is an outcome measure, not an independent capability metric: groups with higher baselines have mechanically less headroom, so the downward right half of the pattern is partly a ceiling artifact and the plot is descriptive.}
-\label{fig:paired-scatter}
+\caption{Task-level mean reward changes in the focal comparison are concentrated in one task and bounded by ceiling effects. S1 alone gains 42.5 points, eight task pairs score 100 in both arms (zero change), and two tasks decline by 5 points. Per-task scores are in Table~\ref{tab:focal_tasks}.}
+\label{fig:task_deltas}
 \end{figure}
 
-Read descriptively, the five points form an inverted-U shape in absolute gains across five heterogeneous groups (Figure~\ref{fig:paired-scatter}), not an established functional form.
-At the lowest-baseline point, qwen3.8-27b has a negative estimate: $-3.07$ points with CI $[-8.13, +1.99]$ and $p = 0.177$; because the interval crosses zero we report this as a trend, not an established regression.
-In the middle, three pairings under different protocols all gain between $+8.7$ and $+10.7$ points.
-deepseek-v4-flash gains $+10.67$; its bootstrap interval $[+0.48, +22.11]$ excludes zero, while the Wilcoxon test, with 13 of 23 tasks tied, does not reach significance ($p = 0.101$).
-gpt-5.6-terra gains $+8.67$ with CI $[-4.29, +21.62]$ and $p = 0.236$; as a single-shot pairing with 14 of 21 tasks tied, this is directionally consistent but individually inconclusive.
-glm-5.3-flash gains $+9.27$ and is the one intermediate-baseline result that is significant on both measures: CI $[+3.95, +16.09]$, $p = 0.0056$; this group's runs were graded by glm-5.3-flash itself, so the significance claim carries a same-family grader caveat that the within-group test cannot address (Section~\ref{sec:related}).
-At the highest-baseline point, glm-5.2 starts at 93.32 points without the skill, leaving little headroom: the gain is $+3.05$ with CI $[0, +7.18]$ and $p = 0.138$, consistent with a ceiling rather than evidence of absence.
+In the focal comparison, mean original reward increases from 93.83 to 98.75 (Table~\ref{tab:focal}). Six tasks improve, two decline, and eight have zero change (Figure~\ref{fig:task_deltas}); all eight zero-change pairs are at 100 in both arms. S1 has a 42.5-point task-level gain. Removing it reduces the overall gain to 2.42 points across the remaining 15 tasks. The original Wilcoxon signed-rank approximation~\citep{wilcoxon1945individual} gives $p=0.0797$ with eight nonzero pairs. The corresponding exhaustive sign-enumeration tail fraction is $20/256=0.0781$. Repeat-wise mean gains are 4.53 and 5.31; all 16 leave-one-task-out means range from 2.42 to 5.58. Every variant keeps the direction positive. Because eight pairs are at the ceiling and one task contributes most of the gain, we read the focal estimate as a descriptive association.
 
-\paragraph{Multiplicity.}
-The five rows are five exploratory tests with no correction for multiple comparisons.
-Under a Bonferroni correction for five tests ($\alpha = 0.01$), only the glm-5.3-flash result ($p = 0.0056$) remains significant.
-The bootstrap targets the mean paired delta, whereas the signed-rank test concerns a different distributional hypothesis; agreement is not two independent confirmations.
-None of these within-group tests establishes that the middle groups benefit more than either endpoint. A direct between-group effect contrast under comparable protocols is needed to support that claim.
+The focal estimate describes this configuration and task set. Historical and supplementary configurations, which use different task pools, hosts, and judges, are reported separately in Appendix~\ref{app:historical}.
 
-A descriptive cross-model observation: glm-5.2 without any skill (93.32) already exceeds glm-5.3-flash with the skill (87.05).
-The comparison is unpaired, confounds model identity with capability, and spans different budgets and deployments, so we report it as context rather than as evidence that upgrading a model always beats adding a skill.
-The task S19-phantom-update-stale-host illustrates the discrimination: glm-5.3-flash has a three-round median of 0 on both arms (one round scored 80/80), while glm-5.2 scored 100/100 on both arms in all three rounds, which illustrates a score difference but does not independently validate the rubric or attribute that difference to capability.
+\subsection{RQ2: Contract failures and grading disagreements}\label{sec:rq2}
+\input{../generated/contract-coverage-table.tex}
+\input{../generated/contract-credit-figure.tex}
+Figure~\ref{fig:contract_credit} displays full-credit proportions across the full cohort; Table~\ref{tab:contracts} gives the counts and task coverage. Original full-credit counts rise from 8 to 12 out of 12 version-related decisions and from 35 to 45 out of 46 API/data/ownership decisions per arm. Failure attribution has full credit in both arms (32/32), as does the safety/boundary domain (10/10). These counts describe the original judge; the reviewed S11 containment defect demonstrates why an all-full-credit domain cannot be called verified safe. Domains contain different tasks and weights, so their percentages are not a difficulty ranking or an estimate of a causal skill mechanism.
 
-The lowest-baseline group also records increased resource use with the skill (Table~\ref{tab:resources}).
-Its with-skill arm consumed 20.6\% more input tokens, 6.2\% more solver time, and timed out 22 more times than the no-skill arm (108 of 168 vs.\ 86 of 167 trials; one no-skill trial was never scored), so the skill's context and instruction overhead coincides with its negative trend.
-This group is infrastructure-confounded: 64\% of with-skill trials hit the timeout under local serving, and we cannot separate model capability from the timeout policy, so we report the association without a causal reading.
-For glm-5.3-flash, the round-1 report records with-skill sessions at roughly 2.2 times the session tokens of no-skill sessions, because skill files enter every turn's context; this group records positive score gains alongside overhead, without establishing cost effectiveness.
+The bounded targeted review finds three criterion disagreements in two of ten answers. The sample is purposive, so these disagreements identify concrete weaknesses in the recorded measurement rather than an error rate.
 
-\begin{table}[t]
+\paragraph{Information access and public API boundaries.}
+S1's reviewed answers retain their original 55 and 100 scores. Part of its rubric rewards mapping to supplied migration cards. The large gain therefore includes access to organized facts and identifiers, and cannot isolate a procedural reasoning benefit. In S6, the no-skill answer correctly recommends removing obsolete defensive code but incorrectly attributes informational-event handling wholly to the host. It also recognizes a public append API gap while recommending an unqualified append route. Review changes two criteria and lowers this answer from 87.5 to 62.5. The paired skill answer retains 100 by distinguishing producer responsibilities, retention, and unavailable public surfaces. The resulting sensitivity increases estimated skill benefit, illustrating that grading errors can favor either arm. Additional full-text inspection of S6 repeat 2 finds the same platform-only interpretation in the no-skill answer, whereas both skill answers distinguish retention from a supported producer seam. This is repetition within one task, not a second independent incident; no additional score replacement is imposed in the fixed ten-answer sensitivity.
+
+\paragraph{Containment boundaries.}
+In S11, a with-skill answer proposes a relative-path check equivalent to accepting an empty relative path or any non-absolute path that does not start with two dots followed by a separator. The exact relative path \texttt{..} passes this predicate, even though it denotes the parent directory. The extracted predicate accepts the parent in both path algorithms, contradicting the declared containment expectation in two of 14 diagnostic inputs; the other 12 control inputs behave as expected. Review lowers the containment criterion from full to partial credit and the answer from 90 to 80. This confirms a defect in the proposed guard; whether it is exploitable depends on the surrounding route, which the probe does not execute.
+
+\paragraph{Cleanup versus process liveness.}
+For S18 repeat 2, the no-skill answer retains 100 and the skill answer retains 90. The skill answer proposes explicit host teardown, while the rubric requires timers that do not keep a still-mounted probe host alive. Our child-process reconstruction makes the distinction observable: a referenced chain and an uninvoked cleanup callback remain alive until the watchdog stops them; both explicit unmount with cancellation and unreferencing every timeout exit naturally. Unreferencing only the first timeout is insufficient when an initially live companion handle allows a referenced successor to be scheduled.
+
+Thus explicit teardown is a functioning alternative in the reconstruction when the host performs it. The retained partial credit measures noncompliance with the rubric's narrower mounted-host requirement, not proof that the proposed cleanup can never repair a CI hang. The instruction asks for a one-line hang fix, whereas the rubric specifies timer unreferencing. This difference exposes sensitivity to how acceptable repairs are defined. We preserve the original and prior reviewed scores; the new mechanism check does not silently create another replacement endpoint.
+
+\paragraph{Ceiling and a retained partial score.}
+Both reviewed S12 answers retain 100: they connect a Windows file lock to the native host process, distinguish the recorded release channels, and prescribe the pinned installation and restart sequence. This zero-change pair illustrates a ceiling case rather than evidence that the skill was consumed or unnecessary in all contexts. The previously reviewed S17 no-skill answer retains 80 because recognizing onboarding requirements does not repair an incorrect injection descriptor.
+
+\subsection{RQ3: Sensitivity and resource use}\label{sec:rq3}
+\begin{figure}[t]
 \centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.22\columnwidth}>{\raggedright\arraybackslash}p{0.66\columnwidth}}
-\hline
-Group & Recorded resource finding\\
-\hline
-qwen3.8-27b & With-skill arm: +20.6\% input tokens (409.8M vs.\ 339.9M, cached input included), +6.2\% solver time, 108 vs.\ 86 timeouts of 168 vs.\ 167 trials. Computed from archived run totals (Appendix~\ref{app:raw}).\\
-glm-5.3-flash & Round-1 report records with-skill sessions at $\approx$2.2$\times$ the session tokens of no-skill sessions (report's own accounting; not recomputed here).\\
-Other groups & Resource usage not recorded in a comparable form across the 2026-09-01 and glm-5.2 batches; not reported.\\
-\hline
-\end{tabular}
-\caption{Resource findings as recorded by each group's own artifacts. Accounting definitions differ between the two sources (token totals vs.\ session-level ratios), so the rows are not pooled into a single metric.}
-\label{tab:resources}
-\end{table}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}
+\begin{axis}[
+  width=\columnwidth, height=4.6cm,
+  xlabel={Mean paired $\Delta$ (skill $-$ no skill)},
+  symbolic y coords={All reviewed replacements, Earlier S11 replacement, Original judgments},
+  ytick=data, y tick label style={font=\small},
+  xmin=-1.5, xmax=13,
+  xmajorgrids, grid style={gray!30},
+  axis y line*=left, axis x line*=bottom,
+]
+\addplot[gray, dashed, no markers, forget plot] coordinates {(0,Original judgments) (0,All reviewed replacements)};
+\addplot+[only marks, mark=*, mark size=1.8pt, color=oiblue, error bars/.cd, x dir=both, x explicit, error bar style={thick}]
+coordinates {
+  (4.92,Original judgments) +- (4.61,5.94)
+  (4.61,Earlier S11 replacement) +- (4.84,6.02)
+  (5.39,All reviewed replacements) +- (5.39,6.41)
+};
+\end{axis}
+\end{tikzpicture}
+}
+\caption{Grading sensitivity of the focal gain. Replacing reviewed criterion decisions moves the mean change between 4.61 and 5.39 points; the earlier S11-replacement interval crosses zero and the all-reviewed interval touches it (dashed line), so the positive direction survives while the strength of evidence depends on grading decisions. Whiskers are 95\% task-bootstrap intervals.}
+\label{fig:sensitivity}
+\end{figure}
 
-A sixth pairing, gpt-5.6-luna, shows the largest nominal gain ($+15.17$ points) but its no-skill arm is contaminated: two trajectories read the agent's native skill catalog despite no skill being mounted.
-It is reported as a sensitivity analysis in Appendix~\ref{app:sensitivity}, not in the main table.
+Replacing only the reviewed S11 score changes the focal estimate to 4.61 points and moves its interval across zero (Figure~\ref{fig:sensitivity}). Replacing all reviewed scores changes it to 5.39 points with a lower endpoint at zero. The direction remains positive, but the strength of evidence depends on grading decisions. The exhaustive sign-enumeration tail fractions are $34/256=0.1328$ for the S11-only replacement and $30/256=0.1172$ for all reviewed replacements, compared with 0.0781 originally. Neither the larger replacement estimate nor the original positive interval should be selected in isolation.
 
-\subsection{Historical evidence categories}
-\label{sec:evidence}
+Figure~\ref{fig:judge_sensitivity} compares complete judge re-grades and their per-report means; Table~\ref{tab:judge_panel} gives the exact estimates and agreement statistics.
 
-The repository also contains historical coverage runs, paired experiments, and grader-development studies with different task and scoring versions.
-Table~\ref{tab:evidence} records their role without treating them as one leaderboard or substituting them for the paired analysis above.
+\input{../generated/judge-sensitivity-figure.tex}
+\input{../generated/llm-judge-panel-table.tex}
 
-\begin{table}[t]
-\centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.26\columnwidth}>{\raggedright\arraybackslash}p{0.62\columnwidth}}
-\hline
-Evidence & Scope and use\\
-\hline
-Astra coverage & 56 tasks, one with-skill attempt each; no matched no-skill arm. Coverage evidence only; no skill effect estimate.\\
-Qwen paired run & 56 tasks, two conditions, three attempts each; one missing score and historical graders. Retrospective utility evidence; analyzed in Table~\ref{tab:paired-effect}.\\
-GLM static runs & 22 static tasks, two conditions, three rounds; mixed grading methods and a same-family solver/judge. Diagnostic evidence; analyzed in Table~\ref{tab:paired-effect}.\\
-2026-09-01 paired runs & deepseek-v4-flash (23 tasks, three runs per arm, terminus-2), gpt-5.6-terra (21 scored tasks, single-shot), gpt-5.6-luna (18 tasks, single-shot, contaminated no-skill arm); legacy graders. Analyzed in Table~\ref{tab:paired-effect} and Appendix~\ref{app:sensitivity}.\\
-Semantic calibration & Grader implementation and selected answer checks; not independent validation of all model outputs.\\
-\hline
-\end{tabular}
-\caption{Historical evidence categories. None supplies the matched source-document arm needed for the versioned source-matched question.}
-\label{tab:evidence}
-\end{table}
+Claude agrees with the original GLM judge on 301 of 328 criterion credit levels (91.8\%, weighted $\kappa=0.64$); GPT agrees on 314 (95.7\%, $\kappa=0.72$). Claude and GPT agree with each other on 297 (90.5\%, $\kappa=0.57$). In the conventional bands of \citet{landis1977measurement}, agreement with the original judge is substantial for both panel judges and moderate between them. Their answer scores match the original in 45 and 53 of 64 cases, respectively (Table~\ref{tab:judge_panel}).
 
-Executing the versioned four-condition design of Appendix~\ref{sec:setup} is future work; see Section~\ref{sec:discussion}.
+The judges differ in both direction and extent of re-scoring. Claude assigns lower credit than GLM to 26 decisions and higher credit to one, with 23 of those reductions on no-skill answers. GPT's departures are smaller and mixed: five lower-credit and nine higher-credit decisions. Re-graded gains are 10.63 [3.44, 19.14] for Claude and 6.09 [1.56, 11.09] for GPT, versus the original 4.92 [0.31, 10.86]. The per-answer mean across all three judges gives 7.21 [1.98, 13.46]; the mean of the two cross-family judges gives 8.36 [2.66, 14.96].
 
-\section{Analysis and Interpretation}
-\label{sec:analysis}
+Agreement does not establish accuracy. The original judge awards full credit to 300 of 328 decisions (91.5\%), so high exact agreement must be read alongside the chance-adjusted weighted $\kappa$. Against the 56 decisions in the non-blind author review, GLM, Claude, and GPT match 53, 51, and 48; that review was seeded by GLM's decisions and is no gold standard. Both cross-family re-judgments preserve a positive descriptive direction, but the magnitude varies, and the judges share a rubric whose validity is not established by their agreement. The original judgment remains the primary recorded endpoint.
 
-\paragraph{What the inverted-U observation establishes.}
-The observed ordering is negative at the lowest baseline, positive in the middle, and smaller in absolute magnitude at the highest baseline.
-It is a property of five historical point estimates, not a fitted response function or evidence of a causal capability effect.
-The middle groups used different harnesses, task pools, and grader generations.
-The lowest-baseline group's 64\% with-skill timeout rate makes deployment and budget policy plausible alternative explanations for its negative estimate.
-The highest-baseline group has little room to improve.
-Thus the pattern motivates a deployment hypothesis: absolute utility may be greatest where agents can exploit the material while still having substantial errors to correct.
-Testing that hypothesis requires comparable tasks, materials, grading, and resource policies.
+The 64 formal execution records contain 3,185,993 no-skill and 12,320,379 skill \path{subagent_tokens}, a ratio of 3.87. The corresponding sums of recorded task durations are 9,446 and 11,450 seconds, a ratio of 1.21. The token field does not separately define input, output, and cache accounting, so it is not a billing-cost measure. Summed task durations are not end-to-end wall-clock time under overlapping execution. Pilot records are excluded.
 
-\paragraph{The baseline axis is partly mechanical.}
-Because groups are ordered by their no-skill baseline, the horizontal axis is itself an outcome: a group with a higher baseline has less room to gain, which imposes a shrinking upper bound on absolute gain. In addition, baseline estimation error enters the gain with the opposite sign, creating mathematical coupling between the axes.
-A baseline-adjusted read does not remove the ambiguity: expressed as a share of available headroom ($100 - \text{baseline}$), the gains are 36\% (deepseek-v4-flash), 30\% (gpt-5.6-terra), 42\% (glm-5.3-flash), and 46\% (glm-5.2).
-The highest-baseline group converts about as much of its small headroom as the middle groups, so the smaller absolute gain is compatible with a near-ceiling baseline; whether the skill loses effectiveness at the top cannot be decided from these data.
+Together, these results answer RQ3 with a conditional assessment: higher recorded reward accompanies greater recorded token use in the focal configuration. The bounded review's replacement intervals touch or cross zero, whereas both label-blinded LLM re-judgments retain positive intervals under the specified task bootstrap. These analyses probe different sources of grading sensitivity and do not establish a single corrected score. The archive supports neither a monetary cost-benefit estimate nor a claim that the added resource use produces more successful repairs.
 
-\paragraph{Robustness not yet established.}
-The current intervals resample tasks and do not account for shared incident families or fully propagate run-to-run variability.
-Direct cross-group effect contrasts, round-wise and leave-one-task-out checks, and common-task sensitivity analyses have not been completed for this manuscript.
-Such analyses could assess stability using existing outputs, but would not remove cross-group protocol confounding.
-Additional historical runs are described in Appendix~\ref{app:corroboration}; they do not independently confirm the inverted-U pattern.
+\section{Discussion}
+\subsection{What contract inspection adds to aggregate reward}
+The focal result has two complementary interpretations. Skill availability is associated with a higher mean recorded score, with much of the gain concentrated in one task and no room for improvement on eight others. Inspection then asks whether the rewarded advice meets the particular requirement that makes a migration usable. This second question matters even when the average improves: S11 receives full containment credit for a predicate that accepts the parent directory, whereas S18's partial credit depends on requiring exit without host teardown. The mechanism check shows that teardown can also permit exit when performed. The cases distinguish a missed predicate defect from a narrower choice of acceptable lifecycle repair.
 
-\paragraph{Resource tradeoffs.}
-The available resource records show overhead in both a negative-estimate and a positive-estimate group (Table~\ref{tab:resources}).
-The lowest-baseline group's with-skill arm paid more tokens and timeouts while scoring lower, and the GLM-5.3-flash group's significant gain came with the roughly 2.2-times session-token overhead recorded in its round-1 report.
-An association between reading overhead and outcomes does not identify the cause: claims about prompt length, forced reading, or budget exhaustion require additional matched interventions.
-The source-matched D--C contrast would estimate incremental guidance utility over shared references; distinguishing prompt length from content would require additional controls.
+Full-cohort accounting and targeted inspection answer different questions. The former shows where the original judge assigned credit across every focal answer, avoiding a results table built solely from selected successes or failures. The latter supplies counterexamples with reasons, but cannot estimate how often such defects occur. For example, the safety/boundary domain has full original credit in both arms even though the S11 check fails a concrete boundary case. Neither the domain count nor the selected defect alone characterizes the reliability of the whole dataset.
 
-\paragraph{Failure analysis (future work).}
-\label{sec:failures}
-A trajectory-level failure analysis --- separating missing facts, incorrect application, unnecessary edits, and ineffective verification, with concrete trace evidence for each --- is future work; score differences alone cannot distinguish these causes.
-Any such analysis will label AI-assisted exploratory coding as such and will not treat it as independent human agreement.
+\subsection{Review questions grounded in the observed cases}\label{sec:review_questions}
+The cases motivate three checks for maintainers reviewing migration advice. For each proposed API action, verify that the target version exposes a callable public surface and identify the component responsible for producing or retaining the data (S6). For a boundary predicate, test the exact boundary value as well as ordinary descendants; the parent path itself supplies a counterexample in S11. For lifecycle advice, state the required runtime condition separately from its suggested cleanup action; releasing a component resource and allowing process exit are different requirements (S18).
 
-\section{Discussion and Extensions}
-\label{sec:discussion}
+These checks can be applied to an individual answer without relying on its total score. Their evidence differs in kind: the S11 predicate was executed directly, S18 was examined through a minimal timer reconstruction with positive and negative controls, and S6 is a static assessment against the recorded contract. They are review questions transferable to other projects; how often the underlying defects occur there, and whether building the checks into an agent or grader improves outcomes, are open questions (Section~\ref{sec:future}).
 
-\paragraph{Review and reproducibility.}
-Contributor self-check and maintainer review provide domain-informed development oversight.
-Their evidential value depends on what was reviewed and which version was accepted.
-They should be complemented by reproducible behavioral tests and targeted inspection of disputed grading decisions, not described as blind model-output annotation.
-The release should preserve task provenance, reviewed revisions, material snapshots, grading packets, and candidate artifacts.
+\subsection{Implications for evaluating maintenance skills}
+A maintenance-skill evaluation should state which endpoint it measures: locating applicable knowledge, supplying contract-consistent advice, or completing a verified repair. The focal archive measures graded static advice. S1's card-mapping reward also captures access to organized facts (Section~\ref{sec:rq2}). Reporting task-level changes and the contract behind each selected shortfall makes these distinctions visible without treating the rubric as a substitute for execution.
 
-\paragraph{Future work.}
-Executing the versioned four-condition design of Appendix~\ref{sec:setup} is the natural next step: it would estimate the incremental utility of guidance over shared reference materials, which the paired runs above cannot do.
-A temporal holdout extends the same protocol to incidents whose knowledge is absent from the frozen skill: ten clean tasks have been split out --- ``clean'' refers to missing knowledge in the frozen skill, not to a guarantee that the team never saw the task --- and the execution protocol is specified and versioned in the repository, including the schedule, bootstrap seed, and analysis policy.
-Both are versioned designs with committed artifacts; neither had been executed at submission time.
+In this archive, retaining original verdicts alongside explicit alternative scores is necessary to interpret the result. Correcting the reviewed S6 judgment increases estimated skill benefit, while correcting S11 reduces it. Thus review should inspect both arms and preserve disagreements that strengthen or weaken the apparent effect. Our replacement analyses demonstrate this sensitivity locally. S18 additionally shows why a grader should state whether alternative repairs are acceptable or whether a particular lifecycle condition is mandatory.
 
-\paragraph{Independent incident transfer.}
-\label{sec:holdout}
-The existing knowledge-holdout audit concerns facts absent from a frozen skill, which differs from an incident excluded from all development feedback.
-The versioned temporal-holdout protocol described above specifies a knowledge split; a prospective incident study would additionally need independently established incident boundaries and development-exposure records.
-Until it is executed, independent transfer remains an extension, not a claim supported by the current retrospective task pool.
+The historical ordering does not establish a capability-response curve; model behavior does not always improve monotonically with scale~\citep{inverse-scaling}. Baseline reward shares mathematical components with the gain and is bounded by the same ceiling; model comparisons also mix infrastructure, graders, task exposure, and skill versions. The present contribution is an evidence-linked maintenance case study; claims about an inverted U, production reliability, or cost effectiveness would need dedicated designs and endpoints.
 
-\paragraph{Misleading context.}
-\label{sec:misleading}
-A future clean/trap study would keep the repair objective and grader constant while changing the misleading cue.
-The interaction between cue presence and skill provision would test whether guidance specifically reduces the cue's penalty.
-Positive performance on existing trap tasks alone cannot establish that effect.
+\section{Threats to Validity}\label{sec:threats}
+We organize threats following \citet{wohlin2012experimentation} and consider the LLM-specific threats identified by \citet{sallou2024breaking} and \citet{wagner2025towards}.
+\paragraph{Construct validity.}
+Static diagnostic reward is not functional repair success. Some criteria reward card mappings or metadata. Keyword and semantic graders measure different things, and numeric normalization does not harmonize their constructs. The focal solver and judge share a model family. The two cross-family panel judges (Section~\ref{sec:panel}) preserve the positive direction but yield gains of 6.09 and 10.63 points, compared with the original 4.92; all three are language models sharing one prompt and rubric, so agreement does not validate the rubric itself. The single GPT judging session may carry information between sequential items, unlike the original separate calls. Family and session structure are confounded in this panel, and each configuration was judged once; test--retest reliability is unmeasured.
 
-\paragraph{Other models and ecosystems.}
-\label{sec:transfer}
-Other models and frameworks could test whether the configuration-level observations extend beyond this retrospective case study.
-Real-project tasks within \framework{} do not establish cross-ecosystem transfer.
-Any extension requires its own source, material, and verification controls.
+The initial non-blind AI-assisted review is useful for finding counterexamples but does not certify all scores. The human follow-up was performed by contributing plugin authors rather than independent annotators, without a separate item-level scoring dataset, precluding an inter-rater agreement estimate.
+
+Attribution to the skill's organization remains unverified. No raw-document or generic-procedure control arm was run, so the comparison separates skill availability from absence but cannot attribute the benefit to the skill's procedural organization rather than its bundled facts (Section~\ref{sec:intervention}). Full-cohort contract tabulation inherits the original judge decisions and should not be confused with complete revalidation. The S18 instruction and rubric differ in how narrowly they specify the hang repair; compliance with the latter is not equivalent to the absence of other functioning repairs.
+
+\paragraph{Internal validity.}
+The data are retrospective, and contributors developed the skill and tasks in an overlapping workflow. Historical selections are not assumed random, and the focal seeded draw does not remove development exposure. Historical execution budgets, environment failures, and protocols differ. Original model labels rely on recorded infrastructure declarations. The review selection was frozen before additional full-output inspection, but after outcomes were known; it is not preregistration of the underlying experiment. The agent host did not isolate arms in separate containers, and workspace paths differ between arms.
+
+\paragraph{Statistical conclusion validity.}
+There are only 16 focal tasks and two repeats per arm, which is few for evaluating stochastic agents~\citep{arcuri2011practical}. Eight task pairs are at the ceiling. Task-level resampling treats tasks as independent even when incident sources may overlap. No family-clustered analysis is reported (Section~\ref{sec:future}). The selected review does not estimate population error, and partial replacements leave unreviewed scoring uncertainty unresolved. Intervals, signed-rank approximations, and leave-one-out results are exploratory descriptions of the recorded data rather than confirmatory tests of a universal effect.
+
+\paragraph{External validity and reproducibility.}
+The focal tasks concern one plugin framework and static reports. Historical task inventories and artifacts have unequal coverage. The newer Qwen outputs and grading reasons are unavailable in the repository, limiting replication of its endpoint. Live models and dependencies can change even with pinned task sources. The archive supports deterministic recalculation of the focal scores and reported sensitivities, not a guarantee of identical future model outputs. Mechanism probes are restricted to an extracted lexical predicate and a reconstructed timer; they do not execute complete agent-produced migrations, and the bounded timer observation is not a production liveness guarantee.
+
+\section{Future Work}\label{sec:future}
+The archive and tooling released with this study make several follow-up studies direct to run.
+
+\paragraph{Independent human validation.} The repository already contains an outcome-blind protocol for grouping tasks by incident family with two independent annotators and third-party adjudication (\path{paper/audit/task-annotation-v1}). Executing it would support family-clustered uncertainty estimates. A blinded human re-grading of a random sample of criterion decisions would calibrate the LLM judges against human judgment and yield an inter-rater agreement estimate.
+
+\paragraph{Attribution and executable endpoints.} Raw-document and generic-procedure control arms would separate the value of organized facts from that of the skill's procedure. Running agent-produced repairs end to end in version-pinned hosts would replace diagnostic reward with repair success, and would test whether the S11 and S18 mechanisms matter in deployed plugins.
+
+\paragraph{Judge reliability.} Repeated judging of each configuration, with model family and session protocol varied independently, would measure test--retest reliability and separate the two factors confounded in the present panel.
+
+\paragraph{Prospective replication and transfer.} A temporal-holdout split and its execution plan are specified in the repository (\path{benchmark/holdouts}); running it, and applying the same protocol to other plugin frameworks, would test whether the effect and the review questions of Section~\ref{sec:review_questions} transfer beyond this setting, and whether adding those questions to an agent or grader improves outcomes.
 
 \section{Conclusion}
-A migration skill has heterogeneous recorded utility across five historical configurations of a version-pinned plugin benchmark.
-Absolute gains display a descriptive inverted-U pattern, but the evidence does not distinguish capability dependence from task, grading, deployment, or ceiling effects.
-The paired results and resource records support configuration-specific assessment of skill utility and make a controlled test of this hypothesis a concrete next step.
-The benchmark and provenance-aware analysis provide a basis for that work without treating unexecuted controls as findings.
+In an archived 16-task comparison, making a plugin-upgrade skill available raised recorded reward by 4.92 points, with the gain concentrated in one task and bounded by ceiling effects. The more consequential finding concerns how such gains should be read. API availability and responsibility, exact boundary coverage, and process liveness cannot be inferred from a plausible recommendation or an aggregate score; they have to be checked at the contract the advice is meant to satisfy. Complete accounting of all 328 decisions, a bounded review, and executable probes located a missed boundary defect and an alternative repair excluded by a narrower rubric. Two blinded judges from other model families preserved the positive direction of the gain while changing its size. By keeping contracts, answers, scores, and counterexamples linked, the study makes both the observed benefit and its open correctness questions inspectable, and provides a reusable basis for the human validation, executable repairs, and cross-project replication outlined above.
 
-\section*{Limitations}
+\section*{Acknowledgments}
+We thank the other contributors to the open-source repository, including the GitHub users whiteicey, AdamPlatin123, and HuanLinOTO, for benchmark tasks, experiment runs, and migration cards.
 
-The paired results cover five model points, one skill, and one ecosystem, and the source-matched four-condition experiment that would separate procedural organization from factual content remains unexecuted; all mechanism claims above are hypotheses bounded by that gap.
-The groups are not apples-to-apples: task pools differ (22, 23, and 56 tasks), protocols differ (three-round and three-run medians versus single-shot), and harnesses and grader generations differ, so the cross-row pattern is descriptive and within-row estimates inherit the validity limits of their original scores and runs.
-The baseline axis is defined by each group's no-skill baseline, which is an outcome measure: ordering by it induces a mechanical negative association between baseline and achievable gain, so the right half of the pattern is partly a ceiling artifact rather than independent evidence about capability.
-The five rows are exploratory tests without multiplicity correction; only glm-5.3-flash survives a Bonferroni correction for five tests at $\alpha = 0.01$, and the pattern as a whole should be read as hypothesis-generating.
-The deepseek-v4-flash group used the minimal terminus-2 harness and legacy keyword verifiers, which are not comparable to the semantic graders used elsewhere.
-The gpt-5.6-terra and gpt-5.6-luna groups are single-shot pairings ($n = 1$ per arm) with no repeat-run variance estimate, and the luna group is further limited by its contaminated no-skill arm (Appendix~\ref{app:sensitivity}).
-In both GLM groups the solver and the grader belong to the same model family: glm-5.3-flash graded its own runs, and 19 of the 22 glm-5.2 tasks were judged by glm-5.3-flash subagents (the remaining three by official keyword judges), so correlated grader bias cannot be excluded.
-The GLM groups cover only the S-series static-diagnosis tasks; hands-on evidence comes from the qwen3.8-27b group (historical graders, single agent protocol) and the 2026-09-01 groups.
-The glm-5.2 round-3 aggregate was initially reconstructed from the report's per-task table because the raw artifacts had not been committed; the raw artifacts (44 solver reports, 38 judge verdicts) were later committed and the reconstruction was verified against them, but the episode means round 3 lacks the continuous provenance chain of rounds 1--2.
-The qwen3.8-27b negative effect has a confidence interval crossing zero and is reported as a trend only; the group is also infrastructure-confounded (64\% of with-skill trials timed out under local serving), so model capability and timeout policy cannot be separated there.
-The candidate pool belongs to one framework and includes development-exposed and related tasks, limiting independent generalization claims.
-Matching source files does not guarantee matching task-relevant information; differences in guidance length, retrieval behavior, and procedural content in the reference cards remain important interpretation boundaries.
-The historical results evaluate the shipped skill lineage; they do not estimate the effect of the document-only intervention proposed in the appendix.
+\section*{Artifact Availability and Research Transparency}
+The working repository is \url{https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill}. The focal archive is under \path{benchmark/results/artifacts/2026-09-15-glm-5.3-flash-unified-s16}; the supplementary review is under \path{paper/audit/output-review-20260917}. Original outputs and scores are preserved separately from review verdicts. Complete contract accounting and human-follow-up provenance are stored under \path{paper/audit/contract-review-20260917}. The cross-family judge panel, its protocol, and all panel verdicts are under \path{paper/audit/llm-judge-panel-v1}. Offline mechanism probes and their execution environment are archived under \path{paper/audit/mechanism-checks-20260917}. The claim-to-evidence ledger identifies inputs and offline commands for regenerating the analyses. Availability is described per configuration; no universal raw-output completeness claim is made.
 
-Contributor and maintainer review are development-stage checks, not independent blinded validation of model-output grades.
-AI-assisted annotations, if used, require explicit provenance and cannot be counted as multiple human reviewers.
-Functional tests establish only their covered contracts; static semantic scores remain dependent on rubric validity and evaluator behavior.
-Exact model configurations, statistical grouping, and resource limits must be frozen before formal execution of the versioned design.
-Public framework materials may occur in training data, and no claim of complete training-data exclusion is made.
+\section*{Use of AI Assistance}
+AI tools (Codex and ChatGPT) assisted with source inspection, analysis code, initial targeted output review, and manuscript drafting. Non-blind human checking was subsequently performed by multiple contributing plugin authors. The archive preserves both stages and does not claim independently measured human agreement. In the cross-family judge panel, Claude Opus 5.5 (via Claude Code) and GPT-5.5 (via an isolated Codex CLI session) served as LLM judges; Claude Code also assisted with panel tooling and manuscript revision. Panel verdicts are LLM judgments and are reported as such.
 
-\section*{Ethics}
-
-The release must document source licenses, attribution, and any required consent for incident excerpts and fixtures.
-Public availability alone is not permission to redistribute every artifact.
-Experiments use disposable environments with explicit access and resource boundaries.
-Published trajectories must be stripped of credentials and personal data while retaining auditable task, configuration, and scoring evidence.
-Review participation is described according to its actual role, without implying organizational endorsement.
-
+\bibliographystyle{plainnat}
 \bibliography{custom}
 \appendix
+\clearpage
+\section{Task-level focal results}
+\input{../generated/focal-task-table.tex}
 
-\section{A Versioned Design for Source-Matched Control}
-\label{sec:setup}
+\section{Historical and supplementary context}\label{app:historical}
+\subsection{Historical paired summaries}\label{sec:paired}
+For each historical configuration, we use its recorded task reward on a 0--100 scale and preserve its original within-task aggregation. Qwen uses means of three scored attempts, DeepSeek and the two GLM groups use medians of three runs or rounds, and Terra uses one attempt. These numeric scales do not imply equivalent constructs: keyword grading, semantic judgment, and composite executable rewards differ. We do not pool configurations or regress their gains on their baseline scores as an independent capability measure.
 
-The paired results in Section~\ref{sec:results} measure the skill's total utility over no material, but they cannot separate the effect of organizing guidance as a skill from the effect of the facts it carries.
-This section specifies a future comparison of incremental guidance utility over shared references.
-The design is specified and versioned in the repository --- it is not externally preregistered: the study configuration, candidate material packages, runner, and statistical protocol all exist as versioned artifacts.
-It had not been executed at submission time and is presented as a reusable design and as future work, not as reported results.
-Historical runs do not retroactively satisfy this protocol.
+Historical percentile intervals use 10,000 task-paired bootstrap samples with mulberry32 seed 20260907. The reported two-sided Wilcoxon signed-rank calculations exclude zero differences and use a tie-corrected normal approximation with continuity correction. These exploratory summaries can disagree near a boundary; neither is a substitute for validating the endpoint. No multiple-comparison-adjusted confirmatory family is claimed.
 
-\subsection{Four material conditions}
-\label{sec:conditions}
+\input{../generated/paired-effect-table.tex}
+Historical mean changes range from $-3.07$ to $+10.67$ points (Table~\ref{tab:paired_effect}). The older Qwen configuration has substantial skill-arm timeouts under its local infrastructure. Terra excludes H8 because both arms have verifier timeouts. The GLM groups mix semantic and keyword judgments. These differences prohibit attributing cross-row variation to model capability alone. A contaminated Luna baseline, which accessed a native plugin-creator skill on H2 and H3, is excluded from this five-configuration comparison.
 
-\begin{table}[t]
-\centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.10\columnwidth}>{\raggedright\arraybackslash}p{0.78\columnwidth}}
-\hline
-Arm & Supplied migration material\\
-\hline
-A & No migration-specific material.\\
-B & Framework-agnostic migration guidance without target-specific facts.\\
-C & Source-matched reference cards/documents with a neutral index and a shared factual supplement.\\
-D & Document-only adapted migration guidance and the same references and factual supplement as C.\\
-\hline
-\end{tabular}
-\caption{Material conditions. Within this design, the primary contrast is D--C; D--A measures overall document-package utility and B--A measures generic-guidance utility.}
-\label{tab:conditions}
-\end{table}
+Within the historical GLM pair, the Flash-minus-5.2 difference in mean task lift is 6.23 points, with a paired bootstrap interval [2.59, 10.05]. The round-specific Flash gains are 6.32, 8.82, and 9.82, versus 1.55, 1.64, and 5.00 for GLM-5.2. Leaving one task out yields lift gaps from 5.33 to 7.00. These completed robustness calculations support a descriptive contrast within the recorded protocols. Different judge mixes and development histories remain confounders; the contrast does not identify a capability-dependent response curve.
 
-C and D must contain the same task-relevant facts, not merely originate from the same repository.
-The coverage audit maps factual claims in the skill entry to their source passages and checks both directions for omissions or contradictions.
-Facts unique to D must be added to C in nonprocedural form, or the intervention must be revised and its narrower interpretation stated.
-No supplement may be extracted from a task's reference answer.
-The reference cards already contain procedures, so D--C estimates incremental guidance over those documents rather than an absolute contrast between procedural and nonprocedural knowledge.
+\subsection{Newer supplementary configurations}
+A supplementary newer Qwen run on the same S16 configuration reports 71.17 to 77.89, a gain of 6.72 points, with a reported interval [$-12.42$, 26.25]. It contains 64 scored attempts, including five timeouts and two other nonzero-exit attempts. Termination status is distinct from the assigned score. Its raw answers and grading reasons are not archived, and the reported bootstrap randomization is insufficiently specified for exact interval reproduction. Fourteen tasks overlap with the focal Flash run; different hosts, budgets, judges, and selections prevent a controlled cross-model comparison. We use this result only as supplementary context.
 
-All arms share a neutral material-discovery convention and access to the same task-authorized tools.
-Native skill catalogs, memories, and automatic discovery of unrelated materials are disabled.
-External links in supplied documents are provenance, not permission to retrieve additional evidence.
-A task must explicitly allow its assigned material package; an instruction stating that no external-to-fixture references exist is incompatible with a supplied-documents condition.
-The prompt and access rules are fixed across arms before execution.
+Three supplementary GLM-5.3 rounds on S1--S22 are now archived. Recomputing all 132 verdicts against the pinned rubric, retaining half-point values before summation, gives round gains of 1.93, 3.18, and 6.59 points. The per-task median across rounds is 97.05 without the skill versus 98.64 with it, a gain of 1.59 points; its descriptive task-bootstrap interval is [$-1.36$, 5.80] (10,000 samples, seed 20260907). The third round used GLM-5.3 as judge rather than the GLM-5.3-Flash judge used in rounds one and two. The median cannot remove this protocol change, so these results remain a mixed-judge descriptive supplement.
 
-\subsection{Small models and resource limits}
-\label{sec:models}
-\label{sec:protocol}
+Round three's S17 no-skill answer receives zero because its affirmative immediate-registration recommendation triggers the rubric's contradiction cap. The criterion decisions are retained: this pair contributes 100 of the round's 145 total gain points. Excluding S17 descriptively leaves a 2.14-point mean gain across 21 tasks; this is a sensitivity, not a basis for removing the observation. The archive discloses quota-related relaunches, concurrency changes, and a truncated round-one answer. These rounds do not establish a capability ladder or restore comparability with older protocols.
 
-The study targets two affordable model configurations with complete four-condition coverage.
-Their exact identities, parameter counts when disclosed, serving infrastructure, agent versions, reasoning settings, and resource limits will be reported.
-Low API price alone does not establish small model size; configurations with undisclosed parameter counts must be identified as such.
-Effects are estimated separately within each model--scaffold configuration rather than inferred from cross-model score differences.
+\subsection{Historical resource accounting}
+We also recomputed the earlier Flash round-one usage totals from its 22 sessions per condition. Fresh input totals are 599,882 and 678,101; output totals are 116,506 and 132,726; cache totals are 5,890,176 and 5,017,984. The recorded total-token sums are 6,606,564 and 5,828,811, respectively. These fields do not support an undifferentiated claim of a 2.2-fold token increase. Their accounting differs from the focal host's token field, so resource ratios are reported within configurations only.
 
-For a given task and model, all arms receive the same time limit and any configured token or tool-call limits.
-Limits are calibrated on development tasks before the formal run, including checks that environment setup and tool failures do not dominate the task.
-Equal limits do not require equal realized consumption.
-The study records the actual quantities and their accounting definitions, including cached input and evaluator overhead.
-Model-provider traffic, dependency installation, and verifier traffic are distinguished from solver access to outside information.
+\section{Judge panel provenance}\label{app:panel}
+The panel protocol, analysis plan, blinded items, unblinding key, and all verdicts are under \path{paper/audit/llm-judge-panel-v1}; \path{prepare-llm-judge-panel.mjs} and \path{analyze-llm-judge-panel.mjs} in \path{paper/scripts} regenerate the items and results and check them for drift. The protocol was written before any panel verdict existed but was not separately committed or externally registered beforehand. The Claude session that prepared the items had seen earlier results; it judged no item and passed no outcome information to the 16 judging sessions. The operator of the GPT-5.5 session had seen manuscript context before reading the blinding protocol and passed no outcomes to the isolated judge. Both judges' metadata files record these facts, including incidental directory-name listings in which no verdict or key file was opened. GPT-5.5's single sequential session may carry context between items, unlike the original per-report calls.
 
-Each trial starts in an isolated environment, with conditions interleaved in a balanced order.
-Task, fixture, material, and grader hashes accompany every trial.
-The unattended authorization convention permits the requested task to proceed without another user reply; it is not evidence of network or filesystem isolation.
-Changes to an agent-visible prompt, fixture, or material package require new solver runs rather than regrading old answers as if they came from the new condition.
+\section{Artifact map and reproduction scope}
+Historical result files are stored under \path{benchmark/results}: \path{paired-effect-stats.json} generates the paired table, and \path{glm-pair-stability.json} records GLM stability. The focal directory contains the selection, schedule, execution-order records, original reports and judgments, aggregate scores, paired analysis, and the earlier targeted review. The later review stores frozen selection and complete criterion verdicts separately. The script \path{paper/scripts/summarize-submission-evidence.mjs} checks report hashes, recomputes review scores, deduplicates overlapping answers, and regenerates sensitivity and historical resource summaries without model calls. Its \texttt{--check} mode verifies the committed generated summary.
 
-\subsection{Repetitions and estimand}
-\label{sec:estimand}
-
-For $N$ admitted tasks, two models, four conditions, and $R$ repetitions per cell, the core design requires $8NR$ solver trials.
-Three repetitions are a planning option, not a completed or fixed experiment; the affordable design must be chosen using the development pilot before formal outcomes are observed.
-If only a preselected subset receives extra repetitions, the first run is used consistently for the full-pool estimate and subset stability is reported separately.
-
-Let $y_{tmcr}$ denote functional acceptance for task $t$, model configuration $m$, material condition $c$, and repetition $r$.
-For hands-on task set $\mathcal{H}$, the primary effect is
-\begin{equation}
-\Delta_m^{D-C}=\frac{1}{|\mathcal{H}|}
-\sum_{t\in\mathcal{H}}(\bar y_{tmD}-\bar y_{tmC}),
-\label{eq:primary}
-\end{equation}
-where each bar averages the prespecified repetitions.
-Static diagnostic effects use their own task set and scale; they are not pooled with functional acceptance into a single headline score.
-D--A and B--A are secondary contrasts.
-
-Intervals should preserve condition pairing and account for related incident families.
-Family counts, grouping provenance, unresolved assignments, and sensitivity to reasonable alternative groupings accompany the estimates.
-Repeated trials are not treated as independent incidents.
-The analysis reports complete task and trial denominators, observed regressions, and uncertainty without requiring a positive or significant effect.
-
-\subsection{Failures, missing data, and cost}
-\label{sec:cost}
-
-A solver reaching its budget is evaluated using the artifact available at the deadline and also counted in the termination statistics.
-Infrastructure and evaluator failures follow a bounded, condition-symmetric retry policy fixed before execution; every attempt is retained.
-Unresolved missing scores require coverage reporting and sensitivity analysis on the same task set.
-No condition's aggregate with one denominator is silently compared to another condition's aggregate with a different denominator as a complete paired estimate.
-
-Resource reporting separates input, cached input, output, solver duration, evaluator duration, and parallel batch wall time.
-Whether cached input is included in the reported input total is stated explicitly.
-API-equivalent costs use recorded prices; local inference reports hardware and occupied compute time rather than claiming zero compute cost because no API invoice exists.
-Both successful and failed attempts contribute to resource accounting.
-
-
-
-\section{Historical Task Inventory}
-\label{app:tasklist}
-Table~\ref{tab:frozen-task-pool} lists historical snapshot \texttt{\BenchmarkSnapshotId{}} at benchmark commit \texttt{\BenchmarkCommitShort{}}.
-The manifest records the full commit hash; rows are generated from pinned git objects.
-This is not the final task list for the source-matched study.
-\begingroup
-\def\small{\fontsize{8}{9.5}\selectfont}
-\setlength{\tabcolsep}{1pt}
-\input{../generated/task-pool-table.tex}
-\endgroup
-
-\section{Review and Grading Records}
-\label{app:rubrics}
-For each admitted task, the final release must record the source incident or derivation, contributor self-check, maintainer review evidence when available, reviewed task revision, grader revision, and admission checks.
-% TODO before submission: these fields are not yet a certified complete review-coverage table.
-Model-output validation records must separately identify the evaluated answer, rubric, evaluator, decision, and any adjudication or correction.
-
-\section{Materials and Run Artifacts}
-\label{app:generic}
-\label{app:raw}
-The controlled study requires the full A/B/C/D material texts, hashes, C/D fact-coverage mapping, permitted retrieval paths, and shared tool policy.
-For each solver trial, archive task identity, condition, repetition, model and serving configuration, resource limits, termination status, report or patch, and grader output.
-Preserve missing observations and all infrastructure retries.
-Historical results must retain their original scoring versions and be distinguished from any subsequent regrading.
-
-The paired analysis of Section~\ref{sec:paired} is backed by committed artifacts.
-Round aggregates and judge verdicts live under \path{benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22*} and \path{benchmark/results/artifacts/2026-09-13-glm-5.2-s1-s22*}; the glm-5.2 round-3 directory carries a \texttt{PROVENANCE.md} documenting how its aggregate was first reconstructed from the report's per-task table and later verified against the raw artifacts committed in PR \#228 (which also resolved the report's totals discrepancy: the stale totals line had silently excluded S22).
-The qwen3.8-27b run is archived as \path{benchmark/results/validation-report-2026-09-11-codex-qwen3.8-27b-medium-paired.json}.
-The 2026-09-01 groups were extracted from their report tables into machine-readable form under \path{benchmark/results/artifacts/2026-09-01-terminus2-deepseek-v4-flash/}, \path{benchmark/results/artifacts/2026-09-01-codex-gpt-5.6-terra/}, and \path{benchmark/results/artifacts/2026-09-01-codex-gpt-5.6-luna/}, each with a \texttt{PROVENANCE.md} recording the source report, the protocol, and every known inconsistency; the analysis script reads only these extracted files, never the reports.
-The frozen statistics file \path{benchmark/results/paired-effect-stats.json} and the deterministic script \path{benchmark/scripts/measure-paired-effect.mjs} (with golden tests and a byte-exact \texttt{--check} gate) reproduce every number in Table~\ref{tab:paired-effect}; \path{paper/generated/paired-effect-table.tex} and \path{paper/generated/paired-effect-sensitivity-table.tex} are generated from the statistics file and must not be edited by hand.
-
-\section{Sensitivity Analysis}
-\label{app:sensitivity}
-The gpt-5.6-luna pairing is excluded from the main table because its no-skill arm is not a literal no-skill run: Harbor mounted no skill, but the agent's native system-skill catalog stayed visible, and the H2 and H3 trajectories explicitly read the native plugin-creator skill.
-Both contaminated scores are perfect, so the contaminated comparison cannot estimate what a clean baseline would have scored on those two tasks; the nominal $+15.17$-point gain in Table~\ref{tab:paired-effect-sensitivity} is descriptive only, and the decontaminated 16-task no-skill subset (mean 0.6513) is diagnostic only and is not a substitute for rerunning those tasks with native skills disabled.
-The group is also single-shot and predates the current graders.
-\input{../generated/paired-effect-sensitivity-table.tex}
-
-\section{Additional Historical Runs}
-\label{app:corroboration}
-Three additional repository-held results are retained for provenance. None provides a comparable independent test of the inverted-U hypothesis or enters the main table.
-The gpt-6-astra with-skill coverage run reports (full 56-task mean 76.8, 32 of 56 perfect), but has no matched no-skill arm and cannot estimate an effect.
-An interim claude-opus-5 pairing shows $+11.2$ points on the mean of per-task medians, but the run is incomplete (15 of 23 tasks, biased toward easy ones) and its primary median statistic is flat.
-A three-system evaluation of an RL-optimized skill variant reports $+10.5$ points for deepseek-v4-pro over 31 hands-on tasks, but it tests a different skill artifact at $n = 1$ per arm.
-
-\section{Reproduction and Contributions}
-\label{app:repro}
-\label{app:contrib}
-The final reproduction package must include environment preparation, reference-solution replay, material mounting and isolation checks, scoring, and aggregation commands.
-The unattended authorization protocol must be paired with explicit permission to read the assigned experimental materials.
-% TODO before submission: per-author contributions and persistent artifact locations remain to be completed.
-
+A frozen 23-task historical inventory and its source metadata are retained in \path{paper/generated}; they are not substituted for the 16-task selection. Exposure information remains in \path{paper/audit/task-exposure-ledger.csv}. Missing raw artifacts, unverified model identities, and pending author declarations are recorded as limitations rather than filled in by inference.
 \end{document}

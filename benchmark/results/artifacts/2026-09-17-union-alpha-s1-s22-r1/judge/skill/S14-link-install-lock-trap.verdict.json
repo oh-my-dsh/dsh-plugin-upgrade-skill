@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in profile-introspection.txt:1-11 (LinkType Junction, Target E:\\dev\\dsh-attach-input, empty target on the repo) and the cordis.patch.yml link marker, states repo edits already change the installed copy on disk, that copying through the junction was never necessary and acts on the same physical files, and distinguishes this from a genuinely copied dependency in the pre-flight section."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Ties copy-session.txt:1-8 and maintainer-thread.md:6-12 to the running dsh web host holding loaded files/handles, explains closing the tab does not stop the host or release EBUSY (noting rename-allowed does not prove handle release), treats browser HTTP cache as a separate stale-client layer needing hard refresh after host restart, and explicitly rejects extrapolating the lock to all Node imports/DSH versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Cites copy-session.txt:11-21 and explains renames through the junction renamed the sole source files, so the subsequent copy failed because the source name no longer existed; the recovery plan restores client.js.old2/index.js.old2 to their entry names via the real repo path with pre-checks, runs node --check on both before activation, and stopping the host first is presented as a precaution without requiring rename-while-locked or recreating/deleting files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Steps 2-6 give the dependency order: fully stop the affected host (tab close/refresh explicitly not sufficient), start a fresh dsh web, then hard-refresh with cache bypass, then verify both halves (route response, fresh client artifact, console errors), noting syntax checks alone are not activation."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "The pre-flight section inspects the profile entry's LinkType/Target and the cordis.patch.yml link marker before any file operation, branches procedure for junction vs copied install (copied dependency would need its package manager with lifecycle/rollback review), and explains generic copy-into-node_modules advice treats aliases as independent copies and caused the self-overwrite/EBUSY incident."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan restores files by renaming .old2 back through the real repository path and explicitly forbids copying through the alias, replacing the junction, or treating the two views as independent copies; copying appears only as rejected explanation of the incident."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The plan requires fully stopping and restarting the dsh web host before a cache-bypassing browser refresh; browser refresh/closure alone is quoted only as the rejected failure mode."
+    }
+  ]
+}

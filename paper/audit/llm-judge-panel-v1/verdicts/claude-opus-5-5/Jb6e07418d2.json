@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Cites the Junction LinkType and repo Target from the introspection plus the link marker in cordis.patch.yml. It concludes that repo edits already are the installed copy and that copying goes onto the same physical files, and contrasts this with a copied dependency."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Ties the EBUSY in the copy session and the thread's tab-closed retry to the running host holding the lib files and old module state, and explains that the browser holds no file handle. Browser HTTP caching is treated separately as the reason for a hard refresh after the host restart."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains that renaming through the junction renamed the repo's only copies, which made the later source copy fail. Recovery: stop the host, rename the .old2 files back to client.js and index.js, run node --check on both, confirm both views, then activate. Nothing is deleted or recreated first."},
+{"id":"ordered-activation","verdict":"pass","reason":"Correct order: stop the host fully, restart dsh web, hard refresh to bypass the cache, then check the new host route, a fresh client.js in the network panel, the feature, and a clean load log. It says a browser-only restart is not enough."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Before touching files, checks LinkType/Target and the link marker in cordis.patch.yml and branches between the linked and copied procedures. It explains how copy advice led to the self-copy, the EBUSY and the destructive rename-aside."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"The final plan copies nothing and restores the .old2 files by renaming them, not deleting them. It treats the two paths as one directory throughout."},
+{"id":"browser-only-activation","triggered":false,"reason":"The plan requires stopping and restarting the host and explicitly says that closing or refreshing the browser does not release the lock or load the new code."}
+]}

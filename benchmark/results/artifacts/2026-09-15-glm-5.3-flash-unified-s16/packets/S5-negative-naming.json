@@ -1,0 +1,56 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S5-negative-naming",
+  "source_commit": null,
+  "instruction": "# S5 · Naming Four-State Judgment (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for \"confirmation\", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:\n\n- You may inspect `/app/fixture/` and local in-container tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- This is a **closed-book** brief: there are no reference materials outside the fixture — do not search `/tmp`, system directories, or the network for them; mark anything you cannot verify as \"unconfirmed\" instead of guessing;\n- You may create temporary files needed for the report and run read-only local commands, but you must not build or create any reproduction environment, install dependencies, or migrate anything;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nI am about to publish a community plugin. `/app/fixture/` in the container holds the plugin's `package.json` and `dsh-plugin.naming.json`. Before publishing I want a **judgment** of its naming compatibility and registry status.\n\nPlease **review it read-only** (do not modify any file under `/app/fixture/`) and produce a judgment report, written under `/app/agent-output/S5-negative-naming/` (any filename). Requirements:\n\n1. For each surface (plugin name, service name, event name, skill name, route, etc.), give a verdict — \"compatibility error / collision recommendation / needs registry context / unknown\" — with the reasoning;\n2. **No findings ≠ no problems**: without an online registry query, you must not claim \"reserved\" or \"globally available\" — report unknown/not-checked honestly;\n3. Do not build or create any reproduction environment, and do not modify anything outside the fixture.\n\nWhat is tested is whether the four-state judgment is restrained and the negative capability is exercised.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "official-short-name",
+        "points": 25,
+        "requirement": "Locate greet in dsh-plugin.naming.json and distinguish the declared plugin name from its package/coordinate. Under the supplied fixture policy it is a valid official short name, not a compatibility error. A publisher prefix may reduce collisions but is not a mandatory compatibility repair. Merely repeating greet or valid is insufficient.",
+        "sourceRequired": true
+      },
+      {
+        "id": "service-collision-advice",
+        "points": 25,
+        "requirement": "Locate the unprefixed service search. Explain the collision risk and classify it as a warning/recommendation rather than a compatibility error. Do not treat a strict-mode nonzero exit as proof of an incompatible API. A strict-mode command is not required.",
+        "sourceRequired": true
+      },
+      {
+        "id": "shared-event-context",
+        "points": 25,
+        "requirement": "Locate web-search/ready as an event shared channel. Explain that matching names alone do not establish a conflict; publisher schema compatibility and registry context determine conflicts. Informational/shared-channel wording is equivalent; an unsupported claim of global uniqueness is not.",
+        "sourceRequired": true
+      },
+      {
+        "id": "coverage-and-registry-limits",
+        "points": 25,
+        "requirement": "Account for the remaining declared naming surfaces (loader, tool, command, skill/provider, settings and route), which may be grouped with a justified common verdict. Distinguish local naming compatibility from unqueried registry occupancy/reservation/availability. State unknown/not checked for registry-dependent claims and propose later verification without claiming it was run. Do not invent an error from private:true, which marks test material. An explicit rejection of all-clear/reserved/globally-available claims is correct.",
+        "sourceRequired": true
+      }
+    ],
+    "caps": [
+      {
+        "id": "unsupported-all-clear",
+        "total": 30,
+        "requirement": "Trigger only for an affirmative, unsupported blanket conclusion that every surface passes/is globally available or publication is cleared despite the unqueried registry. Correct local compatibility verdicts, hypothetical bad examples and explicitly rejected all-clear claims do not trigger this cap."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "f27373bc472e94e859b37407eaf5332fcda747a7f55110a4ea9d430644862645",
+      "text": "# S5 fixture · Naming judgment manifest (S5-specific copy)\n\nA community plugin naming declaration (`private: true` is the repository's \"test material, do not publish\" discipline, not part of the brief). **Test material only — do not execute or publish**.\n\n- This task's grading requires the fixture to be unchanged relative to git HEAD.\n- Four judgment surfaces: the official short name `greet` is valid (no compatibility error; prefixes are only collision recommendations), the unprefixed service `search` is a warning not an error, the event `web-search/ready` is a shared channel (informational), and an unqueried registry is unknown.\n"
+    },
+    "dsh-plugin.naming.json": {
+      "sha256": "2863bfaf22ab7c9ff69a03b06af2cc1808cec2054987fcf5c6d4c55df61cb6b0",
+      "text": "{\n  \"schemaVersion\": 1,\n  \"policy\": \"dsh-plugin-naming/v1\",\n  \"plugin\": { \"namespace\": \"acme\", \"name\": \"greet\", \"coordinate\": \"acme/greet\", \"packageName\": \"dsh-greet\" },\n  \"names\": {\n    \"pluginNames\": [\"greet\"],\n    \"loaderIds\": [\"acme-greet\"],\n    \"services\": [\"search\"],\n    \"tools\": [\"acme_greet_hi\"],\n    \"commands\": [\"acme-greet-hi\"],\n    \"skills\": [\"greet\"],\n    \"skillProviders\": [\"acme-greet-filesystem\"],\n    \"events\": [\"web-search/ready\"],\n    \"settingsNamespaces\": [\"acme-greet\"],\n    \"routes\": [{ \"kind\": \"exact\", \"path\": \"/api/plugins/acme-greet/hi\" }]\n  }\n}\n"
+    },
+    "package.json": {
+      "sha256": "71cd34926a4686d2098c582b93f86305c772f1e7d0bee5be9f1ca64d26ec99bc",
+      "text": "{\n  \"name\": \"dsh-greet\",\n  \"version\": \"0.1.0\",\n  \"private\": true\n}\n"
+    }
+  }
+}

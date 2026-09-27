@@ -101,5 +101,5 @@ node benchmark/scripts/analyze-unified-paired.mjs
 已提交 Harbor 配置是带 `<repo-root>` 占位符的便携模板；执行前须通过 `--local` 生成当前机器的挂载路径。
 实际已完成的是 ZCode 宿主子会话运行，不是本页 Harbor 命令的执行记录；其 pilot 与预算差异以结果报告披露为准。
 GLM-5.2 冻结 kit 的核查使用 `UNIFIED_RUN_DIR=2026-09-16-glm-5.2-unified-s16 UNIFIED_MODEL=GLM-5.2`（保持冻结的大小写）。
-关键回答的非盲 AI 复核发现评分敏感性，见
-[复核记录](../results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/targeted-ai-review.zh.md)。
+关键回答的非盲人工复核发现评分敏感性，见
+[复核记录](../results/artifacts/2026-09-15-glm-5.3-flash-unified-s16/targeted-human-review.zh.md)。

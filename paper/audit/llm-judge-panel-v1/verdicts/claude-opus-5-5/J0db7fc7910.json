@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"half-cell-background","verdict":"pass","reason":"Locates the fg-only upper/lower branches and the dedup in the renderer, explains the stale 48;2 background leaking into the empty half at edge cells, notes the row-end reset is too late, and fixes with ESC[49m added to both single-sided branches."},
+{"id":"frame-clearing","verdict":"pass","reason":"Identifies the trailing-space regex trim plus downstream whitespace stripping leaving surplus columns unwritten; proposes RESET followed by ESC[0K on every row (non-whitespace, survives trimming), optional fixed-width padding, and verbatim pipeline transport."},
+{"id":"frame-data-integrity","verdict":"pass","reason":"Cites the digest report: only tail2 mismatches with 23 differing cells, distinguishes port drift from render artifacts, explains the excerpt test covered a different frame, and proposes an all-frame digest gate derived from source art rather than the ported data."},
+{"id":"timer-liveness","verdict":"pass","reason":"Uses the CI evidence: per-tick rearmed setTimeout while mounted, channel-ui hosts mount the header without unmounting, TTY/stdin keeps the interactive product alive; fix is unref on each scheduled timeout so animation continues only when something else holds the process."},
+{"id":"renderer-and-rollout-prevention","verdict":"pass","reason":"Checklist covers complete SGR state, erase-complete rows, verbatim transport, source-backed whole-frame digests, timer hygiene; pre-rollout audit enumerates mounting hosts, timers, and adds a self-exit liveness assertion."}
+],
+"caps":[
+{"id":"contradictory-render-advice","triggered":false,"reason":"Final advice resets half-cell background, replaces trimming reliance with explicit erase, endorses source-backed checks, and recommends unref; nothing blames the emulator."}
+]}

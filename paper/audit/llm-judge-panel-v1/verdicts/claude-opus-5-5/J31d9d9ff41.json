@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"Uses both host files to separate the clipboard-text draft and occurrence offsets, where a chip is expanded, from the detect-text spans used by insertReference and consumeToken, where a chip is one U+FFFC. Shows that ordinary text contributes normally."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"Locates snapshot.draft.length in add. Explains that the coordinates coincide in an empty composer, then the clipboard length overshoots the detect text after a chip, so the splice fails and false becomes the misleading toast. Explicitly rejects a concurrent edit."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Traces remove: an unconverted offset and length go to consumeToken, the false return is ignored, records.delete runs anyway, and the missing record renders unavailable while the composer chip stays. Ties this to the same coordinate root cause."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Derives subtracting the sum of (length - 1) over preceding occurrences. Applies it at the insert site across all occurrences, and at the removal site with a one-character span. Keeps the revision guard and deletes records only after a true return."},
+{"id":"regression-sequences","verdict":"pass","reason":"Plans successive pastes with both chips present, then removals with a preceding chip, asserting the composer occurrence, dock chip and record go together while the others survive. Adds declined-consumption and empty-again variants."}
+],
+"caps":[]}

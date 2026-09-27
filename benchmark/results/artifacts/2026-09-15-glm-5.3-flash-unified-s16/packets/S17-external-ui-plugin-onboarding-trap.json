@@ -1,0 +1,82 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S17-external-ui-plugin-onboarding-trap",
+  "source_commit": null,
+  "instruction": "# S17 · The External UI Plugin Onboarding Trap (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be\nno follow-up user messages. This task brief is itself the user's explicit authorization and\nconfirmation for the approach and execution needed to complete the task: complete the\nnecessary analysis and planning on your own, and keep executing as soon as the plan is\nformed — do not pause to wait for \"confirmation\", and do not ask the user follow-up\nquestions. That confirmation continues to apply to the concrete plans you produce under the\napplicable skill, but only within this scope:\n\n- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nA user hand-wrote a new external web UI plugin (`@lhh010/dsh-profiles`) and installed it\nthe usual community way: the plugin directory linked into the web profile's\n`node_modules`, plus one `insert` row in the profile's `cordis.patch.yml`. Everything\nabout the plugin looked ordinary — it imports React, renders a settings section, and\nregisters a slot. The result was a chain of three failures, captured in the evidence pack\nunder `/app/fixture/` (read-only — do not modify it):\n\n1. the browser refused to load plugins AT ALL, with an error naming\n   `@deepseek-ai/dsh-typert-registry` — a stock entry the user never touched;\n2. after the user repackaged the plugin, a second, different error appeared at apply time\n   about a slot named `settings.section`;\n3. across the whole session, every plugin edit required restarting the host, and one\n   restart died with EADDRINUSE until the old process tree was force-killed.\n\n**Your report** (write to `/app/agent-output/S17-external-ui-plugin-onboarding-trap/`, any filename):\n\n1. Failure 1 root cause: why ONE plugin's client bundle — containing a top-level ESM\n   `import` — took down EVERY plugin's registration, what the host actually assembles\n   from the bundles and in what form it reaches the browser, and why the error named\n   `dsh-typert-registry` even though that entry is innocent;\n2. Diagnosis discipline: how the culprit should have been located from the misleading\n   error (what to bisect, what cheap static check flags the offending bundle), and the\n   client-bundle format an external plugin must ship instead of bare ESM — what wraps\n   the code, how React is obtained, and what the wrapper must export;\n3. Failure 2: what `slot \"settings.section\" is not declared (a parent entry's children\n   table must declare it)` means — who declares slots, why a bare registration of\n   another entry's slot fails at apply time, the exact wrapping form the registration\n   must use, and which fields a registrant may pass and which it must not;\n4. Dev-loop discipline: why the client bundle combo is not rebuilt when plugin files\n   change (what the host does at boot), what the correct restart procedure is, and why\n   the Windows restart died with EADDRINUSE until the process tree was force-killed;\n5. Prevention: what the HOST could do at startup or at combo-failure time to name the\n   offending plugin instead of the first awaited entry, and what an external-plugin\n   authoring template or checklist should contain so the next onboarding does not repeat\n   any of the three failures.\n\nWhat is tested: attributing a whole-combo client-bundle failure to the real culprit\ndespite a misleading error, knowing the external client-bundle packaging contract,\nresolving cross-entry slot declaration ordering with the correct registration wrapper,\nthe boot-assembled dev loop and its Windows restart discipline, and converting the\nincident into host-side and authoring-side prevention.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "whole-combo-attribution",
+        "points": 20,
+        "requirement": "Connect plugin/lib/client.js’s top-level ESM import with host-boot-log.txt’s classic-script combo and browser-error.txt’s compile failure: one syntax error prevents the whole combo compiling, so no entries register. The named stock typert-registry entry is the first awaited victim, not the faulty bundle. Do not infer that raw ESM is invalid in every JavaScript loading context.",
+        "sourceRequired": true
+      },
+      {
+        "id": "diagnosis-and-packaging",
+        "points": 20,
+        "requirement": "Bisect the profile insert rows to isolate the offending bundle and parse it as a classic script (vm.Script or equivalent; node --check alone can accept ESM and is insufficient). Describe a host ModuleLoader.load({id, factory}) bundle, package-name identity, host-provided React through require inside the factory, and inject/apply exports. Equivalent variable names and wrapper implementations are valid; do not require exact formatting or the elided bodies in working-plugin-excerpt.txt.",
+        "sourceRequired": true
+      },
+      {
+        "id": "cross-entry-slot-registration",
+        "points": 20,
+        "requirement": "Use plugin-apply-error.txt and the bare settings.section registration to explain that another entry owns the declaration and apply ordering is not guaranteed. Show or precisely describe ctx.slots.inject(\"settings.section\", () => ctx.slots.register(...)) so registration waits for the declaration. Registrants supply name/id/order (optional label), not declaration-owned kind/scope. A block callback returning the registration or equivalent supported deferred form is valid; a bare mention of slots.inject is insufficient.",
+        "sourceRequired": true
+      },
+      {
+        "id": "boot-restart-discipline",
+        "points": 20,
+        "requirement": "Use host-boot-log.txt/restart-notes.txt: this host assembles the combo once at boot, so file edits and browser refresh do not rebuild it. Fully stop/restart the host for each iteration, kill the old Windows process tree if it retains the port (taskkill /PID <pid> /T /F or equivalent), then refresh and verify plugin registration. Explain EADDRINUSE as the old process retaining the port, not a new plugin packaging defect.",
+        "sourceRequired": true
+      },
+      {
+        "id": "host-and-author-prevention",
+        "points": 20,
+        "requirement": "Propose per-plugin classic-script validation and culprit attribution at startup/combo failure instead of blaming the first awaited entry. Give an authoring template/checklist covering loader factory, host React and inject/apply, deferred cross-entry slots, and host restart/Windows tree cleanup. A generic “add tests” or card list without these prevention measures is incomplete.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "contradictory-operational-advice",
+        "total": 0,
+        "requirement": "The report recommends keeping bare top-level ESM in this classic combo, omitting/removing slots.inject in favor of immediate cross-entry registration, setting kind/scope on the registrant, or relying on HMR/browser refresh instead of the required host restart. These contradict the central incident contracts. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "a386005d27b7d898419c63c96c3d036ad4151f47f7bbaee79b801ed375de515e",
+      "text": "# S17 fixture · External UI plugin onboarding incident evidence pack (static)\n\nEvidence for the S17-external-ui-plugin-onboarding-trap task: the browser error from the\nfirst failed boot, the offending plugin's client bundle as the user wrote it, the profile\npatch rows that installed it, the second apply-time error after repackaging, the dev-loop\nrestart notes, a redacted excerpt of a WORKING plugin's client bundle for comparison, and\nthe host boot log. **Read-only fixture — do not execute or publish anything here**; the\ntask grading requires this directory to be unchanged relative to git HEAD.\n\n- `browser-error.txt` — the browser-side failure on the first boot (note WHICH entry it names)\n- `profile/cordis.patch.yml` — the profile patch rows that inserted the new plugin\n- `plugin/lib/client.js` — the new plugin's client bundle exactly as the user wrote it\n- `plugin-apply-error.txt` — the apply-time error on the SECOND boot (after repackaging)\n- `working-plugin-excerpt.txt` — redacted excerpt of a WORKING plugin's client bundle\n- `host-boot-log.txt` — host log fragments: what is assembled at boot, and when\n- `restart-notes.txt` — the dev-loop restart observations (including the EADDRINUSE boot failure)\n"
+    },
+    "browser-error.txt": {
+      "sha256": "37bc96f28640a8f90aa33703b095ce530a6a930cc62e536a977fb407f068277d",
+      "text": "Browser console (first boot after inserting the new plugin):\n\nFailed to load plugins: failed to import loader entry 0c013085 (@deepseek-ai/dsh-typert-registry): client-modules: bundle /plugins/@lhh010/dsh-profiles/lib/client.js compile error (position 1:1)\n\nSettings → Plugins → Plugin list: EMPTY. Zero entries registered.\nThe two stock plugins (brand version, file tracking) that rendered fine before the insert\nare gone from the header as well. The named entry (@deepseek-ai/dsh-typert-registry) is a\nstock host package; the user never modified it.\n"
+    },
+    "host-boot-log.txt": {
+      "sha256": "e692c81b6f8157d6c9cccd28e72f74c581447a88dfe7656b572aba61afc37cac",
+      "text": "Host log fragments (typical boot):\n\n[boot] cordis patch layer: 3 insert rows resolved (dsh-brand-version, dsh-file-trace, dsh-profiles)\n[boot] client-modules: composed 53 loader entries into client bundle combo (4.5 MB, classic script)\n[boot] web profile ready\n\nNotes recorded by the user while iterating on the new plugin:\n\n- The combo line appears ONCE per boot. Editing any plugin file afterwards changes nothing\n  in the browser until the host process itself is restarted.\n- Second observation: after restarting once, the NEW host process failed to bind with\n  EADDRINUSE — the previous host's node process was still alive holding the port. The old\n  process only went away after killing the whole process tree\n  (taskkill /PID <pid> /T /F); the next boot then bound normally.\n"
+    },
+    "plugin/lib/client.js": {
+      "sha256": "e18363c94267c6c16e559d47831249d2547f7c7cd61b648e6cd808e0acac433c",
+      "text": "import React from 'react'\nimport { createPortal } from 'react-dom'\n\nconst PROFILES = [\n  { id: 'web', label: 'Web', engine: 'dsh' },\n  { id: 'cli', label: 'CLI', engine: 'dsh' },\n]\n\nfunction ProfilesSection() {\n  return React.createElement(\n    'div',\n    { className: 'profiles-section' },\n    React.createElement('h3', null, 'DSH Profiles'),\n    PROFILES.map(p => React.createElement('div', { key: p.id }, p.label)),\n  )\n}\n\nconst host = document.createElement('div')\nhost.id = 'dsh-profiles-root'\ndocument.body.appendChild(host)\ncreatePortal(React.createElement(ProfilesSection), host, 'profiles-root')\n\nexport function apply(ctx) {\n  ctx.slots.register(\n    { name: 'settings.section', id: 'profiles-manager', order: 5, kind: 'section', scope: 'settings' },\n    ProfilesSection,\n  )\n}\n"
+    },
+    "plugin-apply-error.txt": {
+      "sha256": "e2a7c68459aa471fd7a92aeb4382a64326fd9fa4bc755a96b3a23c8a4d4666d2",
+      "text": "Host log (second boot, after the plugin was repackaged and the browser loads plugins again):\n\nfailed to apply loader entry (@lhh010/dsh-profiles): slot \"settings.section\" is not declared (a parent entry's children table must declare it)\n\nAll other plugins load and render normally on this boot.\n"
+    },
+    "profile/cordis.patch.yml": {
+      "sha256": "afde707f73a9456f3c77a1d6d3e4cf6a2fa3a87ac1c203009e25000f0fccc217",
+      "text": "- insert:\n    - id: dsh-brand-version\n      name: '@local/dsh-brand-version'\n- insert:\n    - id: dsh-file-trace\n      name: '@dsh-external/dsh-file-trace'\n- insert:\n    - id: dsh-profiles\n      name: '@lhh010/dsh-profiles'\n"
+    },
+    "restart-notes.txt": {
+      "sha256": "7ee91bbfb49b688726bcb1bdc96eba7db00083c4f97030c911f6df11c20a7de9",
+      "text": "Dev-loop notes (observed while iterating on the new plugin):\n\n1. Combo assembly happens ONCE at host boot: the host reads every installed plugin's\n   client bundle, concatenates them into one classic script, and serves that. Editing a\n   plugin file on disk afterwards has NO effect in the browser, even after a hard refresh,\n   until the host process is stopped and started again.\n\n2. On Windows, stopping the host by closing the launching terminal left a node process\n   alive: the NEXT host boot failed with EADDRINUSE (the listening port was still held by\n   the orphaned process). Killing the entire process tree freed the port:\n   taskkill /PID <pid> /T /F\n\n3. After each restart: browser hard refresh, then check Settings → Plugins → Plugin list\n   (empty list = the combo failed again).\n"
+    },
+    "working-plugin-excerpt.txt": {
+      "sha256": "a7cff726b315f24adc99852489a959c956796148a5e5ffa3aeea790e6acddc1d",
+      "text": "Redacted excerpt of a WORKING plugin's client bundle (another plugin, loaded from the same\nprofile), kept for comparison. The component bodies are elided — only the packaging shell\nis shown:\n\nwindow.__ModuleLoader__.load({\n  id: \"@local/dsh-brand-version\",\n  factory: (require) => {\n    var module = { exports: {} };\n    var exports = module.exports;\n    Object.defineProperty(exports, Symbol.toStringTag, { value: \"Module\" });\n    let react_jsx_runtime = require(\"react/jsx-runtime\");\n    let _deepseek_ai_dsh_client_ui_primitives = require(\"@deepseek-ai/dsh-client-ui-primitives\");\n    /* ... component definitions elided ... */\n    const inject = [\"slots\"];\n    function apply(ctx) {\n      /* ... ctx.slots.inject(...) calls elided ... */\n    }\n    return module.exports;\n  },\n});\n"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Report locates greet in dsh-plugin.naming.json (pluginNames, coordinate acme/greet), explicitly distinguishes the declared name from the package/coordinate, concludes it is structurally valid with no compatibility error, and frames any prefix as a collision recommendation rather than a mandatory repair, grounded in the fixture file."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Report identifies the unprefixed service 'search', explains the collision/shadowing risk via ctx.get('search')/inject, classifies it as a warning-level collision recommendation (suggesting acme-greet-search), explicitly not a compatibility error, and claims no strict-mode proof."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Report treats web-search/ready as a possibly shared platform channel: nothing proves exclusivity or a reserved namespace, so matching the name alone does not establish conflict — informational/shared-channel wording, no compatibility error, and no invented global-uniqueness claim."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "All remaining surfaces (loader id, tool, command, skill, skill provider, settings namespace, route) receive per-surface verdicts. Registry occupancy/reservation is consistently reported unknown/not-checked with proposed later verification, the fixture README's private:true is treated as test discipline rather than an error, and the report explicitly rejects 'reserved/free/globally available' claims in its honesty section."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report gives no affirmative blanket clearance: it explicitly states no surface is claimed reserved, free, or globally available, and defers all registry-dependent conclusions to a future query."
+    }
+  ]
+}

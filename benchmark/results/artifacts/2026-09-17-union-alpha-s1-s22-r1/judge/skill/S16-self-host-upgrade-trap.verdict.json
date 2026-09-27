@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "The report ties the session/tool worker to the running global dsh host npm was replacing (citing agent-session-log.txt and env-state.txt), sequences the death mid-install, explains the tool result was never durably recorded as unknown, and explicitly frames it as a structural self-dependency failure rather than flaky networking."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "It explains from env-state.txt that rc.1 package content remained while dsh/dsh.cmd were missing and dsh.ps1 stale, notes the tree was manually/nonstandardly swapped, separates payload from launchers, and explicitly rejects hand-swapping directories and hand-writing shims as repair."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "It grounds the remedy in repair-notes.md: the external agent CLI re-ran npm install -g @deepseek-ai/dsh@0.1.2-rc.1 so npm regenerated all three shims, verified dsh --version = 0.1.2-rc.1, and separately accounts for the source-checkout alignment to the rc.1 tag as reference alignment, not CLI repair. Repair actions are clearly attributed to the recorded repair session, not the candidate."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "The report states the agent must recognize it runs on the upgrade target, decline to execute, and hand off an ordered procedure: preserve state, fully stop all DSH hosts externally before npm, run the exact pinned install with justification against unpinned tags, verify, restart dsh --profile web, refresh browser, verify plugins. It marks stop-host-first and exact pinning as established rules and the never-self-execute rule as incident-specific, and explicitly says an alternative in-session shell/background job is not an independent maintenance environment."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "It describes a guard comparing the resolved mutation target with the host's installation root, failing closed with handoff, and uses the repair-notes alpha.5→rc.1 diff (252 package.json version bumps, zero API changes) to conclude no plugin re-migration is needed. The post-upgrade checklist covers version markers, actual plugin loading after restart/hard refresh, and optional dsh-old-* cleanup only after rc.1 is confirmed — all specific to the supplied tags, no code changes proposed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "The report never advises executing or retrying the upgrade from inside the target host; it explicitly rejects in-session execution, detached children, and in-session shells as independent, recommending only external handoff."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Manual directory swaps and handmade shims appear only as rejected bad examples and in describing the user's failed partial repair; the affirmative final fix is the formal external pinned npm install."
+    }
+  ]
+}

@@ -216,7 +216,7 @@ def build_materials(config):
                          'sourceReferenceFiles': file_manifest(original_refs),
                          'adaptedGuidance': {'path': guidance_path, 'sha256': sha(guidance), 'status': 'document-only adaptation, not the original full skill'},
                          'sharedFactSupplement': {'sourcePath': supplement_path, 'sha256': sha(supplement),
-                             'status': 'single-AI draft; partial coverage repair, not equivalence certification'} if supplement is not None else None,
+                             'status': 'single human draft; partial coverage repair'} if supplement is not None else None,
                          'genericSourceCommit': source, 'genericSourcePath': generic_source,
                          'genericSha256': sha(generic), 'factEquivalence': 'adapted-entry review; no independent certification',
                          'referenceIdentity': 'C/D byte-identical',

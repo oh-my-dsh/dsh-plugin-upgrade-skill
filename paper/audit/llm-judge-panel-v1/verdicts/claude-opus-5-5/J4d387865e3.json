@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Grounds in the split-chunk console capture: entry chunk 200, sibling imports resolved relative to the chunk URL 404 because they were not shipped, failing the whole dynamic import; proposes a single self-contained chunk with dynamic imports inlined, or shipping every emitted file."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Compares the ci-note LIB_DIR (uppercase E:) with the realpath output (lowercase e:) against the case-sensitive startsWith in the post-realpath guard; explains why Linux and the laptop pass without claiming Windows paths are inherently unreliable or that realpath always lowercases."},
+{"id":"safe-route-fix","verdict":"pass","reason":"Canonicalizes the root via realpath and uses path.relative containment rejecting parent, absolute and outside results after resolution (covers symlink escapes), avoids case-folding on POSIX, and keeps the JavaScript MIME type. A minor import slip does not undermine the design."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"Explains that one Ctrl+wheel event reaches both the modal and the ancestor pane listener, that preventDefault alone does not stop the other handler, and that capture on an ancestor defeats later stopPropagation; gives an exclusive-ownership rule with pane deferral and modal claiming the gesture."},
+{"id":"incident-regressions","verdict":"partial","reason":"Strong matrix: artifact import-integrity check, cross-platform mount smoke, case-differing accepted and traversal/sibling rejected guard tests, and a modal zoom test checking pane font size stays the same. It does not include an expected outcome that an import failure still falls back to a code block."}
+],"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"The final advice keeps and strengthens containment; it never disables the guard or serves paths outside lib."}
+]}

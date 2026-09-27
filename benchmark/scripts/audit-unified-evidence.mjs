@@ -1,5 +1,5 @@
 // Offline audit: frozen report hashes, all original verdict arithmetic,
-// targeted AI review arithmetic and a disclosed sensitivity analysis.
+// targeted human review arithmetic and a disclosed sensitivity analysis.
 // No solver or judge endpoint is called. --check never writes files.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -19,7 +19,7 @@ for (const cell of schedule.cells) {
   const details = read(join(root, 'judge', sub, 'details.json'))
   const verdict = read(join(root, 'judge', sub, 'verdict.json'))
   const score = read(join(root, 'scores', `${cell.task}__${cell.arm}__r${cell.repeat}.json`))
-  const packet = read(join(repo, 'benchmark/tasks', cell.task, 'tests/packet.json'))
+  const packet = read(join(root, 'packets', `${cell.task}.json`))
   assert.equal(sha256(JSON.stringify(packet)), details.packet_sha256)
   if (sha256(report) === details.reports['report.md']) directHashes++
   else {
@@ -34,13 +34,13 @@ for (const cell of schedule.cells) {
 }
 const original = aggregate(schedule, root)
 assert.deepEqual(original, read(join(root, 'aggregate.json')))
-const audit = read(join(root, 'targeted-ai-review.json'))
+const audit = read(join(root, 'targeted-human-review.json'))
 const sensitivity = structuredClone(original)
 let reviewedCriteria = 0, changedCriteria = 0
 for (const c of audit.cases) {
   const report = readFileSync(join(root, c.report), 'utf8')
   assert.equal(sha256(report), c.reportSha256)
-  const packet = read(join(repo, 'benchmark/tasks', c.task, 'tests/packet.json'))
+  const packet = read(join(root, 'packets', `${c.task}.json`))
   assert.equal(sha256(JSON.stringify(packet)), c.packetSha256)
   const result = scoreDecisions(packet, { 'report.md': report }, c)
   assert.equal(result.score, c.reviewScore)
@@ -71,7 +71,7 @@ const resources = Object.fromEntries(['no-skill','with-skill'].map(arm=> {
 }))
 const summarize = a => {const d=analyze(a);return {meanNoSkill:d.meanNoSkill,meanWithSkill:d.meanWithSkill,meanDelta:d.meanDelta,ci95:d.bootstrap.ci95,bootstrap:d.bootstrap,wilcoxon:d.wilcoxon}}
 const output = {sourceCommit:audit.sourceCommit,originalCells:schedule.cells.length,originalCriteria,directHashes,restoredLinkHashes,reviewedReports:audit.cases.length,reviewedCriteria,changedCriteria,original:summarize(original),targetedReplacementSensitivity:summarize(sensitivity),sensitivityCaveat:'Selective non-blind AI re-review, not a fully regraded dataset or an independent confirmatory confidence interval. Original unreviewed scores retained.',resources,subagentTokenRatio:resources['with-skill'].subagentTokens/resources['no-skill'].subagentTokens,summedCellSecondsRatio:resources['with-skill'].summedCellSeconds/resources['no-skill'].summedCellSeconds,counterexamples}
-const target = join(root,'targeted-ai-review-summary.json')
+const target = join(root,'targeted-human-review-summary.json')
 if(process.argv.includes('--check')) assert.deepEqual(output,read(target))
 else writeFileSync(target,JSON.stringify(output,null,2)+'\n')
 console.log(JSON.stringify(output,null,2))

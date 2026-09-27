@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report compares both excerpts showing identical id workspace-files in profile and bundle patch, cites the crash stack locating rejection at EntryGroup.update via Include._apply during cordis:include application, explains inserts append rather than merge so duplicates are fatal, and explicitly rejects the profile comment's harmless-redundancy claim."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A table distinguishes all three operations: config override of an existing bundle id is safe, inserting a genuinely new id is valid, inserting a bundle-provided id is fatal; the report classifies the maintainer's row as the third case and grounds it in the two excerpts."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting exactly the manual workspace-files insert block from the profile cordis.patch.yml, keeping the bundle declaration and unrelated rows, and using a config-by-id patch if customization is ever needed; explicitly rules out renaming, loader patching, plugin-side tolerance, and deleting the bundle row."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Report states the crash is a profile composition error rejected before plugin initialization so plugin code cannot fix it, and separately notes that removing the duplicate only restores boot possibility without curing the earlier 文件资源服务不可用 symptom, which stays subject to separate verification."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping the installed web-app bundle patch and all active layers for the id before inserting and distinguishing override from insert, and proposes a concrete host diagnostic naming workspace-files, both declaration origins with paths/lines, blame attribution, the deletion action, and fail-loud behavior."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice removes the duplicate and explicitly rejects retaining it as harmless redundancy; no claim of silent merging and no advice to edit the external plugin instead of the profile."
+    }
+  ]
+}

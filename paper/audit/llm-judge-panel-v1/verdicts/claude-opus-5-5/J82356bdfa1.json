@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Cites the LinkType Junction and Target from the introspection plus the cordis.patch.yml link marker, concludes the repo tree is the installed copy so copying was never needed and would hit the same physical files, and contrasts this with a copied dependency. A side reference to an outside version record is extraneous but does not undermine the fixture-grounded diagnosis."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Ties the EBUSY in copy-session.txt and the maintainer's tab-closing step to the running dsh web host holding the loaded files; explains the tab never held a file handle. Treats client staleness separately as HTTP caching that needs a hard refresh after the host restart, without calling the cache a lock."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains that renaming through the junction renamed the only physical files, which is why the source copy then failed. Gives renames back to client.js and index.js with no deletion or recreation, runs node --check on both, then moves on to activation."},
+{"id":"ordered-activation","verdict":"pass","reason":"Correct order: syntax check, fully stop the host, restart dsh web, hard refresh, then verify the new route, the hover preview and absence of errors. States that syntax checking or a browser refresh alone does not activate the change."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Gives the Get-Item LinkType/Target preflight and the cordis.patch.yml marker check, separates the link and copied procedures, and explains how copy-into-node_modules advice led to the EBUSY failure and the destructive rename."}
+],
+"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"The final plan explicitly forbids copying, keeps the .old2 contents by renaming them back, and treats the two paths as one directory."},
+{"id":"browser-only-activation","triggered":false,"reason":"The plan requires a full host stop and restart; browser refresh or closing the tab is explicitly described as not enough."}
+]}

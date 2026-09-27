@@ -1,0 +1,70 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S13-peer-range-vs-runtime",
+  "source_commit": null,
+  "instruction": "# S13 · Peer Range vs Runtime Reality (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for \"confirmation\", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:\n\n- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nI installed a popular community TUI plugin (`@deepseek-harness-tui/dsh-tui@0.1.0-beta.4`) on my dsh\n`0.1.2-alpha.5`. The npm install succeeded without any peer warnings — the plugin's peerDependencies declare\n`^0.1.2-alpha.2` for every `@deepseek-ai/dsh-*` package, and my dsh at alpha.5 satisfies that range.\nBut when I run it, the plugin crashes at startup.\n\nThe evidence pack in `/app/fixture/` (read-only) has: the npm peer-deps output, the crash stack trace, the\nplugin's source excerpt where it crashes, and the relevant dsh changelog entry.\n\n**Your report** (write to `/app/agent-output/S13-peer-range-vs-runtime/`, any filename):\n\n1. The exact runtime incompatibility: WHAT API did dsh remove, WHEN (which release), and what replaced it —\n   cite the changelog entry.\n2. WHY did npm install without warnings even though the plugin is broken at runtime: what does a peer range\n   (`^0.1.2-alpha.2`) actually guarantee, and what does it NOT guarantee?\n3. The fundamental principle: \"peer range satisfaction\" checks what, and \"runtime compatibility\" checks what?\n   Name at least two categories of breakage that pass peer-range validation but crash at runtime.\n4. What the plugin author should have done: both to catch this before publishing (testing against the actual\n   target version), and to help users (what should the peer range or engines field encode vs. what needs a\n   runtime feature-detection guard)?\n5. What I (the user) can do RIGHT NOW to identify this class of issue before installing: name a concrete\n   pre-install check.\n\nWhat is tested: distinguishing semver-range satisfaction (a static, package-metadata-level check) from runtime\nAPI compatibility (a behavioral, code-level reality), and knowing that `^0.1.2-alpha.2` does NOT guarantee\n`Session.events` still exists at alpha.4/5 just because alpha.5 > alpha.2 in semver ordering.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "removed-api-and-crash",
+        "points": 20,
+        "requirement": "Locate session.events reads in plugin-source-excerpt.js and the iteration failure in crash-stack.txt; cite dsh-changelog-excerpt.md for removal at 0.1.2-alpha.4 and replacement by seq, eventAt and snapshotEvents. Explain undefined/non-iterable access. A release number or API name without this causal connection earns no credit.",
+        "sourceRequired": true
+      },
+      {
+        "id": "peer-check-boundary",
+        "points": 20,
+        "requirement": "Use npm-install-output.txt to explain why alpha.5 satisfies the declared ^0.1.2-alpha.2 range while npm only checks declared package-version compatibility, not API existence or runtime behavior. A peer declaration is an author claim, not evidence that any version was tested. Do not require reproducing the fixture comment’s expanded upper bound; the same-base prerelease ordering is sufficient.",
+        "sourceRequired": true
+      },
+      {
+        "id": "distinct-breakage-categories",
+        "points": 20,
+        "requirement": "Explain at least two genuinely distinct classes that can pass peer validation and still fail at runtime: removed/renamed API and changed behavior/signature such as sync-to-async, argument order or return shape. Equivalent concrete classes are accepted. Two names for the same removal are not two classes; partial credit for one correctly explained class.",
+        "sourceRequired": false
+      },
+      {
+        "id": "author-prevention",
+        "points": 20,
+        "requirement": "Require testing the actual supported target versions, then an actionable compatibility policy: narrow the declared peer range to exclude the breaking releases, or implement and verify runtime capability detection with correct old/new paths. Explain the role of version metadata versus runtime guards; an engines field does not itself test DSH API behavior. Both testing and a compatibility policy are required for full credit; either alone is partial.",
+        "sourceRequired": false
+      },
+      {
+        "id": "user-preinstall-check",
+        "points": 20,
+        "requirement": "Give at least one concrete pre-install investigation: inspect breaking changes between the peer floor and installed target, or inspect the plugin’s API usage against target declarations. Tie the check to this Session.events incident and its compatibility boundary. Merely rerunning npm install or inspecting whether the peer range accepts alpha.5 is insufficient.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "peers-prove-runtime",
+        "total": 20,
+        "requirement": "The final conclusion claims satisfied peer ranges or an install without warnings prove the plugin’s runtime API compatibility, or denies the documented Session.events removal. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "20b044bf36501b873cda204d486a3848ca56f3a7eb6b802000697bae0e52c4f7",
+      "text": "# S13 fixture - Peer range vs runtime evidence pack (static)\n\nEvidence for the S13-peer-range-vs-runtime task. **Read-only fixture - do not execute or publish\nanything here**; the task grading requires this directory to be unchanged relative to git HEAD.\n\n- `npm-install-output.txt` - npm install succeeded, no peer warnings\n- `crash-stack.txt` - the startup crash stack trace\n- `plugin-source-excerpt.js` - where the plugin reads the removed API\n- `dsh-changelog-excerpt.md` - the relevant dsh release notes"
+    },
+    "crash-stack.txt": {
+      "sha256": "02bad7f39f05694e8ec9937a25bd98bebec1d9d93e87af0cdb45908373dec85e",
+      "text": "# Running dsh-tui for the first time after install:\n$ dsh-tui\n\nError: dsh: plugin tree failed to load: failed to apply loader entry dsh-tui\n  (@deepseek-harness-tui/dsh-tui): events is not iterable\nTypeError: events is not iterable\n    at prepareReplayEvents (channel.js:623:25)\n    at replayEvents (channel.js:6127:33)\n    at createChannel (channel.js:6685:5)\n    at apply (plugin.js:425:21)\n    at async Fiber._reload (cordis/lib/index.js:1355:5)\n\n# The crash happens INSIDE the plugin's own code, reading something called\n# `events` from the dsh session object and trying to iterate it."
+    },
+    "dsh-changelog-excerpt.md": {
+      "sha256": "05090530dae570bb228dc128637580f75159d8205a5e39a963dc660eff0ace44",
+      "text": "# dsh-v0.1.2-alpha.4 release notes (excerpt)\n\n## Other Changes\n\n- **Replace `Session.events` with on-demand read APIs**: `seq`, `eventAt()`,\n  and `snapshotEvents()` - the eagerly materialized events array is removed\n  to reduce memory overhead in long sessions. Developers should pay attention\n  to compatibility. (@kermanx)\n\n- **Distinguish `SessionSeq` and `SessionLogOffset` with strong types** -\n  developers should pay attention to compatibility. (@tianyicui)"
+    },
+    "npm-install-output.txt": {
+      "sha256": "4109268939ea8e51fefc9f5cec3d3f188f7199c37a77a22a0cf2aeca310a1a14",
+      "text": "# npm install -g @deepseek-harness-tui/dsh-tui\n# (with @deepseek-ai/dsh@0.1.2-alpha.5 already installed globally)\n$ npm install -g @deepseek-harness-tui/dsh-tui\n\nadded 77 packages in 2m\n20 packages are for funding\n\n# No peer dependency warnings were emitted. The plugin's peerDependencies:\n#   \"@deepseek-ai/dsh-llm\": \"^0.1.2-alpha.2\"\n#   \"@deepseek-ai/dsh-agent\": \"^0.1.2-alpha.2\"\n#   \"@deepseek-ai/dsh-session\": \"^0.1.2-alpha.2\"\n#   ... (24 more dsh-* packages, all \"^0.1.2-alpha.2\")\n#\n# The installed @deepseek-ai/dsh@0.1.2-alpha.5 bundles these packages at\n# 0.1.2-alpha.5, which satisfies >=0.1.2-alpha.2 <0.2.0-0 in semver.\n# npm's peer check passes silently."
+    },
+    "plugin-source-excerpt.js": {
+      "sha256": "b3027e87f2722f27040c0c30844b5b485848bfc84b16799d5de43084049f6f7b",
+      "text": "// channel.js (dsh-tui plugin) - line 734 area\n// The plugin reads the session's events array for transcript replay:\n\nexport function createChannel(ctx, initialAgent, options) {\n    // ...\n    const events = liveAgent.session.events;    // <- line 734\n    // ...\n    replayEvents(agent.session.events);          // <- line 6685\n}\n\n// line 657: const last = session.events.at(-1);\n// line 2685: const events = agent.session.events;\n// line 3004: const liveEvents = liveSession.events;\n// ... 42 total references to `.events` on session objects"
+    }
+  }
+}

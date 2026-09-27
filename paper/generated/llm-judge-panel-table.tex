@@ -1,0 +1,22 @@
+% AUTO-GENERATED. DO NOT EDIT.
+% Source: paper/scripts/analyze-llm-judge-panel.mjs (paper/audit/llm-judge-panel-v1)
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccccc}
+\toprule
+Judge & no-skill $\rightarrow$ with-skill & $\Delta$ & 95\% CI & vs.\ original & vs.\ author \\
+\midrule
+  GLM-5.3-Flash (original) & 93.83 $\rightarrow$ 98.75 & +4.92 & [+0.31, +10.86] & -- & 53/56 \\
+  Claude Opus 5.5 & 87.19 $\rightarrow$ 97.81 & +10.63 & [+3.44, +19.14] & 91.8\% / 0.64 & 51/56 \\
+  GPT-5.5 & 93.28 $\rightarrow$ 99.38 & +6.09 & [+1.56, +11.09] & 95.7\% / 0.72 & 48/56 \\
+  All-judge mean & 91.43 $\rightarrow$ 98.65 & +7.21 & [+1.98, +13.46] & -- & -- \\
+  Cross-family mean & 90.23 $\rightarrow$ 98.59 & +8.36 & [+2.66, +14.96] & -- & -- \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+{\footnotesize All 64 focal reports (328 criterion decisions) re-judged without supplied arm labels or prior scores under the unchanged report-judge-v2 prompt and rubric. ``vs.\ original'': exact credit-level agreement / linearly weighted $\kappa$ with the original GLM decisions. ``vs.\ author'': exact agreement with the 56 decisions of the non-blind plugin-author review (10 answers), which is a reference, not ground truth. Between panel judges: claude-opus-5-5 vs openai-gpt-5.5: 90.5\% exact, $\kappa_w$ = 0.57. All judges are LLMs; this is not human validation.\par}
+\caption{Sensitivity of the focal paired endpoint to judge configuration. Estimand, bootstrap, and seed as in Section~\ref{sec:focal-method}; the original row is the primary recorded endpoint.}
+\label{tab:judge_panel}
+\end{table}

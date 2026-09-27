@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Report locates the up-only/lo-only branches in renderer-excerpt.ts that emit fg only while a prior cell's bg(48;2) SGR stays active, explains the stale background paints the empty half, notes the row-end RESET comes too late, prescribes ESC[49m on each half-filled cell, and ties the mechanism to the outline/sleep-Z/heart edge symptoms rather than the terminal or artwork."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Identifies the out.replace(/[ ]+$/,'') trailing trim, explains a narrower trimmed row never overwrites or erases the previous frame's surplus columns, and proposes per-row ESC[K erase plus fixed full-canvas width, keeping SGR state explicit; trimming is allowed only behind the erase."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses frames-digest-report.txt to name the hand-ported tail2 with 23 differing cells (1-col left shift cluster, extra Ds), distinguishes data drift from renderer artifacts, explains the excerpt regression was added for a different frame and missed it, and requires sha256 digests of every frame's full 25 rows against source art rather than excerpts or the drifted port."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Grounded in ci-hang-evidence.txt: planner re-arms setTimeout while mounted, CI hosts finish without unmounting the header, pending Timeout handles pin the event loop after checks pass; interactive TTY/stdin keeps the product alive regardless. Fix is timer.unref() on each newly scheduled planner timeout, and the report rejects timeout extension/global stop implicitly by prescribing unref as the structural fix."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Consolidates complete-pen SGR state, erase semantics with frame-invariant geometry, and all-frame digest integrity into a renderer checklist; the pre-default-on rollout audit inventories every mounting host and unmounted probes, verifies event-loop exit (no live Timeout handles), and proposes wide-to-narrow visual/digest regression coverage; no execution claimed or required."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms the half-cell background reset via ESC[49m, retains trimming only behind an equivalent ESC[K/fixed-width clear, mandates source-backed all-frame digests, and prescribes unref as the timer fix; the terminal emulator is never blamed and no listed bad advice is affirmatively given."
+    }
+  ]
+}

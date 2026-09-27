@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Report reads the fixture manifest and README, states alpha.1 was never published while alpha.2 exists among the supplied releases, and explicitly warns not to assume every scoped package exists at the same version. It treats registry availability as a supplied premise and proposes package-specific verification without requiring an online npm lookup; grounded in the fixture files."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains ^0.1.2-alpha.1 normalizes to >=0.1.2-alpha.1 <0.2.0-0 and that a missing lower-bound release does not make the range unresolvable; a fresh resolution selects 0.1.2-alpha.2. Identifies the silent type-baseline mismatch (README misleading if baseline means alpha.1) and marks alpha.2/alpha.1 API compatibility as unconfirmed prerelease uncertainty. No false claim that all alphas are missing or that the caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Gives a complete primary plan: exact-pin the published 0.1.2-alpha.2, inventory imports, lockfile, compile/runtime checks, with an explicit tradeoff acknowledging it does not validate alpha.1. Also offers a coherent alternative source-cohort plan (verified upstream alpha.1 revision, build the needed cohort, explicit local tarball/workspace mappings) with provenance and tradeoffs."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Uses one consistent manager (npm), a committed lockfile plus npm ci for reproducible installs, and a proposed typecheck of the plugin against the installed declarations plus runtime checks. Defines exit paths (stop adoption, restore last tested manifest/lockfile, or move to alpha.2), explains retiring temporary local mappings when verified published packages are adopted, and honestly marks unverified install/build/runtime details."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing unpublished alpha.1 from npm; it explicitly states an exact npm request for alpha.1 is not viable and would fail with a no-matching-version error, and pins the published alpha.2 instead."
+    }
+  ]
+}

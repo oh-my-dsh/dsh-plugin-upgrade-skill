@@ -42,6 +42,7 @@ description: 一句话说明做什么、何时触发，以及重要的只读/写
 | [plugin-test](plugin-test/) | 为 DSH 插件变更选择测试层级，并覆盖真实组合、发布产物与目标版本产品入口 | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-release](plugin-release/) | 打包、发布与分发 DSH 插件：发布轨选择、未发布 cohort 安装、CI 门禁与回滚 | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-runtime-debug](plugin-runtime-debug/) | 依据 DSH 源码契约排查 Web 插件运行时故障（粘贴/附件/输入机、版本 chip 等），方法级不讲答案 | [@lhh010](https://github.com/lhh010) |
+| [plugin-fleet-sweep](plugin-fleet-sweep/) | DSH 宿主升级后整批巡检已安装插件：按版本卡静态扫描、驱动真浏览器逐插件断言（CSS、控制台、DOM 标记、请求）、逐插件判定与逐插件修复发布循环 | [@lhh010](https://github.com/lhh010) |
 | [plugin-heavy-dep](plugin-heavy-dep/) | 给轻量 DSH Web 插件接入重依赖（mermaid 等）：懒加载单文件 chunk、宿主路由与包含防护、SVG 白名单清洗、事件所有权 | [@lhh010](https://github.com/lhh010) |
 | [dsh-benchmark-case](dsh-benchmark-case/) | 把某插件仓库的真实升级经验（或已有版本卡 references/v*.md）提取成一条可自动判分的 Harbor benchmark 考题：选材判据、fixture 与陷阱、judge 计分边界、registry 同步纪律 | [@vlln](https://github.com/vlln) |
 | [generic-migration](generic-migration/) | 框架无关的插件迁移方法论（盘点耦合面、通读版本走廊、分层验证），不含任何 DSH 专有事实；benchmark 侧对照技能，用作三条件实验的 generic-arm 控制组 | [@hikariming](https://github.com/hikariming) |

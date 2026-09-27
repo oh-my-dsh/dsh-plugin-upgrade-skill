@@ -1,0 +1,14 @@
+{"decisions":[
+{"id":"native-install-failure","verdict":"pass","reason":"Uses the install log and the manifest to trace the failure to the fs-ext@2.1.1 node-gyp configure build install script, pulled in by dsh-session-persistence-jsonl, and blames the missing Visual Studio/MSVC toolchain."},
+{"id":"static-import-trap","verdict":"pass","reason":"Explains that the static top-level flock import in lease.ts loads fs-ext even on Windows, so skipping scripts leaves no binding and turns the install failure into a boot failure."},
+{"id":"platform-lock-contract","verdict":"pass","reason":"Uses both excerpts to separate the Windows named-semaphore path (acquireLockHandleWin32) from POSIX flock. It concludes that fs-ext is dead code on Windows and only needs to load, while POSIX keeps real flock and Windows keeps the semaphore."},
+{"id":"reproducible-local-patch","verdict":"pass","reason":"Follows the node-pty patchedDependencies precedent: a win32-only no-op install script, an entry that loads the binding lazily and exposes import-safe stubs on Windows while POSIX stays native, registration in pnpm-workspace.yaml, a build-allowlist note, and checks for install, module load, boot and POSIX regression. The stubs throw instead of warning and doing nothing, but they are never called on Windows."},
+{"id":"machine-and-upstream-boundaries","verdict":"pass","reason":"Explicitly rules out Visual Studio and any upstream edits, and uses the repository-managed pnpm patch."},
+{"id":"corridor-mapping","verdict":"fail","reason":"Makes up a non-existent card slug instead of citing DSH-0.1.3-A1-03."}
+],
+"caps":[
+{"id":"requires-visual-studio","triggered":false,"reason":"The plan never installs Visual Studio."},
+{"id":"ignore-scripts-only","triggered":false,"reason":"The report rejects --ignore-scripts and also patches the entry so it loads."},
+{"id":"upstream-edit-required","triggered":false,"reason":"The fix is a local pnpm patch; nothing upstream is edited."},
+{"id":"lock-bypass","triggered":false,"reason":"The Windows semaphore and POSIX flock are both kept."}
+]}

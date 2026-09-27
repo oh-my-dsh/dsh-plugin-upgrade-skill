@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Grounds the diagnosis in the split-chunk console capture: the entry returned 200, its relative sibling imports resolved against the chunk URL and returned 404 because they were never shipped, so the dynamic import rejected. Recommends one self-contained chunk with dynamic imports inlined."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Uses the ci-note strings to show that LIB_DIR has uppercase E: while realpath returns lowercase e:, so the case-sensitive startsWith check rejects a contained file. Explains why Linux and the laptop pass, and does not claim realpath always lowercases."},
+{"id":"safe-route-fix","verdict":"pass","reason":"Gives a path.relative containment helper that rejects parent traversal and absolute results. It keeps realpath before the check, which catches symlink escapes. Case folding is limited to win32, and the JavaScript MIME type is kept. Only minor gap: the base path is normalized but not realpath'd."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"Explains that the Ctrl+wheel event bubbles from the modal to the pane handler. The modal takes ownership with preventDefault and stopPropagation, and the host must stand down when it listens in the capture phase."},
+{"id":"incident-regressions","verdict":"partial","reason":"Covers a complete dependency set, a case-differing path that should be served, traversal refusal, and modal zoom without a font change. It has no test that a failed import still falls back to a code block, and no symlink-escape case."}
+],
+"caps":[{"id":"unsafe-containment","triggered":false,"reason":"Containment is kept and made stronger, and unconditional lowercasing is explicitly rejected."}]}

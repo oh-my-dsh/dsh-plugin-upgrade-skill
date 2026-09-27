@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"baked-version-release-order","verdict":"pass","reason":"Uses the release log and bundle excerpt to show the build ran before the bump, baking 0.3.6 into v0.3.7; notes the constant is inlined not read at runtime, dismisses mirror integrity, and prescribes bump-before-build with a post-build constant check before tagging while keeping mirror verification."},
+{"id":"client-host-update-asymmetry","verdict":"pass","reason":"Triangulates PNG 200, SVG 404 unsupported type, and the svg-whitelisting disk lib to pin staleness on the unrestarted running host whose whitelist was registered at boot; client refresh explains the toggle, and a host restart is required."},
+{"id":"payload-corruption-attribution","verdict":"pass","reason":"Contrasts the well-formed source and clean reread with the spliced persisted payload, locates corruption in upstream result-text assembly, treats the payload as untrusted, and rejects editing the healthy SVG."},
+{"id":"validated-render-fallbacks","verdict":"pass","reason":"Orders disk asset route, DOMParser/parsererror-gated payload, a script-free sandboxed iframe that still runs SMIL for validated sources only, then an explicit error state, each justified."},
+{"id":"forensics-and-prevention","verdict":"partial","reason":"Frame-by-frame zstd decode, in-order reassembly, extraction of the stored result and diffing against source plus upstream bug reporting are covered, and checklist has bump-before-build, constant grep and per-mirror SHA checks, but plane-specific runtime probes are not made a prevention item."}
+],
+"caps":[
+{"id":"contradictory-release-render-advice","triggered":false,"reason":"Final advice requires bump-before-build, host restart, payload validation, a no-scripts sandbox, and leaves the traced SVG untouched."}
+]}

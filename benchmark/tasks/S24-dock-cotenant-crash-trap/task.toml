@@ -1,0 +1,34 @@
+schema_version = "1.4"
+artifacts = [{ source = "/app/fixture" }, { source = "/app/agent-output" }]
+# Harbor task config: one dock plugin's render crash unmounts its co-tenant's
+# entry too after the 0.1.6-alpha.2 standard-kit reduction (task S24, static, read-only)
+[task]
+name = "dsh-plugin-upgrade/s24-dock-cotenant-crash-trap"
+version = "4.1.0"
+description = "After an in-place dsh upgrade to 0.1.6-alpha.2, two input-dock plugins appear broken together (a progress strip vanishes and an attachment chip dock stops displaying); the agent must attribute the single crash to the plugin destructuring removed standard-kit seats, explain the shared-subtree error-boundary mechanism that unmounts the innocent co-tenant, use the disable-experiment evidence to separate culprit from casualty, and write a graceful-degradation fix that restores both"
+keywords = ["dsh", "web-plugin", "upgrade", "error-boundary", "diagnosis", "harbor"]
+
+[metadata]
+difficulty = "medium"
+category = "programming"
+tags = ["dsh", "plugin-upgrade", "diagnosis", "slot-isolation", "english-prompt"]
+execution_contract = "BENCHMARK-AUTH-v1"
+
+[agent]
+timeout_sec = 300.0
+
+[verifier]
+timeout_sec = 240.0
+environment_mode = "separate"
+network_mode = "public"
+
+[verifier.env]
+REPORT_JUDGE_BASE_URL = "${REPORT_JUDGE_BASE_URL}"
+REPORT_JUDGE_MODEL = "${REPORT_JUDGE_MODEL}"
+REPORT_JUDGE_API_KEY = "${REPORT_JUDGE_API_KEY}"
+
+[environment]
+network_mode = "public"
+cpus = 1
+memory_mb = 2048
+storage_mb = 4096

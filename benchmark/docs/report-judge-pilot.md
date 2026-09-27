@@ -1,7 +1,7 @@
-# Semantic report judging: default for H4, H6, H12 and S1–S22
+# Semantic report judging: default for H4, H6, H12 and S1–S24
 
-The registered `benchmark/tasks/` entries for these twenty-five tasks now use
-**LLM-as-judge by default**, using protocol `report-judge-v2`. The ten incident tasks described in
+The registered `benchmark/tasks/` entries for these twenty-seven tasks now use
+**LLM-as-judge by default**, using protocol `report-judge-v2`. The twelve incident tasks described in
 [diagnosis-rubrics.md](diagnosis-rubrics.md) are at task version `4.1.0`; the other
 fifteen remain at `4.0.0`.
 No generated pilot directory or extra enable flag is needed. This document keeps
@@ -57,7 +57,7 @@ not guarantee complete blinding.
 The model-free `skill-evaluation` CI controls run the three deterministic tasks in
 that suite. S1, S5, S9 and S11 remain in the seven-task model suite; the control manifest
 lists them separately under `semanticProtocolTasks`. The same CI job runs
-`test:report-judge` for all twenty-five semantic verifiers, with mocked responses and no
+`test:report-judge` for all twenty-seven semantic verifiers, with mocked responses and no
 model credentials. This validates their protocol, not reference-answer quality.
 The manual Actions model job has not been wired to a report-judge credential;
 without explicit verifier configuration Harbor rejects it before any trial.
@@ -92,6 +92,8 @@ Use a separately authorized local API or Codex run for actual report grading.
 | S20 | Native install failure 20; static-import trap 20; platform lock contract 20; reproducible local patch 25; machine/upstream boundaries 10; justified corridor mapping 5. Caps: VS requirement 50, ignore-scripts-only or upstream editing 40, real lock bypass 20 |
 | S21 | Metadata-chain attribution, valid probes/partitioning, distractors/tab scope, ordered mitigation, and upstream forensics/fail-loud diagnostics: 20 each; invalid probe attribution or plugin workaround/duplicate insertion caps at 40 |
 | S22 | Duplicate-loader attribution, three layering cases, minimal profile fix, plugin/failure boundary, and author/host prevention: 20 each; retaining/adding the duplicate or fixing this crash in plugin code caps at 20 |
+| S23 | Silent-break attribution, evidence mapping, dual-host migration, guard hardening, and verification/prevention: 20 each; slot re-registration/reinstall-only misdiagnosis caps at 40 |
+| S24 | Culprit attribution, co-tenant mechanism, experiment reading, degradation fix, and verification/hygiene: 20 each; fixing/reinstalling only the innocent plugin or treating the breakages as independent caps at 40 |
 
 See the [incident-rubric guide](diagnosis-rubrics.md) for the ten incident
 S tasks, their cap semantics and evidence boundaries.
@@ -153,7 +155,7 @@ npm run sync:report-judge
 npm run test:report-judge
 ```
 
-Synchronization materializes twenty-five standalone judges, sealed packets, shell
+Synchronization materializes twenty-seven standalone judges, sealed packets, shell
 entries, verifier Dockerfiles and task configurations. It removes superseded
 keyword helpers. CI runs `--check` and rejects drift in the implementation,
 fixture, instruction or referenced source bytes. Checked-in packets omit HEAD,

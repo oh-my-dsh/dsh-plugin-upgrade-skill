@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Report identifies node.exe PID 42432 (dsh web host) as the process that loaded koffi.node and explains the loaded native binary stays in use until that host exits, so npm copyfile fails with EBUSY, grounded in running-processes.txt."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains a refresh only reloads the SPA while the host process keeps the lock, and gives an ordered procedure: stop/verify all dsh host processes are gone, install from an external terminal, then restart and verify."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Correctly traces the bare @deepseek-ai/dsh name to the latest dist-tag, cites npm-dist-tags.txt (latest/next = 0.1.1-rc.2, alpha = 0.1.2-alpha.5), and explains the unpinned install silently downgrades alpha.4 to rc.2 instead of preserving or advancing it."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus a separate @deepseek-harness-tui/dsh-tui install after stopping the host, with dsh --version verification of alpha.5 and host restart; @alpha mentioned only as a deliberate alternative."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Advises README authors to pin the exact tested core version (or a deliberately tested dist-tag), avoid silently following latest over prereleases, optionally split host and plugin installs, and state the stop-first precondition."
+    }
+  ],
+  "caps": []
+}

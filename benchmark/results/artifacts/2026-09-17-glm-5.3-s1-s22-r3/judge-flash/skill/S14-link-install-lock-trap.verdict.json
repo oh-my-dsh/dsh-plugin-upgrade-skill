@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction + Target and the cordis.patch.yml link marker; concludes the repo tree IS the installed copy, that repo edits already deploy, and that Copy-Item through the junction was self-copy and never correct; explicitly distinguishes the copied-dependency case (empty LinkType) in §5."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes the EBUSY to the running dsh host holding loaded lib modules and explains the browser tab talks only HTTP, so closing it releases nothing (copy-session.txt + maintainer-thread.md grounded). Separately treats stale client delivery as browser caching needing hard refresh after host restart, and does not equate caching with a filesystem lock."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains both paths are one physical directory via the junction so the rename removed the sole source files, making the source copy fail; recovery stops the host as a valid precaution, renames client.js.old2/index.js.old2 back preserving contents, verifies both with node --check, then activates per §4. No requirement to rename while locked or recreate files."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the dsh host, restart dsh web, hard-refresh/cache-bypass the browser, then verify the hover-preview feature, fresh client.js fetch, and error-free host logs; states syntax checking alone is not activation and browser-only restart is insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "§5 places Get-Item LinkType/Target plus the cordis.patch.yml link: marker inspection before any file operation, branches linked vs copied install procedures, and explains why copy-into-node_modules advice is redundant, EBUSY-prone, and destructive for junction installs."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final recovery and deployment plans never copy repo files onto the junction target; copying appears only as the rejected bad behavior of the incident and as an explicit do-NOT warning in §4."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The final plan requires fully stopping and restarting the host; browser-only refresh is described only as the failed step the maintainer already tried and as insufficient."
+    }
+  ]
+}

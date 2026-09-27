@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Report reconstructs the v0.3.7 order from release-log.md (build 16:22 before bump 16:23), explains tsdown inlined PLUGIN_VERSION=\"0.3.6\" at build time and that package.json is not read at runtime, so compareSemver(\"v0.3.7\",\"0.3.6\") triggers the badge on the just-released version. It prescribes bump-before-build, a post-build grep of the emitted PLUGIN_VERSION constant before commit/tag, and explicitly explains why per-mirror tag SHA verification is necessary but insufficient — retaining it rather than confusing it with a fix."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js as required: refreshed client shows the toggle, PNG 200 proves the route handler is alive, SVG 404 'unsupported image type' shows the running whitelist is old while the disk copy whitelists svg. Concludes this linked install's host registered its asset route at boot and must be restarted (or the plugin explicitly reloaded) to pick up the new lib/index.js, while the client refreshes via browser re-fetch; the conclusion is scoped to this host boot-time registration lifecycle, not a universal hot-reload claim."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in session-log-excerpt.txt: source lines 232/247 clean and well-formed per XmlDocument, stored model-visible payload splices line 232's head with line 247's tail at the shared prefix 'stro' and is NOT well-formed, while the typed read result delivered to the caller was clean and a re-read came back clean. Attributes corruption to upstream result-text assembly, treats the plugin as a downstream consumer of untrusted payload, and explicitly argues against editing or 'repairing' the correct traced SVG."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs the ordered chain: authoritative disk bytes via the asset route; session payload only after DOMParser 'image/svg+xml' parsing with an explicit parsererror check that rejects the payload; a sandboxed iframe using sandbox=\"allow-same-origin\" without allow-scripts (scripts blocked, SMIL preserved); and an explicit error state naming which level failed. Validation failure cannot pass the malformed payload unchecked to the iframe; presented as a justified plan, which is sufficient for this static task."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-zstd generation file frame by frame (noting each frame decodes independently), locating the JSONL read-result event containing the exact stored splice, comparing it with the clean source and the parsererror verdict, and reporting the upstream bug. The prevention checklist covers bump before build, grepping the shipped constant before commit/tag/push, per-mirror tag SHA verification (with its limits), and plane-specific post-deploy probes (client UI plus host asset route). Frame-level decode with preserved order is an accepted equivalent; no execution claimed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The report's final advice requires bump-before-build, calls mirror verification necessary but insufficient (not sufficient), states client refresh does not update the host route and a restart is required, forbids editing the clean SVG, and routes any payload render through XML validation with scripts blocked in the iframe. The only mentions of the bad options are as explicitly rejected alternatives, which does not trigger the cap."
+    }
+  ]
+}

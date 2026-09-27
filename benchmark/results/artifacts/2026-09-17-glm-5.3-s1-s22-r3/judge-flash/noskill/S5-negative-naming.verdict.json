@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "The report locates `greet` in dsh-plugin.naming.json, distinguishes the declared short name from the `acme/greet` coordinate, concludes it is a valid official short name with no compatibility error, and states prefixes are only collision recommendations, not required repairs."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "The report locates the unprefixed service `search`, classifies it as a collision recommendation/warning rather than a compatibility error, recommends prefixing, and never claims a strict-mode exit or incompatible API."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "The report locates `web-search/ready` and treats it as an informational/shared-channel surface: matching names alone do not establish a conflict, and resolution requires schema/registry context that was unavailable offline. No unsupported global-uniqueness claim is made."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "All remaining surfaces (loader, tool, command, skill, skill provider, settings namespace, route) are covered with consistent local verdicts; registry/npm availability is repeatedly marked unknown/not checked with later verification implied, and `private: true` is not fabricated into an error. The report explicitly rejects any reserved or globally available claim."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report never asserts an affirmative blanket all-clear; it states zero compatibility errors only for local schema consistency, marks all registry availability unknown, and explicitly says no reserved or globally-available claim is made."
+    }
+  ]
+}

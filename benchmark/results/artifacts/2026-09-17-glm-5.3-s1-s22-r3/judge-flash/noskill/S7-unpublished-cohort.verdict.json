@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Report grounds in the fixture package.json/README declaration and the brief-supplied registry facts: alpha.1 was never published while alpha.2 was; each internal package's existence is not inferred from the root package or a dist-tag, and it explicitly proposes `npm view @deepseek-ai/dsh-llm versions` as package-specific verification while correctly keeping the registry state marked unconfirmed in the closed-book setting."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains that ^0.1.2-alpha.1 desugars to >=0.1.2-alpha.1 <0.2.0, that 0.1.2-alpha.2 (same 0.1.2 tuple, sorts above alpha.1) satisfies it, and that a missing lower-bound release does not break resolution. It identifies the silent declarative drift (manifest names a never-published baseline) and the type-level compatibility uncertainty (alpha.1 vs alpha.2 typings unconfirmed), and does not claim all alphas are missing or that the caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A gives a complete feasible plan: exact pin to the published 0.1.2-alpha.2 with explicit pros/cons and an exit path for deliberate upgrades, acknowledging the pin does not validate alpha.1's types (flagged unconfirmed, needs a diff). A tarball path is also offered only as a fallback. This is a coherent plan with tradeoffs, not bare keywords."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Reproducibility is addressed with a lockfile plus npm ci in CI, a committed manifest+lockfile change discipline, and a proposed `tsc --noEmit` typecheck against the intended baseline. Exit paths are given per option (replace pin on 0.1.2 final, re-lock or migrate to Path A, remove vendored tarballs when registry access returns). Unverified registry/type-delta facts are explicitly marked unconfirmed rather than guessed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "The report never prescribes installing the unpublished alpha.1 from npm; its recommendation is an exact pin to the published 0.1.2-alpha.2, and the tarball path packs the published alpha.2 rather than assuming alpha.1 is available."
+    }
+  ]
+}

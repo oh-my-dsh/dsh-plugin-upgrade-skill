@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Locates index.js:3 inject ['apiProxy'] and index.js:9 ctx.apiProxy.llm.providers(), maps to DSH-0.1.2-A1-01 as required-if-hit, explains the Host-plane direct llm injection with ctx.llm.listProviders(), and flags the removed @deepseek-ai/dsh-host-apiproxy dependency at package.json:17; grounded in named fixture files and lines, not just the card name."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six non-hit categories are accounted for with per-file scanned evidence (line ranges for package.json, cordis.patch.yml, index.js, src/session-notes.js, README.md). Correctly treats session-notes.js as a pure string/array utility and cordis.patch.yml as ordinary composition rather than a host-source patch, without denying the composition file's existence or misclassifying its insertion."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly argues zero hits do not establish compatibility: static scan coverage is limited (dependency resolution, artifact contents, runtime/lifecycle, dynamic names escape lexical scans) and dependency/config/runtime behavior needs separate evidence, while keeping the confirmed apiProxy break (#3) distinct from the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies post-migration clean build/typecheck, an isolated target-version (0.1.2-alpha.2) cold boot in a fresh profile confirming the plugin is active and not pending, and a real provider-list call asserting returned data — all framed as proposed checks to run later, not as executed inside the static fixture."
+    }
+  ],
+  "caps": []
+}

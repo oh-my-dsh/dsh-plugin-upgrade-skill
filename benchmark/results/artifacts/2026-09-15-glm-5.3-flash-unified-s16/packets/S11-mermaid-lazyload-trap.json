@@ -1,0 +1,70 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S11-mermaid-lazyload-trap",
+  "source_commit": null,
+  "instruction": "# S11 · Mermaid Lazy-Load Trap (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for \"confirmation\", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:\n\n- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nI maintain the community Web plugin `@org/dsh-attach-input` (lib-only bundle). I just added\nmermaid diagram rendering to its markdown reading mode as a **lazily-imported chunk** served by a\nnew host route, and the rollout has been a mess — three distinct incidents, in order:\n\n1. **First attempt (split chunks)**: I let the bundler emit the mermaid chunk with its default\n   code-splitting. The browser loaded my chunk file fine but then every per-diagram sibling\n   import failed with \"Failed to fetch dynamically imported module\" (404s on files like\n   `./pie-WAS4IAKB.js`).\n2. **Second attempt (single file, new route)**: I bundled everything into ONE self-contained\n   chunk and added a host prefix route serving my plugin's lib dir. On my Linux CI everything\n   passes; on my **production Windows host** the browser console shows\n   `GET /dsh-attach-input/resources/mermaid-chunk.js 403` and the diagram falls back to a\n   plain code block. The route code is in the evidence pack.\n3. **Zoom modal conflict**: after the diagrams finally rendered, users complained that\n   Ctrl+scroll inside my new fullscreen zoom modal resizes BOTH the diagram and the pane's\n   font size at the same time.\n\nThe evidence pack in `/app/fixture/` (read-only — do not modify it) has the host route source,\nthe console captures, and my CI note.\n\n**Your report** (write to `/app/agent-output/S11-mermaid-lazyload-trap/`, any filename):\n\n1. Incident 1: why the split-chunk approach failed — what breaks when a dynamically imported\n   chunk has sibling imports, and what the build-side fix is;\n2. Incident 2: the exact flaw in the route's containment guard that yields 403 on Windows while\n   Linux passes — name the mechanism precisely (what each API returns on each platform), not\n   just \"Windows is different\";\n3. The fix direction for the guard (what comparison to use and why it is robust on both\n   platforms), plus one other serving requirement the route must satisfy for a dynamic import\n   to work at all;\n4. Incident 3: why BOTH handlers fire on one Ctrl+scroll under the modal, and the ownership\n   rule that fixes it;\n5. The regression tests that would have caught incidents 1–3 before release.\n\nWhat is tested: deriving each root cause from the evidence (bundler semantics, path/realpath\nplatform behavior, event-listener ordering) rather than platform folklore, and converting them\ninto concrete fixes plus regression coverage.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "split-chunk-attribution",
+        "points": 20,
+        "requirement": "Use console-split-chunks.txt to explain that sibling module imports resolve relative to the fetched chunk URL, but the emitted siblings were not shipped, so entry HTTP 200 still ends in a failed dynamic import. Propose a self-contained single-file feature bundle with code splitting disabled. Do not require a particular bundler option spelling; an equivalent complete bundling/serving solution may earn credit if it explicitly accounts for every dependency.",
+        "sourceRequired": true
+      },
+      {
+        "id": "windows-containment-attribution",
+        "points": 20,
+        "requirement": "Compare chunk-route.ts and ci-note.md: configured LIB_DIR has uppercase E: while the resolved realpath has lowercase e:, so a case-sensitive startsWith containment test rejects an actually contained file. Explain why the supplied Linux/control environments pass. Do not claim Windows paths are intrinsically unreliable or realpath always lowercases on every machine.",
+        "sourceRequired": true
+      },
+      {
+        "id": "safe-route-fix",
+        "points": 20,
+        "requirement": "Propose path.relative-based containment using canonical base/target paths and platform-appropriate path semantics; reject parent traversal and absolute/outside results, including symlink escapes after resolution. Equivalent safe containment is valid. Preserve a JavaScript MIME type for dynamic import. Removing the guard, lowercasing arbitrary paths on case-sensitive systems, or merely naming path.relative is insufficient. No executed route test is required.",
+        "sourceRequired": true
+      },
+      {
+        "id": "modal-event-ownership",
+        "points": 20,
+        "requirement": "Explain that the pane font handler and modal zoom handler both act on the same Ctrl+wheel gesture. Give the modal exclusive ownership: the pane handler must stand down while the modal owns the gesture; the modal prevents the browser default and stops propagation as appropriate. If the pane uses ancestor capture, stopping propagation later in the modal cannot undo it. Equivalent listener arbitration is valid; a specific modal selector or unseen source line is not required.",
+        "sourceRequired": false
+      },
+      {
+        "id": "incident-regressions",
+        "points": 20,
+        "requirement": "Propose checks with expected outcomes covering all three incidents: import failure preserves a code-block fallback and the built dependency set is deployable; a case-differing contained Windows path serves while real traversal/symlink escape is refused; modal Ctrl+wheel zooms the diagram without changing pane font size. Partial credit for a meaningful but incomplete matrix. These are planned checks, not claims of execution.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "unsafe-containment",
+        "total": 40,
+        "requirement": "The proposed fix disables containment or deliberately serves paths outside the plugin resource root. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "318c714416bd3a66e74cac479a75c3fac2e53bf4498c6ca0873a29924f07d72c",
+      "text": "# S11 fixture · Lazy-chunk rollout evidence pack (static)\n\nEvidence for the S11-mermaid-lazyload-trap diagnosis task: the host chunk-route source (the\nsecond attempt), the two console captures (split-chunk attempt and the Windows 403), and the\nmaintainer's CI note. **Read-only fixture — do not execute or publish anything here**; the task\ngrading requires this directory to be unchanged relative to git HEAD.\n\n- `chunk-route.ts` — the host prefix route serving the plugin's lib dir (attempt 2)\n- `console-split-chunks.txt` — attempt 1: sibling import 404s\n- `console-403-windows.txt` — attempt 2: 403 on the Windows production host\n- `ci-note.md` — what passes where\n"
+    },
+    "chunk-route.ts": {
+      "sha256": "139e310bf2ffe410d733b445abb754934a88bb19c537e25ac87401401acafb30",
+      "text": "// Excerpt from the host half of @org/dsh-attach-input v0.4.0 — the chunk-resource\n// route (attempt 2). LIB_DIR resolves to the plugin's own lib directory.\n\nconst RESOURCE_PREFIX = '/dsh-attach-input/resources'\nconst LIB_DIR = normalize(fileURLToPath(new URL('.', import.meta.url)))  // .../lib/\n\nconst route = {\n  kind: 'prefix',\n  path: RESOURCE_PREFIX,\n  handler: async (req, res) => {\n    if (req.method !== 'GET') { res.writeHead(405).end(); return }\n    const url = new URL(req.url ?? '/', 'http://dsh.internal')\n    const rel = decodeURIComponent(url.pathname.slice(RESOURCE_PREFIX.length)).replace(/^/+/, '')\n    if (rel === '' || !/.m?js$/.test(rel)) { res.writeHead(404).end('not a js resource'); return }\n    const abs = normalize(join(LIB_DIR, rel))\n    if (!abs.startsWith(LIB_DIR + sep)) { res.writeHead(403).end('path escapes the plugin lib'); return }\n    let file\n    try {\n      file = normalize(realpathSync(abs))\n      if (!file.startsWith(LIB_DIR + sep)) { res.writeHead(403).end('path escapes the plugin lib'); return }\n    } catch { res.writeHead(404).end('not found'); return }\n    const data = await readFile(file)\n    res.writeHead(200, { 'content-type': 'application/javascript; charset=utf-8' })\n    res.end(data)\n  },\n}\n// registered: ctx.effect(() => ctx.webServer.register(route), 'attach-input: chunk route')\n"
+    },
+    "ci-note.md": {
+      "sha256": "8f141a8f65e16da8302bbf571bfe6e3599266a147421948eb420bc7402e9a3e4",
+      "text": "# Where what passes (maintainer's own test matrix, attempt 2)\n\n| Environment | Route check | Result |\n|---|---|---|\n| Linux CI (node:24-bookworm container) | requests served | all green |\n| Maintainer laptop, Windows 11, DSH on C:\\ (lowercase c:\\ in some tooling) | requests served | green |\n| Production, Windows Server 2022, DSH on E:\\ (uppercase) | 403 on every chunk GET | broken |\n\nA debugging session printed, on the production host:\n\n    LIB_DIR   = \"E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\"\n    realpath  = \"e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js\"\n\nThe maintainer's takeaway was \"Windows paths are unreliable\"; no fix yet.\n"
+    },
+    "console-403-windows.txt": {
+      "sha256": "d471902c4d17cac6346d81a5f89bc2fc56e96508937a7f83910f05e2efdc1008",
+      "text": "# Attempt 2 — single self-contained chunk (7.2 MB), host route added as above.\n# Production host: Windows Server 2022, DSH installed at E:\\dsh\\. Browser console:\n\nGET http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js   403 (Forbidden)\nTypeError: Failed to fetch dynamically imported module:\n  http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js\n[dsh-attach-input] mermaid chunk fell back to code block: TypeError: Failed to fetch ...\n\n# Same plugin version, same route code, on the maintainer's other machines: works.\n# The file exists at E:\\dsh\\...\\lib\\mermaid-chunk.js and the route log shows the\n# guard branch fired (\"path escapes the plugin lib\") — for a path that is plainly\n# inside the lib directory.\n"
+    },
+    "console-split-chunks.txt": {
+      "sha256": "9c980ee679b081eaf08c4853e809ebb95f9b85f53f02d60747a1e79c980ab5d2",
+      "text": "# Attempt 1 — bundler default code-splitting (mermaid entry → mermaid-chunk.js + 97 siblings)\n# Browser console, page load with one ```mermaid fence:\n\nGET http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js        200  (8.1 kB)\nGET http://127.0.0.1:3080/dsh-attach-input/resources/src-BfvxrPJe.js         404\nGET http://127.0.0.1:3080/dsh-attach-input/resources/pie-WAS4IAKB-CQHCQWWM.js 404\nTypeError: Failed to fetch dynamically imported module:\n  http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js\n[dsh-attach-input] mermaid chunk fell back to code block: TypeError: Failed to fetch ...\n\n# ls of the shipped lib/ at the time: mermaid-chunk.js WAS present; the sibling\n# files listed in its import statements were NOT shipped with the package.\n"
+    }
+  }
+}

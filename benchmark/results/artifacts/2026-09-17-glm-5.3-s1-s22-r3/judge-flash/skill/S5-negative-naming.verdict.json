@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet in dsh-plugin.naming.json and explicitly distinguishes the bare plugin short name from the namespaced coordinate acme/greet and package dsh-greet. Judges it not a compatibility error (manifest remains loadable), recommending a prefix only as a collision-reducing option, not a mandatory repair — matching the fixture policy's stance."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies the unprefixed service search, explains the generic-name collision/confusion risk (including overlap with the host's search capability), and classifies it as a recommendation, not a hard error, noting the policy could not be verified as making it fatal. No strict-mode execution was claimed or required."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Locates web-search/ready, notes the prefix is not owned by this plugin, and explains that emitting on a possibly shared/standard channel is informational: legality depends on registry context unavailable in the closed-book fixture, so it is not judged a conflict from name matching alone, and no unsupported uniqueness claim is made."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Accounts for every remaining surface (loader id, tool, command, skill, skill provider, settings namespace, route, npm package) with individual verdicts, distinguishes structural/local compatibility from unqueried registry occupancy, explicitly states unknown/not-checked and disclaims any reserved/globally-available/all-clear claim, proposes post-hoc registry verification without claiming it ran, and does not invent an error from private:true (reported factually as a publish blocker)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "The report contains no affirmative blanket claim that all surfaces pass or that publication is cleared; it explicitly rejects reserved/globally-available conclusions and lists zero compatibility errors only as a local structural finding with registry questions marked unknown."
+    }
+  ]
+}

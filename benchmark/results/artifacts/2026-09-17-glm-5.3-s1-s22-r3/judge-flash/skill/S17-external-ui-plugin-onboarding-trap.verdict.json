@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Report connects client.js's top-level ESM import to the boot log's single classic-script combo and the browser compile error at position 1:1, explains one early syntax error stops the whole combo from compiling so no entries register, identifies dsh-typert-registry as merely the first awaited innocent entry, and notes ESM remains valid in other loading contexts (author in ESM, ship a bundled artifact)."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Gives bisect of the patch insert rows, a cheap static grep for top-level import/export plus classic-script parsing of the suspect bundle, and fully describes the window.__ModuleLoader__.load({id, factory}) wrapper with id equal to the package name, host-provided React via require inside the factory, and module.exports returning apply/inject."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Uses plugin-apply-error.txt to explain the slot is declared by the owning parent entry and apply order is unguaranteed, shows the exact ctx.slots.inject('settings.section', () => ctx.slots.register(...)) deferred wrapper, and correctly restricts registrant fields to name/id/order (+label) while forbidding declaration-owned kind/scope."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Grounded in host-boot-log.txt/restart-notes.txt: the combo is composed once at boot with no watcher, so edits and refresh change nothing; prescribes full stop/restart per iteration with taskkill /PID <pid> /T /F for the Windows tree and explains EADDRINUSE as the orphaned old process holding the port, not a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes per-bundle classic-script validation at assembly and culprit-naming attribution at combo failure instead of blaming the first awaited entry, plus an authoring checklist covering the loader factory with host React via require, inject/apply exports, deferred cross-entry slot registration with allowed fields, and restart/Windows process-tree cleanup."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report never endorses bare top-level ESM in the combo, never drops slots.inject in favor of immediate cross-entry registration, explicitly forbids kind/scope on registrants, and insists on a full host restart rather than HMR or browser refresh; bad forms appear only as diagnosed defects."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Report explicitly distinguishes InputState.draft/Occurrence clipboard-text coordinates (chip expanded to clipboardText) from EditorProjection.detectText coordinates (chip = one U+FFFC), citing both fixture host files and the facade's detectText tail sample; notes non-chip text is identical in both planes."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length as span start/end in add(), explains paste #1 succeeds only because both planes coincide when empty, paste #2's clipboard offset 29 overshoots the 2-char detect document so the splice rejects, insertReference returns false, and the plugin throws the changed-composer toast; correctly rules out a real concurrent edit or revision CAS failure."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): clipboard offsets/length passed unconverted to consumeToken, the false return is ignored (capture confirms it is not inspected), records.delete and changed() run anyway, leaving a live occurrence whose record lookup misses so the dock shows 'unavailable' and the chip stays; ties both symptoms to the same coordinate mismatch rather than an upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives toDetect(o_i) = offset − Σ preceding (clipboardText.length − 1), applies it at both call sites (insert at detect end of document; removal mapped offset plus a one-detect-character span, explicitly dropping the ?? 1 length fallback), keeps draftRev guard/phase check, and gates records.delete on consumeToken's success with a retry path."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "T4/T5/T6 propose two successive pastes with both chips present and removal of a chip with a preceding chip, asserting composer occurrence, dock chip and record are removed together while the other chip survives with correct rescaled offset; adds rejected-consumption bookkeeping (T7), failure classification (T8), and empty-again/reverse-order variants."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates the flat reads (Pet.tsx isThinking/partial, runningCalls, turnEnds) and correctly maps them to useConversation views.get('chat')?.legacy.{partial,runningCalls,turnEnds} as a temporary projection, with views timeline / useChat + ChatSnapshot as the target-owned path, citing the A1-03 two-step field note and explicitly warning legacy bridging is temporary."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Identifies the `running` read inside Pet.tsx's useSession selectors and keeps it in the lifecycle useSession seat ('Do not move running into chat.legacy'; table row says lifecycle fields must switch immediately), and does not claim useSession itself must be renamed — only that its reader typing must come from the lifecycle seat."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates the dsh-client-runtime imports (index.ts:6, Pet.tsx:8) and the package.json client.inject entry, repoints Context as ClientContext to @deepseek-ai/cordis, moves ConversationSnapshot to ui-chat-owned ChatSnapshot, and honestly defers exact unverified snapshot symbols to target declarations instead of claiming cordis exports every type."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register call (index.ts:38-43), wraps it in ctx.slots.inject('conversation.session.header.actions', ...) tied to the slot's declaration lifetime and disposal, imports the ui-renderer/client Context augmentation, clarifies service-level inject vs slot availability (conversation edge becomes redundant), and preserves slot name, pet id and order."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Every located change cites full card IDs — DSH-0.1.2-A1-03 for snapshot/lifecycle/slot, DSH-0.1.2-A1-25 for the removed runtime package and inject entry, plus A1-26/A2-03 as grounded extras — and the compatibility table cleanly separates staged legacy projection (partial, runningCalls, nodes, turnEnds) from immediate type/inject/lifecycle/slot changes, each with reasons rather than bare IDs."
+    }
+  ],
+  "caps": []
+}

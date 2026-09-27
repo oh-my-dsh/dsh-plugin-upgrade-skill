@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Report reconstructs the corridor: original retention semantics, alpha.1 (DSH-0.1.2-A1-02) temporary removal, alpha.2 (DSH-0.1.2-A2-01) remove-then-restore, and applies the restored retention state directly to produceExternalEvent in src/events.ts, using equivalent history plus the card IDs."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the exact `delete (event as any).ignorable` statement in the fixture function, notes it is a no-op on the shown literal, rejects the comment's 'keep it for alpha.2' prescription as a trap, and recommends deleting the stripping code and its obsolete rationale while instead carrying the marker — clearly separating removing the defense from removing the marker itself."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Correctly applies ignorable:true to the third-party informational producer and explains readers may skip unknown marked events, and respects the live-append limitation by deferring the exact append contract; but it never states that required events must not be made ignorable, nor that the marker is retention (marked events remain in the loaded log after reload) rather than a reader-side filtering instruction."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that the public Session.append surface likely has no ignorable parameter, explicitly marks the exact alpha.2 signature unconfirmed and defers integration pending verification, and advises against manipulating the marker via append options or an `any`-typed session rather than faking an entry with a cast or invented argument."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "The final recommendation is to delete the delete-statement and its comment entirely and to stop stripping the marker; the defense is not kept or continued on alpha.2."
+    }
+  ]
+}

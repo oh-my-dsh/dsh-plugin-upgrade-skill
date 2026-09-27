@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes the failure to fs-ext@2.1.1's node-gyp configure build, pinned as a production dependency of dsh-session-persistence-jsonl per manifest-excerpt.json, with missing Visual Studio/MSVC evidenced from install-error.log; rejects general pnpm/network blame."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Quotes the top-level `import { flock } from 'fs-ext'` from lease-excerpt.md and explains that --ignore-scripts only defers the failure from install time to module-load/boot time because the entry must still resolve and load on Windows."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes Windows acquireLockHandleWin32 with CreateSemaphoreW/Wait/Release bindings from the POSIX flock(2) on session.lock, noting Windows holds no file lock and fs-ext is dead code there; the plan keeps real flock on Linux/macOS."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Proposes a concrete pnpm patch of fs-ext@2.1.1 following the patches/node-pty@*.patch precedent: install script skips node-gyp on win32, entry gains a warn-once pure-JS flock fallback so the static import loads, registered under patchedDependencies in pnpm-workspace.yaml, plus reinstall, module-load and service-boot verification."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly honors the owner's no-Visual-Studio constraint and states the plan changes nothing upstream — local pnpm patch only, manifest pin unchanged, no fork or PR."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites full card DSH-0.1.3-A1-03 with its title, edge versions, surface and required-if-hit level, and connects its recipe directly to this fs-ext install failure and the Windows patch plan."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "The plan is built around avoiding Visual Studio; any VS mention is a description of the failure, not affirmative advice to install it."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "The report explicitly rejects --ignore-scripts alone as turning an install failure into a boot failure; the final plan makes the statically imported entry loadable via a patch."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "The plan uses the repository-managed pnpm patchedDependencies mechanism and explicitly disclaims any upstream change to fs-ext."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "The flock stub only affects the never-taken Windows branch; Windows locking stays on the named semaphore and POSIX keeps real flock, so no real write ownership is weakened."
+    }
+  ]
+}

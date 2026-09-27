@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"host-break","verdict":"partial","reason":"Correctly finds the apiProxy inject, the llm.providers call and the pinned apiproxy dependency as the breaking host surface. It does not map them to A1-01, does not name the llm service injection or listProviders as the fix, and suggests bumping the apiproxy package instead of saying it was deleted."},
+{"id":"negative-coverage","verdict":"partial","reason":"Gives file-based evidence for the other categories, correctly clears session-notes.js as pure utility, and treats cordis.patch.yml as ordinary manifest composition. However, its category set is admittedly self-invented and lacks a host-source-patch category, so coverage of the actual taxonomy is uncertain."},
+{"id":"inference-boundary","verdict":"pass","reason":"Explains that zero static hits cannot prove compatibility because scan coverage is limited and dependency, config and runtime behavior need separate evidence. Keeps the decisive apiProxy break separate from the clean categories."},
+{"id":"verification-plan","verdict":"pass","reason":"Proposes a post-migration build/typecheck, an isolated cold boot checking that the inject resolves and the plugin registers, and a functional provider call, all framed as not yet executed."}
+],
+"caps":[]}

@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"Grounds in both host files that draft and Occurrence offset/length are clipboard-text coordinates with chips expanded, while insertReference and consumeToken splice detect text where a chip is one U+FFFC; ordinary text and spaces count normally."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"Locates snapshot.draft.length in add, shows projections coincide on an empty composer so paste one works, then the clipboard end overshoots the short detect text so the splice returns false and the plugin raises the misleading changed-composer toast; notes the revision was not stale."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Traces remove passing clipboard offset/length unconverted to consumeToken, the false result ignored, records.delete running anyway, leaving the occurrence and composer chip while the renderer shows unavailable for the missing record; ties it to the same coordinate misread."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Derives detect = clipboard offset minus sum of (length - 1) for preceding chips, applies it at the insert site over all occurrences and at the remove site with a one-character span, keeps draftRev, and gates record deletion on a true consume result."},
+{"id":"regression-sequences","verdict":"pass","reason":"Plans two successive pastes with both chips present, removal of a middle chip with a preceding chip asserting composer and dock removal while others survive, removal to empty with records cleared, and a declined-consume case retaining the record."}
+],
+"caps":[]}

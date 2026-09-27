@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Ties the plugin excerpt's session.events reads to the not-iterable TypeError in the crash stack and cites the alpha.4 changelog removal replaced by seq, eventAt and snapshotEvents, explaining that the property is now undefined and iteration throws. The channel.js line refers to a stack frame, not a fixture file, and does not undermine the causal chain."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"Uses the install output to show that alpha.5 shares the 0.1.2 tuple and satisfies the caret range, that npm compares only version metadata and never API existence or behavior, and that the range is an untested author claim."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Gives genuinely distinct classes beyond removal: type or contract shape changes, wire and persistence format drift, and silent default or behavior changes, each explained as passing the range check but failing at runtime."},
+{"id":"author-prevention","verdict":"pass","reason":"Requires typechecking and cold-boot testing against the actual target tags on every release edge, plus narrowing the peer floor to the verified cohort and a capability-detection guard with correct new and legacy paths; notes engines is not enforced and does not test API behavior."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Concrete checks: read the peer floor, scan dsh release notes from the floor to the installed version for breaking changes such as the Session.events removal, and grep the published tarball for the removed API before installing."}
+],
+"caps":[
+{"id":"peers-prove-runtime","triggered":false,"reason":"Report explicitly says a clean install proves nothing about runtime compatibility and affirms the documented removal."}
+]}

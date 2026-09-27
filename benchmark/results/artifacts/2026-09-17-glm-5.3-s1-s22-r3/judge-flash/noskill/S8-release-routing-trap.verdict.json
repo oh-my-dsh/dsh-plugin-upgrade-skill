@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Report shows the mirror tag list jumps v0.9.1→v0.9.7 so v0.9.5 is absent, and grounds the cause in sync-script.sh pushing only HEAD:main with no tag refspec to origin/public/mirror2, explicitly ruling out network fault or consumer typo and tying the missing ref to attempt 1's immediate pnpm failure."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses dsh-version.txt (0.1.1-rc.2) and the compat table to state v0.9.7 targets dsh 0.1.2-alpha.1, i.e. a newer-client-API artifact on an older runtime lacking the useConversation seat; explains the direction and why restarting cannot help rather than merely repeating the error."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Correctly selects v0.9.3 using the rc.1 verification plus the additive rc.2 note, and notices v0.9.3 is also absent from the mirror listing. However the primary remedy installs #v0.9.3 from a presumed canonical '<origin-org>' repository whose reachability/completeness is not established by the sealed facts — an assumed-resolvable source — and the conditional mirror path is deferred to maintainer tag publication instead of being the stated requirement."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes an explicit non-forced 'git push \"$remote\" --tags' added to the per-mirror sync loop (equivalent to explicit tag refspec), grounded in the branch-only script, plus a post-sync ls-remote verification that every canonical tag resolves on each mirror; branch sync alone is not relied on."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Requires the README to stop pinning the newest tag and instead route per consumer DSH version with explicit per-version commands (0.1.1-rc.x→v0.9.3, 0.1.2-alpha.1→v0.9.7) plus inline compat mapping and optional metadata constraints; no generalized support for untested future alphas and no restarting-only advice."
+    }
+  ],
+  "caps": []
+}

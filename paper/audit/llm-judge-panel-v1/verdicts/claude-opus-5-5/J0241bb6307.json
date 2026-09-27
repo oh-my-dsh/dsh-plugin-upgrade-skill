@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"corridor-net-state","verdict":"pass","reason":"Gives the remove-in-alpha.1 then restore-in-alpha.2 history of ignorable retention and applies the final alpha.2 state to produceExternalEvent in src/events.ts. Its account of why alpha.1 readers rejected events is a little off, but the corridor net state is correct."},
+{"id":"remove-marker-stripping","verdict":"pass","reason":"Finds the delete statement, rejects the comment that says to keep it on alpha.2, recommends removing both the line and its stale rationale, and correctly notes the delete does nothing on the current literal. It treats the marker as legitimate and retained, separately from the stripping."},
+{"id":"informational-producer","verdict":"fail","reason":"Says producers do not manage ignorable and calls it a host/reader-side classification. That contradicts the sealed semantics: producers mark only informational, omittable events, and required events must stay unmarked. It never says marked events remain in the loaded log."},
+{"id":"public-append-gap","verdict":"partial","reason":"Correctly says public Session.append has no ignorable parameter and that the plugin must not hack the marker in. But it presents this as host-controlled behavior rather than a capability gap, and it only loosely defers producer integration to an unconfirmed future API."}
+],
+"caps":[
+{"id":"keep-stripping-marker","triggered":false,"reason":"The final recommendation deletes the stripping defense."}
+]}

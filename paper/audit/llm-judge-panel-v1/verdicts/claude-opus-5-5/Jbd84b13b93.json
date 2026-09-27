@@ -1,0 +1,12 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates the patch declaration in cordis.patch.yml, the SessionView.ts target in patch.yml and the applier script. Separates the patch surface from ordinary composition and ties it to the private session-view internals."},
+{"id":"events","verdict":"pass","reason":"Locates the producer with ignorable:true and the observer. Folds the alpha.1 removal with the alpha.2 restoration, keeps the marker only for omission-safe informational events, and notes that Session.append cannot set it, so it becomes a proven capability gap rather than a cast."},
+{"id":"host-services","verdict":"pass","reason":"Locates both apiProxy calls and the removal of apiProxy. For the host plane it prescribes injecting the domain service directly, e.g. llm.listProviders, reserves ctx.remote for the client plane, and warns against inject remote on the host."},
+{"id":"host-path","verdict":"pass","reason":"Locates the hard-coded homedir .dsh/profiles/default path and write, and recommends runtime DSH_HOME and profile information. Makes no claim that --profile was new."},
+{"id":"ui","verdict":"pass","reason":"Locates the /internal SessionView import and the registerCommand call. Recommends rebuilding by owning module and checking the exact target tag, and marking the seam pending confirmation where no public seam exists."},
+{"id":"channel","verdict":"pass","reason":"Locates the loopback createServer bridge, says loopback is no reason to skip auth, and contrasts raw routes with the Connection-owned auth gate and requestRejection seam."},
+{"id":"subprocess","verdict":"pass","reason":"Locates spawn/execFileSync with JSON.parse of stdout in both files. Explains stdout carries the final text, stderr carries reasoning and errors, success comes from the exit code, and stdout was never JSONL even in rc.2."},
+{"id":"mapping","verdict":"pass","reason":"Maps each located coupling to A1-01, A1-02 folded into A2-01, A1-03, A1-04, A1-05 and A1-08, with reasons for each; A2-02 is added as a reasonable follow-on."},
+{"id":"limits","verdict":"pass","reason":"Confirms all seven categories hit, states the heuristic and static limits at sub-pattern level, and proposes a target-tag build/typecheck, an isolated boot and functional checks without running the fixture."}
+],
+"caps":[]}

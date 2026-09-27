@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"Uses both host files to separate clipboard-projection draft/occurrence offsets from detect coordinates where a chip is one U+FFFC, and notes plain text is identical in both."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"Locates draft.length in add, explains empty composer makes both coordinates coincide, then the span overshoots the short detect text so insertReference returns false and the plugin emits the misleading changed-composer toast; explicitly rejects a real race."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Traces remove passing clipboard offset/length unconverted to consumeToken, return ignored, records.delete unconditional, dock renders unavailable while composer chip survives; ties it to the same coordinate misread."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Derives subtract-(length-1)-per-preceding-chip rule from the contract, applies it at insert (all occurrences) and removal (preceding chips, one-character span), keeps draftRev guard, and deletes records only on successful consumption."},
+{"id":"regression-sequences","verdict":"partial","reason":"Covers two successive pastes with both chips present, removal bookkeeping, declined-consumption and interleaving, but the removal tests remove the first/only chip and never remove a chip that has another chip before it while asserting the other survives."}
+],"caps":[]}

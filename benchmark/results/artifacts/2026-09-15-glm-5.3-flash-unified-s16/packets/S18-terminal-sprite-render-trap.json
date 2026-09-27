@@ -1,0 +1,70 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S18-terminal-sprite-render-trap",
+  "source_commit": null,
+  "instruction": "# S18 · The Terminal Sprite Render Trap (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be\nno follow-up user messages. This task brief is itself the user's explicit authorization and\nconfirmation for the approach and execution needed to complete the task: complete the\nnecessary analysis and planning on your own, and keep executing as soon as the plan is\nformed — do not pause to wait for \"confirmation\", and do not ask the user follow-up\nquestions. That confirmation continues to apply to the concrete plans you produce under the\napplicable skill, but only within this scope:\n\n- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nA terminal app renders a pixel sprite (the whale: 25 rows x 40 columns of palette\ncharacters) with the half-block technique - each terminal cell packs two vertical pixels\ninto one glyph, foreground = upper pixel, background = lower pixel. After an animation\nfeature was added around the sprite, the user reported phantom pixels hugging the\nsprite's right edges (the dark outline, the sleep-Z symbols, the heart), ghost pixels\nsurviving frame switches, and one drifted frame; flipping the feature default-on then\nhung a CI job that had always finished before. The evidence pack is under `/app/fixture/`\n(read-only - do not modify it): the renderer code as it shipped, the symptom log, the\nframe digest report, and the CI hang evidence.\n\n**Your report** (write to `/app/agent-output/S18-terminal-sprite-render-trap/`, any filename):\n\n1. Phantom pixels: from the renderer code, explain the exact mechanism that paints\n   phantom pixels into the EMPTY half of a half-filled cell at the sprite's right edges -\n   which SGR state persists across cells, which cells expose it, and the precise escape\n   fix;\n2. Ghost frames: why do ghost pixels of the PREVIOUS frame survive a switch to a narrower\n   frame - what does the renderer drop from each row, what does the text pipeline do to\n   trailing whitespace, and the two-part fix that guarantees a clean frame switch;\n3. Frame data drift: what does the digest report say about the hand-ported frames, why\n   did the existing per-excerpt regression miss the drift, and the gate that prevents it\n   from recurring;\n4. The hang: from the CI evidence, explain the mechanism that kept the finished job alive\n   - what reschedules forever, which hosts mount the component without unmounting it, why\n   the interactive terminal is unaffected, and the one-line fix;\n5. Prevention: the renderer contract checklist a terminal sprite implementation should\n   ship with, and the audit a team should run BEFORE flipping an animation feature\n   default-on.\n\nWhat is tested: reading an ANSI half-block renderer against its visual symptoms (SGR\nstate persistence, row trimming, erase semantics), recognizing frame-data drift and\npinning it with digests, the timer-pinned event loop behind \"finished but hanging\" jobs,\nand rolling the fixes into a renderer contract and a rollout audit.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "half-cell-background",
+        "points": 20,
+        "requirement": "Locate the upper-only/lower-only branches in renderer-excerpt.ts: they emit foreground only, leaving a previous cell’s SGR background active and painting the transparent half. Reset background on each half-filled cell with ESC[49m or an equivalent reset followed by restoring the intended foreground. A row-end reset alone occurs too late. Tie the mechanism to the edge symptoms rather than blaming artwork or the terminal emulator.",
+        "sourceRequired": true
+      },
+      {
+        "id": "frame-clearing",
+        "points": 20,
+        "requirement": "Explain the renderer’s trailing transparent-space trim and downstream whitespace handling: a narrower frame does not overwrite the previous frame’s surplus columns. Propose full-sprite-width row output plus erase-to-EOL (ESC[K), or a demonstrably equivalent explicit clearing procedure that survives whitespace trimming. Keep SGR state controlled. Merely adding spaces without accounting for the pipeline is incomplete.",
+        "sourceRequired": true
+      },
+      {
+        "id": "frame-data-integrity",
+        "points": 20,
+        "requirement": "Use frames-digest-report.txt to identify the hand-ported tail2 mismatch (23 changed cells; the visible shifted cluster is not the full diff count), distinguish data drift from renderer artifacts, and explain that a different-frame excerpt test missed it. Compare/assert every frame against trusted source art using digests or exact rows. Testing one excerpt or hashing against the already-drifted port is insufficient.",
+        "sourceRequired": true
+      },
+      {
+        "id": "timer-liveness",
+        "points": 20,
+        "requirement": "Use ci-hang-evidence.txt: mounted probe hosts never unmount, the planner continuously rearms referenced setTimeout handles, so finished checks cannot exit. Interactive TTY/stdin already keeps the product alive. Unref each newly scheduled planner timeout (timer.unref or equivalent) so animation continues while another handle is live but does not keep probes alive by itself. Extending CI timeouts or stopping animation globally does not fix the lifecycle contract.",
+        "sourceRequired": true
+      },
+      {
+        "id": "renderer-and-rollout-prevention",
+        "points": 20,
+        "requirement": "Consolidate background reset, full-width/erase behavior, balanced SGR state and source-backed all-frame integrity into a renderer checklist. Before default-on rollout audit timers and every mounting host, especially probes that finish without unmounting, and propose an exit/liveness regression. No actual render or CI execution is required.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "contradictory-render-advice",
+        "total": 0,
+        "requirement": "The final advice denies the need to reset the half-cell background, retains trailing trimming without equivalent clearing, rejects source-backed frame checks, or says the repeating planner timer should remain referenced / unref is harmful. Blaming the terminal emulator instead of fixing the demonstrated renderer defect also triggers this cap. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "59e62e2a60ebca953fcb8ce5315296b1cad031fcf7e5c4d4af429c35ee8a6a26",
+      "text": "# S18 fixture · Terminal sprite render trap evidence pack (static)\n\nEvidence for the S18-terminal-sprite-render-trap task: the renderer code as it shipped,\nthe user-visible symptom log, the frame digest report, and the CI hang evidence.\n**Read-only fixture - do not execute or publish anything here**; the task grading requires\nthis directory to be unchanged relative to git HEAD.\n\n- `renderer-excerpt.ts` - the half-block sprite renderer exactly as it shipped\n- `symptom-log.txt` - the user-visible symptoms (positions of phantom/ghost pixels)\n- `frames-digest-report.txt` - per-frame digest comparison against the source art\n- `ci-hang-evidence.txt` - the CI job that hung after the feature flipped default-on\n"
+    },
+    "ci-hang-evidence.txt": {
+      "sha256": "f4c7e3491a8b5f1fa07ae867884e4c3695680c97490bf266a7ada3c0262db936",
+      "text": "CI hang evidence (channel-ui group, after the animation feature flipped default-on):\n\n- Job \"channel-ui\" shows PASS for all scene checks, then the process sits idle. The job\n  does not exit; it is eventually killed at the runner timeout (the same job had always\n  finished in ~3 minutes before the flip; one local observation recorded 19 minutes of\n  idle before manual kill).\n- Process state at kill: no running test, no pending assertion; the event loop has live\n  handles of kind Timeout - one per tick of the sprite animation planner, each\n  re-arming the next. The planner reschedules a setTimeout for as long as its\n  component stays mounted, and these particular hosts mount the header component and\n  finish WITHOUT unmounting it.\n- The interactive terminal product is unaffected: its process is kept alive by the\n  TTY/stdin handles regardless of the timer chain.\n\nTimeline: the hang first appeared in the same push that flipped the animation feature's\ndefault from off to on.\n"
+    },
+    "frames-digest-report.txt": {
+      "sha256": "8d5db490af566a52ce0131a37dec5496d1a1d945299a869f23ff6bbbbce69c77",
+      "text": "Frame digest report (sha256 of each frame's 25 rows, compared against the source-art\nframes the sprite was ported from):\n\nstandard  OK        blink    OK        fin1     OK        fin2     OK\nspout1-6  OK        tail1    OK        tail2    MISMATCH  tail3    OK\ntail4     OK        heart1-3 OK        sleep1-5 OK\n\ntail2 detail (cells where the ported frame differs from the source art):\n  row  2: ported D at col 26, source D at col 27 (1 col left shift)\n  row  3: ported extra D at col 25; DBD at cols 26-28 shifted left 1; extra DD at cols 36-37\n  rows 4-6: the upper-right cluster is shifted 1 column left throughout\n  total: 23 differing cells, all in the upper-right spout/tail-tip area\n\nThe ported tail2 was hand-copied during conversion; an excerpt-based regression\n(added later for a different frame) did not cover it.\n"
+    },
+    "renderer-excerpt.ts": {
+      "sha256": "52a02aea560f4cc33004f536a068e0f46ce7215f50742f43a3d40d9290b68130",
+      "text": "// The sprite renderer as it shipped (excerpt). Each terminal cell packs two\n// vertical pixels into one half-block glyph: foreground = upper pixel,\n// background = lower pixel. Sprite is 25 rows x 40 columns of palette chars\n// ('.' = transparent).\nconst fg = (rgb: Rgb): string => `\\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m`\nconst bg = (rgb: Rgb): string => `\\x1b[48;2;${rgb[0]};${rgb[1]};${rgb[2]}m`\nconst RESET = '\\x1b[0m'\n\nexport function renderSpriteRows(frame: WhaleFrame, palette: Record<string, Rgb | undefined>): string[] {\n  const sprite = frame.rows\n  const rows: string[] = []\n  for (let r = 0; r < sprite.length; r += 2) {\n    const upper = sprite[r]\n    const lower = sprite[r + 1] ?? ''\n    let out = ''\n    let current = ''\n    for (let x = 0; x < upper.length; x++) {\n      const up = palette[upper[x]]\n      const lo = palette[lower[x]]\n      let seq: string\n      let ch: string\n      if (up !== undefined && lo !== undefined) {\n        seq = fg(up) + bg(lo)\n        ch = '▀'\n      } else if (up !== undefined) {\n        seq = fg(up)\n        ch = '▀'\n      } else if (lo !== undefined) {\n        seq = fg(lo)\n        ch = '▄'\n      } else {\n        seq = ''\n        ch = ' '\n      }\n      if (seq !== current) {\n        out += seq === '' ? RESET : seq\n        current = seq\n      }\n      out += ch\n    }\n    let row = out.replace(/[ ]+$/, '')\n    if (!row.endsWith(RESET)) row += RESET\n    rows.push(row)\n  }\n  return rows\n}\n"
+    },
+    "symptom-log.txt": {
+      "sha256": "a2ba3d0d3aeebc3bc794798db1cb8d637c1a19fbe0dbccb186059596861a80ec",
+      "text": "User-visible symptoms (whale sprite, 40 cols x 13 terminal rows):\n\n1. PHANTOM PIXELS hugging the sprite's right edges: a 1-cell-wide column of dim colored\n   noise directly to the right of the dark outline cells, next to the sleep-Z symbols,\n   and to the right of the heart glyph. They appear and move with the animation; they\n   are NOT part of any frame's data (frame rows end in '.' at those columns).\n\n2. GHOST PIXELS after frame switches: when the animation switches from a WIDE pose\n   (tail fully swung out, rows reaching further right) back to a NARROWER pose, the\n   pixels of the wide tail REMAIN on screen at their old positions - the narrow frame\n   renders fine, but the surplus columns keep showing the previous frame's tail.\n\n3. One hand-ported frame shows a misplaced tail tip: a 6-pixel cluster drawn at the\n   wrong position (see frames-digest-report.txt).\n\nNo other UI element is affected; the artifacts are strictly inside/at the edge of the\nsprite's cell area.\n"
+    }
+  }
+}

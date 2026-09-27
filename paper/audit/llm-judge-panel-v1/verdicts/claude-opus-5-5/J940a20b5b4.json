@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"half-cell-background","verdict":"pass","reason":"Locates the up-only and lo-only branches that set only foreground, explains the sticky background from an earlier two-pixel cell painting the empty half at right edges, and fixes each half-filled cell with ESC[49m in its sequence."},
+{"id":"frame-clearing","verdict":"pass","reason":"Identifies the trailing-space trim plus downstream whitespace stripping leaving old columns unwritten, and proposes full-canvas-width rows plus ESC[K per row, which survives trimming, with resets kept."},
+{"id":"frame-data-integrity","verdict":"pass","reason":"Uses the digest report to name the tail2 mismatch with 23 differing cells as a hand-port data error, notes the excerpt test targeted another frame, and gates every frame against digests generated from source art."},
+{"id":"timer-liveness","verdict":"pass","reason":"Explains the self-rearming planner timeout, hosts that finish without unmounting, TTY/stdin keeping the interactive product alive, and unrefs each scheduled timeout; unmount in teardown only as supplementary."},
+{"id":"renderer-and-rollout-prevention","verdict":"pass","reason":"Checklist covers background pinning, full width and erase, balanced SGR, all-frame source-backed digests and timer lifecycle; rollout audit covers timers, hosts mounting without unmount, and an exit-within-N-seconds regression."}
+],"caps":[
+{"id":"contradictory-render-advice","triggered":false,"reason":"Final advice resets half-cell background, removes trimming with erase, endorses source-backed checks and unref; no emulator blame."}
+]}

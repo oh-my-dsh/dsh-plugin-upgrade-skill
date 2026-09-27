@@ -10,6 +10,12 @@ not the answers — the companion benchmark tasks
 `benchmark/tasks/S10-paste-rename-and-version-chip/` grade the concrete
 diagnosis and the fix design.
 
-- `SKILL.md` — the standing rule (read the verb's contract), three
-  questions to ask any offset/span-taking verb, symptom families, and the
-  debug-to-release workflow.
+- `SKILL.md` — the standing rule (read the verb's contract), four
+  questions to ask any offset/span-taking or platform-dependent verb,
+  symptom families, and the debug-to-release workflow.
+- `references/browser-forensics.md` — driving the authenticated GUI in a
+  headless browser over CDP (minting the session cookie from the local
+  credential store), the safe temporary-instrumentation discipline for
+  served client bundles, and the 2026-09 文件资源服务不可用 case study
+  (URL hostname parsing of the non-special `dsh-resource://` scheme
+  differing between browser engines).

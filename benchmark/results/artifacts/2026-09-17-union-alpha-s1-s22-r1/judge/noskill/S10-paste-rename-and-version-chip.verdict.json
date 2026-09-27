@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Section 1 gives the exact paste_image/paste_file scheme with (2),(3) before the extension until an unused name is found, applies the rename at clipboard acquisition before validateItems (explaining the in-batch image.png duplicate throw), and explicitly keeps drop, file and folder picker names verbatim, grounded in plugin-attachment-flow.js."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Section 1.4 names the live getSnapshot() occurrences as the authoritative taken-name source, explains that the records subscription does records.delete on any momentary empty occurrence snapshot while the attachment is still live/pending upload, includes current-batch reservations, and notes records may only supplement live state, citing the fixture comment."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Section 3 grounds the root cause in the captured x-cache: HIT, age: 178, s-maxage=300 response showing only v0.2.9, traces startUpdateChip -> semverCmp(tag, PLUGIN_VERSION) <= 0 -> renderCurrentChip(tag) displaying the fetched tag, and gives the two-value rule: show update only when remote > running PLUGIN_VERSION, otherwise show the running version, never the older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Section 4 proposes concrete tests: repeated and same-batch pastes yield distinct paste_image/paste_file names, a live occurrence still blocks its name after the records cache is retired via a transient empty snapshot, drop/picker names stay verbatim, and chip tests cover stale (older) remote vs running build, a genuinely newer v0.2.11, plus failure and version-sync branches."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Section 5 requires syncing the hand-inlined PLUGIN_VERSION in lib/client.js with package.json (release gate), running node --check on the lib-only bundle plus behavioral regressions, and explains users receive updates only by replacing the served lib artifact and hard-refreshing — no host-side update endpoint, tag/chip alone installs nothing."
+    }
+  ],
+  "caps": []
+}

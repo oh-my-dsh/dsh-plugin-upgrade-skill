@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Uses the split-chunk console capture: the entry chunk returned 200, but sibling imports that resolve relative to it were never shipped, so they 404 and the whole import fails. Proposes a single self-contained chunk with splitting disabled."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Names the E: vs e: drive-letter mismatch between LIB_DIR and the realpath, and the case-sensitive startsWith check that rejects it. Explains why Linux CI and the laptop pass, and rejects the 'Windows is unreliable' takeaway."},
+{"id":"safe-route-fix","verdict":"pass","reason":"Canonicalizes both sides with realpath and case-folds only on win32. Keeps the separator boundary and realpath-based symlink containment, and keeps the JavaScript MIME type. This is an equivalent safe containment even though it does not use path.relative."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"Explains that both listeners receive the same bubbling Ctrl+wheel. Gives the modal exclusive ownership with preventDefault, stopPropagation and a non-passive listener, and adds a host-side yield when a modal is open, which covers ancestor listeners."},
+{"id":"incident-regressions","verdict":"partial","reason":"Strong checks for dependency completeness, case-differing accept vs traversal/symlink/prefix reject, and modal zoom not changing pane font size. However, no check asserts that an import failure still falls back to a code block."}
+],
+"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"Containment is kept and made stricter at canonical paths; nothing outside the lib is served."}
+]}

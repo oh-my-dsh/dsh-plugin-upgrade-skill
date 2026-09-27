@@ -1,0 +1,5 @@
+# Additional case inspection (separate from the frozen ten-answer review)
+
+The S6 pair in both repeats was read against all four packet criteria. Both skill reports distinguish omission-safe information from required events, retention from filtering, and the missing public append capability; both defer unsupported persistence rather than inventing an API. Both no-skill reports remove the obsolete stripping code but conflate envelope retention with platform-only responsibility. Repeat 2 says “No replacement code is required; session.append(event) already delivers the restored alpha.2 semantics,” despite the missing producer seam. This corroborates the earlier repeat-1 concern within the same task; it is not an independent incident or a population prevalence estimate.
+
+No new numeric verdict is imposed on repeat 2 in this contract-stratified analysis. Original per-criterion results and the frozen ten-answer replacement sensitivities remain separate. In particular, safety-domain original full credit cannot be read as verified safety: the previously reproduced S11 parent-directory counterexample contradicts that interpretation.

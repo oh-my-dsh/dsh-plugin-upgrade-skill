@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Report names node.exe PID 42432 (dsh web host) from running-processes.txt as the koffi.node holder, explains the loaded native image stays in use until that process exits so npm's copyfile fails with EBUSY, and correctly dismisses the npm process as the victim."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains the browser refresh only reloads the SPA while the host process keeps koffi mapped, and gives an ordered stop-verify-install-restart procedure; no blanket kill of unrelated node processes is prescribed."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Grounded in npm-dist-tags.txt: an unpinned install follows the latest tag (0.1.1-rc.2), alpha points to 0.1.2-alpha.5, and the report states the unpinned spec does not preserve the installed alpha.4, producing the observed downgrade."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 @deepseek-harness-tui/dsh-tui after stopping the host, verifies dsh --version prints alpha.5, then restarts; @alpha is only mentioned as an alternative, not a substitute."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Advises README authors to pin the exact tested dsh core version (or explicitly documented tag) whenever a combined command installs dsh, warns against silently following latest over a prerelease, and adds verification and stop-first guidance."
+    }
+  ],
+  "caps": []
+}

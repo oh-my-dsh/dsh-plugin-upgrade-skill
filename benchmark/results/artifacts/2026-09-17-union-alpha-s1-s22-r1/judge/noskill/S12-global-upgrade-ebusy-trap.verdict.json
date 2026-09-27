@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Correctly identifies node.exe PID 42432 (the dsh web host) as the koffi.node holder per running-processes.txt, and explains the loaded native module stays in use until that host exits so npm's copyfile fails with EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains a browser refresh only reloads the SPA while the host owning the native module stays alive, and gives the ordered procedure: shut down/verify exit of the dsh host, install, then restart, with explicit refusal to kill unrelated node processes."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Grounded in npm-dist-tags.txt: a bare global install follows the latest dist-tag, which was pinned to 0.1.1-rc.2 (alpha pointed to 0.1.2-alpha.5), so the combined command replaced the install rather than preserving/upgrading alpha.4."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 @deepseek-harness-tui/dsh-tui (plus an equivalent split variant) after stopping the host, requires dsh --version to print alpha.5, and restarts the host; treats @alpha only as a mutable alternative."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Advises README authors to pin the exact tested dsh version whenever a plugin command also installs dsh, prefer plugin-only commands for existing installs, and warns that bare dsh silently follows latest and can downgrade a prerelease."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Correctly grounds the diagnosis in client-bundle-excerpt.js and release-log.md: build at 16:22 preceded the 16:23 bump, baking 0.3.6 into the v0.3.7 bundle; states the constant is build-time-inlined and not reread at runtime; explains mirror/tag SHA integrity is irrelevant because the bytes are correct but their content is stale; gives the corrected bump-before-build order and a concrete pre-tag grep/CI check of the baked constant, without confusing v0.3.8's later manifest."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt and lib-index-excerpt.js to triangulate: PNG 200 proves the route is alive, the whitelist-shaped 404 shows the running whitelist is old, and the disk lib already whitelists svg, pinning staleness to the running host process rather than the release. Explains client re-fetch on reload versus host boot/activation-time route registration, that a host restart is required, and keeps the conclusion specific to this host lifecycle."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in session-log-excerpt.txt: clean well-formed disk source versus the spliced persisted model-visible text (line 232 truncated at the shared prefix 'stro' with line 247's tail) and the clean re-read; locates corruption in upstream result-text assembly between the tool's clean result and session-log persistence; requires treating the payload as untrusted input and explicitly rejects editing the innocent traced SVG."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Designs and justifies the ordered chain: disk bytes via the asset route first, session payload only after a DOMParser parse with parsererror check, a sandboxed iframe fallback blocking scripts while noting SMIL still runs, and an explicit labeled error state; validation failure demotes to the next level or error rather than passing malformed payload to the iframe. Framed as a design plan, as permitted."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding the concatenated-zstd generation file frame-by-frame preserving order to recover the exact stored read-result text, diffing it against a fresh disk read, and reporting the upstream bug; accepts either magic-byte locating or a decoder API that reports bytes consumed, so it does not depend on magic bytes. Checklist covers bump-before-build, grepping the shipped constant, per-mirror tag SHA verification, plus plane-specific host-restart probes; no actual decode is required by the rubric."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice is consistent: bump-before-build is mandatory, mirror repush alone is explicitly said not to fix a baked content defect, the host route requires a restart (browser refresh is not claimed to update it), editing the clean traced SVG is explicitly rejected, and every render level validates before the iframe with scripts blocked."
+    }
+  ]
+}

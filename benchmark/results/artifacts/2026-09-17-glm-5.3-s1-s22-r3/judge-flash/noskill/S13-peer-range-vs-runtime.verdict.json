@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in plugin-source-excerpt.js reads (line 734 session.events, 657 .at(-1), 42 references), the crash-stack.txt iteration failure chain (prepareReplayEvents -> apply -> Fiber._reload), and quotes the changelog entry for removal at 0.1.2-alpha.4 with the seq/eventAt()/snapshotEvents() replacements, explaining the undefined/non-iterable TypeError causally."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Uses npm-install-output.txt: alpha.5 satisfies >=0.1.2-alpha.2 <0.2.0-0 via same-base prerelease ordering, so npm's static peer check passes silently; correctly explains that a peer declaration is a metadata-level author claim checking only version strings, not API existence or tested behavior."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Names this case's removed/renamed API class plus a genuinely distinct class of changed shapes/semantics on still-present APIs (array->iterator/generator, sync->async, return-type changes), with a third behavioral-contract class; each is explained concretely, not just named."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires matrix testing against actual target prereleases (alpha.2-alpha.5) in CI before publishing, and an actionable compatibility policy: narrow the peer range to tested versions, note engines cannot encode API compatibility, and implement runtime feature detection (session.events === undefined) with correct fallback to seq/eventAt()/snapshotEvents() or a fail-fast diagnostic. Both halves present."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives concrete pre-install investigations: npm pack the tarball and grep plugin dist for .events usage against the host's actual exports, plus reading changelog entries between the peer floor (alpha.2) and installed alpha.5 for compatibility-flagged removals, tied directly to this Session.events incident. Goes well beyond rerunning npm install."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's final conclusion consistently asserts the opposite: peer-range satisfaction is only a metadata claim and does not prove runtime compatibility; the documented Session.events removal is affirmed, never denied."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Grounds in the split-chunk console capture: entry served 200, sibling imports resolve relative to the chunk URL but were not shipped, so the whole dynamic import rejects; proposes a single self-contained bundle with inlined dynamic imports, or shipping every emitted chunk."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Compares the route and CI note: LIB_DIR spelled E: vs realpath e:, case-sensitive startsWith on the post-realpath guard rejects a contained file; explains Linux and the C: laptop pass because both spellings agree there, and rejects the 'Windows unreliable' conclusion without claiming realpath always lowercases."},
+{"id":"safe-route-fix","verdict":"pass","reason":"Proposes a path.relative containment helper applied at both guard sites, rejecting parent traversal and absolute (cross-drive) results, keeping realpath to catch symlink escapes, platform-native semantics (strict on posix); preserves JavaScript content-type as the serving requirement."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"Explains one ctrl+wheel event reaches both the modal and pane listeners; ownership rule gives the modal exclusive claim with preventDefault/stopPropagation on a non-passive listener, and the pane handler ignores events inside the overlay, which also covers ancestor or capture listeners."},
+{"id":"incident-regressions","verdict":"partial","reason":"Strong matrix for incidents 2 and 3 (case-differing contained path serves, traversal/symlink refused, modal zoom leaves pane font unchanged) and dependency-completeness pack test for incident 1, but no check that an import failure still falls back to the code block."}
+],"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"Containment is preserved and strengthened; the lowercase alternative is limited to win32 and nothing serves paths outside lib."}
+]}

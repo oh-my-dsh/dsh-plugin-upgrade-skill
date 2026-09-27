@@ -1,0 +1,14 @@
+Dev-loop notes (observed while iterating on the new plugin):
+
+1. Combo assembly happens ONCE at host boot: the host reads every installed plugin's
+   client bundle, concatenates them into one classic script, and serves that. Editing a
+   plugin file on disk afterwards has NO effect in the browser, even after a hard refresh,
+   until the host process is stopped and started again.
+
+2. On Windows, stopping the host by closing the launching terminal left a node process
+   alive: the NEXT host boot failed with EADDRINUSE (the listening port was still held by
+   the orphaned process). Killing the entire process tree freed the port:
+   taskkill /PID <pid> /T /F
+
+3. After each restart: browser hard refresh, then check Settings → Plugins → Plugin list
+   (empty list = the combo failed again).

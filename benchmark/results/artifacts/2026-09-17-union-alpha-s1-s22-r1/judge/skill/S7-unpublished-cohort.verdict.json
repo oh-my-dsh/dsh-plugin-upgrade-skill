@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Report grounds the analysis in the fixture package.json (declaration ^0.1.2-alpha.1) and README, explicitly states alpha.1 was never published while alpha.2, 0.1.1-rc.1 and 0.1.1-rc.2 were, clearly labels the registry fact as supplied evidence rather than a live query, and proposes registry verification only as a future authorized step. It does not infer package existence from the root package or a dist-tag."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains that the missing alpha.1 lower bound does not make ^0.1.2-alpha.1 unresolvable: an offline semver computation normalizes it to >=0.1.2-alpha.1 <0.2.0-0 with default prerelease same-tuple eligibility, so 0.1.2-alpha.2 is selected. It identifies the silent declaration/type-baseline substitution, notes semver acceptance is not compatibility proof, and correctly rejects 0.1.1-rc.x and cross-tuple prereleases without claiming all alphas are missing."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Gives three complete plans with tradeoffs: (A) exact-pin the published 0.1.2-alpha.2 and update docs, explicitly acknowledging this does not validate alpha.1; (B) verify the upstream alpha.1 tag, build/pack the full required cohort and resolve local tarballs with scoped overrides; (C) a type-only verification lane. Each is concrete and internally coherent, going well beyond bare tarball/overrides keywords."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Commits to one package manager chosen from the real repo (explicitly refusing to introduce pnpm without cause), proposes a committed lockfile reproduced via npm ci/frozen equivalent, a typecheck against the intended target including declaration-owner checks, and exit paths: replacing local alpha.1 tarball overrides with verified published cohort versions while regenerating the lockfile, or deliberate future upgrades for the pin plan. Unverified source/build/runtime details are marked unconfirmed throughout."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "No affirmative prescription to npm-install the unpublished alpha.1 cohort. Plan A pins the published alpha.2; Plan B obtains alpha.1 by building local tarballs from a verified source tag, which the cap excludes; rejected bad examples are quoted only to be rejected."
+    }
+  ]
+}

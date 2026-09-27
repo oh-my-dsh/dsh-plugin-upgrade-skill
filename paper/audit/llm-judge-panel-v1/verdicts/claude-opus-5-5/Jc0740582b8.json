@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"whole-combo-attribution","verdict":"pass","reason":"Links the top-level import in client.js to the classic-script combo in the boot log and the compile error in browser-error.txt. Explains that one parse failure stops every entry from registering and that typert-registry is only the first awaited entry."},
+{"id":"diagnosis-and-packaging","verdict":"partial","reason":"Bisects the insert rows and describes the ModuleLoader.load id/factory shell with package-name id, React through the injected require, and inject/apply exports. But its main static check is node --check (plus grep), which can accept ESM, rather than a real classic-script parse."},
+{"id":"cross-entry-slot-registration","verdict":"fail","reason":"Correctly says another entry owns the declaration and kind/scope do not belong to the registrant. But it treats register as a declaration and replaces it with an invented inject(slotName, Component) call. It never explains the ordering problem or wraps register inside inject to defer it."},
+{"id":"boot-restart-discipline","verdict":"pass","reason":"Uses the boot log and restart notes: the combo is built once at boot, so the fix is a full host restart, taskkill /T /F for the orphaned tree, then refresh and check the plugin list. Explains EADDRINUSE as the old process still holding the port."},
+{"id":"host-and-author-prevention","verdict":"partial","reason":"Host side proposes per-bundle classic-script parsing and attributing the failure to the owning plugin. The checklist covers the loader factory, host React, inject/apply and restart/Windows tree kill, but its slot item repeats the wrong non-deferred inject form."}
+],
+"caps":[
+{"id":"contradictory-operational-advice","triggered":false,"reason":"Does not keep bare ESM, keeps slots.inject instead of immediate registration, forbids kind/scope on the registrant, and requires a host restart rather than a refresh."}
+]}

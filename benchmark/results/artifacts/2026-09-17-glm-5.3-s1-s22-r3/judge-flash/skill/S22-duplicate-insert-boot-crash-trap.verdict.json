@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Report identifies both declarations (web-app bundle cordis.patch.yml L110-111 and the profile's manually appended block, both id workspace-files with the same package), pins detection to EntryGroup.update in cordis-plugin-loader during Include._apply of cordis:include, explains fail-closed id uniqueness instead of last-write-wins, and explicitly rejects the profile comment's 'redundant but harmless to keep' rationale."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "A table distinguishes all three operations: config override by existing id is safe, insert of a genuinely new id is safe (citing the profile's own dsh-file-trace/dsh-profiles rows), insert of an already bundle-shipped id is fatal. It classifies the maintainer's row as the third case and grounds it in the matching web-app bundle excerpt."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting exactly the manually-added workspace-files insert block from the profile cordis.patch.yml, leaving the bundle row and unrelated external plugin rows untouched, and explicitly rules out renaming, deleting the bundle service, or adding another insert; also notes overrides should be used if customization is needed."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a profile composition error before plugin instantiation, so plugin-side edits cannot fix the duplicate, and that removing it only restores the possibility of boot while the original 文件资源服务不可用 read failure is a separate problem needing its own diagnosis/verification."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping/inspecting the installed web-app bundle's cordis.patch.yml (and resolved composition) for the id before inserting, and proposes a concrete boot diagnostic naming workspace-files with both declaration paths and a removal directive for the profile block — beyond a bare 'check for duplicates'."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "The report's final advice is to delete the duplicate profile row; it never endorses keeping the duplicate, asserts silent merging, or proposes editing the external plugin — the redundant-insert comment is only quoted and rejected as the wrong premise."
+    }
+  ]
+}

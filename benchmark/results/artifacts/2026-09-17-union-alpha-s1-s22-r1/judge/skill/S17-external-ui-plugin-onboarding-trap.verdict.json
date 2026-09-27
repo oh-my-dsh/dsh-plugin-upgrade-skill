@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Connects plugin/lib/client.js top-level ESM import to the boot log's classic-script combo and browser-error compile failure; explains one syntax error blocks all wrapper registrations (empty plugin list, stock plugins gone); identifies typert-registry as the first awaited victim via the nested bundle path; notes the import is legal module syntax, just wrong for this context, so it does not overgeneralize raw ESM as invalid everywhere. Grounded in specific fixture files, plus a vm.Script read-only check."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Bisects the cordis.patch.yml insert rows, performs a vm.Script classic-script parse (reporting the actual SyntaxError) and explains why node --check is insufficient under ESM packages; describes the window.__ModuleLoader__.load({id, factory}) wrapper with package-name identity (@lhh010/dsh-profiles vs row id), host-provided React via require (including react/jsx-runtime), and required inject/apply exports on module.exports, with a concrete code shell."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "Uses plugin-apply-error.txt to separate compile/registration from apply; explains the parent entry's children table owns the declaration and cross-entry apply order is not guaranteed; shows the exact ctx.slots.inject('settings.section', () => ctx.slots.register(...)) wrapper with callback return; specifies registrant fields name/id/order (+optional label) and explicitly flags kind/scope at client.js line 25 as fields to remove."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Cites host-boot-log/restart-notes: combo assembled once per boot so edits and hard refresh cannot rebuild it; gives an ordered stop-verify-bind-refresh procedure, explains EADDRINUSE as the orphaned old node process retaining the port (not a packaging defect), and gives taskkill /PID <pid> /T /F with /T and /F semantics plus scoped-tree caution."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Proposes per-artifact classic-script validation at startup and combo-failure attribution naming package/id/path/position instead of the first awaited entry, plus segment offsets and combo-level diagnostics; the authoring checklist covers loader factory wrapper, host React/inject/apply exports, deferred slots.inject cross-entry registration with registrant-only metadata, and explicit restart with Windows process-tree cleanup."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report never recommends bare top-level ESM, immediate cross-entry registration without slots.inject, setting kind/scope on the registrant, or HMR/refresh instead of a full host restart; it affirmatively requires the opposite on each point."
+    }
+  ]
+}

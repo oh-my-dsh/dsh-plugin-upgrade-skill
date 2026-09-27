@@ -1,0 +1,1228 @@
+{
+  "schemaVersion": 1,
+  "id": "blind-grade-review-v1-manifest",
+  "coordinatorOnly": true,
+  "warning": "COORDINATOR-ONLY: sampling design with per-task strata and historical deltas. Reviewers receive only reviewer-packet/.",
+  "packetDate": "2026-09-16",
+  "provenance": {
+    "dataset": "glm-5.3-flash-s1-s22",
+    "modelFamily": "historical mid-baseline group (S1-S22 static tasks)",
+    "sourceDate": "2026-09-11",
+    "rounds": [
+      1,
+      2,
+      3
+    ],
+    "arms": [
+      "no-skill",
+      "with-skill"
+    ],
+    "artifactRoots": [
+      "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22",
+      "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round2",
+      "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round3"
+    ],
+    "note": "provenance is descriptive; the per-answer source path + sha256 in the coordinator map pin the exact bytes"
+  },
+  "seed": 20260916,
+  "taskCount": 16,
+  "answersPerTask": 2,
+  "answerCount": 32,
+  "roundRule": {
+    "preference": [
+      2,
+      1,
+      3
+    ],
+    "description": "prefer round 2; if round 2 is unavailable for a chosen answer, fall back deterministically round 1, then round 3; the round is never chosen by score",
+    "answersUsingPreferredRound": 32,
+    "answersUsingFallback": 0
+  },
+  "selectionAlgorithm": {
+    "name": "stratified-sha256-order-sampling",
+    "seed": 20260916,
+    "description": "tasks are stratified by the sign of the historical per-task delta (median over three rounds of with-skill minus no-skill); inside each stratum they are ordered by sha256(seed + task id); strata are then filled to their pre-declared targets; if a stratum is short the deficit is drawn from the nearest stratum by a fixed fill order",
+    "prng": "mulberry32",
+    "taskOrderingKey": "sha256(seed + \"\\n\" + taskId)",
+    "deltaDefinition": "median over rounds 1,2,3 of (skill - noskill), computed from the per-round aggregate.json artifacts listed in sources.aggregates",
+    "anonymousOrdering": "single deterministic Fisher-Yates shuffle over the 32 answers with mulberry32(anonymousOrderSeed); ids R001...R032 handed out in shuffled order; the seed is advanced until no answer keeps its input position (derangement)",
+    "anonymousOrderSeed": 20260916,
+    "taskLabelOrdering": "T01...T16 assigned in order of each task's smallest anonymous answer id"
+  },
+  "strata": [
+    {
+      "stratum": "positive",
+      "targetCount": 7,
+      "achievedCount": 7,
+      "shortfall": 0
+    },
+    {
+      "stratum": "zero",
+      "targetCount": 6,
+      "achievedCount": 9,
+      "shortfall": -3
+    },
+    {
+      "stratum": "negative",
+      "targetCount": 3,
+      "achievedCount": 0,
+      "shortfall": 3
+    }
+  ],
+  "fallbackApplication": [
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "filledStratum": "negative",
+      "drawnFromStratum": "zero"
+    },
+    {
+      "task": "S1-static-scan",
+      "filledStratum": "negative",
+      "drawnFromStratum": "zero"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "filledStratum": "negative",
+      "drawnFromStratum": "zero"
+    }
+  ],
+  "designDisclosures": {
+    "poolTaskCount": 22,
+    "poolTasksWithNegativeMedianDelta": 0,
+    "negativeStratumFilledFrom": [
+      "zero"
+    ],
+    "sampledPairsBySignOfSelectedRoundDelta": {
+      "withSkillHigher": 6,
+      "tie": 10,
+      "withSkillLower": 0
+    },
+    "note": "no task in the pool has a negative median delta, so the 3 pre-declared negative slots were filled by zero-delta tasks; with the round-2 rule no sampled pair comes from a round in which the with-skill answer scored lower than the no-skill answer. The review therefore cannot observe grading of skill-arm regressions and must say so when reported."
+  },
+  "masking": {
+    "token": "[redacted]",
+    "appliedToEveryAnswer": true,
+    "rules": [
+      {
+        "id": "skill-repo-path",
+        "pattern": "(?:[A-Za-z]:)?[^\\s`'\"()<>[\\]]*dsh-plugin-upgrade-skill[^\\s`'\"()<>[\\]]*",
+        "flags": "g",
+        "description": "absolute/local path containing the skill repository folder name"
+      },
+      {
+        "id": "skill-reference-path",
+        "pattern": "(?:[\\w.-]+\\/)*references\\/[\\w./-]*",
+        "flags": "g",
+        "description": "path into the skill references/ folder"
+      },
+      {
+        "id": "skill-entry-file",
+        "pattern": "\\bSKILL(?:\\.zh-CN)?\\.md\\b",
+        "flags": "g",
+        "description": "skill entry-point file name"
+      },
+      {
+        "id": "skill-reference-file",
+        "pattern": "\\b(?:v0\\.\\d+\\.\\d+-(?:alpha|beta|rc)\\.\\d+|rollup-\\d+\\.\\d+(?:\\.\\d+)?|api-migration-[\\w.-]+?|troubleshooting|pre-flight|precision-checklist|migration-hygiene|host-plane-probes|rc-0\\.1\\.3-runtime-verification)\\.md\\b",
+        "flags": "g",
+        "description": "bare file name of a skill reference card file"
+      },
+      {
+        "id": "skill-name",
+        "pattern": "`?\\b(?:dsh-)?plugin-upgrade\\b`?(?:[ \\t]+skill(?:'s|’s)?\\b)?",
+        "flags": "gi",
+        "description": "skill name (dsh-plugin-upgrade / plugin-upgrade), with a trailing \"skill\" if present"
+      },
+      {
+        "id": "skill-mode",
+        "pattern": "\\bMode[ \\t]+[A-D](?:\\/[A-D])*\\b(?:[ \\t]*·[ \\t]*[a-z-]+)?|\\b[A-D][ \\t]*·[ \\t]*(?:inspect|update|author-migrate)\\b",
+        "flags": "g",
+        "description": "skill operating-mode vocabulary (Mode A/B/C, \"A · inspect\")"
+      },
+      {
+        "id": "skill-word",
+        "pattern": "\\bskill(?:'s|’s)?\\b(?![ \\t]+(?:name|provider)s?\\b)(?!(?<=\\(skill)\\))",
+        "flags": "gi",
+        "description": "the word \"skill\" used as a tool reference (not \"skill name\"/\"skill provider\"/\"skills\"/\"(skill)\" surface labels)"
+      }
+    ],
+    "log": "paper/audit/blind-grade-review-v1/coordinator/masking-log.json",
+    "limitation": "word-level only; style, structure, paraphrased references and token density can still hint at the arm"
+  },
+  "taskMaterials": {
+    "gitRef": "bfe34febc3e9ad8c9fec75aeefa7437a37c1bb16",
+    "note": "brief + read-only fixture per task, read from git at the pinned round-1 dataset commit (identical at the round-2 and round-3 commits); identical for both arms, so only the skill-identity masking rules are applied",
+    "maskRuleIds": [
+      "skill-repo-path",
+      "skill-reference-path",
+      "skill-entry-file",
+      "skill-reference-file",
+      "skill-name"
+    ],
+    "files": [
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/instruction.md",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/instruction.md",
+        "sourceSha256": "dee9fc9b809e00edeae26113b807af19ace050dd6d06c4b6f2a0e852e7e7bfa0",
+        "sha256": "dee9fc9b809e00edeae26113b807af19ace050dd6d06c4b6f2a0e852e7e7bfa0",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/environment/fixture/README.md",
+        "sourceSha256": "23a5f512c665a64bfd734d8a87f2bef9dd75fb29d0fa9599b3158074d1a12be5",
+        "sha256": "23a5f512c665a64bfd734d8a87f2bef9dd75fb29d0fa9599b3158074d1a12be5",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/fixture/attempt1-ebusy.log",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/environment/fixture/attempt1-ebusy.log",
+        "sourceSha256": "a5b412bc432e91402826d822c02641b2bfe11ced91efbe4c6fc979c7d2fa59b4",
+        "sha256": "a5b412bc432e91402826d822c02641b2bfe11ced91efbe4c6fc979c7d2fa59b4",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/fixture/attempt2-downgrade.log",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/environment/fixture/attempt2-downgrade.log",
+        "sourceSha256": "5efb5e94a96a34ee4dec2955883cb91b66e86e612390c2c63ab5d363ca5fcb8e",
+        "sha256": "5efb5e94a96a34ee4dec2955883cb91b66e86e612390c2c63ab5d363ca5fcb8e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/fixture/npm-dist-tags.txt",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/environment/fixture/npm-dist-tags.txt",
+        "sourceSha256": "3bdf3bcef12e441b4984f0069cc9fae379e11541e775834ce3777c44ca8821fc",
+        "sha256": "3bdf3bcef12e441b4984f0069cc9fae379e11541e775834ce3777c44ca8821fc",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T01",
+        "task": "S12-global-upgrade-ebusy-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T01/fixture/running-processes.txt",
+        "sourcePath": "benchmark/tasks/S12-global-upgrade-ebusy-trap/environment/fixture/running-processes.txt",
+        "sourceSha256": "488bdccdfdddd4b1deac07afcbdb18f7bf0e76dab1d57644dbbd9d4f3ba3d46b",
+        "sha256": "488bdccdfdddd4b1deac07afcbdb18f7bf0e76dab1d57644dbbd9d4f3ba3d46b",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/instruction.md",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/instruction.md",
+        "sourceSha256": "2482b5d523ee9e470fac9d4ad83db1e14df7f414eeda859ce73a92159dbfc5b1",
+        "sha256": "2482b5d523ee9e470fac9d4ad83db1e14df7f414eeda859ce73a92159dbfc5b1",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/environment/fixture/README.md",
+        "sourceSha256": "cc50e09bf81daa08a66c5b718a9d4fcda550a64dabc0e5acac84fb7caaa08a66",
+        "sha256": "cc50e09bf81daa08a66c5b718a9d4fcda550a64dabc0e5acac84fb7caaa08a66",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/fixture/plugin-attachment-flow.js",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/environment/fixture/plugin-attachment-flow.js",
+        "sourceSha256": "5ca0f59df19a031217105b9fc6bac12549bb6d0e8e71d3a3667ca4b8d39616aa",
+        "sha256": "5ca0f59df19a031217105b9fc6bac12549bb6d0e8e71d3a3667ca4b8d39616aa",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/fixture/plugin-version-chip.js",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/environment/fixture/plugin-version-chip.js",
+        "sourceSha256": "b560ae3ab5e268f3b3cea1614979dcc723bddce067fcb731fcb09639a7e9a1f9",
+        "sha256": "b560ae3ab5e268f3b3cea1614979dcc723bddce067fcb731fcb09639a7e9a1f9",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/fixture/tags-api-response.txt",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/environment/fixture/tags-api-response.txt",
+        "sourceSha256": "2afe48ffdb7fcbcc194ec11dea579c29efbc312b12d27fba01c16ee0d12fbd7a",
+        "sha256": "2afe48ffdb7fcbcc194ec11dea579c29efbc312b12d27fba01c16ee0d12fbd7a",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T02",
+        "task": "S10-paste-rename-and-version-chip",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T02/fixture/user-threads.md",
+        "sourcePath": "benchmark/tasks/S10-paste-rename-and-version-chip/environment/fixture/user-threads.md",
+        "sourceSha256": "f27063af372ca524f4d4658d780baf9bdfc7adbfe47b641ad6fca66146ddfaf7",
+        "sha256": "f27063af372ca524f4d4658d780baf9bdfc7adbfe47b641ad6fca66146ddfaf7",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/instruction.md",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/instruction.md",
+        "sourceSha256": "7baef6762cac0c40abe2c538cc3cfc44155480a423b054cda3314883e7fabaac",
+        "sha256": "7baef6762cac0c40abe2c538cc3cfc44155480a423b054cda3314883e7fabaac",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/README.md",
+        "sourceSha256": "102ac5ac2d97981c033f06e7eb677dc56535e357e7fe35d3216b4dad0ca8edd2",
+        "sha256": "102ac5ac2d97981c033f06e7eb677dc56535e357e7fe35d3216b4dad0ca8edd2",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/boot-manifest-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/boot-manifest-excerpt.txt",
+        "sourceSha256": "1d905c0be86e06f9c9b124fc9abd95abc52f736b05c0a25deb9a78716f9342ca",
+        "sha256": "1d905c0be86e06f9c9b124fc9abd95abc52f736b05c0a25deb9a78716f9342ca",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/combo-probe.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/combo-probe.txt",
+        "sourceSha256": "0cba6cc87fa0bab1610c158edf040ad3d14cfe8a2a36a6b9900f310862d2a3e4",
+        "sha256": "0cba6cc87fa0bab1610c158edf040ad3d14cfe8a2a36a6b9900f310862d2a3e4",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/console-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/console-excerpt.txt",
+        "sourceSha256": "7c10810c2ae5fced353ff46847da891542ed0f13db6b64bc57cb5057669d3134",
+        "sha256": "7c10810c2ae5fced353ff46847da891542ed0f13db6b64bc57cb5057669d3134",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/contrast-probe.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/contrast-probe.txt",
+        "sourceSha256": "6e227d8ea910e0d0e9a5cb4f63b007a08f4c6562fbc9604c76aaac04e2fb6a06",
+        "sha256": "6e227d8ea910e0d0e9a5cb4f63b007a08f4c6562fbc9604c76aaac04e2fb6a06",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/discussion-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/discussion-excerpt.txt",
+        "sourceSha256": "a0dda3ec69df4bb1d709e5603a4950d9487c259ef29e5e26c16d1fdbdb1a01e4",
+        "sha256": "a0dda3ec69df4bb1d709e5603a4950d9487c259ef29e5e26c16d1fdbdb1a01e4",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T03",
+        "task": "S21-resource-service-unavailable-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T03/fixture/symptom-log.txt",
+        "sourcePath": "benchmark/tasks/S21-resource-service-unavailable-trap/environment/fixture/symptom-log.txt",
+        "sourceSha256": "7bec44892079515d451bb695ef95d5366d8b19759e415275587d55ac1ef650c0",
+        "sha256": "7bec44892079515d451bb695ef95d5366d8b19759e415275587d55ac1ef650c0",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T04",
+        "task": "S16-self-host-upgrade-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T04/instruction.md",
+        "sourcePath": "benchmark/tasks/S16-self-host-upgrade-trap/instruction.md",
+        "sourceSha256": "9857980f15674a6f9f7df161035e8a8fc8b394aa44ce8ec6cd1ff486d27d9879",
+        "sha256": "9857980f15674a6f9f7df161035e8a8fc8b394aa44ce8ec6cd1ff486d27d9879",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T04",
+        "task": "S16-self-host-upgrade-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T04/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S16-self-host-upgrade-trap/environment/fixture/README.md",
+        "sourceSha256": "892c431c468c2ca1e42210cd322133a2a7050665834b34d6e022a6ce29df7a38",
+        "sha256": "892c431c468c2ca1e42210cd322133a2a7050665834b34d6e022a6ce29df7a38",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T04",
+        "task": "S16-self-host-upgrade-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T04/fixture/agent-session-log.txt",
+        "sourcePath": "benchmark/tasks/S16-self-host-upgrade-trap/environment/fixture/agent-session-log.txt",
+        "sourceSha256": "7fcaefb0d1d0b255cd5ca39adb0435ce907302c3e54963c9dc5223b6e556df67",
+        "sha256": "7fcaefb0d1d0b255cd5ca39adb0435ce907302c3e54963c9dc5223b6e556df67",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T04",
+        "task": "S16-self-host-upgrade-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T04/fixture/env-state.txt",
+        "sourcePath": "benchmark/tasks/S16-self-host-upgrade-trap/environment/fixture/env-state.txt",
+        "sourceSha256": "26a42dc5d3b15f42eec0c81f315feb61572d307fe6e5ef2992880af5f55310d3",
+        "sha256": "26a42dc5d3b15f42eec0c81f315feb61572d307fe6e5ef2992880af5f55310d3",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T04",
+        "task": "S16-self-host-upgrade-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T04/fixture/repair-notes.md",
+        "sourcePath": "benchmark/tasks/S16-self-host-upgrade-trap/environment/fixture/repair-notes.md",
+        "sourceSha256": "41f46c96e997445d73360a4b557f3deb92761ad76445791b587d19895d160455",
+        "sha256": "41f46c96e997445d73360a4b557f3deb92761ad76445791b587d19895d160455",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/instruction.md",
+        "sourcePath": "benchmark/tasks/S1-static-scan/instruction.md",
+        "sourceSha256": "a0a86d166c09d2b52b10232157b9fc872e7f5f9e7f7c7cd2f66a3d81c939b0a2",
+        "sha256": "a0a86d166c09d2b52b10232157b9fc872e7f5f9e7f7c7cd2f66a3d81c939b0a2",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/README.md",
+        "sourceSha256": "84b8fd89d9e05abcc4543381a5c50d81fd0f57344879d8bf560dcf3495e79800",
+        "sha256": "75140504acb4bccb9c1b09ad72b88ed203804a5b67839c317a64dd8a2ac6f26d",
+        "maskReplacements": [
+          {
+            "rule": "skill-name",
+            "line": 3,
+            "original": "plugin-upgrade"
+          }
+        ]
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/cordis.patch.yml",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/cordis.patch.yml",
+        "sourceSha256": "a9feaa3ec0f63cedf8e84416f532b53086a7c4ef508dbc280957e79f16dd9668",
+        "sha256": "a9feaa3ec0f63cedf8e84416f532b53086a7c4ef508dbc280957e79f16dd9668",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/package.json",
+        "sourceSha256": "af1e498ca6f80b65329c7a1dd017d97761391d7032cf7d02f3f44832f920446e",
+        "sha256": "af1e498ca6f80b65329c7a1dd017d97761391d7032cf7d02f3f44832f920446e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/patch.yml",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/patch.yml",
+        "sourceSha256": "de622598fc298f54f2f86ee48734c0c615f02bc9bab6fe9ba234339e6c595b3b",
+        "sha256": "de622598fc298f54f2f86ee48734c0c615f02bc9bab6fe9ba234339e6c595b3b",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/scripts/apply-patch.mjs",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/scripts/apply-patch.mjs",
+        "sourceSha256": "4d6744baf58fe05524bdcf23a5e289a6292e059bb2272342a5a0448e091221f0",
+        "sha256": "4d6744baf58fe05524bdcf23a5e289a6292e059bb2272342a5a0448e091221f0",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T05",
+        "task": "S1-static-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T05/fixture/src/index.ts",
+        "sourcePath": "benchmark/tasks/S1-static-scan/environment/fixture/src/index.ts",
+        "sourceSha256": "429979274fe9776e22809e0a2725c88c70b7b3127926a8efcc0e4335d7c086d0",
+        "sha256": "429979274fe9776e22809e0a2725c88c70b7b3127926a8efcc0e4335d7c086d0",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T06",
+        "task": "S7-unpublished-cohort",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T06/instruction.md",
+        "sourcePath": "benchmark/tasks/S7-unpublished-cohort/instruction.md",
+        "sourceSha256": "14c30cd900ccc92949ca2432eb9239cd930a61187cc0f40ad959c55efab0e1f1",
+        "sha256": "14c30cd900ccc92949ca2432eb9239cd930a61187cc0f40ad959c55efab0e1f1",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T06",
+        "task": "S7-unpublished-cohort",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T06/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S7-unpublished-cohort/environment/fixture/README.md",
+        "sourceSha256": "b4a1f0ef2a1ce99d3e89b0c77d35fc2d55331b8eb10e41c35f7a4a172fa89ab9",
+        "sha256": "b4a1f0ef2a1ce99d3e89b0c77d35fc2d55331b8eb10e41c35f7a4a172fa89ab9",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T06",
+        "task": "S7-unpublished-cohort",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T06/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S7-unpublished-cohort/environment/fixture/package.json",
+        "sourceSha256": "73b215c4e9632a8a3d7b7b29bd659aaa42e0e799f3e3d64b666b8cb9f2be1b4e",
+        "sha256": "73b215c4e9632a8a3d7b7b29bd659aaa42e0e799f3e3d64b666b8cb9f2be1b4e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/instruction.md",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/instruction.md",
+        "sourceSha256": "5dc8941de2d6c4fc1ebe5281814e4e05b1f0b899b1a7700c85bf681f9f3e37ad",
+        "sha256": "5dc8941de2d6c4fc1ebe5281814e4e05b1f0b899b1a7700c85bf681f9f3e37ad",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/README.md",
+        "sourceSha256": "a386005d27b7d898419c63c96c3d036ad4151f47f7bbaee79b801ed375de515e",
+        "sha256": "a386005d27b7d898419c63c96c3d036ad4151f47f7bbaee79b801ed375de515e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/browser-error.txt",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/browser-error.txt",
+        "sourceSha256": "37bc96f28640a8f90aa33703b095ce530a6a930cc62e536a977fb407f068277d",
+        "sha256": "37bc96f28640a8f90aa33703b095ce530a6a930cc62e536a977fb407f068277d",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/host-boot-log.txt",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/host-boot-log.txt",
+        "sourceSha256": "e692c81b6f8157d6c9cccd28e72f74c581447a88dfe7656b572aba61afc37cac",
+        "sha256": "e692c81b6f8157d6c9cccd28e72f74c581447a88dfe7656b572aba61afc37cac",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/plugin-apply-error.txt",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/plugin-apply-error.txt",
+        "sourceSha256": "e2a7c68459aa471fd7a92aeb4382a64326fd9fa4bc755a96b3a23c8a4d4666d2",
+        "sha256": "e2a7c68459aa471fd7a92aeb4382a64326fd9fa4bc755a96b3a23c8a4d4666d2",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/plugin/lib/client.js",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/plugin/lib/client.js",
+        "sourceSha256": "e18363c94267c6c16e559d47831249d2547f7c7cd61b648e6cd808e0acac433c",
+        "sha256": "e18363c94267c6c16e559d47831249d2547f7c7cd61b648e6cd808e0acac433c",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/profile/cordis.patch.yml",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/profile/cordis.patch.yml",
+        "sourceSha256": "afde707f73a9456f3c77a1d6d3e4cf6a2fa3a87ac1c203009e25000f0fccc217",
+        "sha256": "afde707f73a9456f3c77a1d6d3e4cf6a2fa3a87ac1c203009e25000f0fccc217",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/restart-notes.txt",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/restart-notes.txt",
+        "sourceSha256": "7ee91bbfb49b688726bcb1bdc96eba7db00083c4f97030c911f6df11c20a7de9",
+        "sha256": "7ee91bbfb49b688726bcb1bdc96eba7db00083c4f97030c911f6df11c20a7de9",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T07",
+        "task": "S17-external-ui-plugin-onboarding-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T07/fixture/working-plugin-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S17-external-ui-plugin-onboarding-trap/environment/fixture/working-plugin-excerpt.txt",
+        "sourceSha256": "a7cff726b315f24adc99852489a959c956796148a5e5ffa3aeea790e6acddc1d",
+        "sha256": "a7cff726b315f24adc99852489a959c956796148a5e5ffa3aeea790e6acddc1d",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/instruction.md",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/instruction.md",
+        "sourceSha256": "2a645cd532c30eda3e944cbd4eed40447178e0a876fb34004b6cb6a3666adfab",
+        "sha256": "2a645cd532c30eda3e944cbd4eed40447178e0a876fb34004b6cb6a3666adfab",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/environment/fixture/README.md",
+        "sourceSha256": "318c714416bd3a66e74cac479a75c3fac2e53bf4498c6ca0873a29924f07d72c",
+        "sha256": "318c714416bd3a66e74cac479a75c3fac2e53bf4498c6ca0873a29924f07d72c",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/fixture/chunk-route.ts",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/environment/fixture/chunk-route.ts",
+        "sourceSha256": "139e310bf2ffe410d733b445abb754934a88bb19c537e25ac87401401acafb30",
+        "sha256": "139e310bf2ffe410d733b445abb754934a88bb19c537e25ac87401401acafb30",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/fixture/ci-note.md",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/environment/fixture/ci-note.md",
+        "sourceSha256": "8f141a8f65e16da8302bbf571bfe6e3599266a147421948eb420bc7402e9a3e4",
+        "sha256": "8f141a8f65e16da8302bbf571bfe6e3599266a147421948eb420bc7402e9a3e4",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/fixture/console-403-windows.txt",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/environment/fixture/console-403-windows.txt",
+        "sourceSha256": "d471902c4d17cac6346d81a5f89bc2fc56e96508937a7f83910f05e2efdc1008",
+        "sha256": "d471902c4d17cac6346d81a5f89bc2fc56e96508937a7f83910f05e2efdc1008",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T08",
+        "task": "S11-mermaid-lazyload-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T08/fixture/console-split-chunks.txt",
+        "sourcePath": "benchmark/tasks/S11-mermaid-lazyload-trap/environment/fixture/console-split-chunks.txt",
+        "sourceSha256": "9c980ee679b081eaf08c4853e809ebb95f9b85f53f02d60747a1e79c980ab5d2",
+        "sha256": "9c980ee679b081eaf08c4853e809ebb95f9b85f53f02d60747a1e79c980ab5d2",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T09",
+        "task": "S14-link-install-lock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T09/instruction.md",
+        "sourcePath": "benchmark/tasks/S14-link-install-lock-trap/instruction.md",
+        "sourceSha256": "d8f210d7715dff82f9ab534cd988650b663c300b09d5c27b20b91473c9108a31",
+        "sha256": "d8f210d7715dff82f9ab534cd988650b663c300b09d5c27b20b91473c9108a31",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T09",
+        "task": "S14-link-install-lock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T09/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S14-link-install-lock-trap/environment/fixture/README.md",
+        "sourceSha256": "3ae3a30e6f3d9179d0d60af67159615083ba40b365bc6c48c82575120cb74f71",
+        "sha256": "3ae3a30e6f3d9179d0d60af67159615083ba40b365bc6c48c82575120cb74f71",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T09",
+        "task": "S14-link-install-lock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T09/fixture/copy-session.txt",
+        "sourcePath": "benchmark/tasks/S14-link-install-lock-trap/environment/fixture/copy-session.txt",
+        "sourceSha256": "e097b55968d5eac98d4055d4fb76f6a160176706b0bf5bd9914208ea851e6dbf",
+        "sha256": "e097b55968d5eac98d4055d4fb76f6a160176706b0bf5bd9914208ea851e6dbf",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T09",
+        "task": "S14-link-install-lock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T09/fixture/maintainer-thread.md",
+        "sourcePath": "benchmark/tasks/S14-link-install-lock-trap/environment/fixture/maintainer-thread.md",
+        "sourceSha256": "58ad4874f244198e298ecfe501381a1181ca9edea8f4c56fb0d01e05f5a49686",
+        "sha256": "58ad4874f244198e298ecfe501381a1181ca9edea8f4c56fb0d01e05f5a49686",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T09",
+        "task": "S14-link-install-lock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T09/fixture/profile-introspection.txt",
+        "sourcePath": "benchmark/tasks/S14-link-install-lock-trap/environment/fixture/profile-introspection.txt",
+        "sourceSha256": "6343bb0886cd1a458c21127f72abef1d2d37e1c70f6537235687de8dab070583",
+        "sha256": "6343bb0886cd1a458c21127f72abef1d2d37e1c70f6537235687de8dab070583",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/instruction.md",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/instruction.md",
+        "sourceSha256": "72c48fa1a9a2d405b8e810e668c98b2c284a9920944a75550d08d4ab73033e89",
+        "sha256": "72c48fa1a9a2d405b8e810e668c98b2c284a9920944a75550d08d4ab73033e89",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/environment/fixture/README.md",
+        "sourceSha256": "fdca9077f0c9fb810f365d890f677e1cab35208e1ffc78ae9d1b3f54aa39d479",
+        "sha256": "fdca9077f0c9fb810f365d890f677e1cab35208e1ffc78ae9d1b3f54aa39d479",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/fixture/cordis.patch.yml",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/environment/fixture/cordis.patch.yml",
+        "sourceSha256": "d50c34ae80e26e0dd0ab56b9e2835a6b3049665b8777027033ff52695ca02abe",
+        "sha256": "d50c34ae80e26e0dd0ab56b9e2835a6b3049665b8777027033ff52695ca02abe",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/fixture/index.js",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/environment/fixture/index.js",
+        "sourceSha256": "7306621926891cdf7d26ef268725b5f386213ce8410259947a30662117b0a866",
+        "sha256": "7306621926891cdf7d26ef268725b5f386213ce8410259947a30662117b0a866",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/environment/fixture/package.json",
+        "sourceSha256": "414adb496685d6467d57740acf03aeccdb343f1d231b2b3f05e354124508602e",
+        "sha256": "414adb496685d6467d57740acf03aeccdb343f1d231b2b3f05e354124508602e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T10",
+        "task": "S2-negative-scan",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T10/fixture/src/session-notes.js",
+        "sourcePath": "benchmark/tasks/S2-negative-scan/environment/fixture/src/session-notes.js",
+        "sourceSha256": "7a3219984c595f4c927e386b54e688c9ace2d0a50cad0e72a436f93c9c673748",
+        "sha256": "7a3219984c595f4c927e386b54e688c9ace2d0a50cad0e72a436f93c9c673748",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T11",
+        "task": "S6-corridor-net-state",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T11/instruction.md",
+        "sourcePath": "benchmark/tasks/S6-corridor-net-state/instruction.md",
+        "sourceSha256": "6542d1b412f9f0dd090287a0c6d364b7dd7b4309193ad65e08e65b27d13bfc79",
+        "sha256": "6542d1b412f9f0dd090287a0c6d364b7dd7b4309193ad65e08e65b27d13bfc79",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T11",
+        "task": "S6-corridor-net-state",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T11/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S6-corridor-net-state/environment/fixture/README.md",
+        "sourceSha256": "293a9d4bbc8753f36cd4dfeb7de6d5196fa6840bef6b03eedefc866c3b6f6ecc",
+        "sha256": "293a9d4bbc8753f36cd4dfeb7de6d5196fa6840bef6b03eedefc866c3b6f6ecc",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T11",
+        "task": "S6-corridor-net-state",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T11/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S6-corridor-net-state/environment/fixture/package.json",
+        "sourceSha256": "0f94b8a587519d508753b89b8c03d14ac266b6646b36f37abd93a9edfedb437e",
+        "sha256": "0f94b8a587519d508753b89b8c03d14ac266b6646b36f37abd93a9edfedb437e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T11",
+        "task": "S6-corridor-net-state",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T11/fixture/src/events.ts",
+        "sourcePath": "benchmark/tasks/S6-corridor-net-state/environment/fixture/src/events.ts",
+        "sourceSha256": "e0d7190ae79583ed5db16ed188821ba59ef866d68d29d023905d74e6fe36809c",
+        "sha256": "e0d7190ae79583ed5db16ed188821ba59ef866d68d29d023905d74e6fe36809c",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T12",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T12/instruction.md",
+        "sourcePath": "benchmark/tasks/S22-duplicate-insert-boot-crash-trap/instruction.md",
+        "sourceSha256": "3871b72a6e217c68946ab1a6e71ec5a7bcc3266ac79461c70f5840ba71d956f5",
+        "sha256": "3871b72a6e217c68946ab1a6e71ec5a7bcc3266ac79461c70f5840ba71d956f5",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T12",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T12/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S22-duplicate-insert-boot-crash-trap/environment/fixture/README.md",
+        "sourceSha256": "fbfe7db1336b13d8b5f8554aaa021fb008419d58ee4569baeda83e3483ceb898",
+        "sha256": "fbfe7db1336b13d8b5f8554aaa021fb008419d58ee4569baeda83e3483ceb898",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T12",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T12/fixture/boot-crash-log.txt",
+        "sourcePath": "benchmark/tasks/S22-duplicate-insert-boot-crash-trap/environment/fixture/boot-crash-log.txt",
+        "sourceSha256": "f87fc88f81479d66ce96f0ba7aaed110d5efdb344fa15b96ae5d2589dbf919f8",
+        "sha256": "f87fc88f81479d66ce96f0ba7aaed110d5efdb344fa15b96ae5d2589dbf919f8",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T12",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T12/fixture/profile-patch-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S22-duplicate-insert-boot-crash-trap/environment/fixture/profile-patch-excerpt.txt",
+        "sourceSha256": "68a5d8765403bb98a1aabcb579baf0f03e412b4d11749ec86b7c3a6c0193e24a",
+        "sha256": "68a5d8765403bb98a1aabcb579baf0f03e412b4d11749ec86b7c3a6c0193e24a",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T12",
+        "task": "S22-duplicate-insert-boot-crash-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T12/fixture/web-app-patch-excerpt.txt",
+        "sourcePath": "benchmark/tasks/S22-duplicate-insert-boot-crash-trap/environment/fixture/web-app-patch-excerpt.txt",
+        "sourceSha256": "85d2730a120d7237a62629dae4941e78ca01b7363bab7f1f1739dcb81a24dd59",
+        "sha256": "85d2730a120d7237a62629dae4941e78ca01b7363bab7f1f1739dcb81a24dd59",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/instruction.md",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/instruction.md",
+        "sourceSha256": "91f7137e07379961e08511b695a4caa273d401420244bdd28a9dd4c323eaf5eb",
+        "sha256": "91f7137e07379961e08511b695a4caa273d401420244bdd28a9dd4c323eaf5eb",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/environment/fixture/README.md",
+        "sourceSha256": "96830d3a6845542d211b8403350ef75f4eea6f51c2220124f9848c7e08d911b4",
+        "sha256": "96830d3a6845542d211b8403350ef75f4eea6f51c2220124f9848c7e08d911b4",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/fixture/console-session.txt",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/environment/fixture/console-session.txt",
+        "sourceSha256": "bfce1af92a4320972739bcf44a3529b03bfbcc1fcad414f58db8f1ba0b5bbb6e",
+        "sha256": "bfce1af92a4320972739bcf44a3529b03bfbcc1fcad414f58db8f1ba0b5bbb6e",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/fixture/host-input-contract.ts",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/environment/fixture/host-input-contract.ts",
+        "sourceSha256": "10837fa4efef064b1dc9b0e650247c46bfd89fa693b54851964c4130acdce7bb",
+        "sha256": "10837fa4efef064b1dc9b0e650247c46bfd89fa693b54851964c4130acdce7bb",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/fixture/host-input-facade.ts",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/environment/fixture/host-input-facade.ts",
+        "sourceSha256": "57e9fda0d3e11d9f8b9dc2aa28359d1bd8c4a73f8aa53c43dbbdf96e9f2ff376",
+        "sha256": "57e9fda0d3e11d9f8b9dc2aa28359d1bd8c4a73f8aa53c43dbbdf96e9f2ff376",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T13",
+        "task": "S9-composer-coordinate-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T13/fixture/plugin-client.js",
+        "sourcePath": "benchmark/tasks/S9-composer-coordinate-trap/environment/fixture/plugin-client.js",
+        "sourceSha256": "514809bfb8c88e634fdec1cf54cb0c323aede73ba5371b3a4a468f5fbd16f400",
+        "sha256": "514809bfb8c88e634fdec1cf54cb0c323aede73ba5371b3a4a468f5fbd16f400",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T14",
+        "task": "S4-legacy-client-imports",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T14/instruction.md",
+        "sourcePath": "benchmark/tasks/S4-legacy-client-imports/instruction.md",
+        "sourceSha256": "9bfec7614b9b1f4339ad08c1a9bdd52e19a3a69c84ebad437ee1985a9f6e4c13",
+        "sha256": "9bfec7614b9b1f4339ad08c1a9bdd52e19a3a69c84ebad437ee1985a9f6e4c13",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T14",
+        "task": "S4-legacy-client-imports",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T14/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S4-legacy-client-imports/environment/fixture/README.md",
+        "sourceSha256": "4dc7a7c599d9fa440f4a98f7a31f907cf72bfbc5210e9491cbeb6e4714365ecb",
+        "sha256": "4dc7a7c599d9fa440f4a98f7a31f907cf72bfbc5210e9491cbeb6e4714365ecb",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T14",
+        "task": "S4-legacy-client-imports",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T14/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S4-legacy-client-imports/environment/fixture/package.json",
+        "sourceSha256": "ffd9e5ccaab6dd032995df4dff93403c5c58bf7cc60d2e98dd0b637e23c76142",
+        "sha256": "ffd9e5ccaab6dd032995df4dff93403c5c58bf7cc60d2e98dd0b637e23c76142",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T14",
+        "task": "S4-legacy-client-imports",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T14/fixture/src/client/Pet.tsx",
+        "sourcePath": "benchmark/tasks/S4-legacy-client-imports/environment/fixture/src/client/Pet.tsx",
+        "sourceSha256": "037f6c3b5dd30b8db5674de69b803f8877f2c07450282f7d2c402a01b099bd27",
+        "sha256": "037f6c3b5dd30b8db5674de69b803f8877f2c07450282f7d2c402a01b099bd27",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T14",
+        "task": "S4-legacy-client-imports",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T14/fixture/src/client/index.ts",
+        "sourcePath": "benchmark/tasks/S4-legacy-client-imports/environment/fixture/src/client/index.ts",
+        "sourceSha256": "98183cf3d7455ccd3b23b128e7911307795c7f3f3bfdcec5625ea1849807a063",
+        "sha256": "98183cf3d7455ccd3b23b128e7911307795c7f3f3bfdcec5625ea1849807a063",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/instruction.md",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/instruction.md",
+        "sourceSha256": "1bf5918c5baeb66fc0a9243869a12f437b84309b5bedac09bf15912790bdbea5",
+        "sha256": "1bf5918c5baeb66fc0a9243869a12f437b84309b5bedac09bf15912790bdbea5",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/environment/fixture/README.md",
+        "sourceSha256": "457616c017d1281fe36cd81cb0fbdef056ac66c72f84237a6168c477e45e330b",
+        "sha256": "457616c017d1281fe36cd81cb0fbdef056ac66c72f84237a6168c477e45e330b",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/fixture/install-error.log",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/environment/fixture/install-error.log",
+        "sourceSha256": "45e5c35dfb7a0d69846f3db5a304be4f6f0b0918a7457f7ea6368be43d3e5cd8",
+        "sha256": "45e5c35dfb7a0d69846f3db5a304be4f6f0b0918a7457f7ea6368be43d3e5cd8",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/fixture/lease-excerpt.md",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/environment/fixture/lease-excerpt.md",
+        "sourceSha256": "7a5372357906dc02d3caed8855e10b62152cce515ada615df69be3f7e71b0562",
+        "sha256": "7a5372357906dc02d3caed8855e10b62152cce515ada615df69be3f7e71b0562",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/fixture/manifest-excerpt.json",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/environment/fixture/manifest-excerpt.json",
+        "sourceSha256": "cc73fcc5acef0c08e276c751175d167602e6e5288e2f56732802bd3489b7ba1a",
+        "sha256": "cc73fcc5acef0c08e276c751175d167602e6e5288e2f56732802bd3489b7ba1a",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T15",
+        "task": "S20-msvc-flock-trap",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T15/fixture/win32-excerpt.ts",
+        "sourcePath": "benchmark/tasks/S20-msvc-flock-trap/environment/fixture/win32-excerpt.ts",
+        "sourceSha256": "6381509b8b56631d78437672d4368dd09f72460f25d943227e3309f10a384113",
+        "sha256": "6381509b8b56631d78437672d4368dd09f72460f25d943227e3309f10a384113",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T16",
+        "task": "S5-negative-naming",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T16/instruction.md",
+        "sourcePath": "benchmark/tasks/S5-negative-naming/instruction.md",
+        "sourceSha256": "02fa05f07f0ce2a2f92ea6a0956ba78614e436f28e3e57650f560ee3bf2a4de2",
+        "sha256": "02fa05f07f0ce2a2f92ea6a0956ba78614e436f28e3e57650f560ee3bf2a4de2",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T16",
+        "task": "S5-negative-naming",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T16/fixture/README.md",
+        "sourcePath": "benchmark/tasks/S5-negative-naming/environment/fixture/README.md",
+        "sourceSha256": "f27373bc472e94e859b37407eaf5332fcda747a7f55110a4ea9d430644862645",
+        "sha256": "f27373bc472e94e859b37407eaf5332fcda747a7f55110a4ea9d430644862645",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T16",
+        "task": "S5-negative-naming",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T16/fixture/dsh-plugin.naming.json",
+        "sourcePath": "benchmark/tasks/S5-negative-naming/environment/fixture/dsh-plugin.naming.json",
+        "sourceSha256": "2863bfaf22ab7c9ff69a03b06af2cc1808cec2054987fcf5c6d4c55df61cb6b0",
+        "sha256": "2863bfaf22ab7c9ff69a03b06af2cc1808cec2054987fcf5c6d4c55df61cb6b0",
+        "maskReplacements": []
+      },
+      {
+        "taskLabel": "T16",
+        "task": "S5-negative-naming",
+        "path": "paper/audit/blind-grade-review-v1/reviewer-packet/tasks/T16/fixture/package.json",
+        "sourcePath": "benchmark/tasks/S5-negative-naming/environment/fixture/package.json",
+        "sourceSha256": "71cd34926a4686d2098c582b93f86305c772f1e7d0bee5be9f1ca64d26ec99bc",
+        "sha256": "71cd34926a4686d2098c582b93f86305c772f1e7d0bee5be9f1ca64d26ec99bc",
+        "maskReplacements": []
+      }
+    ]
+  },
+  "sources": {
+    "aggregates": [
+      {
+        "round": 1,
+        "path": "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22/aggregate.json",
+        "sha256": "21bb2120796611c93d6fc09c198a7d646c3f100a382ef8941a7969c03b82dc9c"
+      },
+      {
+        "round": 2,
+        "path": "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round2/aggregate.json",
+        "sha256": "d801bdccaa65cf1b765231fecb0efef4aed5e528f1ace94250140c7c03e18a92"
+      },
+      {
+        "round": 3,
+        "path": "benchmark/results/artifacts/2026-09-11-glm-5.3-flash-s1-s22-round3/aggregate.json",
+        "sha256": "b326111fb9f213513c654b1450c4734174f437877578dc263b9a1ec928e37e4a"
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "taskLabel": "T12",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 20,
+      "historicalPerRoundDelta": [
+        0,
+        20,
+        20
+      ]
+    },
+    {
+      "task": "S5-negative-naming",
+      "taskLabel": "T16",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 12,
+      "historicalPerRoundDelta": [
+        12,
+        0,
+        12
+      ]
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "taskLabel": "T15",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 5,
+      "historicalPerRoundDelta": [
+        5,
+        5,
+        15
+      ]
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "taskLabel": "T11",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 25,
+      "historicalPerRoundDelta": [
+        25,
+        37,
+        25
+      ]
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "taskLabel": "T07",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 20,
+      "historicalPerRoundDelta": [
+        20,
+        40,
+        -20
+      ]
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "taskLabel": "T03",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 20,
+      "historicalPerRoundDelta": [
+        0,
+        20,
+        20
+      ]
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "taskLabel": "T14",
+      "stratum": "positive",
+      "drawnToFillStratum": "positive",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 62,
+      "historicalPerRoundDelta": [
+        62,
+        62,
+        87
+      ]
+    },
+    {
+      "task": "S2-negative-scan",
+      "taskLabel": "T10",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "taskLabel": "T06",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        12
+      ]
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "taskLabel": "T09",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "taskLabel": "T13",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "taskLabel": "T01",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "taskLabel": "T02",
+      "stratum": "zero",
+      "drawnToFillStratum": "zero",
+      "stratumFallback": false,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "taskLabel": "T04",
+      "stratum": "zero",
+      "drawnToFillStratum": "negative",
+      "stratumFallback": true,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        20,
+        0,
+        -20
+      ]
+    },
+    {
+      "task": "S1-static-scan",
+      "taskLabel": "T05",
+      "stratum": "zero",
+      "drawnToFillStratum": "negative",
+      "stratumFallback": true,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        -25,
+        0,
+        5
+      ]
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "taskLabel": "T08",
+      "stratum": "zero",
+      "drawnToFillStratum": "negative",
+      "stratumFallback": true,
+      "historicalPerTaskDelta": 0,
+      "historicalPerRoundDelta": [
+        20,
+        0,
+        0
+      ]
+    }
+  ],
+  "humanReview": {
+    "humanReviewStatus": "not-started",
+    "humanReviewsSubmitted": 0,
+    "reviewerForms": [
+      "paper/audit/blind-grade-review-v1/reviewer-packet/reviewer-a.csv",
+      "paper/audit/blind-grade-review-v1/reviewer-packet/reviewer-b.csv"
+    ],
+    "note": "preparation only: no human review has been performed and no rating exists in this packet; a blank reviewer form means \"not reviewed\""
+  }
+}

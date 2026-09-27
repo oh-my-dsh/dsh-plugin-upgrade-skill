@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Cites LinkType Junction, the repo Target and the cordis.patch.yml link marker; concludes both paths are one physical directory so repo edits are already installed and the copy was never needed; contrasts with a copied install."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Attributes EBUSY and stale code to the running dsh web host holding loaded files and old module state, explains closing the tab releases nothing, and separately treats browser HTTP caching of client.js (not a file lock) as the reason for a hard refresh after host restart."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains the rename went through the junction onto the sole source files so the later copy had no source; recovery renames the .old2 files back preserving the edited content, runs node --check on both, then stops/restarts the host and hard-refreshes."},
+{"id":"ordered-activation","verdict":"pass","reason":"Orders syntax check, full host stop, dsh web restart, hard refresh, then verification of the hover preview, new host route and clean console; explicitly says browser-only refresh is insufficient."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Prescribes a read-only Get-Item LinkType/Target probe and the cordis.patch.yml link marker before any file write, branches linked vs copied procedures, and explains how copy-into-node_modules advice produced the EBUSY and rename-aside damage."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final recovery only renames the .old2 files back in place; no copy step, no deletion, and paths are treated as one directory."},
+{"id":"browser-only-activation","triggered":false,"reason":"Plan requires full host stop and restart before the hard refresh; browser actions are explicitly said not to release the lock."}
+]}

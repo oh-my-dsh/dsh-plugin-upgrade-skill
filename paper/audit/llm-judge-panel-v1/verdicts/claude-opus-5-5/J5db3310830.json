@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"official-short-name","verdict":"pass","reason":"Finds greet in pluginNames and keeps it separate from the acme/greet coordinate and the dsh-greet package. Rules it not a compatibility error and leaves only uniqueness to registry context."},
+{"id":"service-collision-advice","verdict":"pass","reason":"Flags the unprefixed service search as a generic name with collision risk. Classifies it as a warning or recommendation, not an error, and suggests namespacing."},
+{"id":"shared-event-context","verdict":"partial","reason":"Finds web-search/ready, treats it as an informational shared channel rather than an error, and marks channel ownership unknown. It does not explain that a matching name alone is no conflict and that publisher schema compatibility decides one; it frames the event as a collision recommendation."},
+{"id":"coverage-and-registry-limits","verdict":"partial","reason":"Covers every surface and keeps local validity separate from unqueried registry occupancy, explicitly refusing to call names reserved or available. However, it turns private:true into a publish blocker the author must fix, even though the flag marks test material."}
+],
+"caps":[{"id":"unsupported-all-clear","triggered":false,"reason":"Explicitly says a clean offline review does not mean the names are free or available, and leaves registry status unknown."}]}

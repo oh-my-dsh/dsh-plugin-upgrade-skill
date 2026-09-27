@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Report grounds the diagnosis in plugin/lib/client.js's top-level import/export statements and the boot log's 'classic script' combo line, explains all-or-nothing classic-script parsing so zero entries register, and correctly identifies the named dsh-typert-registry entry as the first awaited innocent victim while noting the parenthetical names the real bundle at position 1:1. It does not claim ESM is invalid in every JS context."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Proposes bisecting by removing the dsh-profiles insert row and a pre-concat per-bundle parse-as-classic-script check (regex for ^import/^export), noting node-check-style acceptance of ESM is insufficient implicitly by requiring classic-script parsing. Describes the window.__ModuleLoader__.load({id, factory:(require)=>{...return module.exports}}) wrapper, package-name id matching the insert row, host-provided React via require inside the factory, and inject/apply exports, mirroring the working excerpt without demanding its elided bodies."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "Correctly uses plugin-apply-error.txt to attribute the declaration to the settings parent entry, notes apply ordering/declaration must be resolvable when the child applies, and precisely distinguishes registrant fields (id, order) from declaration-owned name/kind/scope. However it never shows the deferred waiting form ctx.slots.inject('settings.section', () => ctx.slots.register(...)) or an equivalent callback-deferred registration; its parent-side ctx.slots.inject(...) is an elided mention describing declaration, not a deferred child registration mechanism."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Uses host-boot-log.txt and restart-notes.txt to explain combo assembly happens once per boot so edits and hard refresh change nothing, requires full stop/restart each iteration, gives taskkill /PID <pid> /T /F (plus netstat discovery) for the orphaned Windows process tree holding the port, explains EADDRINUSE as the old process retaining the port rather than a packaging defect, and includes refresh plus Plugin-list verification."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "Host side: per-bundle classic-script validation before concatenation and culprit attribution naming the owning plugin instead of the first awaited entry, plus per-entry compile caching and sourceURL markers. Author side: a seven-point checklist covering loader factory wrapper, host React via require and inject/apply, correct (deferred/parent-declared) cross-entry slot registration, install rows, restart with Windows tree cleanup, and triage — more than a generic 'add tests' list."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "The report consistently recommends the opposite of each capped anti-pattern: it rejects bare top-level ESM in the classic combo, requires deferred/parent-declared slot registration while explicitly forbidding name/kind/scope on the registrant, and mandates full host restart with process-tree kill rather than HMR or browser refresh."
+    }
+  ]
+}

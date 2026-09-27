@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"half-cell-background","verdict":"pass","reason":"Locates the two one-sided branches that emit only the foreground. Explains that the sticky previous background paints the empty half next to filled edge cells, and fixes it by adding ESC[49m to each half-filled cell. Ties this to the edge symptoms, not the art or the terminal."},
+{"id":"frame-clearing","verdict":"pass","reason":"Identifies the trailing-space trim and the pipeline dropping whitespace, so surplus columns are never overwritten. Proposes a reset followed by ESC[K per row, or fixed-width output, plus clearing the previous frame's bounding box, while keeping SGR controlled."},
+{"id":"frame-data-integrity","verdict":"pass","reason":"Uses the digest report to identify the tail2 mismatch of 23 cells as a data error, not a renderer artifact. Explains that the excerpt test covered a different frame, and gates every whole frame on digests generated from the source art."},
+{"id":"timer-liveness","verdict":"partial","reason":"Correctly explains the rearming timeout chain, the probe hosts that never unmount and why the TTY is unaffected. But the fix makes the CI hosts unmount or clear the timer on unmount. It never makes the planner's timeouts non-referencing (unref), so the component's lifecycle contract is left unfixed."},
+{"id":"renderer-and-rollout-prevention","verdict":"pass","reason":"The checklist covers half-cell background pinning, row and frame erase, balanced SGR resets and all-frame source digests. The pre-rollout audit takes a census of mounting hosts and timers and proposes a live-handle and exit regression."}
+],
+"caps":[
+{"id":"contradictory-render-advice","triggered":false,"reason":"No advice denies the background reset, keeps trimming without clearing, rejects source checks, or calls unref harmful. The report simply omits unref and does not argue against it."}
+]}

@@ -1,0 +1,71 @@
+{
+  "protocol": "report-judge-v2",
+  "task": "S14-link-install-lock-trap",
+  "source_commit": null,
+  "instruction": "# S14 · Link-Install File-Lock Trap (Read-Only)\n\n## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)\n\nThis is an unattended evaluation running in a disposable, isolated container; there will be\nno follow-up user messages. This task brief is itself the user's explicit authorization and\nconfirmation for the approach and execution needed to complete the task: complete the\nnecessary analysis and planning on your own, and keep executing as soon as the plan is\nformed — do not pause to wait for \"confirmation\", and do not ask the user follow-up\nquestions. That confirmation continues to apply to the concrete plans you produce under the\napplicable skill, but only within this scope:\n\n- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;\n- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;\n- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;\n- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.\n\nI maintain the community Web plugin `@org/dsh-attach-input` (lib-only bundle, no build\nstep). I just edited the repo's `lib/client.js` / `lib/index.js` to ship a hover-preview\nfeature, and the verification went wrong in every direction: a browser refresh showed\nnothing new, copying the files into the profile's node_modules hit EBUSY, and a\nrename-aside recovery left BOTH my repo and the profile with no entry files at all. The\nevidence pack in `/app/fixture/` (read-only — do not modify it) has my full PowerShell\nsession, the filesystem introspection, and my own write-up of what happened.\n\n**Your report** (write to `/app/agent-output/S14-link-install-lock-trap/`, any filename):\n\n1. What the profile entry actually is (cite the introspection): what a Junction install\n   means for deployment, and whether copying repo files into the profile's node_modules\n   was EVER the right move for this install mode;\n2. The two locks and their owners: why a browser refresh shows stale code (which process\n   serves the client bundle, what holds the lib files open), and why closing the browser\n   tab did not release the EBUSY;\n3. Why the rename-aside trick destroyed the SOURCE directory too (both paths are the same\n   directory through the junction), and the exact recovery from the current broken state\n   (only `client.js.old2` / `index.js.old2` exist — restore the original names, verify\n   syntax, then activate);\n4. The complete, ordered activation procedure for a link-installed lib-only Web plugin\n   after repo edits: which processes must fully stop and restart (host vs browser), why a\n   hard refresh (cache bypass) is needed for `client.js`, and how to verify the new code\n   actually loaded;\n5. The pre-flight check that should come before touching any file: how to determine the\n   install mode (link vs copied dependency) from the profile (LinkType/Target,\n   cordis.patch.yml install marker), and why the generic \"copy into node_modules\" advice\n   is actively harmful for link installs.\n\nWhat is tested: recognizing a link/junction install and its deploy semantics (repo tree IS\nthe installed copy), attributing both locks to the right processes (running dsh host, not\nthe browser), recovering a rename-aside accident safely, and not applying copied-install\nadvice to a linked install.\n",
+  "rubric": {
+    "criteria": [
+      {
+        "id": "junction-deployment",
+        "points": 20,
+        "requirement": "Use profile-introspection.txt LinkType Junction, Target and/or the link marker to establish that the profile entry resolves to the repo working tree. Repo edits already change the installed copy; copying those files through the junction is unnecessary and can act on the same physical files. Distinguish this from a copied dependency installation.",
+        "sourceRequired": true
+      },
+      {
+        "id": "host-lock-and-client-cache",
+        "points": 20,
+        "requirement": "Relate copy-session.txt and maintainer-thread.md to the running DSH host holding the loaded lib files/old module state. Closing a browser tab does not stop the host or release its lock. Separately explain stale client delivery/browser caching and why host restart plus cache-bypassing refresh is needed. Do not treat browser caching as a filesystem lock or extrapolate this host’s serving behavior to all DSH versions.",
+        "sourceRequired": true
+      },
+      {
+        "id": "rename-recovery",
+        "points": 20,
+        "requirement": "Explain why renaming through the junction renamed the sole source files and made the subsequent source copy fail. Restore client.js.old2 to client.js and index.js.old2 to index.js, preserve their contents, verify both with node --check or an equivalent syntax check, then activate. Stopping the host before restoration is a valid precaution; do not require renaming while locked or recreating/deleting the files.",
+        "sourceRequired": true
+      },
+      {
+        "id": "ordered-activation",
+        "points": 20,
+        "requirement": "Give the actual dependency order after repo edits/recovery: fully stop the host, restart dsh web, hard-refresh/bypass browser cache, then verify the new version/feature and absence of load errors. Syntax checking alone is not activation, and restarting only the browser is insufficient. Judge semantic order rather than the textual order of paragraphs.",
+        "sourceRequired": false
+      },
+      {
+        "id": "install-mode-preflight",
+        "points": 20,
+        "requirement": "Before any deployment file operation, inspect the actual profile entry with LinkType/Target or the cordis.patch.yml link marker and choose the procedure for linked versus copied installation. Explain why generic copy-into-node_modules advice caused this incident. Equivalent filesystem inspection is valid.",
+        "sourceRequired": false
+      }
+    ],
+    "caps": [
+      {
+        "id": "copy-through-junction",
+        "total": 40,
+        "requirement": "The final recovery/deployment plan still copies repo files onto the same junction target, deletes the only surviving .old2 files, or treats the two paths as independent copies. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      },
+      {
+        "id": "browser-only-activation",
+        "total": 40,
+        "requirement": "The plan says browser refresh/closure alone releases the host lock or makes the host-side edit effective, without stopping and restarting the host. Apply only to affirmative final advice or conclusions. Quoted, hypothetical or explicitly rejected bad examples do not trigger the cap; read the whole report."
+      }
+    ]
+  },
+  "references": [],
+  "fixture": {
+    "README.md": {
+      "sha256": "3ae3a30e6f3d9179d0d60af67159615083ba40b365bc6c48c82575120cb74f71",
+      "text": "# S14 fixture · Link-install activation evidence pack (static)\n\nEvidence for the S14-link-install-lock-trap task: a PowerShell session transcript showing a\nfailed Copy-Item into the plugin's profile node_modules, the filesystem introspection that\nreveals what that profile entry actually is, and the maintainer's thread describing what\nthey changed and what the user saw. **Read-only fixture — do not execute or publish\nanything here**; the task grading requires this directory to be unchanged relative to git HEAD.\n\n- `copy-session.txt` — the EBUSY Copy-Item attempts (including one \"rename aside then copy\" recovery that made things worse)\n- `profile-introspection.txt` — Get-Item LinkType/Target on the profile entry and the repo directory\n- `maintainer-thread.md` — what was changed, where, and what the user reported after each step\n"
+    },
+    "copy-session.txt": {
+      "sha256": "e097b55968d5eac98d4055d4fb76f6a160176706b0bf5bd9914208ea851e6dbf",
+      "text": "PS E:\\dev> Copy-Item E:\\dev\\dsh-attach-input\\lib\\*.js C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\ -Force\nCopy-Item : The file \"C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\client.js\"\nis being used by another process, so the process cannot access this file.\n+ CategoryInfo          : NotSpecified: (:) [ ], IOException, Microsoft.PowerShell.Commands.CopyItemCommand\n\n# maintainer closes the browser tab, waits, retries:\nPS E:\\dev> Copy-Item E:\\dev\\dsh-attach-input\\lib\\*.js C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\ -Force\nCopy-Item : ... same IOException for client.js, index.js, package.json\n\n# maintainer tries the rename-aside trick (rename the locked file, then copy the new one in):\nPS E:\\dev> $dst = 'C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib'\nPS E:\\dev> Rename-Item ($dst + '\\client.js') 'client.js.old2'\nPS E:\\dev> Rename-Item ($dst + '\\index.js') 'index.js.old2'\nPS E:\\dev> Copy-Item 'E:\\dev\\dsh-attach-input\\lib\\client.js' ($dst + '\\client.js')\nCopy-Item : Cannot find path \"E:\\dev\\dsh-attach-input\\lib\\client.js\" because it does not exist.\nPS E:\\dev> Get-ChildItem E:\\dev\\dsh-attach-input\\lib\nclient.js.old2\nindex.js.old2\nPS E:\\dev> Get-ChildItem $dst\nclient.js.old2\nindex.js.old2\n# ^ both directories now show ONLY the renamed files, and the plugin has no entry files at all\n"
+    },
+    "maintainer-thread.md": {
+      "sha256": "58ad4874f244198e298ecfe501381a1181ca9edea8f4c56fb0d01e05f5a49686",
+      "text": "# Maintainer thread — @org/dsh-attach-input v0.2.11 verification\n\nI maintain a lib-only Web plugin (no build step; `lib/client.js` + `lib/index.js` are the\nshipped files). Today I:\n\n1. Edited `lib/client.js` and `lib/index.js` directly in the repo at `E:\\dev\\dsh-attach-input`\n   (a hover-preview feature for image attachments, plus a new read-only host route).\n2. Told the user \"restart dsh web and hard-refresh the browser to verify\".\n3. The user refreshed the browser tab only — nothing changed (old behavior, no preview).\n4. I assumed the profile must be running an installed COPY of the plugin, so I tried to\n   Copy-Item the new lib files into the profile's node_modules (see copy-session.txt) —\n   EBUSY on every attempt, even after the browser tab was closed.\n5. I tried renaming the locked files aside and copying replacements in; the copy failed\n   with \"source does not exist\" and BOTH directories ended up with only the renamed\n   .old2 files (the plugin is now completely broken — no entry files at all).\n6. profile-introspection.txt shows what I found when I finally looked at what the profile\n   entry actually IS.\n\nQuestions I need answered in the report:\n\n- Why did the browser refresh show nothing new, and why were the lib files \"in use\" even\n  with no browser tab open?\n- What does the Junction + Target actually mean for \"deploying\" my repo edits to the\n  profile — was step 4 (Copy-Item into node_modules) ever necessary for THIS install?\n- Why did the rename-aside trick in step 5 make the SOURCE directory lose its files too,\n  and what is the correct recovery from the current broken state (only .old2 files exist)?\n- What is the correct, complete activation procedure for a link-installed lib-only Web\n  plugin after editing its repo files — which processes must restart, in what order, and\n  what does the browser need (and why can it still show stale code after the host\n  restarted)?\n- How should I have determined the install mode BEFORE touching any files?\n"
+    },
+    "profile-introspection.txt": {
+      "sha256": "6343bb0886cd1a458c21127f72abef1d2d37e1c70f6537235687de8dab070583",
+      "text": "PS E:\\dev> Get-Item C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input | Select-Object FullName, LinkType, Target\n\nFullName : C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\nLinkType : Junction\nTarget   : {E:\\dev\\dsh-attach-input}\n\nPS E:\\dev> Get-Item E:\\dev\\dsh-attach-input | Select-Object FullName, LinkType, Target\n\nFullName : E:\\dev\\dsh-attach-input\nLinkType :\nTarget   : {}\n\nPS E:\\dev> Get-Content C:\\Users\\me\\.dsh\\profiles\\web\\cordis.patch.yml | Select-String dsh-attach-input\n  - node_modules/@org/dsh-attach-input  # link:E:\\dev\\dsh-attach-input (installed 2026-08-30)\n"
+    }
+  }
+}

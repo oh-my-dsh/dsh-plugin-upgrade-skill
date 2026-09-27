@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites profile-introspection.txt LinkType Junction with Target E:\\dev\\dsh-attach-input and the cordis.patch.yml link marker, concludes the repo tree IS the installed copy so copying was never needed, and contrasts with a no-LinkType copied dependency install."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Attributes the EBUSY sharing violation to the running dsh host process holding loaded/open handles, states closing the browser tab releases nothing because the browser never held the locks, and separately explains browser caching of client.js requiring a cache-bypassing refresh after host restart, without treating cache as a filesystem lock or generalizing to all DSH versions."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the junction path and repo path are one physical directory so Rename-Item renamed the sole source files, which is why the subsequent Copy-Item found no source. Recovery renames client.js.old2/index.js.old2 back to the original names via the repo path, checks content, runs node --check on both, then activates; no deletion/recreation or rename-under-lock required, and stopping the host first is acknowledged as a valid precaution."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the correct semantic order: fully stop the dsh host, restart it so it re-imports lib/index.js, hard refresh (Ctrl+F5) the browser to bypass the cached client.js, then verify the new feature actually loaded (Network response marker, host route, behavior) rather than just absence of errors; explicitly notes syntax check alone and browser-only restart are insufficient."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Presents a pre-flight Get-Item LinkType/Target check plus the cordis.patch.yml link marker before any file operation, branches linked vs copied installation, and explains why generic copy-into-node_modules advice is harmful for link installs (writes onto files the host has open, invites rename-aside data loss, masks the real fix)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "The final plan contains no copy step: the report affirms copying was never needed for a link install and treats the two paths as one directory, mentioning copy-onto-junction only as the rejected mistake that caused the incident."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "The final activation procedure requires fully stopping and restarting the dsh host; browser refresh alone is explicitly identified as insufficient and as a mistaken step, not endorsed."
+    }
+  ]
+}

@@ -1,52 +1,35 @@
-# When Does a Migration Skill Help?
+# 面向特定版本插件迁移的 Agent Skill 评估
 
-当前标题：**A Retrospective Study of Version-Pinned Plugin Migration**。
+**预印本**：[arXiv:2609.30120](https://arxiv.org/abs/2609.30120)（cs.SE，2026 年 9 月），源码为 `paper/latex/acl_latex.tex`，计划投稿期刊为 JSS。
 
-2026-09-15 本轮收束：保留五组历史配置的绝对增益倒 U 作为探索性观察，不主张模型能力导致倒 U，也不把高基线组的小增益解释为不会使用 skill。主贡献是版本迁移 benchmark 与可复算的回顾性配对分析；四条件设计已移入附录，未执行、不作为实证贡献。
+2026-09-24 稿件整理为回顾性软件维护研究，按 JSS 读者定位。倒 U 不再作为主结论；本轮新增两种跨模型家族的 LLM 盲化重判，没有新增 solver 实验或独立人工评分。
 
-当前唯一执行入口：[倒 U 工作建议与投稿前清单](INVERTED-U-WORKPLAN.zh.md)。先做已有数据重分析和评分复核，是否追加统一三档实验由检查结果和预算决定。已删除相互冲突的旧计划。改稿历史见 [修改记录](audit/REVISION-2026-09-15-retrospective.zh.md)。
+- [正文](latex/acl_latex.tex)：单栏通用期刊审阅版，沿用旧文件名，不是已核验的 JSS 官方模板。
+- [唯一执行清单](INVERTED-U-WORKPLAN.zh.md)：已完成工作、停止规则、作者待确认项。
+- [证据映射](audit/claim-evidence-20260917.md)：主张、来源、限制与复算入口。
+- [复核说明](audit/output-review-20260917/README.zh.md)：10 份回答、56 项标准，保留原始评分与全部敏感性。
+- [投稿材料](submission/README.zh.md)：highlights、cover letter 草稿、作者与声明待办。
 
-[English README](README.md)
+## 编译与复算
 
-## 目录结构
+在仓库根目录运行：
 
-- `latex/` — 报告 LaTeX 源码
-  - `acl_latex.tex` — 主文件（标题、作者、摘要、全文骨架；基于官方最新模板）
-  - `acl.sty` / `acl_natbib.bst` — ACL 官方样式（acl-org/acl-style-files master，2026-06 版）
-  - `custom.bib` — 正文使用的参考文献；完整相关工作复核仍待完成
-  - `formatting.md` — 官方格式说明
-
-## 编译
-
-```bash
-cd latex
-pdflatex acl_latex && bibtex acl_latex && pdflatex acl_latex && pdflatex acl_latex
+```sh
+node paper/scripts/summarize-submission-evidence.mjs --check
+node benchmark/scripts/audit-unified-evidence.mjs --check
+node paper/scripts/analyze-llm-judge-panel.mjs --check
+npm run check:paper-paired
+tectonic --outdir output/pdf paper/latex/acl_latex.tex
+cp output/pdf/acl_latex.pdf output/pdf/migration-paper-retrospective-review.pdf
 ```
 
-使用 [Overleaf](https://www.overleaf.com/) 时，同时上传 `latex/` 和 `generated/` 并保留相对路径，选择 `latex/acl_latex.tex` 为主文件。当前使用 `review` 模式（带行号）。
+也可在 `paper/latex` 中使用 pdflatex + bibtex 编译。保留 `latex/` 与 `generated/` 相对路径。历史五组表与 benchmark 元数据通过各自生成脚本维护，不手改。S16 完整性不代表所有历史配置均有原始回答，静态得分不等于修复成功率。
 
-## 主结果表（生成，勿手改）
+原作者信息保存在 `submission/author-information.tex.txt`，尚需确认；审阅 PDF 不擅自指定通讯作者或声明全员已同意。
 
-论文主结果表来自确定性管线：**勿手改**。
 
-- 数据源：`benchmark/results/paired-effect-stats.json`，由 `benchmark/scripts/measure-paired-effect.mjs` 生成（任务级配对差值，mulberry32 seed 20260907，10000 次 bootstrap，双侧 Wilcoxon；内嵌输入文件 SHA-256）。
-- `paper/generated/paired-effect-table.tex`（主表 5 个模型点）与 `paper/generated/paired-effect-sensitivity-table.tex`（luna 污染组）由 `paper/scripts/generate-paired-effect-table.mjs` 从该 JSON 渲染，分别 `\input` 进 Results 章与敏感性附录。
+2026-09-17 补强：全量 64 报告 / 328 原判契约分层与 10 报告重点复核分开；人工后续确认保留来源，不推算一致率。新增检查：`npm run check:paper-contracts`、`npm run check:paper-glm53`。GLM-5.3 三轮混用 judge，仅作补充。
 
-在仓库根目录重新生成 / 校验：
+本轮写作收束：以完整归档的 S16 实验和迁移契约案例为正文主线，历史及补充模型比较移至附录 B；讨论明确 API、边界和进程存活的检查问题，以及尚未验证这些检查能改善后续结果的边界。见 [改稿记录](audit/REVISION-2026-09-17-positioning.zh.md)。
 
-```bash
-npm run measure:benchmark-paired   # 重算统计并写 JSON
-npm run generate:paper-paired      # 从 JSON 渲染 .tex
-npm run check:paper-paired         # CI 门禁：两者字节级漂移检查
-npm run test:benchmark-paired      # 统计脚本单元测试 + golden 校验
-```
-
-## 当前状态
-
-倒 U 以探索性观察进入主稿；四条件设计仅在附录。统计表可复算，工作稿已编译和检查。评分复核、稳健性分析和投稿材料整理尚未完成，统一在[工作建议](INVERTED-U-WORKPLAN.zh.md)中维护。
-
-## 相关资源
-
-- Benchmark 任务与判分：`../benchmark/`
-- Skill 语料：`../skills/`
-- 官方样式来源：[acl-org/acl-style-files](https://github.com/acl-org/acl-style-files)
+新增离线证据：S11 原谓词边界检查、S18 最小计时器机制对照与三个评分端点的完整符号枚举。运行 `npm run check:paper-mechanisms`；[结果与边界](audit/mechanism-checks-20260917/README.zh.md)。

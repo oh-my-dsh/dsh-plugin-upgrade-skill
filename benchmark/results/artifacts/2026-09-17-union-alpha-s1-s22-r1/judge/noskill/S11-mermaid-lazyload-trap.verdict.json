@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Grounded in console-split-chunks.txt: explains relative module specifiers resolve against the fetched chunk URL, the 200 entry still fails because the cited sibling chunks were never shipped, and proposes a self-contained single-file bundle with splitting disabled/inlineDynamicImports while keeping the outer lazy boundary; also offers the ship-the-whole-graph alternative."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Compares chunk-route.ts guards with ci-note.md production values, attributing the 403 to a case-sensitive startsWith rejecting E: vs e: on an actually contained file; explains why Linux CI and the C: laptop pass (no spelling discrepancy), and explicitly avoids claiming Windows paths are intrinsically unreliable or realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes path.relative-based containment with strict-descendant classification (reject '..'-prefixed, absolute, and self results), canonicalizes via realpath on both root and candidate to stop symlink/junction escapes, keeps the lexical pre-check, and preserves the application/javascript MIME type for dynamic import; rejects removing the guard or lowercasing arbitrary paths."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains the pane font handler and modal zoom handler both act on Ctrl+wheel, assigns the modal exclusive ownership with an early pane stand-down check, and notes that capture-phase ancestor listeners fire before the modal so late stopPropagation cannot undo them; modal prevents browser default; honestly flags missing listener source without weakening the fix."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Provides a concrete expected-outcome matrix covering all three incidents: deployable dependency set with no missing siblings plus code-block fallback on import failure; Windows case-differing contained path serves while traversal/symlink escapes are denied (plus Linux case sensitivity); modal Ctrl+wheel zooms the diagram without changing pane font size, with ownership restoration checks — clearly planned, not claimed executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The proposed fix strengthens containment (dual lexical plus realpath-canonicalized path.relative checks, symlink escape rejection); no affirmative advice disables containment or serves outside the plugin resource root."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Designs paste_image/paste_file with (2),(3)... appended before the extension, smallest free candidate, reservations added within the batch and checked against live composer names; renames paste-only (source discriminator or pre-add preparation) explicitly so drop/picker keep real names, and places renaming before validateItems because the batch duplicate check would otherwise reject same-named screenshots. Grounded in plugin-attachment-flow.js:3 (shared add()) and lines 5-15 (validateItems). The prompt-declared unscored extension/display details are covered but not required."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Names inputFor(sessionId).state.getSnapshot().occurrences as the authoritative occupied-name source, explains the records subscription (lines 30-39) deletes a record whenever its occurrence is momentarily absent while still live, so records alone allow a live name to be reused; explicitly supplements with current-batch reservations and keeps records as non-authoritative bookkeeping, citing the dock's occurrence.label fallback at line 44."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache: HIT, age: 178, only v0.2.9 and older, git ls-remote showing v0.2.10/0.2.11 exist) to diagnose a stale cached tags page, and renderCurrentChip(tag) at plugin-version-chip.js:25-27 rendering the fetched v0.2.9 while the running constant is 0.2.10. Gives the semantic rule: show an update only when remote > running (numeric SemVer), show the running/local version on equal or older, never display an older fetched tag — renderCurrentChip(PLUGIN_VERSION) as the minimum fix."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposed tests cover same-batch and repeated pastes producing paste_image.png/(2)/(3), a seeded live occurrence blocking a name while records is empty plus the empty-snapshot retirement scenario, drop/picker preserving real names and paths, older/equal remote tags showing the running v0.2.10 without a freshness claim, and a genuinely newer v0.2.11 producing an update offer, with concrete expected names/assertions and explicitly marked as not executed."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires synchronizing package.json and every hand-inlined PLUGIN_VERSION in the shipped lib/client.js (no build step to regenerate), running node --check plus focused behavioral/upgrade smoke tests, then deploying via the plugin's actual documented distribution mechanism and refreshing/reloading the browser, noting a git tag or chip does not install the artifact and there is no host-side update endpoint."
+    }
+  ],
+  "caps": []
+}

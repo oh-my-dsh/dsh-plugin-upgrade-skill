@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"host-break","verdict":"partial","reason":"Finds inject apiProxy and the ctx.apiProxy.llm.providers call in index.js, and flags the unused apiproxy dependency in package.json. It never maps them to A1-01 and says a generic replacement token instead of the llm service injection and listProviders split."},
+{"id":"negative-coverage","verdict":"pass","reason":"Covers each remaining category with scan evidence. Treats session-notes.js as an unimported pure string/array utility and the cordis.patch.yml insert as ordinary registration, not a host-source change. Invents no coupling from filenames."},
+{"id":"inference-boundary","verdict":"pass","reason":"Argues that zero hits are absence of evidence because semantic/runtime changes leave no textual marker. Clearly separates the decisive apiProxy break from the six negative categories, which only bound the migration scope."},
+{"id":"verification-plan","verdict":"pass","reason":"Proposes post-migration build/typecheck, an isolated-profile cold boot on alpha.2 that checks the injection resolves at activation, and a functional smoke of the migrated provider call. All are clearly marked as not executed."}
+],
+"caps":[]}

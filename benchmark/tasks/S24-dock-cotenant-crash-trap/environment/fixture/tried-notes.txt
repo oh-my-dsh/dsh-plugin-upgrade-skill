@@ -1,0 +1,17 @@
+=== Maintainer's already-tried list ===
+
+1. Reinstalled plugin B (the paste/attachment plugin) from its mirror tag —
+   no change: chips still not rendering, strip still gone.
+2. Read plugin B's registration (see dock-entry-excerpt.md) — the dock entry
+   registers fine, nothing in its code path throws (its own try/catch logged
+   nothing).
+3. THE KEY EXPERIMENT: disabled plugin A (the session-progress plugin) from the
+   plugin list and refreshed → plugin B's chips CAME BACK IMMEDIATELY.
+   Re-enabled plugin A → chips gone again.
+4. Concluded "plugin A kills plugin B somehow" but has no idea why a progress
+   bar can take down an attachment chip rail.
+
+=== Colleague's theory (unverified) ===
+
+"alpha.2 probably changed slot props. Maybe both plugins use a prop that was
+removed, and you got hit twice. I'd fix both plugins' slot registrations."

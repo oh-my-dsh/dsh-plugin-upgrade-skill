@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"duplicate-loader-attribution","verdict":"pass","reason":"Matches the two workspace-files insert rows in the profile and bundle excerpts. It places the rejection at EntryGroup.update during the include apply step, explains why the loader aborts instead of merging, and calls the comment's harmless-redundancy claim a trap. The flagged line citations come straight from the crash log stack trace and the excerpt's own line note."},
+{"id":"three-layering-cases","verdict":"pass","reason":"Covers all three cases: config by id is safe, inserting a new id is safe, inserting an id the bundle already ships is fatal. It puts the maintainer's row in the third case and grounds this in the bundle excerpt's matching row."},
+{"id":"minimal-profile-fix","verdict":"pass","reason":"Deletes only the manual workspace-files block from the profile patch, keeps the bundle row and the other profile rows, and says to use a config-by-id override if customisation is ever needed."},
+{"id":"plugin-and-failure-boundary","verdict":"pass","reason":"Places the crash in declaration merging before any plugin runs, so no plugin-side change can fix it. It also says the original read failure may remain after the fix and needs separate diagnosis."},
+{"id":"author-and-host-prevention","verdict":"pass","reason":"Recommends grepping the installed bundle patch files for the id before inserting and separating override from insert. It proposes a host message that names the id, both declaration files and lines, and the profile row to delete, plus an upgrade-time diff warning."}
+],"caps":[
+{"id":"retain-or-add-duplicate","triggered":false,"reason":"The report rejects keeping the duplicate, says the loader refuses rather than merging, and fixes the profile rather than the plugin."}
+]}

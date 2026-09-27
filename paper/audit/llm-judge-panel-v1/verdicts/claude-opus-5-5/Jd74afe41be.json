@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"duplicate-loader-attribution","verdict":"pass","reason":"Matches the profile's manual workspace-files insert against the same id in the bundle patch. Uses the stack to place rejection at EntryGroup.update during the include apply, before plugin code runs. Calls the duplicate fatal rather than a silent override, which contradicts the profile comment's harmless-redundancy claim, and removes that comment with the block."},
+{"id":"three-layering-cases","verdict":"pass","reason":"Separates the three cases: config override by id is safe, an insert for an id no bundle ships is safe (with the external plugins as examples), and an insert for a bundle-shipped id is fatal. Classifies the maintainer's row as the fatal case using the bundle excerpt."},
+{"id":"minimal-profile-fix","verdict":"pass","reason":"Deletes only the manual workspace-files block from the profile cordis.patch.yml. Leaves the bundle row and the other external plugins alone, and points to a config-by-id override if adjustment is ever needed."},
+{"id":"plugin-and-failure-boundary","verdict":"pass","reason":"States the crash happens at composition before any plugin loads, so no plugin-side change can fix it. Treats the earlier file-read failure as still unresolved and needing verification after the boot is restored."},
+{"id":"author-and-host-prevention","verdict":"pass","reason":"Recommends grepping the installed web-app bundle patch for the id, checking the composed config, and using override rather than insert. Proposes a boot diagnostic naming the id, both declaration origins and the profile block to delete, plus a composition lint before boot."}
+],
+"caps":[
+{"id":"retain-or-add-duplicate","triggered":false,"reason":"The final advice removes the duplicate, rejects silent merging, and rules out plugin-side fixes."}
+]}
