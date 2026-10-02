@@ -187,6 +187,15 @@ async function stopServer(child, graceSeconds) {
   }
   child.kill('SIGTERM')
   if (await waitForExit(child, graceSeconds * 1000)) {
+    // A prompt exit is not necessarily a successful shutdown: disposal hooks
+    // can fail, or the process can crash while handling SIGTERM.
+    if (child.exitCode !== 0 && child.signalCode !== 'SIGTERM') {
+      const reason = child.signalCode ? `signal ${child.signalCode}` : `exit code ${child.exitCode}`
+      throw new SmokeFailure('teardown', `start process failed during shutdown with ${reason}`, {
+        exitCode: child.exitCode,
+        durationMs: Date.now() - startedAt,
+      })
+    }
     return { name: 'teardown', status: 'passed', exitCode: child.exitCode, durationMs: Date.now() - startedAt }
   }
   child.kill('SIGKILL')
@@ -306,15 +315,17 @@ async function run() {
       durationMs: error.durationMs ?? 0,
       message: failure.message,
     })
-    if (server) {
+    // stopServer already completed its bounded cleanup when teardown failed.
+    // Retry cleanup only when an earlier phase (such as the probe) failed.
+    if (server && failure.phase !== 'teardown') {
       try {
         steps.push(await stopServer(server, config.shutdownGraceSeconds))
       } catch (teardownError) {
         steps.push({
           name: 'teardown',
           status: 'failed',
-          exitCode: null,
-          durationMs: 0,
+          exitCode: teardownError.exitCode ?? null,
+          durationMs: teardownError.durationMs ?? 0,
           message: teardownError.message,
         })
       }

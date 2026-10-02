@@ -7,6 +7,7 @@ import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { runDockerSmoke } from '../../skills/plugin-test/scripts/docker-release-smoke.mjs'
+import { historicalVendorPins, validatePinnedTree } from './toolchain.mjs'
 
 const runtimeRoot = dirname(fileURLToPath(import.meta.url))
 const benchmarkRoot = resolve(runtimeRoot, '..')
@@ -140,7 +141,7 @@ async function loadCases() {
   return validateCases(data)
 }
 
-function runProcess(command, args, options = {}) {
+export function runProcess(command, args, options = {}) {
   return new Promise((resolvePromise) => {
     const child = spawn(command, args, {
       cwd: options.cwd,
@@ -150,14 +151,27 @@ function runProcess(command, args, options = {}) {
     })
     let stdout = ''
     let stderr = ''
+    let timedOut = false
+    const timer = options.timeoutMs ? setTimeout(() => {
+      timedOut = true
+      child.kill('SIGKILL')
+    }, options.timeoutMs) : null
     child.stdout.on('data', (chunk) => {
       stdout += chunk.toString('utf8')
     })
     child.stderr.on('data', (chunk) => {
       stderr += chunk.toString('utf8')
     })
-    child.once('error', (error) => resolvePromise({ exitCode: null, stdout, stderr, error }))
-    child.once('close', (exitCode) => resolvePromise({ exitCode, stdout, stderr }))
+    child.once('error', (error) => {
+      clearTimeout(timer)
+      resolvePromise({ exitCode: null, stdout, stderr, error })
+    })
+    child.once('close', (exitCode) => {
+      clearTimeout(timer)
+      resolvePromise({ exitCode, stdout, stderr,
+        ...(timedOut ? { error: new Error(`${command} timed out after ${options.timeoutMs}ms`) } : {}),
+      })
+    })
   })
 }
 
@@ -174,6 +188,43 @@ async function packFixture(path, destination) {
   const filename = metadata?.[0]?.filename
   if (!filename) throw new Error(`npm pack did not report an artifact for ${path}`)
   return join(destination, filename)
+}
+
+async function prepareHistoricalToolchain(version, defaults, reportRoot, cacheVolume, toolchainVolume) {
+  const pins = historicalVendorPins[version]
+  if (!pins) return
+  const expected = { '@deepseek-ai/dsh': version, pnpm: defaults.pnpmVersion, ...pins }
+  const containerName = `${toolchainVolume}-prepare`
+  const dockerArgs = [
+    'run', '--rm', '--name', containerName,
+    '--env', 'NPM_CONFIG_PREFIX=/workspace/toolchain',
+    '--env', 'NPM_CONFIG_CACHE=/workspace/package-cache/npm',
+    ...['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'http_proxy', 'https_proxy', 'all_proxy', 'no_proxy']
+      .flatMap((name) => process.env[name] ? ['--env', name] : []),
+    '--mount', `type=volume,source=${cacheVolume},target=/workspace/package-cache`,
+    '--mount', `type=volume,source=${toolchainVolume},target=/workspace/toolchain`,
+    defaults.image,
+  ]
+  try {
+    const install = await runProcess('docker', [
+      ...dockerArgs, 'npm', 'install', '--global',
+      ...Object.entries(expected).map(([name, pinnedVersion]) => `${name}@${pinnedVersion}`),
+    ], { timeoutMs: 8 * 60 * 1000 })
+    await writeFile(join(reportRoot, `toolchain-${version}-install.log`), `${install.stdout}\n${install.stderr}`)
+    if (install.error || install.exitCode !== 0) {
+      throw new Error(`historical DSH ${version} toolchain setup failed: ${install.error?.message ?? install.stderr}`)
+    }
+    const inspected = await runProcess('docker', [...dockerArgs, 'npm', 'ls', '--global', '--all', '--json'], { timeoutMs: 60_000 })
+    await writeFile(join(reportRoot, `toolchain-${version}-tree.json`), inspected.stdout)
+    if (inspected.error || inspected.exitCode !== 0) {
+      throw new Error(`historical DSH ${version} dependency inspection failed: ${inspected.error?.message ?? inspected.stderr}`)
+    }
+    validatePinnedTree(JSON.parse(inspected.stdout), expected)
+    console.log(`Prepared DSH ${version} with verified release-era Cordis dependencies`)
+  } finally {
+    // A timed-out Docker client may leave the container running and using its volume.
+    await runProcess('docker', ['rm', '--force', containerName], { timeoutMs: 10_000 })
+  }
 }
 
 function escapeRegex(value) {
@@ -294,6 +345,11 @@ export async function main(argv = process.argv.slice(2)) {
         throw new Error(`docker volume create failed: ${volumeResult.stderr || volumeResult.stdout}`)
       }
       createdVolumes.push(volume)
+    }
+    // Volumes are fresh per run. Pin and inspect the legacy control before the
+    // smoke runner reuses its verified CLI/pnpm toolchain; target checks are unchanged.
+    for (const version of versions) {
+      await prepareHistoricalToolchain(version, data.defaults, reportRoot, cacheVolume, toolchainVolumes.get(version))
     }
     for (const entry of selected) {
       results.push(...(

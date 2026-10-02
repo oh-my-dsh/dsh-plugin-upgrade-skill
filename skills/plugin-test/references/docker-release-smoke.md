@@ -58,6 +58,9 @@ The runner performs these operations in order:
 5. Cold-starts the configured real DSH entry and waits for the readiness pattern.
 6. Runs the optional functional probe.
 7. Requests graceful shutdown, records the container exit, and removes the container.
+   After the requested `SIGTERM`, the start process must exit with code `0` or
+   terminate with `SIGTERM` within `shutdownGraceSeconds`. A nonzero exit, another
+   signal, or forced shutdown after the grace period fails the teardown check.
 
 While the container runs, the host samples `docker stats --no-stream`. Both reports include elapsed time, peak sampled memory, peak sampled CPU, step results, the artifact SHA-256, redacted logs, and explicit unverified boundaries.
 
