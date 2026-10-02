@@ -7,7 +7,7 @@
 //   no docker exec needed);
 // - Each task uses its own profile (bench-<task>) and its own /tmp plugin directory; the judge cleans up
 //   the assets it created.
-import { execFile } from 'node:child_process'
+import { execFile, spawn } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
 
@@ -140,14 +140,56 @@ export async function fixtureChanges(relFixtureDir = 'fixture') {
 
 export function localExec(script, { stdin = '', timeout = 60000 } = {}) {
   return new Promise((resolvePromise) => {
-    const child = execFile('sh', ['-c', script], { timeout }, (error, stdout, stderr) => {
+    if (!Number.isInteger(timeout) || timeout < 0) throw new RangeError('timeout must be a nonnegative integer')
+    if (typeof stdin !== 'string' && !(stdin instanceof Uint8Array)) throw new TypeError('stdin must be a string or Uint8Array')
+    let timedOut = false
+    let stopped = false
+    let timer
+    let failure
+    let stdout = ''
+    let stderr = ''
+    let stdoutBytes = 0
+    let stderrBytes = 0
+    const maxOutputBytes = 1024 * 1024
+    const grouped = process.platform !== 'win32'
+    const child = spawn('sh', ['-c', script], { detached: grouped })
+    child.stdout.setEncoding('utf8')
+    child.stderr.setEncoding('utf8')
+    child.stdout.on('data', (chunk) => {
+      stdoutBytes += Buffer.byteLength(chunk)
+      if (stdoutBytes <= maxOutputBytes) stdout += chunk
+      else { failure = 'stdout exceeded maxBuffer'; stop() }
+    })
+    child.stderr.on('data', (chunk) => {
+      stderrBytes += Buffer.byteLength(chunk)
+      if (stderrBytes <= maxOutputBytes) stderr += chunk
+      else { failure = 'stderr exceeded maxBuffer'; stop() }
+    })
+    child.on('error', (error) => { failure = error.message })
+    child.on('close', (code, signal) => {
+      clearTimeout(timer)
       resolvePromise({
-        code: typeof error?.code === 'number' ? error.code : error ? 1 : 0,
-        stdout: stdout ?? '',
-        stderr: stderr ?? '',
-        killed: error?.killed === true || (error && error.code === undefined) === true,
+        code: timedOut || failure ? 1 : typeof code === 'number' ? code : 1,
+        stdout,
+        stderr: failure ? `${stderr}\n${failure}` : stderr,
+        killed: timedOut || Boolean(signal),
       })
     })
+    function stop() {
+      if (stopped || !child.pid) return
+      stopped = true
+      try {
+        if (grouped) process.kill(-child.pid, 'SIGKILL')
+        else child.kill('SIGKILL')
+      } catch (error) {
+        if (error.code !== 'ESRCH') child.kill('SIGKILL')
+      }
+    }
+    if (timeout > 0) timer = setTimeout(() => {
+      timedOut = true
+      stop()
+    }, timeout)
+    child.stdin.on('error', (error) => { failure = error.message; stop() })
     if (stdin) child.stdin.write(stdin)
     child.stdin.end()
   })
