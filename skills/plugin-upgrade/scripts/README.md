@@ -10,6 +10,61 @@ verifier's note before running it on anything you do not trust:
 
 All four live inside `skills/plugin-upgrade/` so that installers that copy only the skill directory (`npx skills add`, `gemini skills install --path skills`, Cursor) ship them together with the cards they read.
 
+## Runtime verification
+
+```sh
+node skills/plugin-upgrade/scripts/verify-runtime.mjs /path/to/plugin --json
+```
+
+The verifier creates a fresh profile with the installed CLI's package manager.
+For a custom profile initialized with only the base bundle, it copies the
+headless bundle list produced by that same CLI, plus its `patchReload` setting
+on older hosts that expose it (so the launcher does not re-enable HMR).
+It keeps the requested profile name, other profile metadata, and the CLI's
+workspace layout; named SDK presets keep
+their own configuration. Initialization failures are reported separately as
+`profile-bootstrap-failed`, without attributing them to the plugin.
+
+Package operations explicitly address the profile workspace root. After
+installation, the list command must succeed, but its text is not an inventory:
+pnpm can omit linked packages. The verifier checks the direct dependency,
+materialized package name, registry pin when available, and local source link.
+The native profile must already include the declared bundle. A missing package,
+broken or unrelated link, wrong version, or unenabled dependency stops the
+check before boot. The verifier first locates the official `@deepseek-ai/dsh`
+package root from the executable, then uses Node's resolver from that root. If
+the same bundle name resolves to a different canonical owner than the profile
+candidate, it records both paths and returns `bundle-resolution-shadow` /
+`inconclusive`. A same-name package under incidental `bin/lib/node_modules` is
+ignored. If the official anchor cannot be located, it returns
+`bundle-resolution-anchor-unproven` / `inconclusive` rather than claiming a
+profile-only load. This keeps first-party installation-first behavior safe: a
+profile-local replacement cannot be verified as loaded when the official owner
+wins.
+The [0.2.1-alpha.1 bundle resolver](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-alpha.1/packages/boot/app-boot/src/profile.ts#L694-L712)
+explicitly prefers the installation for in-box bundles. A collision is an
+unverified candidate, not a plugin failure; use a separate host installation
+with the intended in-box bundle cohort to test that upgrade.
+Git package names are read from the actual installation;
+they need not equal the repository name. Git URLs are not automatically pinned
+to a commit, so use an immutable ref for a reproducible run. HTTP(S) Git URLs
+are forwarded with pnpm's `git+` prefix rather than fetched as package archives.
+Git packages may resolve into pnpm's shared store outside the profile; their
+direct dependency source/ref, package identity, and bundle enablement are still
+checked. Directory inputs must resolve to the verification copy.
+
+Probe overrides target composition entry ids (`llm-deepseek`,
+`agent-default-model`, and `hmr`) without a package-name guard. On
+[0.2.1-alpha.1](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-alpha.1/packages/bundle/base/cordis.patch.yml#L525-L529),
+`llm-deepseek` still names the API-key provider row even though its package is
+now `@deepseek-ai/dsh-llm-deepseek-api-key`. The separate account-provider row
+is not the probe's selected `deepseek-official` route.
+
+`l0-profile`, `l1-install`, `l2-listed`, and `l3-boot-probe` record the separate
+steps. A collision stops at `l3-bundle-resolution` before boot. A boot pass remains a bounded activation observation with a deliberately
+unreachable model endpoint; it does not prove model inference or browser UI
+behavior. Plugin code and install hooks run with the caller's permissions.
+
 ## Usage
 
 ```sh

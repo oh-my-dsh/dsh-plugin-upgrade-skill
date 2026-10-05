@@ -5,11 +5,11 @@
 // `node scripts/verify-runtime.check.mjs` (also wired into `npm test`).
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { classifySpec, detectPluginStructure, diagnoseBootLog, hasNonTransportError, isWebPlugin, listKeyFor } from './verify-runtime.mjs'
+import { classifySpec, detectPluginStructure, diagnoseBootLog, findCliPackageRoot, findPackageFromExecutable, hasNonTransportError, isWebPlugin } from './verify-runtime.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 
@@ -139,7 +139,7 @@ export function runVerifyRuntimeChecks() {
   assert.equal(classifySpec('no-such-dir/nor-npm'), 'unknown')
   assert.equal(classifySpec('not a spec!!'), 'unknown')
 
-  // --- detectPluginStructure / isWebPlugin / listKeyFor (temp dirs) ------------
+  // --- detectPluginStructure / isWebPlugin (temp dirs) -----------------------
 
   const root = mkdtempSync(join(tmpdir(), 'verify-check-'))
   try {
@@ -148,20 +148,11 @@ export function runVerifyRuntimeChecks() {
     writeFileSync(join(pkgDir, 'package.json'), '{"name":"@demo/pkg"}')
     assert.equal(detectPluginStructure(pkgDir), 'package.json')
     assert.equal(isWebPlugin(pkgDir), false)
-    assert.equal(listKeyFor(pkgDir, 'directory'), '@demo/pkg')
-    // Corrupted package.json falls back to the ORIGINAL directory name, never
-    // the temp copy name (which is always plugin-src).
+    // Unreadable metadata cannot classify a web plugin.
     const brokenDir = join(root, 'broken-pkg')
     mkdirSync(brokenDir)
     writeFileSync(join(brokenDir, 'package.json'), 'not-json{')
-    assert.equal(listKeyFor(join(root, 'copy-dest'), 'directory', brokenDir), 'broken-pkg')
     assert.equal(isWebPlugin(brokenDir), false)
-
-    // git-url keys are repo names without .git, never the full URL.
-    assert.equal(listKeyFor('https://github.com/user/plugin.git', 'git-url'), 'plugin')
-    assert.equal(listKeyFor('git@github.com:user/plugin.git', 'git-url'), 'plugin')
-    // npm-name keys are the package name itself.
-    assert.equal(listKeyFor('@demo/pkg', 'npm-name'), '@demo/pkg')
 
     const webDir = join(root, 'web')
     mkdirSync(webDir)
@@ -172,7 +163,6 @@ export function runVerifyRuntimeChecks() {
     mkdirSync(cordisDir)
     writeFileSync(join(cordisDir, 'cordis.yml'), '[]')
     assert.equal(detectPluginStructure(cordisDir), 'cordis.yml')
-    assert.equal(listKeyFor(cordisDir, 'directory'), 'cordis', 'no package.json -> basename')
 
     const skillsDir = join(root, 'sk')
     mkdirSync(join(skillsDir, 'skills'), { recursive: true })
@@ -182,6 +172,32 @@ export function runVerifyRuntimeChecks() {
     mkdirSync(emptyDir)
     assert.equal(detectPluginStructure(emptyDir), null)
     assert.equal(detectPluginStructure(join(root, 'no-such-dir')), null)
+
+    // A supported same-name collision must be surfaced from the official CLI
+    // package root; incidental bin/lib/node_modules must be ignored.
+    const cliRoot = join(root, 'cli')
+    const cliBin = join(cliRoot, 'node_modules', '@deepseek-ai', 'dsh', 'lib')
+    const cliBundle = join(cliRoot, 'node_modules', '@deepseek-ai', 'dsh-headless')
+    mkdirSync(cliBin, { recursive: true })
+    mkdirSync(cliBundle, { recursive: true })
+    writeFileSync(join(cliBin, 'bin.js'), '')
+    writeFileSync(join(cliRoot, 'node_modules', '@deepseek-ai', 'dsh', 'package.json'), '{"name":"@deepseek-ai/dsh"}')
+    const phantomBundle = join(cliBin, 'node_modules', '@deepseek-ai', 'dsh-headless')
+    mkdirSync(phantomBundle, { recursive: true })
+    writeFileSync(join(phantomBundle, 'package.json'), '{"name":"@deepseek-ai/dsh-headless","version":"phantom"}')
+    writeFileSync(join(cliBundle, 'package.json'), '{"name":"@deepseek-ai/dsh-headless"}')
+    assert.equal(
+      findPackageFromExecutable('@deepseek-ai/dsh-headless', join(cliBin, 'bin.js')),
+      realpathSync(cliBundle),
+      'same-name CLI installation bundle is detected from the target executable ancestry',
+    )
+    const shimRoot = join(root, 'shim')
+    const shimBin = join(shimRoot, 'bin')
+    mkdirSync(shimBin, { recursive: true })
+    writeFileSync(join(shimBin, 'dsh'), '')
+    writeFileSync(join(shimRoot, 'package.json'), '{"name":"unrelated-shim"}')
+    assert.equal(findCliPackageRoot(join(shimBin, 'dsh')), null, 'unidentified shim anchor stays unknown')
+    assert.equal(findPackageFromExecutable('@deepseek-ai/dsh-headless', join(shimBin, 'dsh')), null, 'unknown shim cannot prove bundle ownership')
 
     // A bare directory name with no slash must also resolve as a directory
     // (fleet-caught: "demo-old" was once mistaken for an npm name and 404'd).
@@ -220,6 +236,212 @@ function cliCheck(scriptPath) {
     assert.equal(bad.status, 2, `usage error exits 2: ${args.join(' ')}`)
     assert.match(bad.stderr, /verify-runtime:|Usage:/, `usage error is explained: ${args.join(' ')}`)
   }
+
+  const root = mkdtempSync(join(tmpdir(), 'verify-model-check-'))
+  try {
+    const bin = join(root, 'bin')
+    const plugin = join(root, 'plugin')
+    const captured = join(root, 'profile.yml')
+    mkdirSync(bin)
+    mkdirSync(plugin)
+    writeFileSync(join(root, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.2.1-alpha.1-fixture' }))
+    writeFileSync(join(plugin, 'package.json'), '{"name":"@demo/model-check","version":"1.0.0"}')
+    const dsh = join(bin, 'dsh')
+    writeFileSync(dsh, `#!/usr/bin/env node
+const fs = require('node:fs'), path = require('node:path');
+const args = process.argv.slice(2);
+if (args[0] === '--version') { console.log('fixture-only'); process.exit(0); }
+if (args.includes('--dump-config') || args.includes('install')) {
+  const name = args[args.indexOf('--profile') + 1], dir = path.join(process.env.DSH_HOME, 'profiles', name);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({private: true, dependencies: {}, dsh: {profile: {bundles: name === 'headless' ? ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless'] : ['@deepseek-ai/dsh-base']}}}));
+  process.exit(0);
+}
+fs.copyFileSync(path.join(process.env.DSH_HOME, 'profiles', 'verify', 'cordis.patch.yml'), process.env.VERIFY_MODEL_CAPTURE);
+process.exit(1);
+`)
+    chmodSync(dsh, 0o755)
+    const result = spawnSync(process.execPath, [scriptPath, plugin, '--json'], {
+      env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, VERIFY_MODEL_CAPTURE: captured },
+      encoding: 'utf8',
+      timeout: 30_000,
+    })
+    assert.equal(result.status, 1, 'fixture installer stops before any model request')
+    assert.equal(JSON.parse(result.stdout).verdict, 'install-failed')
+    const yaml = readFileSync(captured, 'utf8')
+    assert.match(yaml, /^- id: llm-deepseek\n  config:\n    models:\n      - id: Qwen3\.6-35B\n        contextWindow: 262144\n        maxTokens: 8192$/m,
+      'the actual DeepSeek provider entry must contain the probe model and its context and output limits')
+    assert.match(yaml, /^- id: agent-default-model\n  config:\n    provider: deepseek-official\n    model: Qwen3\.6-35B$/m)
+    assert.doesNotMatch(yaml, /^- id: llm-verify$/m, 'the obsolete provider entry must not remain alongside the real entry')
+    assert.match(yaml, /- id: hmr\n\s+disabled: true/, 'generated profile disables the stock HMR entry')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+function pipelineCheck(scriptPath) {
+  const root = mkdtempSync(join(tmpdir(), 'verify-pipeline-check-'))
+  try {
+    const bin = join(root, 'bin')
+    const plugin = join(root, 'source')
+    const log = join(root, 'commands.jsonl')
+    mkdirSync(bin)
+    mkdirSync(plugin)
+    writeFileSync(join(root, 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh', version: '0.2.1-alpha.1-fixture' }))
+    writeFileSync(join(plugin, 'package.json'), JSON.stringify({ name: '@demo/source-check', private: true, dsh: { bundle: { patch: './cordis.patch.yml' } } }))
+    writeFileSync(join(plugin, 'cordis.patch.yml'), '[]\n')
+    const before = readFileSync(join(plugin, 'package.json'), 'utf8')
+    const dsh = join(bin, 'dsh')
+    writeFileSync(dsh, `#!/usr/bin/env node
+const fs = require('node:fs'), path = require('node:path');
+const args = process.argv.slice(2), mode = process.env.VERIFY_FIXTURE_MODE;
+if (args[0] === '--version') { console.log('0.1.2-alpha.2-fixture'); process.exit(0); }
+fs.appendFileSync(process.env.VERIFY_FIXTURE_LOG, JSON.stringify({ args, home: process.env.DSH_HOME }) + '\\n');
+if (args.includes('--from-default-profile')) { console.error('unsupported flag in legacy CLI'); process.exit(1); }
+const name = args.includes('--profile') ? args[args.indexOf('--profile') + 1] : 'web';
+const dir = path.join(process.env.DSH_HOME, 'profiles', name), file = path.join(dir, 'package.json');
+function init() {
+  fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({name: 'native-' + name, private: true, dependencies: {}, dsh: {profile: {name, identity: {owner: name}, unknownField: 'keep-' + name, bundles: name === 'headless' && mode !== 'missing-runner' ? ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless'] : name === 'web' ? ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'] : ['@deepseek-ai/dsh-base'], ...(mode === 'no-patch-reload' ? {} : {patchReload: name === 'headless' ? 'startup' : 'live'})}}}));
+}
+if (args[0] === 'plugin' && args.includes('install')) {
+  if (mode === 'bootstrap-failure') { console.error('native initialization failed'); process.exit(1); }
+  if (!args.includes('-w')) { console.error('ERR_PNPM_ADDING_TO_ROOT'); process.exit(1); }
+  init(); process.exit(0);
+}
+if (args.includes('--dump-config')) {
+  if (!fs.existsSync(file) && !['headless', 'web'].includes(name)) { console.error('custom profile does not exist'); process.exit(1); }
+  init(); process.exit(0);
+}
+if (args[0] === 'plugin' && args.includes('add')) {
+  if (!args.includes('-w')) { console.error('ERR_PNPM_ADDING_TO_ROOT'); process.exit(1); }
+  if (mode === 'install-failure') { console.error('native install failed'); process.exit(1); }
+  init();
+  const spec = args.slice(args.indexOf('add') + 1).find(value => !value.startsWith('-'));
+  const local = fs.existsSync(spec), git = spec.replace(/^git\\+/, '').startsWith('http');
+  const pkg = local ? JSON.parse(fs.readFileSync(path.join(spec, 'package.json'), 'utf8')) : { name: git ? '@demo/git-package' : spec.slice(0, spec.lastIndexOf('@')), version: mode === 'wrong-version' ? '9.9.9' : '1.2.3', dsh: { bundle: { patch: './cordis.patch.yml' } } };
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  manifest.dependencies[pkg.name] = local ? 'link:' + spec : git ? (mode === 'wrong-git-source' ? 'github:other/repository' : 'github:demo/repository' + (mode === 'wrong-git-ref' ? '#other' : spec.includes('#') ? spec.slice(spec.indexOf('#')) : '')) : '^1.2.3';
+  if (mode !== 'not-enabled' && mode !== 'plain-dependency') manifest.dsh.profile.bundles.push(pkg.name);
+  fs.writeFileSync(file, JSON.stringify(manifest));
+  const target = path.join(dir, 'node_modules', pkg.name);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  if (mode === 'manifest-only') process.exit(0);
+  if (mode === 'broken-link') { fs.symlinkSync(path.join(dir, 'missing'), target); process.exit(0); }
+  if (mode === 'shared-git-store') {
+    const stored = path.join(path.dirname(process.env.VERIFY_FIXTURE_LOG), 'shared-store', pkg.name);
+    fs.mkdirSync(stored, { recursive: true });
+    fs.writeFileSync(path.join(stored, 'package.json'), JSON.stringify(pkg));
+    fs.symlinkSync(stored, target);
+    process.exit(0);
+  }
+  if (local && mode !== 'stale-source') fs.symlinkSync(spec, target);
+  else {
+    fs.mkdirSync(target, { recursive: true });
+    if (mode === 'wrong-name') pkg.name = '@demo/unrelated';
+    if (mode === 'plain-dependency') delete pkg.dsh;
+    fs.writeFileSync(path.join(target, 'package.json'), JSON.stringify(pkg));
+  }
+  process.exit(0);
+}
+if (args[0] === 'plugin' && args.includes('list')) {
+  if (mode === 'list-failure') { console.log('@demo/source-check'); process.exit(1); }
+  process.exit(0);
+}
+const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+if (args[0] === 'web') {
+  if (args.includes('--profile') || !manifest.dsh.profile.bundles.includes('@deepseek-ai/dsh-web-app')) process.exit(1);
+} else if (!manifest.dsh.profile.bundles.includes('@deepseek-ai/dsh-headless')) { console.error('headless runner missing'); process.exit(1); }
+if (mode === 'boot-failure') { console.error('Error: dsh: 1 entry did not activate'); process.exit(1); }
+console.error('TRANSPORT ECONNREFUSED 127.0.0.1:9'); process.exit(1);
+`)
+    chmodSync(dsh, 0o755)
+    const npm = join(bin, 'npm')
+    writeFileSync(npm, '#!/bin/sh\nprintf "1.2.3\\n"\n')
+    chmodSync(npm, 0o755)
+    const run = (spec, mode, extra = []) => {
+      writeFileSync(log, '')
+      writeFileSync(join(root, 'package.json'), JSON.stringify({ name: mode === 'wrong-anchor' ? '@demo/wrapper' : '@deepseek-ai/dsh', version: '0.2.1-alpha.1-fixture' }))
+      const child = spawnSync(process.execPath, [scriptPath, spec, '--json', ...extra], {
+        env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, VERIFY_FIXTURE_MODE: mode, VERIFY_FIXTURE_LOG: log },
+        encoding: 'utf8', timeout: 30_000,
+      })
+      assert.equal(child.error, undefined, `${mode}: verifier child completed`)
+      const result = JSON.parse(child.stdout)
+      const commands = readFileSync(log, 'utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line))
+      if (!extra.includes('--keep-workspace')) {
+        for (const home of new Set(commands.map(command => command.home))) assert.equal(existsSync(dirname(home)), false, `${mode}: temporary home removed`)
+      }
+      return { child, result, commands }
+    }
+    const unknownAnchor = run(plugin, 'wrong-anchor')
+    assert.equal(unknownAnchor.child.status, 2, 'unidentified CLI anchor remains inconclusive')
+    assert.equal(unknownAnchor.result.verdict, 'bundle-resolution-anchor-unproven')
+    for (const [spec, mode, extra] of [[plugin, 'valid', []], [plugin, 'valid', ['--profile', 'custom-check']], [plugin, 'valid', ['--profile', 'headless']], ['@demo/npm-package', 'valid', []], ['https://github.com/demo/repository.git', 'valid', []], ['git+https://github.com/demo/repository.git', 'valid', []]]) {
+      const { child, result, commands } = run(spec, mode, extra)
+      assert.equal(child.status, 0, `${spec}: complete pipeline passes`)
+      assert.equal(result.verdict, 'pass-boot-probe')
+      assert(result.stages.every(stage => stage.ok))
+      assert(commands.filter(command => command.args.includes('add')).every(command => command.args.includes('-w')))
+      assert.equal(result.installation.name, /^(?:git\+)?https:/.test(spec) ? '@demo/git-package' : spec.startsWith('@') ? spec : '@demo/source-check')
+      if (/^(?:git\+)?https:/.test(spec)) assert(commands.find(command => command.args.includes('add')).args.some(argument => argument.startsWith('git+https:')), 'HTTP Git input reaches the real Git installer')
+    }
+    for (const [spec, mode] of [[plugin, 'manifest-only'], [plugin, 'broken-link'], [plugin, 'stale-source'], [plugin, 'list-failure'], [plugin, 'not-enabled'], ['@demo/npm-package', 'wrong-name'], ['@demo/npm-package', 'wrong-version'], ['@demo/npm-package', 'plain-dependency'], ['https://github.com/demo/repository.git', 'wrong-git-source']]) {
+      const { child, result, commands } = run(spec, mode)
+      assert.equal(child.status, 1, `${mode}: failed installation state is not PASS`)
+      assert.equal(result.verdict, 'not-listed-after-install', mode)
+      assert.equal(commands.some(command => command.args.includes('ok') || command.args[0] === 'web'), false, `${mode}: no boot`)
+    }
+    for (const mode of ['bootstrap-failure', 'missing-runner']) {
+      const { child, result, commands } = run(plugin, mode)
+      assert.equal(child.status, 2, `${mode}: bootstrap cannot be attributed to plugin`)
+      assert.equal(result.verdict, 'profile-bootstrap-failed')
+      assert.equal(commands.some(command => command.args.includes('add')), false)
+    }
+    assert.equal(run(plugin, 'install-failure').result.verdict, 'install-failed')
+    assert.equal(run(plugin, 'boot-failure').result.verdict, 'activation-failed')
+    const alias = join(root, 'source-link')
+    symlinkSync(plugin, alias)
+    assert.equal(run(alias, 'valid').child.status, 0, 'symlinked source is copied without changing its identity')
+    const kept = run(plugin, 'valid', ['--keep-workspace'])
+    assert(existsSync(kept.result.workspace), 'explicit keep retains the owned home')
+    const keptManifest = JSON.parse(readFileSync(join(kept.result.workspace, '.dsh', 'profiles', 'verify', 'package.json'), 'utf8'))
+    assert.equal(keptManifest.name, 'native-verify', 'native package identity survives headless bootstrap')
+    assert.deepEqual(keptManifest.dsh.profile, {
+      name: 'verify', identity: { owner: 'verify' }, unknownField: 'keep-verify', patchReload: 'startup',
+      bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless', '@demo/source-check'],
+    }, 'bootstrap takes only the required runner and reload settings, preserving profile identity and unknown fields')
+    rmSync(kept.result.workspace, { recursive: true, force: true })
+    const modern = run(plugin, 'no-patch-reload', ['--keep-workspace'])
+    assert.equal(modern.child.status, 0, 'newer templates need no legacy patchReload field')
+    const modernProfile = JSON.parse(readFileSync(join(modern.result.workspace, '.dsh', 'profiles', 'verify', 'package.json'), 'utf8')).dsh.profile
+    assert.equal(Object.hasOwn(modernProfile, 'patchReload'), false, 'bootstrap does not invent a retired field')
+    assert.equal(modernProfile.unknownField, 'keep-verify')
+    rmSync(modern.result.workspace, { recursive: true, force: true })
+    assert.equal(run('https://github.com/demo/repository.git#requested', 'shared-git-store').child.status, 0,
+      'Git installation may resolve into a shared store outside the profile')
+    assert.equal(run('https://github.com/demo/repository.git#requested', 'wrong-git-ref').result.verdict, 'not-listed-after-install',
+      'allowing external stores must retain requested Git ref validation')
+    const collision = join(root, 'node_modules', '@demo', 'source-check')
+    mkdirSync(collision, { recursive: true })
+    writeFileSync(join(collision, 'package.json'), before)
+    const shadow = run(plugin, 'valid')
+    assert.equal(shadow.child.status, 2, 'another CLI-owned bundle copy remains inconclusive')
+    assert.equal(shadow.result.verdict, 'bundle-resolution-shadow')
+    assert.equal(shadow.commands.some(command => command.args.includes('ok') || command.args[0] === 'web'), false,
+      'a bundle collision never reaches boot')
+    rmSync(collision, { recursive: true })
+    const web = JSON.parse(before)
+    web.dsh.client = { platform: 'web' }
+    writeFileSync(join(plugin, 'package.json'), JSON.stringify(web))
+    const result = run(plugin, 'valid')
+    assert.equal(result.child.status, 0, 'web host path preserved')
+    assert(result.commands.some(command => command.args[0] === 'web' && !command.args.includes('--profile')))
+    writeFileSync(join(plugin, 'package.json'), before)
+    assert.equal(readFileSync(join(plugin, 'package.json'), 'utf8'), before, 'verification did not mutate the source')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
 }
 
 const isMain = (() => {
@@ -233,5 +455,6 @@ const isMain = (() => {
 if (isMain) {
   runVerifyRuntimeChecks()
   cliCheck(join(here, 'verify-runtime.mjs'))
+  pipelineCheck(join(here, 'verify-runtime.mjs'))
   console.log('verify-runtime.check: all assertions passed')
 }
