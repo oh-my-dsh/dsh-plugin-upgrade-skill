@@ -1,0 +1,12 @@
+# git ls-remote --tags on the three push mirrors (after the v0.3.7 release)
+# every mirror lists BOTH tags; SHAs are identical across mirrors
+
+origin  748b5e56e41ca4dc22da1631569fb29d8ae0b99d        refs/tags/v0.3.7
+origin  d887deb0f526ba6a76818e531c740893bd8e9b33        refs/tags/v0.3.8
+public  748b5e56e41ca4dc22da1631569fb29d8ae0b99d        refs/tags/v0.3.7
+public  d887deb0f526ba6a76818e531c740893bd8e9b33        refs/tags/v0.3.8
+omdsh   748b5e56e41ca4dc22da1631569fb29d8ae0b99d        refs/tags/v0.3.7
+omdsh   d887deb0f526ba6a76818e531c740893bd8e9b33        refs/tags/v0.3.8
+
+# the self-update check fetches exactly these tags (git ls-remote --tags, no auth)
+# and picks the highest vX.Y.Z

@@ -1,0 +1,17 @@
+BEFORE (healthy, 0.1.2-alpha.5):
+- dsh --version                -> 0.1.2-alpha.5
+- dsh web host                 -> running, GUI at http://127.0.0.1:3080
+- agent session                -> active, executing INSIDE that host process
+- npm global tree              -> @deepseek-ai/dsh (alpha.5) + dsh-old-* backups
+- shims                        -> dsh, dsh.cmd, dsh.ps1 all present
+
+AFTER the in-session npm install (broken):
+- dsh web host                 -> dead (died mid-install; GUI connection lost)
+- dsh --version                -> command not found
+- dsh web                      -> command not found
+- npm global tree              -> @deepseek-ai/dsh package CONTENT present (rc.1 files,
+                                  some placed by hand during a partial manual repair
+                                  attempt by the user), but NOT a standard install
+- shims                        -> dsh.cmd and dsh MISSING; dsh.ps1 stale
+- verdict                      -> the dsh CLI itself is unusable; only an external
+                                  tool (another agent CLI) can repair the install

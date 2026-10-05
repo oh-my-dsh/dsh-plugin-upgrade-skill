@@ -1,0 +1,32 @@
+[
+    {
+        "id":  "removed-api-and-crash",
+        "points":  20,
+        "requirement":  "Locate session.events reads in plugin-source-excerpt.js and the iteration failure in crash-stack.txt; cite dsh-changelog-excerpt.md for removal at 0.1.2-alpha.4 and replacement by seq, eventAt and snapshotEvents. Explain undefined/non-iterable access. A release number or API name without this causal connection earns no credit.",
+        "sourceRequired":  true
+    },
+    {
+        "id":  "peer-check-boundary",
+        "points":  20,
+        "requirement":  "Use npm-install-output.txt to explain why alpha.5 satisfies the declared ^0.1.2-alpha.2 range while npm only checks declared package-version compatibility, not API existence or runtime behavior. A peer declaration is an author claim, not evidence that any version was tested. Do not require reproducing the fixture comment’s expanded upper bound; the same-base prerelease ordering is sufficient.",
+        "sourceRequired":  true
+    },
+    {
+        "id":  "distinct-breakage-categories",
+        "points":  20,
+        "requirement":  "Explain at least two genuinely distinct classes that can pass peer validation and still fail at runtime: removed/renamed API and changed behavior/signature such as sync-to-async, argument order or return shape. Equivalent concrete classes are accepted. Two names for the same removal are not two classes; partial credit for one correctly explained class.",
+        "sourceRequired":  false
+    },
+    {
+        "id":  "author-prevention",
+        "points":  20,
+        "requirement":  "Require testing the actual supported target versions, then an actionable compatibility policy: narrow the declared peer range to exclude the breaking releases, or implement and verify runtime capability detection with correct old/new paths. Explain the role of version metadata versus runtime guards; an engines field does not itself test DSH API behavior. Both testing and a compatibility policy are required for full credit; either alone is partial.",
+        "sourceRequired":  false
+    },
+    {
+        "id":  "user-preinstall-check",
+        "points":  20,
+        "requirement":  "Give at least one concrete pre-install investigation: inspect breaking changes between the peer floor and installed target, or inspect the plugin’s API usage against target declarations. Tie the check to this Session.events incident and its compatibility boundary. Merely rerunning npm install or inspecting whether the peer range accepts alpha.5 is insufficient.",
+        "sourceRequired":  false
+    }
+]

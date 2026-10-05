@@ -1,0 +1,32 @@
+# Symptom log — dsh 0.1.5-alpha.2, Windows 11, npm-global in-place upgrade
+# (profile created under 0.1.2/0.1.3; six external client plugins junction-linked)
+
+## Timeline
+
+1. npm i -g @deepseek-ai/dsh@0.1.5-alpha.2, then dsh web restart.
+   Boot output: "[dsh-profiles] ready", web URL printed. No visible errors in the terminal.
+
+2. Clicking a chat file link whose address is OUTSIDE the session workspace:
+
+   sidebarRight: no registered tab type claims
+   "dsh-resource://file/absolute/E:/deepseek-harness/dsh-input-history/package.json"
+
+   (dialog: 无法打开文件 / 重试)
+
+3. The assistant then writes a test file INSIDE the session workspace:
+
+   E:\deepseek-harness\test-lhh010\.dsh\tmp\sidebar-open-test-2.md
+
+   Clicking THAT link opens a right-Sidebar tab titled "sidebar-open-test-2.md" —
+   progress over the earlier dialog. But the tab's content area shows only:
+
+   文件资源服务不可用。
+
+   No error message, no retry hint. The file-trace plugin's own RPC reads the same
+   file fine in its panel (原文/阅读 modes both show the content).
+
+4. F12 Console: no red errors from documentpreview or the sidebar; the only warnings
+   are from dsh-paste-input ("fold skipped (parse failed)" — see console-excerpt.txt).
+
+5. Per-module probe of all 62 manifest entries (see combo-probe.txt): every one returns
+   HTTP 200. Zero 404s.

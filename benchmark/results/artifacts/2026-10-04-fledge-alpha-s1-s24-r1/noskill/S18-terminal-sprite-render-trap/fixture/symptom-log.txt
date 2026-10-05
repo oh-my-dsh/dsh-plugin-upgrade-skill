@@ -1,0 +1,17 @@
+User-visible symptoms (whale sprite, 40 cols x 13 terminal rows):
+
+1. PHANTOM PIXELS hugging the sprite's right edges: a 1-cell-wide column of dim colored
+   noise directly to the right of the dark outline cells, next to the sleep-Z symbols,
+   and to the right of the heart glyph. They appear and move with the animation; they
+   are NOT part of any frame's data (frame rows end in '.' at those columns).
+
+2. GHOST PIXELS after frame switches: when the animation switches from a WIDE pose
+   (tail fully swung out, rows reaching further right) back to a NARROWER pose, the
+   pixels of the wide tail REMAIN on screen at their old positions - the narrow frame
+   renders fine, but the surplus columns keep showing the previous frame's tail.
+
+3. One hand-ported frame shows a misplaced tail tip: a 6-pixel cluster drawn at the
+   wrong position (see frames-digest-report.txt).
+
+No other UI element is affected; the artifacts are strictly inside/at the edge of the
+sprite's cell area.

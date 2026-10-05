@@ -1,0 +1,37 @@
+{
+    "criteria":  [
+                     {
+                         "id":  "projection-contract",
+                         "points":  20,
+                         "requirement":  "Use host-input-contract.ts and host-input-facade.ts to distinguish published draft/Occurrence clipboard-text offsets from the detect-coordinate spans used by insertReference and consumeToken. A chip expands to clipboardText in the former and occupies one U+FFFC in the latter; ordinary text and separating spaces still contribute their normal width. Equivalent descriptions without exact type names are valid.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "repeat-paste-failure",
+                         "points":  20,
+                         "requirement":  "Locate snapshot.draft.length in plugin-client.js add and connect the captured first-success/second-failure behavior to the host detect-span splice. With an initially empty composer both coordinates coincide; after a chip, clipboard length overshoots the detect span and insertReference returns false, which the plugin turns into its changed-composer toast. Do not infer a real concurrent edit from the toast or require inconsistent hardcoded character counts from the capture.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "removal-and-bookkeeping",
+                         "points":  20,
+                         "requirement":  "Trace plugin-client.js remove: occurrence.offset/length are passed unconverted to consumeToken, its false result is ignored, and records.delete runs anyway. The live occurrence remains, while missing record data renders unavailable in the dock and the composer chip stays. Tie both symptoms to the same coordinate mismatch, rather than treating unavailable as a separate upload failure.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "conversion-and-success-gate",
+                         "points":  20,
+                         "requirement":  "Derive and apply the conversion at BOTH call sites: subtract the sum of (occurrence.length - 1) for preceding chips; for insertion at draft end account for all preceding occurrences, and for removal map occurrence.offset then use a one-detect-character span. Keep the revision guard; retire records only after successful consumption or a verified successful clipboard-coordinate fallback. Equivalent correct mapping/pseudocode is sufficient; merely saying convert offsets is incomplete.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "regression-sequences",
+                         "points":  20,
+                         "requirement":  "Propose two successive pastes with both occurrences/chips present, then remove a chip with another preceding chip and assert composer occurrence, dock chip and record are removed together while the other chip survives. Declined-consumption bookkeeping, first/last-chip and empty-again variants are valid additions. Code assertions and natural language are equivalent. Score only task items 1-4; item 5 host-source-reading discipline is explicitly unscored.",
+                         "sourceRequired":  false
+                     }
+                 ],
+    "caps":  [
+
+             ]
+}

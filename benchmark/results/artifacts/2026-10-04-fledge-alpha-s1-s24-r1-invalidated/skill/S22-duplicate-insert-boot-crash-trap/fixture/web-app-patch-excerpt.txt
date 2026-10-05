@@ -1,0 +1,18 @@
+# Web-app bundle patch excerpt — from the npm-installed 0.1.5-alpha.2 tree
+# (packages/bundle/web-app/cordis.patch.yml; proven via the installed node_modules path)
+
+# The workspace-files row is already here (L110-111 in the installed tree):
+
+- insert:
+    - id: workspace-files
+      name: '@deepseek-ai/dsh-api-workspace-files'
+
+# Adjacent rows for context (session-controller / settings-controller are likewise
+# bundle-provided and were never manually inserted into the profile patch):
+
+- insert:
+    - id: session-controller
+      name: '@deepseek-ai/dsh-session-controller'
+- insert:
+    - id: settings-controller
+      name: '@deepseek-ai/dsh-settings-controller'

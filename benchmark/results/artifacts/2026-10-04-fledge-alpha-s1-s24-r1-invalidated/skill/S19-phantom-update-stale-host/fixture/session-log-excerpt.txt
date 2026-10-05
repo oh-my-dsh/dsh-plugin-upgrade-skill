@@ -1,0 +1,34 @@
+# Session-log forensics excerpt (decoded from the session's concatenated-zstd
+# generation file) for the broken-image case.
+
+## 1. The read result TEXT as stored in the session log (payload around line 232)
+
+    230:     <circle r="112" fill="none" stroke="#33363a" stroke-width="15"/>
+    231:     <circle r="106" fill="none" stroke="#4b5054" stroke-width="4" opacity=".55"/>
+    232:     <circle r="98" fill="none" stroke="#dde6ea" stro0,1 821,730" fill="none" stroke="#ffffff" stroke-width="3" opacity=".7" stroke-linecap="round"/>
+    233:     <path d="M 587,730 L 615,742 L 607,752 L 581,740 Z" fill="#e8d9bd"/>
+    ... (the file's real lines 233-247 are ABSENT; line 247's tail is spliced into 232)
+
+## 2. The source file on disk, same region (read separately, clean)
+
+    232:     <circle r="98" fill="none" stroke="#dde6ea" stroke-width="6.5"/>
+    233:     <circle r="92" fill="none" stroke="#ffffff" stroke-width="2.4" opacity=".5"/>
+    ...
+    247:     <path d="M 587,730 A 122,122 0 0,1 821,730" fill="none" stroke="#ffffff" stroke-width="3" opacity=".7" stroke-linecap="round"/>
+
+## 3. XML well-formedness verdicts
+
+    source file  : well-formed (System.Xml XmlDocument load: no error)
+    log payload  : NOT well-formed — "error on line 233 at column 54:
+                   Specification mandates value for attribute stro0"
+
+## 4. Shape of the corruption
+
+payload line 232 = source line 232 (up to "...stroke="#dde6ea" stro")
+                 + source line 247's tail (from "0 0,1 821,730" onward)
+→ source lines 233-247 are missing; the splice lands on the shared prefix
+  "stro" ("stroke-width..." vs the "0 0,1" of line 247's arc flags).
+The read tool's TYPE result delivered to the caller was clean; the corrupted
+text is the model-visible result block persisted into the session log, i.e.
+the corruption happened in the result-text assembly, upstream of the plugin.
+A re-read of the same region afterwards came back clean (non-deterministic).

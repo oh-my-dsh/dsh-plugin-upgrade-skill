@@ -1,0 +1,12 @@
+# Process listing at the time of attempt 1 (EBUSY):
+$ tasklist /FI "IMAGENAME eq node.exe"
+Image Name        PID    Session
+node.exe          42432  Console     <- dsh web host (holds koffi.node)
+node.exe          23768  Console     <- agent session worker
+node.exe          23920  Console     <- npm install -g (attempting the copy)
+
+# The dsh web host process loaded @koromix/koffi (a native FFI addon for
+# sandbox/filesystem operations) at startup. koffi.node is a native .node
+# binary - once loaded into a process, the OS holds a file lock on it until
+# the process exits. Refreshing the browser page only reloads the SPA; the
+# host process (which loaded koffi) stays alive.

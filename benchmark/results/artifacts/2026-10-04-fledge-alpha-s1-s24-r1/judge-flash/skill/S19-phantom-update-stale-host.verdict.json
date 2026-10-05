@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Cites client-bundle-excerpt.js's inlined PLUGIN_VERSION 0.3.6 and release-log.md's build-before-bump order (build 16:22, bump 16:23), explains package.json is not reread at runtime, prescribes bump-before-build with inspection of the emitted constant before commit/tag/distribution, retains mirror SHA verification, and correctly treats v0.3.8 as a later, separately ordered release."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses asset-route-probe.txt (PNG 200 proving the route is alive, SVG 404 unsupported-type) with lib-index-excerpt.js showing the shipped disk copy already permits SVG, pins the stale whitelist to the running host process's boot-time module scope, and concludes this host needs a restart while a browser refresh only replaces the client bundle — scoped to this host lifecycle, not a general hot-reload claim."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Grounds the diagnosis in session-log-excerpt.txt: well-formed source XML, a spliced persisted model-visible result block (line 232 truncated after the shared prefix and spliced with line 247's tail, parser error), and a clean re-read; attributes corruption to upstream result-text assembly, treats the payload as untrusted plugin input, declares the traced disk file innocent, and explicitly rejects editing the good SVG."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Ordered chain: authoritative disk bytes via the asset route first; session payload only after a DOMParser well-formedness check requiring no parsererror; sandboxed iframe without allow-scripts while noting SMIL animation still works; explicit visible error state on any failure. Validation failure cannot pass the malformed payload unchecked to the iframe."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding concatenated zstd frames frame-by-frame in order, reconstructing the stored event text, locating the exact splice, diffing against the source, and reporting the upstream bug; notes a direct concatenated-frame decoder is equivalent. Checklist covers bump-before-build, verifying the shipped constant and per-mirror tag SHAs, and plane-specific probes (host restart vs client reload)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "The report affirmatively prescribes bump-before-build, restart for the host route, XML validation before rendering, script-blocking sandbox, and explicitly rejects repairing the clean SVG; no bad advice is endorsed."
+    }
+  ]
+}

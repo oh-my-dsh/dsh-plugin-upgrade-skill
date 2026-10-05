@@ -1,0 +1,36 @@
+{
+ "decisions": [
+  {
+   "id": "silent-break-attribution",
+   "verdict": "pass",
+   "reason": "Walks resolve(): sessions.list.getSnapshot().current is undefined on the alpha.2 snapshot, so resolve() returns null each keystroke and onKeyDown exits before preventDefault. Explains the guard passing (all four members, including scope per the excerpt note, still exist; only a field inside the published value is gone) and the silence (undefined is a legitimate no-session state handled by early return). Does not claim the service or guard was removed; also settles the listener-fires suspicion and notes the inject suspicion is unaddressed."
+  },
+  {
+   "id": "evidence-mapping",
+   "verdict": "pass",
+   "reason": "Full type walk: SessionListState.current removed and navigation moved to view owners per the alpha.2 list doc comment; identifies uiSession.adapter.current as an ObservableSnapshot<SessionBindingValue> yielding key/ctx/hooks/keyedHooks/props, with key replacing current and ctx replacing sessions.scope(id). Maps to card DSH-0.1.6-A2-01 on top of the type walk."
+  },
+  {
+   "id": "dual-host-migration",
+   "verdict": "pass",
+   "reason": "Corrected code reads uiSession.adapter.current.getSnapshot() when the service exists and falls back to legacy current plus sessions.scope from one build, branching on service presence; inject gains uiSession; conversation resolves via binding.ctx.get() and input.for receives that ctx. Handles the absent binding value and keeps the sessions inject for the legacy branch."
+  },
+  {
+   "id": "guard-hardening",
+   "verdict": "pass",
+   "reason": "Names field-level removal behind surviving service members, checked once at activation while the break recurs per use. Hardened guard probes actual snapshot shape (current on alpha-1 hosts, uiSession/key on alpha-2 hosts) and correctly requires the probe to run lazily on the first live binding emission / per use, not only at activation; presence-list expansion alone is not offered as the fix."
+  },
+  {
+   "id": "verification-and-prevention",
+   "verdict": "partial",
+   "reason": "Prevention is solid (throwing deprecated getter or removing the member so the guard fails loud). Verification covers a DevTools probe of adapter.current and both-hosts chord checks with a side-by-side build, but never mentions typechecking against the alpha.2 published types, which the criterion names as the strongest pre-ship gate."
+  }
+ ],
+ "caps": [
+  {
+   "id": "slot-reregistration-misdiagnosis",
+   "triggered": false,
+   "reason": "The final remedy is the current-session code fix plus inject change; the colleague re-register/re-declare advice is quoted only to be rejected, and the report explains why redeclaring inject alone would not restore recall."
+  }
+ ]
+}

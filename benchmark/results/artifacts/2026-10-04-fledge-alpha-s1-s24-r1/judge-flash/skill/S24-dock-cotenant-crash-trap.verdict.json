@@ -1,0 +1,36 @@
+{
+ "decisions": [
+  {
+   "id": "culprit-attribution",
+   "verdict": "pass",
+   "reason": "Attributes the single TypeError to plugin A rendering unconditionally at SessionProgressBar, grounded in the console excerpt and the plugin-A excerpt; the alpha.2 contract dropped useSessionPendingInteraction in favor of useSessionStatus while useSessions stays. Plugin B is explicitly cleared, and the two symptoms are not treated as independent breakages."
+  },
+  {
+   "id": "cotenant-mechanism",
+   "verdict": "pass",
+   "reason": "Explains via dock-render-tree.md that conversation.input.dock entries mount under one shared DrawerErrorBoundary whose null fallback unmounts the whole subtree, so B chips vanish with A strip; the attach button survives because conversation.input.left is a different slot under its own boundary. Cites both the boundary-fallback console follow-up and the render-tree note, beyond a generic boundary mention."
+  },
+  {
+   "id": "experiment-reading",
+   "verdict": "pass",
+   "reason": "Reads tried-notes.txt correctly: disabling A restoring B chips proves render-crash coupling and that B renders once freed, but not B full alpha.2 compatibility nor that the A crash is the only dock defect; reinstalling B could never help since B was never in the failing path; the colleague both-plugins theory is rejected because B uses no standard-kit hooks."
+  },
+  {
+   "id": "degradation-fix",
+   "verdict": "pass",
+   "reason": "Corrected component reads pending state via useSessionStatus with pendingInteraction and optional-chained fallbacks, feature-detecting whichever pending hook the host supplies and degrading to empty maps so at worst only pending indicators hide while running/todos/token/ETA keep working. Explains degradation must be silent because a throwing dock tenant unmounts co-tenants, making a throw a multi-plugin outage versus a cosmetic loss."
+  },
+  {
+   "id": "verification-and-hygiene",
+   "verdict": "pass",
+   "reason": "Verification needs no host restart (refresh/HMR of the client bundle), checks both dock entries render together plus input.left, and covers B regression across paste, remove/add, and re-paste with A enabled including a negative control. Hygiene covers defensive destructuring, an optional per-tenant local boundary, and host-side per-entry boundaries with the blast-radius versus nesting/layout trade-off."
+  }
+ ],
+ "caps": [
+  {
+   "id": "innocent-plugin-fix",
+   "triggered": false,
+   "reason": "The final remedy fixes plugin A only; reinstalling plugin B and the colleague theory are quoted and explicitly rejected, and the report denies the two breakages are independent plugin-level bugs."
+  }
+ ]
+}

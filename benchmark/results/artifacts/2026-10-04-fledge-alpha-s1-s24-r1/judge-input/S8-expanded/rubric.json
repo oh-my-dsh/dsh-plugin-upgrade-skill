@@ -1,0 +1,37 @@
+{
+    "criteria":  [
+                     {
+                         "id":  "missing-mirror-tag",
+                         "points":  20,
+                         "requirement":  "Use ls-remote-tags.txt and sync-script.sh to explain that the README-pinned v0.9.5 is absent from the public mirror because the script pushes HEAD:main but not tags. Tie this to attempt 1 resolution failure, rather than guessing a network fault, consumer typo or missing npm package. Mere tag/version mentions earn no credit.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "runtime-compatibility-direction",
+                         "points":  20,
+                         "requirement":  "Use dsh-version.txt (0.1.1-rc.2) and compat-table.md (v0.9.7 targets 0.1.2-alpha.1) to explain attempt 2: a newer-client-API artifact on an older runtime lacks the expected useConversation seat. Successful installation/restarting does not establish API compatibility. Explain the direction rather than only repeating the error.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "frozen-runtime-remedy",
+                         "points":  20,
+                         "requirement":  "Honor the production freeze: select v0.9.3 using its rc.1 verification and the supplied additive rc.2 compatibility note. Notice v0.9.3 is ALSO absent from the mirror listing. Provide the consumer install command pinning #v0.9.3 after maintainer tag publication, or a reachable verified v0.9.3 commit as a conditional alternative. Do not invent a SHA, assume an unreachable commit resolves, require upgrading DSH, or present the absent tag as immediately installable.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "tag-distribution-repair",
+                         "points":  20,
+                         "requirement":  "Propose explicit release-tag distribution to every public mirror, grounded in the branch-only sync script, and verify the documented tags resolve. Non-forced git push \u003cremote\u003e \u003ctag\u003e or --tags are equivalent. Branch synchronization alone is insufficient; a bare --tags keyword does not establish the repair.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "version-routing-docs",
+                         "points":  20,
+                         "requirement":  "Prevent the second defect by routing README install commands according to the consumer DSH version: rc.2 users get the verified v0.9.3 artifact, alpha.1 users can use v0.9.7. Include a runtime version check or explicit compatibility matrix/branches. A single newest-tag default or restarting advice does not satisfy this requirement. Do not generalize support to every untested future alpha release.",
+                         "sourceRequired":  true
+                     }
+                 ],
+    "caps":  [
+
+             ]
+}

@@ -1,0 +1,12 @@
+# Attempt 2 — single self-contained chunk (7.2 MB), host route added as above.
+# Production host: Windows Server 2022, DSH installed at E:\dsh\. Browser console:
+
+GET http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js   403 (Forbidden)
+TypeError: Failed to fetch dynamically imported module:
+  http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js
+[dsh-attach-input] mermaid chunk fell back to code block: TypeError: Failed to fetch ...
+
+# Same plugin version, same route code, on the maintainer's other machines: works.
+# The file exists at E:\dsh\...\lib\mermaid-chunk.js and the route log shows the
+# guard branch fired ("path escapes the plugin lib") — for a path that is plainly
+# inside the lib directory.

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Walks resolve() in the plugin entry: getSnapshot().current is undefined because the published SessionListSnapshot has no current field, so resolve() returns null each keystroke and onKeyDown exits before preventDefault. Explains both silences: all four presence probes survive since only a field inside the published value was removed, and undefined is a legitimate no-session state the code deliberately ignores. No claim that the service or guard was removed or throws."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Type-walks session-list-alpha1 vs alpha2: SessionListState.current gone, navigation moved to view owners. Identifies uiSession.adapter.current as ObservableSnapshot<SessionBindingValue> with key replacing current and the session-scoped ctx replacing sessions.scope(id), matching the ui-session-service-alpha2 excerpt."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "Corrected resolver: feature-detects ctx.uiSession, reads adapter.current.getSnapshot() with binding.key and binding.ctx (actx.get('conversation'), conversation.input.for(actx)), and falls back to legacy current plus sessions.scope from the same build; inject gains 'uiSession'. Also correctly notes the colleague's inject-only hunch is necessary but not sufficient."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names the class: field-level removal inside a value returned by a still-present service, checked by presence probes. Hardened guard probes the snapshot value shape ('current' in legacy snapshot; key/ctx on the alpha.2 binding) and notes the probe must run after the binding materializes and re-run on session switches, not only at activation."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "pass",
+      "reason": "Verification without full migration: typecheck against the alpha.2 types, fixture-level unit probes of the resolver, and a temporary shim on the live alpha.2 host exercising adapter.current key/ctx mapping with the chords checked on both hosts. Prevention: a deprecated throwing getter for the removed field so reads fail loud, matching the runtime fail-loud requirement."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "The report explicitly rejects the colleague's re-register/re-declare advice as insufficient; its final remedy is the resolver code change plus inject addition, not slot re-registration or reinstall."
+    }
+  ]
+}
