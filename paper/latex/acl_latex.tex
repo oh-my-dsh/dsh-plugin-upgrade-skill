@@ -142,7 +142,7 @@ We distinguish three evidence tiers. The focal comparison answers the research q
 \begin{enumerate}
 \item Focal archived comparison: 16 tasks, two conditions, and two repeats, with 64 reports, original verdicts, scores, selection and execution records, and an offline integrity audit.
 \item Historical context: five within-configuration paired summaries, with heterogeneous task pools, aggregation, grading, and raw-artifact coverage.
-\item Supplementary evidence: a newer 16-task Qwen comparison with scored records but without archived original answers and judgment reasons, three GLM-5.3 rounds with a change of judge in round three, one round on the then-anonymous \texttt{union-alpha} model, and a first three-model validation on the two later author-designed tasks S23/S24 (Appendix~\ref{app:historical}). None is pooled into the focal estimate.
+\item Supplementary evidence: a newer 16-task Qwen comparison with scored records but without archived original answers and judgment reasons, three GLM-5.3 rounds with a change of judge in round three, one round on the then-anonymous \texttt{union-alpha} model, one round on the identity-unverified \texttt{fledge-alpha} model over all 24 static tasks, and a first three-model validation on the two later author-designed tasks S23/S24 (Appendix~\ref{app:historical}). None is pooled into the focal estimate.
 \end{enumerate}
 
 \section{Method}\label{sec:method}
@@ -261,7 +261,7 @@ All reviewed replacements &93.05&98.44&5.39&[0.00, 11.80]\\
 
 In the focal comparison, mean original reward increases from 93.83 to 98.75 (Table~\ref{tab:focal}). Six tasks improve, two decline, and eight have zero change (Figure~\ref{fig:task_deltas}); all eight zero-change pairs are at 100 in both arms. S1 has a 42.5-point task-level gain. Removing it reduces the overall gain to 2.42 points across the remaining 15 tasks. The original Wilcoxon signed-rank approximation~\citep{wilcoxon1945individual} gives $p=0.0797$ with eight nonzero pairs. The corresponding exhaustive sign-enumeration tail fraction is $20/256=0.0781$. Repeat-wise mean gains are 4.53 and 5.31; all 16 leave-one-task-out means range from 2.42 to 5.58. Every variant keeps the direction positive. Because eight pairs are at the ceiling and one task contributes most of the gain, we read the focal estimate as a descriptive association.
 
-The focal estimate describes this configuration and task set. Historical and supplementary configurations, which use different task pools, hosts, and judges, are reported separately in Appendix~\ref{app:historical}.
+The focal estimate describes this configuration and task set. Historical and supplementary configurations, which use different task pools, hosts, and judges, are reported separately in Appendix~\ref{app:historical}. A supplementary round on the identity-unverified \texttt{fledge-alpha} model over all 24 static tasks shows the same concentration pattern at a heavier ceiling: eight positive task differences carry the entire $+10.21$-point mean lift, while 14 pairs sit at 100 in both arms (Appendix~\ref{app:fledge}, Figure~\ref{fig:fledge_deltas}).
 
 \subsection{RQ2: Contract failures and grading disagreements}\label{sec:rq2}
 \input{../generated/contract-coverage-table.tex}
@@ -453,6 +453,38 @@ Two further static tasks, S23 and S24, extend the corpus after the taxonomy pin.
 A first validation round on S23/S24 (archived 2026-09-28) runs both arms once per task on each of GLM-5.3, GLM-5.2, and GLM-5.3-Flash, with in-session solver subagents of the DSH web harness and a GLM-5.3-Flash judge scoring all three rounds, so the Flash round pairs a same-family solver and judge. On S23 the skill arm gains 10 points under every model (80 versus 90, 90 versus 100, and 80 versus 90), and each gain is exactly one criterion moving from partial to pass. On S24 both arms score 100 under every model --- a ceiling that carries no discrimination. All three run manifests record clean no-skill exposure audits, and the round-one manifest also records the skill arm citing the corresponding corridor cards on both tasks. With two tasks, one attempt per arm, and one judge family, these numbers are descriptive: no interval is computed and no inferential claim is made.
 
 S23 and S24 also require a heavier provenance disclosure than the supplements above: the tasks, their fixtures, the corridor cards they reference, and the scoring rubric share one author. The cards name the removed field or seat and its replacement, so the skill arm's relevance on the attribution criterion is partly guaranteed by construction. The tasks' central mechanisms --- the silent no-op path and the guard critique on S23, the co-tenant boundary semantics, the control-experiment reading, and the never-throw rationale on S24 --- are deliberately absent from the skill and must be derived from the fixture evidence, but that separation was authored too, not independently validated. The uniform S23 lift is therefore an author-designed check that the skill surfaces the documented migration facts, reported as such and not pooled with the focal or supplementary results.
+
+\subsection{Identity-unverified model: fledge-alpha}\label{app:fledge}
+
+A supplementary round on \texttt{fledge-alpha} (archived 2026-10-04/05) runs the two-arm protocol once per task across all 24 static tasks, S1--S24. The model was accessed through OpenCode Zen as ``Fledge Alpha Free''; its identity is unverified, and the free tier's quota exhaustion interrupted the run mid-way. Third-party tokenizer-fingerprint tests report inconsistent token counts for identical prompts across sessions, suggesting the endpoint may be a multi-model router rather than a single checkpoint; if so, the two arms may not always have been served by the same underlying model, which would confound the arm contrast in either direction. The first attempt was invalidated because solvers roamed beyond the sealed cell-only environment (reading repository migration drafts and upstream source trees the container design never provides); the run was restarted under a strict read allowlist with per-cell transcript audit, and both attempts are archived. A post-reset resume initially produced fixtureless reports on S18--S24 that were deleted and re-run. These are execution-environment disclosures, not scoring adjustments.
+
+Answers were judged by the canonical GLM-5.3-Flash judge; a GLM-5.3 re-judge of the S1--S17 subset agrees on 94.0\% of decisions (linear weighted $\kappa = 0.802$), with all ten disagreements in adjacent pass/partial bands and none reversing a task-level direction. Full-cohort means are 88.54 without and 98.75 with the skill: a lift of $+10.21$ points. Figure~\ref{fig:fledge_deltas} shows the task-level distribution: eight positive differences (S1 $+55$, S3 $+70$, S4 $+37.5$, S20 $+27.5$, S6 $+25$, S2 and S8 $+20$ each, S17 $+10$) carry the entire gain, 14 pairs sit at 100 in both arms, and two tasks decline by 10 points. The gain tasks are the card-mapping, snapshot-migration, type-surface, and build-patch diagnoses --- precisely the tasks whose rubric criteria reward access to organized version-specific facts. In the no-skill arm the two largest shortfalls follow the same pattern: S3 (30 without the skill) invents card identifiers and API field names from naming conventions alone, and S1 (45) mis-maps cards through a fabricated ``A1-0N equals category N'' rule.
+
+The noskill baseline is stronger than the focal run's (88.54 versus 93.83 on overlapping tasks), so the heavier ceiling (14 versus 8 pairs at 100) is partly a baseline property, not only a task-pool difference. Like the \texttt{union-alpha} round, this result is descriptive context from a single attempt on a model of unverified identity; it is not pooled with any estimate.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=4pt,
+  width=\columnwidth, height=5.5cm,
+  symbolic x coords={S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19,S20,S21,S22,S23,S24},
+  xtick={S1,S3,S5,S7,S9,S11,S13,S15,S17,S19,S21,S23},
+  x tick label style={rotate=60, anchor=east, font=\footnotesize},
+  ylabel={Mean $\Delta$ (skill $-$ no skill)},
+  ymin=-15, ymax=75,
+  ymajorgrids, grid style={gray!30},
+  axis y line*=left, axis x line*=bottom,
+]
+\addplot+[fill=oiblue, draw=oiblue!70!black] coordinates {(S1,55) (S2,20) (S3,70) (S4,37.5) (S6,25) (S8,20) (S17,10) (S20,27.5)};
+\addplot+[fill=gray!40, draw=gray!60] coordinates {(S5,0) (S7,0) (S9,0) (S10,0) (S11,0) (S12,0) (S13,0) (S14,0) (S15,0) (S18,0) (S19,0) (S21,0) (S22,0) (S24,0)};
+\addplot+[fill=vermillion, draw=vermillion!70!black] coordinates {(S16,-10) (S23,-10)};
+\legend{positive (8 tasks), ceiling $\Delta=0$ (14 tasks), negative (2 tasks)}
+\end{axis}
+\end{tikzpicture}
+\caption{Task-level reward changes in the supplementary \texttt{fledge-alpha} round (24 static tasks, one attempt per arm, canonical GLM-5.3-Flash judge). The mean lift of $+10.21$ points is carried entirely by eight knowledge-lookup tasks; 14 pairs sit at the ceiling and two decline by 10. The model's identity is unverified; the result is descriptive and not pooled.}
+\label{fig:fledge_deltas}
+\end{figure}
 
 \subsection{Historical resource accounting}
 Table~\ref{tab:resource-overhead} reports within-configuration with-skill/no-skill usage ratios wherever a historical source records per-arm usage, both as the median of per-task ratios and as the ratio of pooled arm totals. DeepSeek, Terra, and GLM-5.2 record no per-arm usage fields and are marked unavailable rather than zero. Ratios are computed only inside a configuration and under that source's own accounting convention: the Qwen totals count cached input inside input, whereas the Flash records list it separately. Absolute token counts are not comparable across models, providers, or tokenizers, and summed per-attempt durations are not wall-clock time.
