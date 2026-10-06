@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | **English**
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-195-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-198-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
 
 **Agent skills that teach AI to upgrade your DSH plugins.** Community-built.
 
@@ -12,7 +12,7 @@
 
 ## What's in this repo
 
-- **195 upgrade cards**: each records one real pitfall: what breaks, why, how to fix it, and which version the evidence comes from. Cards are ordered along the version corridor from 0.1.0-rc.8 to 0.2.0-rc.1 (the 0.1.7-rc.1 → 0.1.7-rc.2 edge is not yet carded); per-edge counts and status are in the [coverage table](#which-versions-are-covered).
+- **198 upgrade cards**: each records one real pitfall: what breaks, why, how to fix it, and which version the evidence comes from. Cards are ordered along the version corridor from 0.1.0-rc.8 to 0.2.0-rc.2 (the 0.1.7-rc.1 → 0.1.7-rc.2 edge is not yet carded); per-edge counts and status are in the [coverage table](#which-versions-are-covered).
 - **13 general-purpose countermeasures**: version-independent problems (back up first, run old and new side by side, what to do when startup hangs) collected in one checklist.
 - **11 skills**: a unified workflow selects and coordinates stages; nine skills check upgrades, write, test, and release plugins, diff two DSH versions, debug runtime failures, integrate heavy dependencies, sweep the installed plugin fleet after a host upgrade, and turn upgrade experience into benchmark tasks; one framework-agnostic migration methodology without DSH-specific facts serves as the control arm for comparative experiments.
 - **63 auto-graded benchmark tasks**: 22 static diagnosis, 14 mixed, and 27 hands-on tasks, including two real migrations (dsh-web and dsh-data-agent).
@@ -158,8 +158,8 @@ environment variables. A failed, oversized, or invalid-v2 query is unknown/not c
 | Cross-version countermeasures | ✅ Done | [rollup-0.1.2.md](skills/plugin-upgrade/references/rollup-0.1.2.md) | 13 items (running old and new side by side, back up first, what to do when startup hangs, etc.) |
 | 0.1.1 → 0.1.2 final | 🔄 Waiting for the official release | — | dsh 0.1.2 final isn't out yet (npm `latest` is still rc.1; the corridor now extends to 0.2.0-rc.1 with draft cards); we'll re-verify everything once 0.1.2 final is out |
 | 0.1.7-rc.1 → 0.1.7-rc.2 | 📝 Up for grabs / not yet carded | — | 346 commits with real changes (Schedule shipped in the default Web composition then disabled, the native-command Windows adapter, auto-review, user-questions timed waits, tool-description trims, Plugin Manager fixes); `plan-migration` reports a corridor gap from ≤0.1.7-rc.1. Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
-| 0.1.7-rc.2 → 0.2.0-rc.1 | 📝 Draft | [v0.2.0-rc.1.md](skills/plugin-upgrade/references/v0.2.0-rc.1.md) | 6 draft cards (host packages cross to 0.2.0: every `^0.1.x`-floored DSH peer is refused and `^0.2.0` itself does not admit the rc host — measured range table with first-hand evidence; Web work-details default moves to `detailed` with the default in client code and an optional `transcriptView`; Schedule rows leave the default web-app bundle for `@deepseek-ai/dsh-experimental-schedule-bundle`; telemetry rows join the bundle composition; `fork` gains `onCreated`; Explorer path-opening spawns visible — retire local reveal hotfixes. Two Desktop 0.2.0-rc.2 findings are kept as uncarded field notes at the end) |
-| 0.2.0-rc.1 → later versions (0.2.0-rc.2, 0.2.0 final, etc.) | 📝 Up for grabs | — | Want to help write cards? See the [contributing guide](CONTRIBUTING.md) |
+| 0.1.7-rc.2 → 0.2.0-rc.1 | 📝 Draft | [v0.2.0-rc.1.md](skills/plugin-upgrade/references/v0.2.0-rc.1.md) | 6 draft cards (host packages cross to 0.2.0: every `^0.1.x`-floored DSH peer is refused and `^0.2.0` itself does not admit the rc host — measured range table with first-hand evidence; Web work-details default moves to `detailed` with the default in client code and an optional `transcriptView`; Schedule rows leave the default web-app bundle for `@deepseek-ai/dsh-experimental-schedule-bundle`; telemetry rows join the bundle composition; `fork` gains `onCreated`; Explorer path-opening spawns visible — retire local reveal hotfixes. The two Desktop 0.2.0-rc.2 field notes are folded into the next-edge card set) |
+| 0.2.0-rc.1 → 0.2.0-rc.2 | 📝 Draft | [v0.2.0-rc.2.md](skills/plugin-upgrade/references/v0.2.0-rc.2.md) | 3 draft cards (Desktop runner surface, first-hand on a real Desktop 0.2.0-rc.2 install: the Electron shell forwards renderer requests through `dsh-app://app` after deleting `host`/`origin`/`cookie`/`sec-fetch-site` and rewrites the WS `origin` to the Host authority — plugin fences that require an affirmative browser marker 403 every route, realign with the platform fence trust semantics; the two former field notes are folded in as cards — Desktop `ctx.sessions` registry empty with the upstream discussion link, and minimal subprocess `PATH` on Windows; an unattributed field note records the `readSession` seeded-session replay validation). The next edge, 0.2.1-alpha.1, has a claim in flight |
 
 ## Benchmark
 

@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-195-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-198-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
 
 **教 AI 帮你升级 DSH 插件的 skill 集合**，社区共建。
 
@@ -12,7 +12,7 @@
 
 ## 这个仓库里有什么
 
-- **195 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.0-rc.1（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
+- **198 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.0-rc.2（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
 - **13 条通用对策**：与具体版本无关的坑（先备份、新旧共存、启动卡死怎么办等），集中在一份清单里。
 - **11 个 skill**：统一工作流负责选择与编排，另外九个分别负责查升级、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
 - **63 道自动判分的考题（benchmark）**：22 道静态诊断、14 道混合、27 道实操，其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
@@ -160,8 +160,8 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | 0.1.7-alpha.2 → 0.1.7-rc.1 | 📝 草稿 | [v0.1.7-rc.1.md](skills/plugin-upgrade/references/v0.1.7-rc.1.md) | 5 张草稿卡（DSH peer 范围在安装和启动时强制校验、宿主 semver ≥ 7.8.3 下 `^0.1.7` 不接受 rc.1 的陷阱；toolview 三阶段；瞬态事件启动会话；工作详情四种模式；插件管理器限制静默 pnpm 运行） |
 | 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（npm `latest` 仍是 rc.1；走廊已延伸到 0.2.0-rc.1，draft 卡），正式版发布后我们要复核一遍 |
 | 0.1.7-rc.1 → 0.1.7-rc.2 | 📝 等社区认领 / 尚未成卡 | — | 346 个提交，含真实改动（Schedule 先进默认 Web 组合再被禁用、native-command Windows 适配器、auto-review、user-questions 限时等待、工具描述精简、插件管理器修复）；`plan-migration` 从 ≤0.1.7-rc.1 出发会报走廊缺口。想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
-| 0.1.7-rc.2 → 0.2.0-rc.1 | 📝 草稿 | [v0.2.0-rc.1.md](skills/plugin-upgrade/references/v0.2.0-rc.1.md) | 6 张草稿卡（宿主包跨到 0.2.0：所有 `^0.1.x` 下限的 DSH peer 被拒，`^0.2.0` 本身也不接受 rc 宿主——附实测范围表与一手证据；Web 工作详情默认改为 `detailed`、默认值移入客户端代码、`transcriptView` 变为可选；Schedule 行移出默认 web-app bundle，改由 `@deepseek-ai/dsh-experimental-schedule-bundle` 提供；bundle 组合新增遥测行；`fork` 新增 `onCreated`；Explorer 打开路径改为可见窗口，可撤掉本地 reveal 热修。文末另附两条 Desktop 0.2.0-rc.2 的未成卡现场记录） |
-| 0.2.0-rc.1 → 更新版本（0.2.0-rc.2 / 0.2.0 正式版等） | 📝 等社区认领 | — | 想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
+| 0.1.7-rc.2 → 0.2.0-rc.1 | 📝 草稿 | [v0.2.0-rc.1.md](skills/plugin-upgrade/references/v0.2.0-rc.1.md) | 6 张草稿卡（宿主包跨到 0.2.0：所有 `^0.1.x` 下限的 DSH peer 被拒，`^0.2.0` 本身也不接受 rc 宿主——附实测范围表与一手证据；Web 工作详情默认改为 `detailed`、默认值移入客户端代码、`transcriptView` 变为可选；Schedule 行移出默认 web-app bundle，改由 `@deepseek-ai/dsh-experimental-schedule-bundle` 提供；bundle 组合新增遥测行；`fork` 新增 `onCreated`；Explorer 打开路径改为可见窗口，可撤掉本地 reveal 热修。两条 Desktop 0.2.0-rc.2 现场记录已折叠进下一条边卡集） |
+| 0.2.0-rc.1 → 0.2.0-rc.2 | 📝 草稿 | [v0.2.0-rc.2.md](skills/plugin-upgrade/references/v0.2.0-rc.2.md) | 3 张草稿卡（桌面运行时面，实机 Desktop 0.2.0-rc.2 一手验证：Electron 壳经 `dsh-app://app` 转发渲染进程请求前删除 `host`/`origin`/`cookie`/`sec-fetch-site`、WS origin 改写为 Host authority——要求肯定性浏览器标记的插件 fence 全线 403，按平台围栏信任语义修正；原两条现场笔记折叠成卡：Desktop `ctx.sessions` 注册表为空（附上游 discussion 链接）、Windows 子进程 PATH 最小化；未归因现场笔记记录 `readSession` seeded 会话重放校验）。下一条边 0.2.1-alpha.1 另有在途认领 |
 
 ## 考题（benchmark）
 
