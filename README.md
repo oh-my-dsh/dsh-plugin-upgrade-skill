@@ -2,8 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-198-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
-
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-198-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 **教 AI 帮你升级 DSH 插件的 skill 集合**，社区共建。
 
 [DSH（DeepSeek Harness）](https://github.com/deepseek-ai/deepseek-harness) 是一个"所有功能都以插件形式存在"的 AI 运行框架。麻烦在于：**DSH 每次发新版，老插件就可能启动不了**。本仓库把已知的坑整理成 AI 读得懂的升级手册，让 Claude Code、Codex、Gemini 等 agent 帮你把插件安全迁到新版本，并用一套公开的 benchmark 检验这件事到底有没有做对。
@@ -15,7 +14,7 @@
 - **198 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.0-rc.2（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
 - **13 条通用对策**：与具体版本无关的坑（先备份、新旧共存、启动卡死怎么办等），集中在一份清单里。
 - **11 个 skill**：统一工作流负责选择与编排，另外九个分别负责查升级、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
-- **63 道自动判分的考题（benchmark）**：22 道静态诊断、14 道混合、27 道实操，其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
+- **65 道自动判分的考题（benchmark）**：27 道笔试（读代码给答案）、38 道实操（真装 dsh 真跑插件），其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
 - **一篇论文和完整的评估证据**：从原始回答、逐条评分到跨模型复评全部公开可复算，见下方[论文](#论文)。
 
 ## 快速开始
@@ -158,14 +157,15 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | 0.1.6-alpha.2 → 0.1.7-alpha.1 | 📝 草稿 | [v0.1.7-alpha.1.md](skills/plugin-upgrade/references/v0.1.7-alpha.1.md) | 11 张草稿卡（客户端图标集删除全部 `*16` 导出、`workspaceFiles` 读取统一到 `readBytes`、设置迁入 Profile 插件配置、bundle 声明 agent preset、session log V4、官方 DeepSeek 适配器只走 Messages API、多 patch bundle、容错 Profile 加载、按 locale 的插件元数据、自定义事件附件不再自动读取、新增设置页座位 `settings.launcher`/`settings.models.sign-in`；前一条边 0.1.6-alpha.1 → 0.1.6-alpha.2 单独成卡） |
 | 0.1.7-alpha.1 → 0.1.7-alpha.2 | 📝 草稿 | [v0.1.7-alpha.2.md](skills/plugin-upgrade/references/v0.1.7-alpha.2.md) | 4 张草稿卡（`spill-policy` 改用 `maxInlineTokens`、vendored 依赖只锁同 minor 补丁、首次安装自动选 npm registry、客户端 bundle 启动时缓存且页面自动重连） |
 | 0.1.7-alpha.2 → 0.1.7-rc.1 | 📝 草稿 | [v0.1.7-rc.1.md](skills/plugin-upgrade/references/v0.1.7-rc.1.md) | 5 张草稿卡（DSH peer 范围在安装和启动时强制校验、宿主 semver ≥ 7.8.3 下 `^0.1.7` 不接受 rc.1 的陷阱；toolview 三阶段；瞬态事件启动会话；工作详情四种模式；插件管理器限制静默 pnpm 运行） |
-| 0.1.1 → 0.1.2 正式版 | 🔄 等官方发版 | — | dsh 0.1.2 还没发正式版（npm `latest` 仍是 rc.1；走廊已延伸到 0.2.0-rc.1，draft 卡），正式版发布后我们要复核一遍 |
+| 0.1.5-rc.2 ⇒ 0.1.7-rc.1（jump） | 📝 草稿 | [jump-0.1.5-rc.2-to-0.1.7-rc.1.md](skills/plugin-upgrade/references/jump-0.1.5-rc.2-to-0.1.7-rc.1.md) | 34 张 jump 卡（不是走廊边，而是给"从 0.1.5-rc.2 一路跳到 0.1.7-rc.1、中间没停在任何 alpha"的部署看的合并净变更视图，约 3300 个提交：宿主 peer 兼容强制、PTC 运行时改名、声明式 agent preset、设置迁入 Profile 插件配置、Session log V4、Remote 双工/二进制 + `readBytes`、异步 Agent 生命周期、`Message` role 联合、Messages-only DeepSeek 适配器、toolview 三阶段、图标字重改名、右栏 tab 契约、plugin-manager 页面等；与同窗口的逐边卡（上表 0.1.6-alpha.1 至 0.1.7-rc.1 五行）互为交叉引用。`plan-migration` 只走 v\*.md 走廊，不消费本文件） |
+| 0.1.1 → 0.1.2 正式版 | ⛔ 上游没走这条路 | — | 0.1.2 正式版从未发布。`0.1.2-alpha.1` 有 git tag 但没有 npm 包（npm 上 0.1.2 线最早是 `0.1.2-alpha.2`，最晚是 `0.1.2-rc.1`），上游随后直接进入 0.1.3 → 0.1.5 → … → 0.2.x。本行保留只为说明这条边不会再有卡可补。走廊按 tag 排，所以 `0.1.2-alpha.1` 那张卡仍然有效。（npm 状态截至 2026-10-16：`latest` = `0.2.0-rc.2`，`next` = `0.2.0-rc.2`，`alpha` = `0.2.1-alpha.4`） |
 | 0.1.7-rc.1 → 0.1.7-rc.2 | 📝 等社区认领 / 尚未成卡 | — | 346 个提交，含真实改动（Schedule 先进默认 Web 组合再被禁用、native-command Windows 适配器、auto-review、user-questions 限时等待、工具描述精简、插件管理器修复）；`plan-migration` 从 ≤0.1.7-rc.1 出发会报走廊缺口。想帮忙写卡？看 [贡献指南](CONTRIBUTING.md) |
 | 0.1.7-rc.2 → 0.2.0-rc.1 | 📝 草稿 | [v0.2.0-rc.1.md](skills/plugin-upgrade/references/v0.2.0-rc.1.md) | 6 张草稿卡（宿主包跨到 0.2.0：所有 `^0.1.x` 下限的 DSH peer 被拒，`^0.2.0` 本身也不接受 rc 宿主——附实测范围表与一手证据；Web 工作详情默认改为 `detailed`、默认值移入客户端代码、`transcriptView` 变为可选；Schedule 行移出默认 web-app bundle，改由 `@deepseek-ai/dsh-experimental-schedule-bundle` 提供；bundle 组合新增遥测行；`fork` 新增 `onCreated`；Explorer 打开路径改为可见窗口，可撤掉本地 reveal 热修。两条 Desktop 0.2.0-rc.2 现场记录已折叠进下一条边卡集） |
 | 0.2.0-rc.1 → 0.2.0-rc.2 | 📝 草稿 | [v0.2.0-rc.2.md](skills/plugin-upgrade/references/v0.2.0-rc.2.md) | 3 张草稿卡（桌面运行时面，实机 Desktop 0.2.0-rc.2 一手验证：Electron 壳经 `dsh-app://app` 转发渲染进程请求前删除 `host`/`origin`/`cookie`/`sec-fetch-site`、WS origin 改写为 Host authority——要求肯定性浏览器标记的插件 fence 全线 403，按平台围栏信任语义修正；原两条现场笔记折叠成卡：Desktop `ctx.sessions` 注册表为空（附上游 discussion 链接）、Windows 子进程 PATH 最小化；未归因现场笔记记录 `readSession` seeded 会话重放校验）。下一条边 0.2.1-alpha.1 另有在途认领 |
 
 ## 考题（benchmark）
 
-[benchmark/](benchmark/) 目录下有 63 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 DSH 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可得到 0~1 分。同一个 agent 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。多个模型与 agent 的实测结果和完整报告列在 [benchmark/README.md](benchmark/README.md)，报告原文在 [benchmark/results/](benchmark/results/)。
+[benchmark/](benchmark/) 目录下有 65 道升级考题和自动判分，采用 [Harbor](https://github.com/harbor-framework/harbor) 任务格式：每题一个自包含任务（自带 DSH 环境的容器 + 自动 verifier），`harbor run -p benchmark/tasks/<题号> -a <agent>` 即可得到 0~1 分。同一个 agent 装 skill 做一遍、不装做一遍，分差就是 skill 的实际效果。多个模型与 agent 的实测结果和完整报告列在 [benchmark/README.md](benchmark/README.md)，报告原文在 [benchmark/results/](benchmark/results/)。
 
 ## 论文
 
@@ -210,7 +210,7 @@ skills/<skill-name>/
 └── examples/       # 示例代码（只读，不要运行）
 scripts/validate.mjs            # 仓库自检
 scripts/validate-manifests.mjs  # 多 agent 清单自检
-benchmark/                      # 63 道考题 + 判分 + 验证报告
+benchmark/                      # 65 道考题 + 判分 + 验证报告
 ```
 
 ## 想贡献？

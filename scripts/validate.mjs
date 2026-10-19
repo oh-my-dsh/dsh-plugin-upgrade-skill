@@ -319,6 +319,119 @@ try {
   fail(workflowCheckFile, `workflow planner check failed: ${error.stack ?? error.message}`)
 }
 
+// The root READMEs are the human-facing index, but they are maintained by hand and every
+// check above compared benchmark/README.md and references/README.md against the real files.
+// This closes the gap: the headline badges, the "what's in this repo" bullets, and the
+// coverage table must agree with the authoritative sources, not with each other's prose.
+const { discoverTasks, extractMarkdownTable } = await import(
+  pathToFileURL(join(root, 'benchmark', 'scripts', 'validate-task-registry.mjs')).href
+)
+const cardCountOf = async (file) => Number(parseFrontmatter(await readFile(file, 'utf8'), file).meta.cardCount)
+const corridorCards = await Promise.all(cardFiles.map(cardCountOf))
+const jumpCards = await Promise.all(jumpFiles.map(cardCountOf))
+const corridorCardCount = corridorCards.reduce((sum, n) => sum + n, 0)
+const jumpCardCount = jumpCards.reduce((sum, n) => sum + n, 0)
+const rollupItems = (await readFile(rollupFile, 'utf8')).match(/^### R-\d{2}\b/gm)?.length ?? 0
+const taskIds = discoverTasks(join(root, 'benchmark', 'tasks')).ids
+const benchmarkRows = extractMarkdownTable(await readFile(join(root, 'benchmark', 'README.md'), 'utf8')) ?? []
+const writtenCount = benchmarkRows.filter((cells) => cells[1] === 'Static').length
+const handsOnCount = benchmarkRows.filter((cells) => cells[1] === 'Hands-on').length
+
+const lines = (text) => text.replaceAll('\r\n', '\n').split('\n')
+
+// Bullet regexes anchor on each language's canonical phrasing and capture the LEADING number,
+// so a wrong headline count is caught instead of a stray "65" elsewhere on the line.
+const readmeSpecs = [
+  {
+    name: 'README.md',
+    card: /^- \*\*(\d+) 张升级说明卡\*\*.*$/m,
+    rollup: /^- \*\*(\d+) 条通用对策\*\*.*$/m,
+    task: /^- \*\*(\d+) 道自动判分的考题.*$/m,
+    proseCounts: [
+      [/目录下有 (\d+) 道升级考题/g, 'benchmark section prose'],
+      [/^\s*benchmark\/\s+#\s*(\d+) 道/gm, 'repository-layout comment'],
+    ],
+  },
+  {
+    name: 'README.en.md',
+    card: /^- \*\*(\d+) upgrade cards\*\*.*$/m,
+    rollup: /^- \*\*(\d+) general-purpose countermeasures\*\*.*$/m,
+    task: /^- \*\*(\d+) auto-graded benchmark tasks\*\*.*$/m,
+    proseCounts: [
+      [/holds (\d+) upgrade tasks with automatic grading/g, 'benchmark section prose'],
+      [/^\s*benchmark\/\s+#\s*(\d+) benchmark/gm, 'repository-layout comment'],
+    ],
+  },
+]
+
+for (const spec of readmeSpecs) {
+  const file = join(root, spec.name)
+  const text = await readFile(file, 'utf8')
+
+  // Headline badges must carry the numbers the validator just counted from the files.
+  const badge = (name) => Number(new RegExp(`badge/${name}-(\\d+)(?:%20[a-z]+)?-`).exec(text)?.[1] ?? NaN)
+  if (badge('skills') !== skillEntries.length) fail(file, `skills badge says ${badge('skills')}, counted ${skillEntries.length}`)
+  // The headline counts corridor cards only; jump cards are a merged cross-edge view and are
+  // listed separately below. This is the repo's existing convention, not a new preference.
+  if (badge('upgrade%20cards') !== corridorCardCount) fail(file, `upgrade cards badge says ${badge('upgrade%20cards')}, counted ${corridorCardCount} corridor cards (${jumpCardCount} jump cards are excluded by convention)`)
+  if (badge('benchmark') !== taskIds.length) fail(file, `benchmark badge says ${badge('benchmark')}, found ${taskIds.length} task directories`)
+
+  // Each canonical bullet declares its count as the leading number of the bold heading,
+  // which is what makes a wrong headline detectable rather than merely "mentioned somewhere".
+  const bulletCount = (pattern) => {
+    const match = pattern.exec(text)
+    return match === null ? null : { total: Number(match[1]), line: match[0] }
+  }
+
+  // The card headline is the corridor count. The jump set is covered by the row check below,
+  // which requires every card file including jump-*.md to appear in the coverage table.
+  const cards = bulletCount(spec.card)
+  if (cards === null) fail(file, 'missing the canonical "N upgrade cards" bullet')
+  else if (cards.total !== corridorCardCount) {
+    fail(file, `card bullet says ${cards.total} cards, counted ${corridorCardCount} corridor cards`)
+  }
+
+  const countermeasures = bulletCount(spec.rollup)
+  if (countermeasures === null) fail(file, 'missing the canonical "N countermeasures" bullet')
+  else if (countermeasures.total !== rollupItems) {
+    fail(file, `countermeasure bullet says ${countermeasures.total}, the rollup declares ${rollupItems} R-nn sections`)
+  }
+
+  // Task counts must match the registry and use its written/hands-on split, not a retired tri-split.
+  const tasks = bulletCount(spec.task)
+  if (tasks === null) fail(file, 'missing the canonical "N benchmark tasks" bullet')
+  else {
+    if (tasks.total !== taskIds.length) fail(file, `benchmark bullet says ${tasks.total} tasks, found ${taskIds.length} task directories`)
+    if (!tasks.line.includes(String(writtenCount)) || !tasks.line.includes(String(handsOnCount))) {
+      fail(file, `benchmark bullet must split ${writtenCount} written and ${handsOnCount} hands-on, per the benchmark/README.md Type column`)
+    }
+  }
+
+  // Body prose that re-states the dataset size must not drift from the registry either.
+  for (const [pattern, why] of spec.proseCounts) {
+    for (const match of text.matchAll(pattern)) {
+      if (Number(match[1]) !== taskIds.length) fail(file, `${why} says ${match[1]} tasks, found ${taskIds.length}`)
+    }
+  }
+
+  // Every card file needs a coverage-table row, and that row's Notes cell must open with its
+  // own cardCount. Anchoring on the Notes cell (not a bare \bN\b) keeps a version string in the
+  // same row, e.g. `0.1.3`, from standing in for a 3-card file.
+  for (const cardFile of [...cardFiles, ...jumpFiles]) {
+    const name = basename(cardFile)
+    const row = lines(text).find((line) => line.startsWith('|') && line.includes(`references/${name})`))
+    if (row === undefined) {
+      fail(file, `coverage table has no row for ${name}`)
+      continue
+    }
+    const declared = await cardCountOf(cardFile)
+    const notesCell = row.replaceAll('\r', '').split('|').filter((cell) => cell.trim() !== '').at(-1)?.trim() ?? ''
+    if (new RegExp(`^${declared}(?:\\s|张|cards?\\b|$)`).test(notesCell) === false) {
+      fail(file, `coverage table row for ${name} must open its notes with its cardCount ${declared}, got: ${notesCell.slice(0, 60)}`)
+    }
+  }
+}
+
 if (failures.length) {
   console.error(`Validation failed (${failures.length}):`)
   for (const failure of failures) console.error(`- ${failure}`)
