@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates declaration/target/applier; uses API-08 to classify cordis.patch.yml as composition (negative control) versus the real host-source patch; ties the patch target to the private SessionView import under the same card."},
+    {"id": "events", "verdict": "pass", "reason": "Locates producer/consumer and ignorable:true; explains A1-02 removal / A2-01 restoration folding, keeps the marker, and correctly notes Session.append still cannot write it (API-05) rather than claiming it can."},
+    {"id": "host-services", "verdict": "pass", "reason": "Locates apiProxy usage and its removal (A1-01); applies the API-01 plane rule to inject the host llm domain service (listProviders) and warns against the nonexistent client-plane remote injection on the host plane."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates the hardcoded path and prescribes runtime DSH_HOME/profile resolution; explicitly notes --profile already existed at rc.2, so no false alpha.1 introduction claim."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates both the /internal import and command registration; prescribes exact-tag comparison and rebuilding imports by owning module with no stable public seam marked pending rather than guessed."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the loopback server; states loopback is not a reason to skip auth and distinguishes raw routes from the host-managed authenticated gate (requestRejection / Connection seams)."},
+    {"id": "subprocess", "verdict": "pass", "reason": "Locates both wrappers; explains stdout final text vs stderr reasoning segments and explicitly attributes the JSONL assumption as a pre-existing defect (R-06 baseline), not an alpha.2 stdout change."},
+    {"id": "mapping", "verdict": "pass", "reason": "Maps source patch/UI to A1-03, events to A2-01 with A1-02 as intermediate-only, services to A1-01, host dir to A1-04, channel to A1-08, subprocess to A1-05 — matching the rubric with grounded per-touchpoint reasoning."},
+    {"id": "limits", "verdict": "pass", "reason": "All seven categories hit with no no-hit class, heuristics/limits stated, and a concrete plan of typecheck/build, isolated cold boot, and per-hit functional checks proposed as proposed-only."}
+  ],
+  "caps": []
+}

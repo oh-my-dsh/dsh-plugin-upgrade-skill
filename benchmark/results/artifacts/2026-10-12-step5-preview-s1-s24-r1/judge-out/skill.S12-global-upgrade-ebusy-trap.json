@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "native-module-owner", "verdict": "pass", "reason": "Names PID 42432 web host as holder; image-section lock released only on process exit causes npm's copyfile EBUSY."},
+    {"id": "browser-versus-host-sequence", "verdict": "pass", "reason": "Refresh reloads only the SPA; ordered stop-verify-install-restart procedure targets the dsh host and workers specifically."},
+    {"id": "unpinned-dist-tag-resolution", "verdict": "pass", "reason": "Bare name resolves via latest=0.1.1-rc.2, not the newest or installed version; alpha.5 lives only on alpha, so the install silently downgrades."},
+    {"id": "safe-exact-commands", "verdict": "pass", "reason": "One pinned combined install (dsh@0.1.2-alpha.5 + TUI exact version) after full host stop, with dsh --version verification and restart."},
+    {"id": "readme-prevention", "verdict": "pass", "reason": "Demands exact pins instead of dist-tags, split or fully-pinned combined commands, and stop-host plus verification steps in READMEs."}
+  ],
+  "caps": []
+}

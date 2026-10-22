@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"clipboardText vs detectText projections distinguished with the chip cardinality rule from both host files; ordinary text and separator widths respected."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"draft.length span {29,29} into 2-char detectText splice fails; first paste coincides at 0; false mapped to misleading changed-composer toast; deterministic signature, not a race."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Unconverted clipboard span [0,28) into detect splice, consumeToken false ignored, records.delete unconditional; occurrence persists, record missing -> 'unavailable', chip remains — same coordinate root cause."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Prefix-sum rule subtracting (length-1) per preceding occurrence at both call sites, removal span [d, d+1), rev guard kept, records deleted only on confirmed success, setDraft fallback left in clipboard space."},
+{"id":"regression-sequences","verdict":"pass","reason":"T2 repeat paste, T7 removes second chip with first alive (prefix-sum case) and first-then-second order, T6 empty-again, T8 declined-consumption keeps record; asserts composer occurrence, dock, record removed together and survivor intact."}
+],"caps":[]}

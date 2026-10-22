@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Locates 42 session.events reads (channel.js:734 etc.), maps the not-iterable TypeError to the removed property, cites the alpha.4 changelog with seq/eventAt/snapshotEvents replacements, and explains the undefined access."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"Shows alpha.5 satisfies ^0.1.2-alpha.2 via correct prerelease-aware desugaring, states npm checks only version strings not API existence, and frames the peer declaration as an untested author claim."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Gives seven genuinely distinct classes (removed API, changed signature/arity, changed semantics, return-shape change, event changes, error behavior, resolution mismatch), each explained."},
+{"id":"author-prevention","verdict":"pass","reason":"Requires CI testing of actual target versions including range top/prereleases, plus a compatibility policy: tightened peer range and a runtime feature-detection guard/dual-shape adapter; distinguishes metadata claims (peer range, engines) from runtime guards."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Concrete pre-install check: diff the changelog across the peer range span and grep the plugin source for session.events against the installed version, both tied to this incident; explicitly rejects mere range re-checking."}
+],"caps":[
+{"id":"peers-prove-runtime","triggered":false,"reason":"Conclusions affirm the opposite: satisfied peer range proves nothing about runtime API compatibility; Session.events removal is affirmed."}
+]}

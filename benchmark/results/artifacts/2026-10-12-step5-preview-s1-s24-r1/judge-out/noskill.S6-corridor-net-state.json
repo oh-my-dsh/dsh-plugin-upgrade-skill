@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Correct remove-then-restore history (alpha.1 temporary removal, alpha.2 restored retention) without card IDs, and applies the final alpha.2 state to the events.ts producer."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete and stale comment, rejects the keep-stripping comment, recommends deleting the defense, marks ignorable as host-owned not to be deleted (distinguishing code from marker), and notes the literal currently makes the delete a no-op."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Applies host-owned-marker semantics to the third-party producer, but never explains that ignorable:true is allowed only for informational events old readers may omit without breaking reconstruction, nor that retention is not reader-side filtering (marked events remain in the log)."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "Rejects faking via cast and notes the brief hints the public surface may not expose ignorable, but treats the gap as unconfirmed rather than identifying it as a capability gap and explicitly deferring producer/persistence integration pending target API verification."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation is to delete the defense; the stripping code appears only as diagnosed code to remove."
+    }
+  ]
+}

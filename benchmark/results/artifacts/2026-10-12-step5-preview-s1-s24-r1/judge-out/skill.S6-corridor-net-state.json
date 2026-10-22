@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Full correct version history (A1-02 temporary removal, A2-01 restore/revert) beyond bare card names, plus the rollup fold rule, applied to produceExternalEvent in src/events.ts."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates delete (event as any).ignorable at events.ts:6, rejects the keep-stripping comment as a trap, recommends removal, distinguishes removing the defense from removing the marker itself, and notes the delete is dead code on the shown literal."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Explains ignorable:true is only for informational events old readers may omit without harming reconstruction, that the marker is not a consumer-side filter and events remain in the loaded log, and applies this to the producer while respecting the live-append limitation."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that public live Session.append has no ignorable parameter, forbids faking via casts or hand-edited persistence, recommends a sidecar store and defers third-party persistent events until a supported append mechanism ships."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Verdict is to delete the defense; old stripping code appears only as quoted diagnosis."
+    }
+  ]
+}

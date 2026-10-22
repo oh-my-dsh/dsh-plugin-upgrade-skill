@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"missing-mirror-tag","verdict":"pass","reason":"Uses ls-remote gap v0.9.2-v0.9.6 and the HEAD:main-only sync script to explain attempt-1 ref non-resolution; explicitly rules out network/typo."},
+{"id":"runtime-compatibility-direction","verdict":"pass","reason":"Explains v0.9.7 targets 0.1.2-alpha.1 useConversation absent on frozen 0.1.1-rc.2; install success/restart cannot fix a deterministic API mismatch."},
+{"id":"frozen-runtime-remedy","verdict":"pass","reason":"Selects v0.9.3 via rc.1 verification + additive rc.2 note, notes v0.9.3 also absent from mirror, gives #v0.9.3 install gated on maintainer tag push with conditional origin-repo fallback; no invented SHA, no runtime upgrade."},
+{"id":"tag-distribution-repair","verdict":"pass","reason":"Proposes per-mirror git push refs/tags/<tag> grounded in the branch-only loop, plus ls-remote verification per mirror."},
+{"id":"version-routing-docs","verdict":"pass","reason":"Runtime-routed install table (rc.x -> v0.9.3, alpha.1 -> v0.9.7) with dsh --version step and compat matrix as release gate; no blanket future-alpha claim."}
+],"caps":[]}

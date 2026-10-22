@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"Identifies PID 42432 dsh web host as holding koffi.node via loaded image section; file unreplaceable until process exit explains EBUSY."},
+{"id":"browser-versus-host-sequence","verdict":"partial","reason":"Correct host-survives-refresh explanation and stop/verify/install/restart sequence, but step 3 prescribes killing all node.exe (taskkill /F /IM node.exe, Get-Process pipe Stop-Process), i.e. unrelated Node processes."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Explains unpinned install follows latest=0.1.1-rc.2, alpha=0.1.2-alpha.5, and that alpha.4 gets replaced/downgraded rather than preserved."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus pinned TUI install after stopping host, verifies dsh --version = alpha.5, then restarts."},
+{"id":"readme-prevention","verdict":"pass","reason":"Tells README authors to pin exact tested core version, split or fully pin combined core/plugin commands, avoid following latest over a prerelease."}
+],"caps":[]}

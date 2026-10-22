@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Correctly explains entry 200 vs sibling 404s via module-graph resolution relative to the chunk URL, siblings not shipped/packaged, and prescribes a self-contained single-chunk bundle with splitting disabled (inlineDynamicImports/manualChunks/splitting:false) plus packaging closure."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Precise mechanism: fileURLToPath keeps E: while realpathSync yields the volume's e:, case-sensitive startsWith rejects a contained file; explains Linux (no drive) and C:\\ (case agreement) passes; avoids the folklore claims."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "Canonicalizes base and target through the same realpathSync, win32-only case folding (identity on POSIX), whole-segment trailing sep, equivalent path.relative idiom rejecting ''/'.'/../absolute after resolution; keeps JS MIME type; guard retained."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Identifies bubbling wheel with two handlers, gives modal exclusive ownership via stopPropagation+preventDefault (or capture interceptor/ownership gate) while the pane handler stands down; notes preventDefault alone is not exclusivity."},
+    {"id": "incident-regressions", "verdict": "partial", "reason": "Strong planned matrix for incident 1 (fallback/deployable closure, route GET) and incident 3 (exactly one zoom effect, pane unchanged, default path), and case-divergence serving on Windows; but no explicit planned check that real traversal or symlink escape is refused."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "Fix preserves and strengthens containment; no advice to disable the guard or serve outside the resource root."}
+  ]
+}

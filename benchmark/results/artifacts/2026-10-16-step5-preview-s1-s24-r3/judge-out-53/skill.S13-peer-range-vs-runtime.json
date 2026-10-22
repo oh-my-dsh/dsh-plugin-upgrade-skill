@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Traces plugin-source reads of session.events to the TypeError stack, cites changelog removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents replacement, explains undefined read then non-iterable throw."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Explains ^0.1.2-alpha.2 admits 0.1.2-alpha.4/.5 by same-tuple prerelease ordering; peer check is a static version-string containment test that never loads code; the range is a human promise, not tested evidence."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "At least two genuinely distinct classes: removed/renamed API surface, and changed shape/semantics of a surviving API (branded types, seedLength replacement, error reshape); also service-inject pending and undeclared-dependency classes."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing range edges including alpha.4/alpha.5 via cold-boot probe; raises floor to ^0.1.2-alpha.4 and gives runtime feature-detection branch for old/new paths; notes floor is necessary not sufficient and engines cannot express within-range removals."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install checks: read peer floor, scan changelog from floor to installed version for breaking removals (with grep of .events usage), and isolated cold-boot probe — tied to this Session.events crash."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "Final advice explicitly states version-range satisfaction is not evidence of compatibility; removal is affirmed."
+    }
+  ]
+}

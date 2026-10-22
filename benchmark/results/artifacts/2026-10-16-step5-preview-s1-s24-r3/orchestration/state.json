@@ -1,0 +1,2012 @@
+{
+  "runStartMs": 1792135793997,
+  "runStartIso": "2026-10-16T07:29:53.997Z",
+  "manifestBase": {
+    "model": "step-5-preview (provider: stepfun; DSH in-session subagents; identity undisclosed)",
+    "model_notes": "session model config provider=stepfun model=step-5-preview (contextWindow 1024000), inherited by every solver subagent and verified per cell from session subagent/descriptor events (agentProvider/agentModel); identity not independently verified — recorded as identity_undisclosed per union-alpha / fledge-alpha precedent",
+    "judge_model": null,
+    "judge_status": "NOT JUDGED — solvers only; judging deferred to a separate DSH session (GLM-5.3-Flash in-session judge subagents + scoreDecisions)",
+    "harness": "DSH in-session subagents (deepseek-harness checkout, session workspace E:/deepseek-harness/test-lhh010): fresh subagent per cell, one attempt per task per arm, prompt-level workspace boundary, concurrency 3, per-cell timeout 30 minutes; subagent cwd = cell directory",
+    "base_commit": "ef075767b476e8000c716a18f848028eebcd5aef",
+    "base_commit_note": "fixture source branch benchmark/step5-preview-s1-s24-r1 @ ef07576 (same commit as main). Run start HEAD drift: working tree on paper/step5-preview-supplement @ e50b5d019f222fba3aa4943012f2bcf8d02b65e7 (external sessions). git diff benchmark/step5-preview-s1-s24-r1 -- benchmark/tasks/ is EMPTY and -- skills/plugin-upgrade/ is EMPTY (task seals, fixtures, and skill references all byte-identical to the r1 branch). No repo files were modified by this run; no branch switch performed.",
+    "round": "step5-preview S1-S24 round 3",
+    "protocol": "R3 single attempt; S1..S24 static pool; noskill before skill within each task; S1->S24 order; concurrency 3; 30-minute per-cell timeout; WORKSPACE BOUNDARY block embedded in every solver prompt (cell-only read allowlist + skill dir for skill arm; no writes outside the cell directory, explicitly including system TEMP/%TEMP%/AppData/Local/Temp, temp scripts must live in agent-output/<task>/); fixtures sha256-verified BEFORE dispatch and again after; transcript roaming audit per cell with corrected adjudication; noskill exposure audit; skill-arm card citations recorded; one relaunch permitted only when no report is produced",
+    "audit_caliber_note": "r3 transcript audit uses the corrected adjudication from .step5-unc-fixup.md, continuing the judge-side adjudication caliber (judge-side-adjudication.md, 2026-10-15): NOT violations = regex character-class spans (e.g. [/\\], [\\\\]) inside grep/rg patterns, quoted path literals passed as arguments (node -e probe scripts), glob calls without a path parameter whose pattern is a cell-absolute path, and probes with no filesystem access (node --version, $PSVersionTable); path literals are real accesses only when they sit inside a filesystem-call argument span (parenthesis-matched). Real out-of-bounds access remains invalid:roaming: reads of existing paths outside the allowlist, and ANY write outside the cell directory (system temp included). Reads of non-existent out-of-allowlist paths are recorded as re-admit notes (zero information). Orchestrator verdicts keep the r1 judge-side re-admit families visible in per-cell audit details (orchestration/audit/<task>__<arm>.json) so the judging side can re-adjudicate.",
+    "solver_prompt": "instruction.md with /app paths rewritten to the cell absolute paths; r2-strengthened WORKSPACE BOUNDARY block; arm-specific clause appended verbatim (per protocol section 2.3)",
+    "totals": null
+  },
+  "executionNotes": [
+    "2026-10-16T07:29:53.998Z: r3 run started in DSH session (workspace E:/deepseek-harness/test-lhh010). All 48 cells prepared with fixtures copied from repo benchmark/tasks/<task>/environment/fixture/ and sha256-verified against source before dispatch. Orchestration assets reused from the r2 run (lib/runner/finalize/poll modules re-pointed at the r3 artifacts dir); safety-net schedule polls every 10 minutes.",
+    "2026-10-16T08:06:41.705Z: S5-negative-naming/skill invalid:roaming detail: two glob calls carried out-of-allowlist path parameters — (a) glob path=E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills (parent of the allowed skill dir) with an absolute pattern targeting skills\\plugin-upgrade\\**\\* , and (b) glob pattern skills/**/* with path=the repository root. Both directories exist, so the strict rule letter (reads of existing paths outside the allowlist) records invalid:roaming. Facts for judge-side re-admission (r1 zero-information precedent): BOTH globs returned \"No files found\" (absolute patterns with backslashes are escape-mangled in glob syntax, so nothing was listed — zero information obtained); every successful content access in the session (SKILL.md, references/README.md, and all greps) was correctly scoped to skills\\plugin-upgrade\\; the solver was reaching for the allowed skill material and mis-set the path parameter; no answer material (solution/, tests/, repo-root docs) was read. Orchestrator verdict kept strict per protocol; recorded for judge-side adjudication.",
+    "2026-10-16T08:11:24.631Z: quota conservation per user instruction: dispatch concurrency switched from 3 to 1 (serial) for the remainder of r3; the three cells already in flight (S7 pair, S8/noskill) were allowed to finish naturally rather than being interrupted (an interrupt without a report would burn a protocol relaunch). No new cell is dispatched until the in-flight count reaches zero. Parallel dispatch resumes when quota is available again.",
+    "2026-10-16T09:40:01.747Z: S11-mermaid-lazyload-trap/noskill invalid:roaming detail: two flagged accesses are Windows path-canonicalization probes on the repository root path — realpathSync/existsSync on E:\\DEEPSEEK-HARNESS (uppercased spelling) and the canonical E:\\deepseek-harness — run to measure GetFinalPathNameByHandleW case behavior, which is the exact mechanism this task diagnoses (the guard #2 realpathSync vs fileURLToPath case mismatch). Facts for judge-side re-admission (r1 zero-information precedent): the probes were metadata-only (realpath/exists, no content read of any file outside the cell), the target was the repository root directory (not solution/, tests/, or any answer material — all fixture content reads stayed inside the cell), and the measurements are quoted in the report as live API evidence. Orchestrator verdict kept strict per the rule letter (reads of existing paths outside the allowlist); recorded for judge-side adjudication.",
+    "2026-10-16T10:28:26.711Z: run PAUSED per user instruction (quota conservation): dispatch concurrency set to 0 — no new cells are dispatched; the in-flight cell (S14-link-install-lock-trap/skill) is allowed to finish and will be finalized normally (fixture hash, deliverable, transcript audit, ledger/manifest). Resume by restoring CONCURRENCY (1 for serial, 3 for parallel) in orchestration/poll.mjs; pending cells remain pending in state.json.",
+    "2026-10-16T15:12:20.343Z: run RESUMED per user decision (stay in DSH to finish r3): dispatch concurrency restored to 1 (serial, quota conservation); the opencode handoff document (HANDOFF-step5-r3-opencode-resume.md) was prepared but superseded by this decision — the whole round stays on the DSH in-session host; resume point: S15-slot-error-boundary-crash/noskill, then S15/skill, S16..S24 in order. Host-switch disclosure: none (single-host round).",
+    "2026-10-16T15:15:39.887Z: dispatch concurrency restored 1 -> 3 per user instruction (quota available again).",
+    "2026-10-16T15:15:39.905Z: S15-slot-error-boundary-crash/noskill attempt produced no report (subagent 593e31ad-18d6-4fab-9b80-a472cf61e0fd, agent status inactive); one relaunch dispatched per protocol (subagent 30d126d4-221f-4965-a0d4-5f8112237f45).",
+    "2026-10-16T15:43:02.470Z: provider instability incident (r3 resume): after resuming, every solver dispatch burned 4-10 llm/retry events and ended with turn/end but NO report and NO closing message (a one-word health probe succeeded only after 10 retries) — the same upstream-idle-timeout class as r1 (504s). Three cells affected: S15-slot-error-boundary-crash/noskill attempt 1 (5 retries) + attempt 2 relaunch (4 retries) → silent-failure per protocol; S15-slot-error-boundary-crash/skill attempt 1 (4 retries) and S16-self-host-upgrade-trap/noskill attempt 1 (4 retries) → eligible for one relaunch each. Separately, the harness stopped delivering subagent closing messages at this time (session model was switched mid-run); completion is therefore tracked by on-disk deliverables + session transcripts, exactly the evidence the finalize path already uses.",
+    "2026-10-16T15:43:02.491Z: S15-slot-error-boundary-crash/skill attempt produced no report (subagent f3591811-2b4a-49ba-9207-ba45d5f22d81, agent status inactive); one relaunch dispatched per protocol (subagent 2c3ea749-4bdd-4177-a457-f88727a1f9ce).",
+    "2026-10-16T15:43:02.491Z: S16-self-host-upgrade-trap/noskill attempt produced no report (subagent d1eba06b-4f31-4072-8b8e-08749f2a0f5e, agent status inactive); one relaunch dispatched per protocol (subagent c9d226fd-bda4-4cbc-a0f1-2d11105c8439).",
+    "2026-10-16T15:45:57.702Z: provider instability continues (second wave): S15-slot-error-boundary-crash/skill attempt 2 and S16-self-host-upgrade-trap/noskill attempt 2 both failed within a few steps of starting (closing messages show they died at the initial fixture-reading step — the large-context first call hits the upstream idle timeout, r1 class); S16-self-host-upgrade-trap/skill attempt 1 also failed. Per protocol the two second attempts close as silent-failure; S16/skill receives its one relaunch.",
+    "2026-10-16T15:45:57.722Z: S16-self-host-upgrade-trap/skill attempt produced no report (subagent 69da2498-ad69-4657-b208-f615274dde6d, agent status inactive); one relaunch dispatched per protocol (subagent b24ea28e-f0d9-489a-94de-609463c5349a).",
+    "2026-10-16T15:53:28.124Z: S17-external-ui-plugin-onboarding-trap/skill attempt produced no report (subagent e725d96d-1126-4bc1-b4bf-2fbaff1dccac, agent status inactive); one relaunch dispatched per protocol (subagent 49381364-c9ea-4eb0-8539-d9566f2ef3ba).",
+    "2026-10-16T15:55:23.952Z: S18-terminal-sprite-render-trap/noskill attempt produced no report (subagent dbafc9a8-cd7d-42bc-9aa8-6d2e4493969b, agent status inactive); one relaunch dispatched per protocol (subagent 876ede31-84bc-4778-abe9-dca26500b539).",
+    "2026-10-16T15:55:23.952Z: S18-terminal-sprite-render-trap/skill attempt produced no report (subagent 5c4e4546-593c-48a6-83ed-4a06a3ca550a, agent status inactive); one relaunch dispatched per protocol (subagent da906002-06c1-4f9f-b9a4-f35183326989).",
+    "2026-10-16T16:02:58.667Z: S19-phantom-update-stale-host/noskill attempt produced no report (subagent 56c0f99f-2579-4e4d-9c24-96e314f6ded3, agent status inactive); one relaunch dispatched per protocol (subagent 584987a6-ef03-4b91-a252-7ab4c4662b47).",
+    "2026-10-16T16:03:47.381Z: dispatch PAUSED again (provider oscillation, third wave): the failure signature is now unambiguous — every failed attempt shows exactly ~39 session events, 0 tool calls and 5 llm/retry events, i.e. the subagent dies on its FIRST model call with the full ~20 KB cell prompt (upstream idle timeout on large contexts, r1 class) and never starts working. Successes are the dispatches that push through the retry barrier. Cumulative silent-failures: 6 (S15/noskill, S15/skill, S16/noskill, S17/skill, S18/noskill, S18/skill) — all zero-tool-call provider deaths, none solver-quality; per the r1 S3/skill precedent they are re-runnable per user request. Dispatch paused at 36/48 with 3 cells in flight (allowed to finish); 9 cells pending. Resume = restore CONCURRENCY (1 or 3) in orchestration/poll.mjs and re-run poll; silent-failure cells get a fresh re-run wave first (their relaunch flag resets).",
+    "2026-10-16T16:09:40.995Z: dispatch RESUMED at concurrency 3 per user instruction (quota available): the provider is in a working phase (S20/noskill completed; S19 pair actively working at 17-18 tool calls each). Accepted risk: provider oscillation means some first attempts still die on the large-context first call; the one-relaunch-per-cell protocol bounds the damage and silent-failure cells remain re-runnable per the r1 S3/skill precedent. Current: 37/48 done (ok 27 + relaunched 1 + invalid 2 + silent-failure 6... see cell_counts), 2 in flight, 9 pending.",
+    "2026-10-16T16:13:27.569Z: S19-phantom-update-stale-host/skill attempt produced no report (subagent 93cb8b9c-12d8-48da-9154-b6a67b8f11d1, agent status inactive); one relaunch dispatched per protocol (subagent 5b71c129-579b-4fd9-9969-e1a498c7c9f7).",
+    "2026-10-16T16:13:27.569Z: S20-msvc-flock-trap/skill attempt produced no report (subagent 789bdd70-c780-41ba-b7ea-03b589717aa7, agent status inactive); one relaunch dispatched per protocol (subagent cd497680-dcd4-4977-8b60-1c5724cc7bda).",
+    "2026-10-16T16:22:41.674Z: S21-resource-service-unavailable-trap/noskill attempt produced no report (subagent 4bf33644-6538-4ce3-b952-50789c71c2c6, agent status inactive); one relaunch dispatched per protocol (subagent 7dd652d9-49b5-4415-b858-7bc99bb0ff3c).",
+    "2026-10-16T16:32:48.775Z: FULL PAUSE (provider sustained-bad phase, fourth wave): three consecutive dispatch waves died at the first model call (~39 events / 0 tool calls / 5 retries each); cumulative silent-failures 9, all zero-tool-call provider deaths (none solver-quality; several had reached the report-writing stage before dying — e.g. S19/skill attempt 1 died at \"Now let me write the report\"). Dispatch and relaunch both halted via PAUSED flag in orchestration/poll.mjs (set PAUSED=false and restore CONCURRENCY to resume). Finalize remains active so in-flight completions still close. Round state at pause: 40/48 (ok 28 + relaunched 1 + invalid:roaming 2 + silent-failure 9), 5 pending (S22/skill, S23 pair, S24 pair) + 3 cells whose attempts were halted mid-relaunch (S21 pair, S22/noskill — all re-runnable per the r1 S3/skill precedent once the provider recovers).",
+    "2026-10-16T16:42:49.808Z: re-run bookkeeping: the 12 silent-failure cells (S15 pair, S16/noskill, S17/skill, S18 pair, S19 pair, S20/skill, S21 pair, S22/noskill) all failed with zero tool calls on their permitted attempts — pure provider deaths, no solver work was ever produced, so none is a quality signal. Per the r1 S3/skill precedent they are re-runnable on user request: reset status to pending in orchestration/state.json (cell.relaunch flags stay as-is; cells whose relaunch was deferred by the PAUSE flag keep their one protocol relaunch), then re-run poll with PAUSED=false. The 5 never-attempted pending cells (S22/skill, S23 pair, S24 pair) keep their fresh attempts."
+  ],
+  "cells": {
+    "S1-static-scan/noskill": {
+      "status": "ok",
+      "subagentId": "1f8b97b1-e91c-4a7f-b79b-692a5c9179de",
+      "sessions": [
+        {
+          "id": "1f8b97b1-e91c-4a7f-b79b-692a5c9179de",
+          "createdAt": 1792135814106
+        }
+      ],
+      "dispatchedAt": 1792135814106,
+      "dispatchedIso": "2026-10-16T07:30:14.106Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S1-static-scan-report.md"
+      ],
+      "allOutputFiles": [
+        "S1-static-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 220,
+        "candidates": 220
+      },
+      "exposure": "hit: SKILL.md, DSH-0.",
+      "skillUse": null,
+      "toolcalls": 39,
+      "tokens": 323834,
+      "start": "2026-10-16T07:30:14.018Z",
+      "end": "2026-10-16T07:36:47.172Z",
+      "duration": "6m33s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S1-static-scan/skill": {
+      "status": "ok",
+      "subagentId": "6718630a-df22-4488-8a33-f1aa71bfd30e",
+      "sessions": [
+        {
+          "id": "6718630a-df22-4488-8a33-f1aa71bfd30e",
+          "createdAt": 1792135814190
+        }
+      ],
+      "dispatchedAt": 1792135814190,
+      "dispatchedIso": "2026-10-16T07:30:14.190Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S1-static-scan.md"
+      ],
+      "allOutputFiles": [
+        "S1-static-scan.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 269,
+        "candidates": 269
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-05,A1-06,A1-08,A1-09,A1-10,A1-11,A1-13,A1-14,A1-19,A1-20,A1-21,A1-22,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-04,A2-05,A2-06,A2-08,A2-10,R2-01",
+      "toolcalls": 35,
+      "tokens": 1886240,
+      "start": "2026-10-16T07:30:14.112Z",
+      "end": "2026-10-16T07:44:14.699Z",
+      "duration": "14m01s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S2-negative-scan/noskill": {
+      "status": "ok",
+      "subagentId": "9e00eb2c-ee03-46ed-907b-45265103e946",
+      "sessions": [
+        {
+          "id": "9e00eb2c-ee03-46ed-907b-45265103e946",
+          "createdAt": 1792135814332
+        }
+      ],
+      "dispatchedAt": 1792135814332,
+      "dispatchedIso": "2026-10-16T07:30:14.332Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "allOutputFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 51,
+        "candidates": 51
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 22,
+      "tokens": 308976,
+      "start": "2026-10-16T07:30:14.197Z",
+      "end": "2026-10-16T07:36:44.311Z",
+      "duration": "6m30s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S2-negative-scan/skill": {
+      "status": "ok",
+      "subagentId": "46c381b5-6843-481b-94fc-0e255287980a",
+      "sessions": [
+        {
+          "id": "46c381b5-6843-481b-94fc-0e255287980a",
+          "createdAt": 1792136227160
+        }
+      ],
+      "dispatchedAt": 1792136227160,
+      "dispatchedIso": "2026-10-16T07:37:07.160Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "allOutputFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 134,
+        "candidates": 134
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-05,A1-08,A1-13,A1-21,A1-25,A1-26,A1-30,A2-01,A2-02,A2-03,A2-04,A2-08",
+      "toolcalls": 73,
+      "tokens": 1602301,
+      "start": "2026-10-16T07:37:07.242Z",
+      "end": "2026-10-16T07:46:05.384Z",
+      "duration": "8m58s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S3-snapshot-migration/noskill": {
+      "status": "ok",
+      "subagentId": "babb9c3a-0cfc-477e-80fd-8791b0562564",
+      "sessions": [
+        {
+          "id": "babb9c3a-0cfc-477e-80fd-8791b0562564",
+          "createdAt": 1792136227160
+        }
+      ],
+      "dispatchedAt": 1792136227160,
+      "dispatchedIso": "2026-10-16T07:37:07.160Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S3-snapshot-migration-assessment.md"
+      ],
+      "allOutputFiles": [
+        "S3-snapshot-migration-assessment.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 30,
+        "candidates": 30
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 11,
+      "tokens": 394938,
+      "start": "2026-10-16T07:37:07.345Z",
+      "end": "2026-10-16T07:47:57.902Z",
+      "duration": "10m51s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S3-snapshot-migration/skill": {
+      "status": "ok",
+      "subagentId": "ec8e7bc2-4047-4264-95e4-5ad7470b6b32",
+      "sessions": [
+        {
+          "id": "ec8e7bc2-4047-4264-95e4-5ad7470b6b32",
+          "createdAt": 1792136666421
+        }
+      ],
+      "dispatchedAt": 1792136666421,
+      "dispatchedIso": "2026-10-16T07:44:26.421Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "findings.json",
+        "S3-snapshot-migration.md"
+      ],
+      "allOutputFiles": [
+        "findings.json",
+        "S3-snapshot-migration.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 265,
+        "candidates": 265
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-05,A1-06,A1-07,A1-08,A1-09,A1-10,A1-11,A1-12,A1-13,A1-14,A1-19,A1-20,A1-21,A1-22,A1-23,A1-24,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-04,A2-05,A2-06,A2-08,A2-10,R1-02,R1-03,R2-01",
+      "toolcalls": 83,
+      "tokens": 2998667,
+      "start": "2026-10-16T07:44:26.509Z",
+      "end": "2026-10-16T08:02:36.126Z",
+      "duration": "18m10s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S4-legacy-client-imports/noskill": {
+      "status": "ok",
+      "subagentId": "a9937b6d-2b1d-4170-8072-72371767b140",
+      "sessions": [
+        {
+          "id": "a9937b6d-2b1d-4170-8072-72371767b140",
+          "createdAt": 1792136786675
+        }
+      ],
+      "dispatchedAt": 1792136786675,
+      "dispatchedIso": "2026-10-16T07:46:26.675Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S4-legacy-client-imports.md"
+      ],
+      "allOutputFiles": [
+        "S4-legacy-client-imports.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 30,
+        "candidates": 30
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 18,
+      "tokens": 300514,
+      "start": "2026-10-16T07:46:26.750Z",
+      "end": "2026-10-16T07:51:56.313Z",
+      "duration": "5m30s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S4-legacy-client-imports/skill": {
+      "status": "ok",
+      "subagentId": "a95c2c6e-5051-4eff-a33d-db38dd941a35",
+      "sessions": [
+        {
+          "id": "a95c2c6e-5051-4eff-a33d-db38dd941a35",
+          "createdAt": 1792136884435
+        }
+      ],
+      "dispatchedAt": 1792136884435,
+      "dispatchedIso": "2026-10-16T07:48:04.435Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S4-legacy-client-imports.md"
+      ],
+      "allOutputFiles": [
+        "S4-legacy-client-imports.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 83,
+        "candidates": 83
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-03,A1-25,A1-26,A1-27,A1-30,A2-02",
+      "toolcalls": 43,
+      "tokens": 1192061,
+      "start": "2026-10-16T07:48:04.515Z",
+      "end": "2026-10-16T07:57:54.016Z",
+      "duration": "9m50s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S5-negative-naming/noskill": {
+      "status": "ok",
+      "subagentId": "484a6e8a-f751-400a-a38e-6bfdbbd54815",
+      "sessions": [
+        {
+          "id": "484a6e8a-f751-400a-a38e-6bfdbbd54815",
+          "createdAt": 1792137127785
+        }
+      ],
+      "dispatchedAt": 1792137127785,
+      "dispatchedIso": "2026-10-16T07:52:07.785Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S5-negative-naming-judgment.md"
+      ],
+      "allOutputFiles": [
+        "S5-negative-naming-judgment.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 27,
+        "candidates": 27
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 20,
+      "tokens": 312639,
+      "start": "2026-10-16T07:52:07.832Z",
+      "end": "2026-10-16T07:59:28.846Z",
+      "duration": "7m21s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S5-negative-naming/skill": {
+      "status": "invalid:roaming",
+      "subagentId": "45962c16-f402-44ec-9b04-fa54ca5377d4",
+      "sessions": [
+        {
+          "id": "45962c16-f402-44ec-9b04-fa54ca5377d4",
+          "createdAt": 1792137491532
+        }
+      ],
+      "dispatchedAt": 1792137491532,
+      "dispatchedIso": "2026-10-16T07:58:11.532Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S5-negative-naming-judgment.md"
+      ],
+      "allOutputFiles": [
+        "S5-negative-naming-judgment.md"
+      ],
+      "roaming": "invalid:[45962c16-f402-44ec-9b04-fa54ca5377d4] read of existing path outside allowlist: E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills ; [45962c16-f402-44ec-9b04-fa54ca5377d4] read of existing path outside allowlist: E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+      "roamingDetail": {
+        "violations": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills",
+            "reason": "read of existing path outside allowlist",
+            "ctx": "45962c16-f402-44ec-9b04-fa54ca5377d4/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+            "reason": "read of existing path outside allowlist",
+            "ctx": "45962c16-f402-44ec-9b04-fa54ca5377d4/glob:path",
+            "source": "args"
+          }
+        ],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "45962c16-f402-44ec-9b04-fa54ca5377d4/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 55,
+        "candidates": 65
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 49,
+      "tokens": 485006,
+      "start": "2026-10-16T07:58:11.612Z",
+      "end": "2026-10-16T08:04:27.870Z",
+      "duration": "6m16s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S6-corridor-net-state/noskill": {
+      "status": "ok",
+      "subagentId": "5be7f894-130d-4e77-aa3c-d1132d715d1c",
+      "sessions": [
+        {
+          "id": "5be7f894-130d-4e77-aa3c-d1132d715d1c",
+          "createdAt": 1792137582416
+        }
+      ],
+      "dispatchedAt": 1792137582416,
+      "dispatchedIso": "2026-10-16T07:59:42.416Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S6-corridor-net-state.md"
+      ],
+      "allOutputFiles": [
+        "S6-corridor-net-state.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 28,
+        "candidates": 28
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 14,
+      "tokens": 192633,
+      "start": "2026-10-16T07:59:42.468Z",
+      "end": "2026-10-16T08:05:29.966Z",
+      "duration": "5m47s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S6-corridor-net-state/skill": {
+      "status": "ok",
+      "subagentId": "b847d139-93c5-4c39-8bc9-2ea6ec2c4476",
+      "sessions": [
+        {
+          "id": "b847d139-93c5-4c39-8bc9-2ea6ec2c4476",
+          "createdAt": 1792137767713
+        }
+      ],
+      "dispatchedAt": 1792137767713,
+      "dispatchedIso": "2026-10-16T08:02:47.713Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S6-corridor-net-state-report.md"
+      ],
+      "allOutputFiles": [
+        "S6-corridor-net-state-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 41,
+        "candidates": 41
+      },
+      "exposure": null,
+      "skillUse": "A1-02,A2-01,A2-05,J1-05",
+      "toolcalls": 16,
+      "tokens": 609565,
+      "start": "2026-10-16T08:02:47.808Z",
+      "end": "2026-10-16T08:08:02.172Z",
+      "duration": "5m14s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S7-unpublished-cohort/noskill": {
+      "status": "ok",
+      "subagentId": "7e73ae65-180b-48d8-90ed-32f072bbd84c",
+      "sessions": [
+        {
+          "id": "7e73ae65-180b-48d8-90ed-32f072bbd84c",
+          "createdAt": 1792137884606
+        }
+      ],
+      "dispatchedAt": 1792137884606,
+      "dispatchedIso": "2026-10-16T08:04:44.606Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "install-type-baseline-plan.md"
+      ],
+      "allOutputFiles": [
+        "install-type-baseline-plan.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 33,
+        "candidates": 33
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 12,
+      "tokens": 100277,
+      "start": "2026-10-16T08:04:44.671Z",
+      "end": "2026-10-16T08:11:11.424Z",
+      "duration": "6m27s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S7-unpublished-cohort/skill": {
+      "status": "ok",
+      "subagentId": "ba4bd30a-417a-4050-b7db-1b63ef734855",
+      "sessions": [
+        {
+          "id": "ba4bd30a-417a-4050-b7db-1b63ef734855",
+          "createdAt": 1792138001730
+        }
+      ],
+      "dispatchedAt": 1792138001730,
+      "dispatchedIso": "2026-10-16T08:06:41.730Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S7-unpublished-cohort-install-plan.md"
+      ],
+      "allOutputFiles": [
+        "S7-unpublished-cohort-install-plan.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 84,
+        "candidates": 84
+      },
+      "exposure": null,
+      "skillUse": "A1-02,A1-22,A1-25,A2-01,A2-02,A2-03,A2-08,A2-10",
+      "toolcalls": 46,
+      "tokens": 1248530,
+      "start": "2026-10-16T08:06:41.778Z",
+      "end": "2026-10-16T08:16:20.585Z",
+      "duration": "9m39s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S8-release-routing-trap/noskill": {
+      "status": "ok",
+      "subagentId": "71a9cf1c-b448-4625-ab69-b5fdeb1bed50",
+      "sessions": [
+        {
+          "id": "71a9cf1c-b448-4625-ab69-b5fdeb1bed50",
+          "createdAt": 1792138096551
+        }
+      ],
+      "dispatchedAt": 1792138096551,
+      "dispatchedIso": "2026-10-16T08:08:16.551Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S8-release-routing-trap.md"
+      ],
+      "allOutputFiles": [
+        "S8-release-routing-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 15,
+        "candidates": 15
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 7,
+      "tokens": 210678,
+      "start": "2026-10-16T08:08:16.629Z",
+      "end": "2026-10-16T08:15:16.102Z",
+      "duration": "6m59s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S8-release-routing-trap/skill": {
+      "status": "ok",
+      "subagentId": "044f6ace-34fa-4425-b9d8-bd2ca6f37c85",
+      "sessions": [
+        {
+          "id": "044f6ace-34fa-4425-b9d8-bd2ca6f37c85",
+          "createdAt": 1792138594570
+        }
+      ],
+      "dispatchedAt": 1792138594570,
+      "dispatchedIso": "2026-10-16T08:16:34.570Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S8-release-routing-trap.md"
+      ],
+      "allOutputFiles": [
+        "S8-release-routing-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 52,
+        "candidates": 52
+      },
+      "exposure": null,
+      "skillUse": "A1-03,A1-25,A1-26,A1-29,R2-01,R2-02,R2-03",
+      "toolcalls": 24,
+      "tokens": 1489435,
+      "start": "2026-10-16T08:16:34.645Z",
+      "end": "2026-10-16T08:39:22.558Z",
+      "duration": "22m48s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S9-composer-coordinate-trap/noskill": {
+      "status": "ok",
+      "subagentId": "a978800b-a88e-4ada-8d8e-6e7119c401c0",
+      "sessions": [
+        {
+          "id": "a978800b-a88e-4ada-8d8e-6e7119c401c0",
+          "createdAt": 1792139977334
+        }
+      ],
+      "dispatchedAt": 1792139977334,
+      "dispatchedIso": "2026-10-16T08:39:37.334Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S9-composer-coordinate-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S9-composer-coordinate-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 54,
+        "candidates": 54
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 30,
+      "tokens": 882983,
+      "start": "2026-10-16T08:39:37.419Z",
+      "end": "2026-10-16T08:53:00.808Z",
+      "duration": "13m23s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S9-composer-coordinate-trap/skill": {
+      "status": "ok",
+      "subagentId": "8317152e-8418-4f9e-bbf3-89dac7459eeb",
+      "sessions": [
+        {
+          "id": "8317152e-8418-4f9e-bbf3-89dac7459eeb",
+          "createdAt": 1792140796468
+        }
+      ],
+      "dispatchedAt": 1792140796468,
+      "dispatchedIso": "2026-10-16T08:53:16.468Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "report.md"
+      ],
+      "allOutputFiles": [
+        "report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 113,
+        "candidates": 114
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 45,
+      "tokens": 826115,
+      "start": "2026-10-16T08:53:16.582Z",
+      "end": "2026-10-16T09:04:00.837Z",
+      "duration": "10m44s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S10-paste-rename-and-version-chip/noskill": {
+      "status": "ok",
+      "subagentId": "61298874-af13-40f9-98ff-dded26fe011e",
+      "sessions": [
+        {
+          "id": "61298874-af13-40f9-98ff-dded26fe011e",
+          "createdAt": 1792141442815
+        }
+      ],
+      "dispatchedAt": 1792141442815,
+      "dispatchedIso": "2026-10-16T09:04:02.815Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S10-paste-rename-and-version-chip.md"
+      ],
+      "allOutputFiles": [
+        "S10-paste-rename-and-version-chip.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 16,
+        "candidates": 16
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 19,
+      "tokens": 218998,
+      "start": "2026-10-16T09:04:02.905Z",
+      "end": "2026-10-16T09:10:28.662Z",
+      "duration": "6m26s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S10-paste-rename-and-version-chip/skill": {
+      "status": "ok",
+      "subagentId": "17d06dd3-fcbb-4f25-ac10-8cca3c4beb6c",
+      "sessions": [
+        {
+          "id": "17d06dd3-fcbb-4f25-ac10-8cca3c4beb6c",
+          "createdAt": 1792141829222
+        }
+      ],
+      "dispatchedAt": 1792141829222,
+      "dispatchedIso": "2026-10-16T09:10:29.222Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S10-report.md"
+      ],
+      "allOutputFiles": [
+        "appendix-regression-tests.node-test.mjs",
+        "S10-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 101,
+        "candidates": 101
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 34,
+      "tokens": 2014231,
+      "start": "2026-10-16T09:10:29.299Z",
+      "end": "2026-10-16T09:24:26.498Z",
+      "duration": "13m57s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S11-mermaid-lazyload-trap/noskill": {
+      "status": "invalid:roaming",
+      "subagentId": "5af90273-32bf-4861-92b9-7f126d467f63",
+      "sessions": [
+        {
+          "id": "5af90273-32bf-4861-92b9-7f126d467f63",
+          "createdAt": 1792142666856
+        }
+      ],
+      "dispatchedAt": 1792142666856,
+      "dispatchedIso": "2026-10-16T09:24:26.856Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S11-mermaid-lazyload-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S11-mermaid-lazyload-trap-report.md"
+      ],
+      "roaming": "invalid:[5af90273-32bf-4861-92b9-7f126d467f63] read of existing path outside allowlist: E:\\DEEPSEEK-HARNESS ; [5af90273-32bf-4861-92b9-7f126d467f63] read of existing path outside allowlist: E:\\deepseek-harness",
+      "roamingDetail": {
+        "violations": [
+          {
+            "path": "E:\\DEEPSEEK-HARNESS",
+            "reason": "read of existing path outside allowlist",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness",
+            "reason": "read of existing path outside allowlist",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          }
+        ],
+        "readmits": [
+          {
+            "path": "E:\\a\\lib\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\lib\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\lib-evil\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\A\\LIB\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\lib\\x",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\lib\\x",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r3",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r3\\noskill",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\evil\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r3\\A\\lib\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\x\\y.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\...",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "5af90273-32bf-4861-92b9-7f126d467f63/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 89,
+        "candidates": 153
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 15,
+      "tokens": 725183,
+      "start": "2026-10-16T09:24:26.932Z",
+      "end": "2026-10-16T09:38:17.866Z",
+      "duration": "13m51s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S11-mermaid-lazyload-trap/skill": {
+      "status": "ok",
+      "subagentId": "0836507b-7e5b-45af-8343-6b737907f012",
+      "sessions": [
+        {
+          "id": "0836507b-7e5b-45af-8343-6b737907f012",
+          "createdAt": 1792143523944
+        }
+      ],
+      "dispatchedAt": 1792143523944,
+      "dispatchedIso": "2026-10-16T09:38:43.944Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S11-mermaid-lazyload-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S11-mermaid-lazyload-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "e:\\a\\b.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\b.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\b\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\…\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\…\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\…\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\…\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\…\\lib\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\...\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "0836507b-7e5b-45af-8343-6b737907f012/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 107,
+        "candidates": 131
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 51,
+      "tokens": 407159,
+      "start": "2026-10-16T09:38:44.043Z",
+      "end": "2026-10-16T09:50:40.433Z",
+      "duration": "11m56s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S12-global-upgrade-ebusy-trap/noskill": {
+      "status": "ok",
+      "subagentId": "8273fd6b-cbca-400e-9eb2-65f65594c91f",
+      "sessions": [
+        {
+          "id": "8273fd6b-cbca-400e-9eb2-65f65594c91f",
+          "createdAt": 1792144245186
+        }
+      ],
+      "dispatchedAt": 1792144245186,
+      "dispatchedIso": "2026-10-16T09:50:45.186Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S12-global-upgrade-ebusy-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S12-global-upgrade-ebusy-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 28,
+        "candidates": 28
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 25,
+      "tokens": 332081,
+      "start": "2026-10-16T09:50:45.265Z",
+      "end": "2026-10-16T09:56:29.847Z",
+      "duration": "5m45s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S12-global-upgrade-ebusy-trap/skill": {
+      "status": "ok",
+      "subagentId": "8a57467e-53cf-4ce5-b887-d7cfcb21c3b8",
+      "sessions": [
+        {
+          "id": "8a57467e-53cf-4ce5-b887-d7cfcb21c3b8",
+          "createdAt": 1792144592053
+        }
+      ],
+      "dispatchedAt": 1792144592053,
+      "dispatchedIso": "2026-10-16T09:56:32.053Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S12-global-upgrade-ebusy-trap.report.md"
+      ],
+      "allOutputFiles": [
+        "S12-global-upgrade-ebusy-trap.report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 52,
+        "candidates": 52
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 28,
+      "tokens": 536004,
+      "start": "2026-10-16T09:56:32.125Z",
+      "end": "2026-10-16T10:02:37.775Z",
+      "duration": "6m06s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S13-peer-range-vs-runtime/noskill": {
+      "status": "ok",
+      "subagentId": "ad718c67-38a9-41ca-b746-17c63960611c",
+      "sessions": [
+        {
+          "id": "ad718c67-38a9-41ca-b746-17c63960611c",
+          "createdAt": 1792144972677
+        }
+      ],
+      "dispatchedAt": 1792144972677,
+      "dispatchedIso": "2026-10-16T10:02:52.677Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S13-peer-range-vs-runtime-report.md"
+      ],
+      "allOutputFiles": [
+        "S13-peer-range-vs-runtime-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 71,
+        "candidates": 71
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 31,
+      "tokens": 474608,
+      "start": "2026-10-16T10:02:52.756Z",
+      "end": "2026-10-16T10:10:13.137Z",
+      "duration": "7m20s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S13-peer-range-vs-runtime/skill": {
+      "status": "ok",
+      "subagentId": "382af6ee-1e10-435b-ae94-f3e64b1359ef",
+      "sessions": [
+        {
+          "id": "382af6ee-1e10-435b-ae94-f3e64b1359ef",
+          "createdAt": 1792145422252
+        }
+      ],
+      "dispatchedAt": 1792145422252,
+      "dispatchedIso": "2026-10-16T10:10:22.252Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S13-peer-range-vs-runtime-report.md"
+      ],
+      "allOutputFiles": [
+        "S13-peer-range-vs-runtime-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 60,
+        "candidates": 60
+      },
+      "exposure": null,
+      "skillUse": "A2-02,A2-03,A2-08,A2-10,A4-01,A4-02,A4-03,A4-04",
+      "toolcalls": 41,
+      "tokens": 466063,
+      "start": "2026-10-16T10:10:22.318Z",
+      "end": "2026-10-16T10:14:38.283Z",
+      "duration": "4m16s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S14-link-install-lock-trap/noskill": {
+      "status": "ok",
+      "subagentId": "1ce7d81f-8e8a-489c-820f-bb83c7e273e3",
+      "sessions": [
+        {
+          "id": "1ce7d81f-8e8a-489c-820f-bb83c7e273e3",
+          "createdAt": 1792145702342
+        }
+      ],
+      "dispatchedAt": 1792145702342,
+      "dispatchedIso": "2026-10-16T10:15:02.342Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S14-link-install-lock-trap.md"
+      ],
+      "allOutputFiles": [
+        "S14-link-install-lock-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 15,
+        "candidates": 15
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 7,
+      "tokens": 202121,
+      "start": "2026-10-16T10:15:02.410Z",
+      "end": "2026-10-16T10:20:41.037Z",
+      "duration": "5m39s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S14-link-install-lock-trap/skill": {
+      "status": "ok",
+      "subagentId": "7bc0924d-db94-4746-bd70-1389a57dec5b",
+      "sessions": [
+        {
+          "id": "7bc0924d-db94-4746-bd70-1389a57dec5b",
+          "createdAt": 1792146063366
+        }
+      ],
+      "dispatchedAt": 1792146063366,
+      "dispatchedIso": "2026-10-16T10:21:03.366Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S14-link-install-lock-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S14-link-install-lock-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\client.js.old2",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\index.js.old2",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\index.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\client.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7bc0924d-db94-4746-bd70-1389a57dec5b/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 56,
+        "candidates": 85
+      },
+      "exposure": null,
+      "skillUse": "A1-07,A1-25,A1-26,A2-03,A2-04",
+      "toolcalls": 16,
+      "tokens": 720085,
+      "start": "2026-10-16T10:21:03.417Z",
+      "end": "2026-10-16T10:28:04.583Z",
+      "duration": "7m01s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S15-slot-error-boundary-crash/noskill": {
+      "status": "silent-failure",
+      "subagentId": "593e31ad-18d6-4fab-9b80-a472cf61e0fd",
+      "sessions": [
+        {
+          "id": "593e31ad-18d6-4fab-9b80-a472cf61e0fd",
+          "createdAt": 1792163540366
+        },
+        {
+          "id": "30d126d4-221f-4965-a0d4-5f8112237f45",
+          "createdAt": 1792163739905
+        }
+      ],
+      "dispatchedAt": 1792163739905,
+      "dispatchedIso": "2026-10-16T15:15:39.905Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T15:12:20.401Z",
+      "end": "2026-10-16T15:15:48.525Z",
+      "duration": "0m25s",
+      "models": []
+    },
+    "S15-slot-error-boundary-crash/skill": {
+      "status": "silent-failure",
+      "subagentId": "f3591811-2b4a-49ba-9207-ba45d5f22d81",
+      "sessions": [
+        {
+          "id": "f3591811-2b4a-49ba-9207-ba45d5f22d81",
+          "createdAt": 1792163739905
+        },
+        {
+          "id": "2c3ea749-4bdd-4177-a457-f88727a1f9ce",
+          "createdAt": 1792165382491
+        }
+      ],
+      "dispatchedAt": 1792165382491,
+      "dispatchedIso": "2026-10-16T15:43:02.491Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 15,
+        "candidates": 15
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 5,
+      "tokens": 29168,
+      "start": "2026-10-16T15:15:40.012Z",
+      "end": "2026-10-16T15:43:40.287Z",
+      "duration": "0m46s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S16-self-host-upgrade-trap/noskill": {
+      "status": "silent-failure",
+      "subagentId": "d1eba06b-4f31-4072-8b8e-08749f2a0f5e",
+      "sessions": [
+        {
+          "id": "d1eba06b-4f31-4072-8b8e-08749f2a0f5e",
+          "createdAt": 1792163739905
+        },
+        {
+          "id": "c9d226fd-bda4-4cbc-a0f1-2d11105c8439",
+          "createdAt": 1792165382491
+        }
+      ],
+      "dispatchedAt": 1792165382491,
+      "dispatchedIso": "2026-10-16T15:43:02.491Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 9,
+        "candidates": 9
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 7,
+      "tokens": 29404,
+      "start": "2026-10-16T15:15:40.088Z",
+      "end": "2026-10-16T15:43:40.423Z",
+      "duration": "0m46s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S16-self-host-upgrade-trap/skill": {
+      "status": "relaunched",
+      "subagentId": "69da2498-ad69-4657-b208-f615274dde6d",
+      "sessions": [
+        {
+          "id": "69da2498-ad69-4657-b208-f615274dde6d",
+          "createdAt": 1792165382491
+        },
+        {
+          "id": "b24ea28e-f0d9-489a-94de-609463c5349a",
+          "createdAt": 1792165557722
+        }
+      ],
+      "dispatchedAt": 1792165557722,
+      "dispatchedIso": "2026-10-16T15:45:57.722Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S16-self-host-upgrade-trap.md"
+      ],
+      "allOutputFiles": [
+        "S16-self-host-upgrade-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 63,
+        "candidates": 63
+      },
+      "exposure": null,
+      "skillUse": "A5-03",
+      "toolcalls": 40,
+      "tokens": 809848,
+      "start": "2026-10-16T15:43:02.708Z",
+      "end": "2026-10-16T15:53:59.533Z",
+      "duration": "8m39s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S17-external-ui-plugin-onboarding-trap/noskill": {
+      "status": "ok",
+      "subagentId": "6d56d182-12c4-4964-80df-85d152f21ce0",
+      "sessions": [
+        {
+          "id": "6d56d182-12c4-4964-80df-85d152f21ce0",
+          "createdAt": 1792165557722
+        }
+      ],
+      "dispatchedAt": 1792165557722,
+      "dispatchedIso": "2026-10-16T15:45:57.722Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S17-external-ui-plugin-onboarding-trap.md"
+      ],
+      "allOutputFiles": [
+        "S17-external-ui-plugin-onboarding-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 44,
+        "candidates": 44
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 20,
+      "tokens": 203535,
+      "start": "2026-10-16T15:45:57.857Z",
+      "end": "2026-10-16T15:54:52.424Z",
+      "duration": "8m55s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S17-external-ui-plugin-onboarding-trap/skill": {
+      "status": "silent-failure",
+      "subagentId": "e725d96d-1126-4bc1-b4bf-2fbaff1dccac",
+      "sessions": [
+        {
+          "id": "e725d96d-1126-4bc1-b4bf-2fbaff1dccac",
+          "createdAt": 1792165557722
+        },
+        {
+          "id": "49381364-c9ea-4eb0-8539-d9566f2ef3ba",
+          "createdAt": 1792166008124
+        }
+      ],
+      "dispatchedAt": 1792166008124,
+      "dispatchedIso": "2026-10-16T15:53:28.124Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 32,
+        "candidates": 32
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 19,
+      "tokens": 101897,
+      "start": "2026-10-16T15:45:57.942Z",
+      "end": "2026-10-16T15:53:44.129Z",
+      "duration": "2m00s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S18-terminal-sprite-render-trap/noskill": {
+      "status": "silent-failure",
+      "subagentId": "dbafc9a8-cd7d-42bc-9aa8-6d2e4493969b",
+      "sessions": [
+        {
+          "id": "dbafc9a8-cd7d-42bc-9aa8-6d2e4493969b",
+          "createdAt": 1792166065590
+        },
+        {
+          "id": "876ede31-84bc-4778-abe9-dca26500b539",
+          "createdAt": 1792166123952
+        }
+      ],
+      "dispatchedAt": 1792166123952,
+      "dispatchedIso": "2026-10-16T15:55:23.952Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T15:54:25.687Z",
+      "end": "2026-10-16T15:55:39.955Z",
+      "duration": "0m32s",
+      "models": []
+    },
+    "S18-terminal-sprite-render-trap/skill": {
+      "status": "silent-failure",
+      "subagentId": "5c4e4546-593c-48a6-83ed-4a06a3ca550a",
+      "sessions": [
+        {
+          "id": "5c4e4546-593c-48a6-83ed-4a06a3ca550a",
+          "createdAt": 1792166065590
+        },
+        {
+          "id": "da906002-06c1-4f9f-b9a4-f35183326989",
+          "createdAt": 1792166123952
+        }
+      ],
+      "dispatchedAt": 1792166123952,
+      "dispatchedIso": "2026-10-16T15:55:23.952Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T15:54:25.757Z",
+      "end": "2026-10-16T15:55:41.239Z",
+      "duration": "0m33s",
+      "models": []
+    },
+    "S19-phantom-update-stale-host/noskill": {
+      "status": "silent-failure",
+      "subagentId": "56c0f99f-2579-4e4d-9c24-96e314f6ded3",
+      "sessions": [
+        {
+          "id": "56c0f99f-2579-4e4d-9c24-96e314f6ded3",
+          "createdAt": 1792166123952
+        },
+        {
+          "id": "584987a6-ef03-4b91-a252-7ab4c4662b47",
+          "createdAt": 1792166578667
+        }
+      ],
+      "dispatchedAt": 1792166578667,
+      "dispatchedIso": "2026-10-16T16:02:58.667Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [
+        "_tmp_forensics\\session-torn.zst",
+        "_tmp_forensics\\session.zst"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 40,
+        "candidates": 40
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 22,
+      "tokens": 297964,
+      "start": "2026-10-16T15:55:24.203Z",
+      "end": "2026-10-16T16:12:53.197Z",
+      "duration": "10m10s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S19-phantom-update-stale-host/skill": {
+      "status": "silent-failure",
+      "subagentId": "93cb8b9c-12d8-48da-9154-b6a67b8f11d1",
+      "sessions": [
+        {
+          "id": "93cb8b9c-12d8-48da-9154-b6a67b8f11d1",
+          "createdAt": 1792166578667
+        },
+        {
+          "id": "5b71c129-579b-4fd9-9969-e1a498c7c9f7",
+          "createdAt": 1792167207569
+        }
+      ],
+      "dispatchedAt": 1792167207569,
+      "dispatchedIso": "2026-10-16T16:13:27.569Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 38,
+        "candidates": 38
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 22,
+      "tokens": 1051217,
+      "start": "2026-10-16T16:02:58.833Z",
+      "end": "2026-10-16T16:13:44.476Z",
+      "duration": "10m23s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S20-msvc-flock-trap/noskill": {
+      "status": "ok",
+      "subagentId": "26dbae96-22ce-4ab5-9f4f-baba90cd6fbb",
+      "sessions": [
+        {
+          "id": "26dbae96-22ce-4ab5-9f4f-baba90cd6fbb",
+          "createdAt": 1792166578667
+        }
+      ],
+      "dispatchedAt": 1792166578667,
+      "dispatchedIso": "2026-10-16T16:02:58.667Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "report.md"
+      ],
+      "allOutputFiles": [
+        "report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 20,
+        "candidates": 20
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 15,
+      "tokens": 220815,
+      "start": "2026-10-16T16:02:58.919Z",
+      "end": "2026-10-16T16:08:50.228Z",
+      "duration": "5m51s",
+      "models": [
+        "stepfun2/step-5-preview"
+      ]
+    },
+    "S20-msvc-flock-trap/skill": {
+      "status": "silent-failure",
+      "subagentId": "789bdd70-c780-41ba-b7ea-03b589717aa7",
+      "sessions": [
+        {
+          "id": "789bdd70-c780-41ba-b7ea-03b589717aa7",
+          "createdAt": 1792166981022
+        },
+        {
+          "id": "cd497680-dcd4-4977-8b60-1c5724cc7bda",
+          "createdAt": 1792167207569
+        }
+      ],
+      "dispatchedAt": 1792167207569,
+      "dispatchedIso": "2026-10-16T16:13:27.569Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T16:09:41.046Z",
+      "end": "2026-10-16T16:13:44.006Z",
+      "duration": "0m32s",
+      "models": []
+    },
+    "S21-resource-service-unavailable-trap/noskill": {
+      "status": "silent-failure",
+      "subagentId": "4bf33644-6538-4ce3-b952-50789c71c2c6",
+      "sessions": [
+        {
+          "id": "4bf33644-6538-4ce3-b952-50789c71c2c6",
+          "createdAt": 1792167207569
+        },
+        {
+          "id": "7dd652d9-49b5-4415-b858-7bc99bb0ff3c",
+          "createdAt": 1792167761674
+        }
+      ],
+      "dispatchedAt": 1792167761674,
+      "dispatchedIso": "2026-10-16T16:22:41.674Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T16:13:27.810Z",
+      "end": "2026-10-16T16:22:57.847Z",
+      "duration": "0m32s",
+      "models": []
+    },
+    "S21-resource-service-unavailable-trap/skill": {
+      "status": "silent-failure",
+      "subagentId": "fcab9a39-ca10-4c3c-8c3e-e75fd2776c50",
+      "sessions": [
+        {
+          "id": "fcab9a39-ca10-4c3c-8c3e-e75fd2776c50",
+          "createdAt": 1792167761674
+        }
+      ],
+      "dispatchedAt": 1792167761674,
+      "dispatchedIso": "2026-10-16T16:22:41.674Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T16:22:41.859Z",
+      "end": "2026-10-16T16:22:58.747Z",
+      "duration": "0m17s",
+      "models": []
+    },
+    "S22-duplicate-insert-boot-crash-trap/noskill": {
+      "status": "silent-failure",
+      "subagentId": "6efbbc91-6674-41cb-8d4d-8daa0b4b5592",
+      "sessions": [
+        {
+          "id": "6efbbc91-6674-41cb-8d4d-8daa0b4b5592",
+          "createdAt": 1792167761674
+        }
+      ],
+      "dispatchedAt": 1792167761674,
+      "dispatchedIso": "2026-10-16T16:22:41.674Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [],
+      "allOutputFiles": [],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 0,
+        "candidates": 0
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 0,
+      "tokens": 0,
+      "start": "2026-10-16T16:22:41.950Z",
+      "end": "2026-10-16T16:22:58.544Z",
+      "duration": "0m17s",
+      "models": []
+    },
+    "S22-duplicate-insert-boot-crash-trap/skill": {
+      "status": "pending"
+    },
+    "S23-passing-compat-guard-trap/noskill": {
+      "status": "pending"
+    },
+    "S23-passing-compat-guard-trap/skill": {
+      "status": "pending"
+    },
+    "S24-dock-cotenant-crash-trap/noskill": {
+      "status": "pending"
+    },
+    "S24-dock-cotenant-crash-trap/skill": {
+      "status": "pending"
+    }
+  }
+}

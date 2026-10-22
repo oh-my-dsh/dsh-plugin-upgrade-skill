@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Connects session log and env-state: agent and tool worker run inside the dsh host process whose package tree npm replaces; host dies mid-install, GUI drops, tool outcome preserved as unknown; framed as structural self-host failure, not flaky network."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Explains dsh/dsh.cmd missing and stale dsh.ps1 with rc.1 content present: shims deleted at remove, rebuilt at linkStuff, interruption in between; content presence does not prove install; ties broken shims to the hand-swapped nonstandard tree and rejects hand-swapping/hand-written shims with concrete reasons."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Grounded in repair-notes: external agent CLI reruns npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerating shims; dsh --version == rc.1 verified; source checkout aligned to the tag as side cleanup; recorded repair clearly separated from the user's post-repair verification."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Agent recognizes it runs on the upgrade target and must refuse/hand off rather than execute; ordered external procedure stops the host fully before the exact-version install, then restart, refresh, verify; distinguishes established rules (stop-first, exact pinning) from the new self-host rule; notes the fixer must be outside any dsh host."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Guard checks whether the install target is the session host's own module tree and refuses; uses the 252-file version-only diff to skip plugin API migration; checks shims, npm ls -g, --version, plugin loading after restart/refresh; backup cleanup only after stable verification."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Report explicitly rejects executing or retrying the install from inside the target host session."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Hand-made shims and directory swaps are explicitly rejected; the endorsed fix is the formal external pinned install."}
+  ]
+}

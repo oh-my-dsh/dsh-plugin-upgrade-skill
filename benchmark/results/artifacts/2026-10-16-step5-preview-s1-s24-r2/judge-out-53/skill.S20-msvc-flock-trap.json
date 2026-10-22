@@ -1,0 +1,14 @@
+{"decisions":[
+{"id":"native-install-failure","verdict":"pass","reason":"fs-ext@2.1.1 exact-pinned by dsh-session-persistence-jsonl@0.1.3-alpha.1; install script node-gyp configure build fails in find-VS due to missing MSVC/VS; correctly attributed to the dependency build phase, not pnpm/network."},
+{"id":"static-import-trap","verdict":"pass","reason":"Static top-level flock import forces module load on Windows before runtime branch selection; --ignore-scripts trades a loud install failure for a silent boot failure and cannot achieve working service boot; additional arguments (no owned call site, blanket blast radius) are sound."},
+{"id":"platform-lock-contract","verdict":"pass","reason":"Clear two-branch table: POSIX flock via fs-ext vs Windows named kernel semaphore (CreateSemaphoreW/WaitForSingleObject/ReleaseSemaphore); dead Windows fs-ext path permits an import-safe stub while Windows keeps the semaphore and Linux/macOS keep real flock."},
+{"id":"reproducible-local-patch","verdict":"pass","reason":"pnpm patch of fs-ext following the node-pty precedent: win32-guarded install script skips node-gyp, entry exports an import-safe pure-JS flock fallback with the original (fd, operation, callback) shape, POSIX keeps native via Object.assign; registered in pnpm-workspace.yaml with allowBuilds handling; verification covers reinstall, module-load, service boot, and POSIX non-regression."},
+{"id":"machine-and-upstream-boundaries","verdict":"pass","reason":"Owner's no-VS constraint respected and VS install rejected; repository-managed patch mechanism used with no upstream edit/release."},
+{"id":"corridor-mapping","verdict":"pass","reason":"Cites full DSH-0.1.3-A1-03 and connects it substantively: same symptom line, the static-import/install-channel reasoning, the three-step patch recipe, and the verification list."}
+],
+"caps":[
+{"id":"requires-visual-studio","triggered":false,"reason":"No MSVC anywhere in the plan; VS Build Tools appear only as a rejected alternative."},
+{"id":"ignore-scripts-only","triggered":false,"reason":"--ignore-scripts explicitly rejected as diagnostic-only; the patch makes the entry loadable."},
+{"id":"upstream-edit-required","triggered":false,"reason":"Fork/upstream patch explicitly rejected in favor of the existing repository pnpm patch layer."},
+{"id":"lock-bypass","triggered":false,"reason":"Semaphore path untouched; POSIX native flock preserved and re-verified; the Windows-only fallback affects code never invoked there (warn-once no-op, not a universal lock removal)."}
+]}

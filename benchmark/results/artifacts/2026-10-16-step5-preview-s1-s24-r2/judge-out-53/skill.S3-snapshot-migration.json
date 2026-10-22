@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"chat-projection","verdict":"pass","reason":"partial/runningCalls staged via chat.legacy projection with immediate primary path to keyed store (order/nodes.get) and turnEnds→chat.timeline; explains the projection is transitional, citing API-10/R-11."},
+{"id":"session-lifecycle","verdict":"pass","reason":"F4 keeps running on the useSession seat, citing A1-03 field note that lifecycle fields are outside the projection; explicitly warns against renaming/moving the call."},
+{"id":"type-and-inject","verdict":"pass","reason":"ClientContext→Context as ClientContext from @deepseek-ai/cordis; ConversationSnapshot→ChatSnapshot from the owning ui-chat package; client.inject recomposed; exact snapshot symbols explicitly deferred to target exports (P1)."},
+{"id":"slot-registration","verdict":"pass","reason":"Locates scoped register, wraps in ctx.slots.inject against the declaration race, names ui-renderer as ctx.slots owner with type-only augmentations, preserves slot name/id/order and service ordering."},
+{"id":"mapping-and-plan","verdict":"pass","reason":"Every finding tied to full DSH-0.1.2-A1-03 (plus valid A1-25, API-10, R-11) with evidence, and §4 cleanly separates projection-eligible fields from immediate type/inject/lifecycle changes with ordering."}
+],"caps":[]}

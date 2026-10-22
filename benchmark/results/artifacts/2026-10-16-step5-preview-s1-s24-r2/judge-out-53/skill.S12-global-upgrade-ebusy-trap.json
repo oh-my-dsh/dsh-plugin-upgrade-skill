@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"PID 42432 dsh web host holds koffi.node; DLL image-section mapping prevents delete/rename/overwrite until process exit (no FreeLibrary for addons), surfacing as EBUSY on copyfile."},
+{"id":"browser-versus-host-sequence","verdict":"pass","reason":"Page refresh re-downloads the SPA against the same host process and frees nothing; ordered sequence: verify version published, stop every dsh process from an external terminal, verify tasklist, install, verify dsh --version, then restart with hard refresh — dsh processes only."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Bare spec = latest = 0.1.1-rc.2, alpha = 0.1.2-alpha.5; correctly explains silent downgrade of the installed 0.1.2-alpha.4 across the minor line because npm installs exactly what the tag says with no downgrade protection."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 and the TUI pinned, given separately and combined, after stopping the host; dsh --version must print alpha.5 before restarting; @alpha framed as mutable alternative, exact pin preferred."},
+{"id":"readme-prevention","verdict":"pass","reason":"README guidance pins the exact tested core version whenever the command installs dsh, pins every package on the line, never lets latest silently override an existing prerelease, and documents stop/verify/restart plus rollback."}
+],"caps":[]}

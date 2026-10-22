@@ -1,0 +1,92 @@
+﻿# S10 鈥?Paste Renaming & Version-Chip Follow-Ups (Report)
+
+## 1. Renaming design
+
+**Scheme.** Pasted images (original clipboard name is a generic/browser-assigned one such
+as `image.png`, but simplest and per the request: all `paste`-path images) land as:
+`paste_image.png`, `paste_image(2).png`, `paste_image(3).png`, 鈥nAll other pasted files land as `paste_file.<ext>`, `paste_file(2).<ext>`, 鈥nThe fir
+st pasted file of a kind has no suffix; the n-th gets `(n)`.
+Files added by drag-and-drop or the file/folder picker keep their real names, untouched.
+
+**Where the rename is applied.** The paste path, drop path, and picker all funnel into
+`add()`, so the rename must not be inferred inside `add()` from the file itself. Each
+acquisition path must tag its items with their source (e.g. `item.source = 'paste' | 'drop'
+| 'picker'`, or rename in the paste handler before calling `add()`), and the rename is
+applied only when the source is `paste`. The drop and picker paths must bypass renaming
+entirely. Practically: in `add()`, compute the label/path as
+`item.source === 'paste' ? derivePasteName(item, takenNames) : item.path`.
+
+**How the number is chosen.** For each pasted item, build the base name
+(`paste_image` or `paste_file` + ext). Then take the smallest n 鈮?1 such that the
+candidate (`base.ext` for n=1, `base(n).ext` otherwise) is not already taken; insert the
+chosen name into the taken set immediately so the rest of the same batch increments.
+
+**Authoritative "names already taken" source.** The live composer state 鈥?the
+accurrences in `input.state.getSnapshot()` filtered to this plugin's SOURCE (their
+labels/paths), plus the items already accepted earlier in the current batch. The
+module-level `records` Map is a fragile cache and must not be trusted as the collision
+source: its alive-subscription (`plugin-attachment-flow.js:30-39`) deletes the Map entry
+on *any* momentary empty snapshot 鈥?the subscription retires entries whenever a snapshot
+momentarily shows no occurrences 鈥?even though the composer later re-renders the same
+occurrence. After such a retire, the Map says the name is free while the composer still
+shows `paste_image.png`, so the next paste would reuse the name and collide. The records
+Map is a render-cache; the composer snapshot is ground truth.
+
+## 2. Extension rule (guidance, not scored)
+
+Extension precedence: (a) the real extension from the pasted file's original name if it
+has one; otherwise (b) fallback derived from `item.file.type` (MIME subtype, lower-cased,
+parameters stripped, common aliases normalized, e.g. `image/jpeg` 鈫?`jpg`). If neither is
+available, fall back to a generic extension or none. The dock chip (`dshca-name`) must
+show the renamed label, and the uploaded body (`files: [{ path, ... }]`) must use the same
+renamed path 鈥?not the stale browser-supplied `image.png` 鈥?so chip and upload agree.
+
+## 3. Follow-up B root cause
+
+The chip treats the fetched remote tag list as ground truth. GitHub's API edge caches
+tag lists (`cache-control: private, max-age=60, s-maxage=300`, `x-cache: HIT`,
+`age: 178` in the captured response), and the cached page predates the `v0.2.11` push, so
+the newest stable tag visible to the chip is `v0.2.9`. Because `semverCmp('v0.2.9',
+'0.2.10') <= 0`, the code path at `plugin-version-chip.js:21` fires and the green chip
+renders the *fetched* (stale) tag: "already the latest version v0.2.9" 鈥?older than the
+running version, and v0.2.11 invisible to the user.
+
+**Rule instead:** compare the fetched latest tag against the locally-known running
+`PLUGIN_VERSION` and show the **running version** whenever the fetched tag is not newer.
+Concretely: if `fetched > running`, show the update chip with `fetched`; otherwise the
+"already latest" chip must display `v<PLUGIN_VERSION>` (the local version), never a
+stale fetched tag that is 鈮?running. Never claim "latest" for a version older than the
+one actually running.
+
+## 4. Regression tests that would have caught both
+
+- **Rename scoping:** simulate `add()` with (a) two consecutive paste batches of
+  `image.png` and (b) a drop/picker batch carrying real filenames. Assert the paste
+  items become `paste_image.png`, `paste_image(2).png` (鈥?, and the drop/picker items
+  keep their original paths verbatim.
+- **Cache-vs-truth:** drive the composer subscription with a momentary empty snapshot
+  (retiring the records entry), then paste again; assert the second paste still gets
+  `paste_image(2).png` because numbering consulted the live snapshot, not the records Map.
+- **Mixed kinds:** paste one image and one PDF; assert `paste_image.png` and
+  `paste_file.pdf`, with independent counters.
+- **Version chip staleness:** mock `fetch` to return the captured cached page (max tag
+  `v0.2.9`) while `PLUGIN_VERSION` is `0.2.10`; assert the green chip renders
+  `v0.2.10`, never `v0.2.9`. And with a mock returning `v0.2.11`, assert the update chip
+  shows `v0.2.11`.
+
+## 5. Lib-only release hygiene
+
+- The running `PLUGIN_VERSION` is **hand-inlined** in `lib/client.js` and must be kept in
+  sync with `package.json` at every release 鈥?bump it in the same commit that ships, and
+  add a release-checklist item or CI grep asserting the two match. Failure mode seen
+  here: bundle says 0.2.10 while registry/tags move on.
+- No build step means no compiler to catch syntax errors: run a bundle syntax check
+  (`node --check` on the shipped lib bundle) before publish.
+- The plugin has **no host-side update endpoint**: users receive updates by fetching the
+  new bundle from the registry/CDN on next page load (with the browser/CDN cache busted
+  via hard refresh). The version chip is informational only; because both the GitHub API
+  and any CDN in front of the bundle may serve stale data right after a tag push, the
+  chip must tolerate stale fetches (per item 3) and the maintainer should document the
+  expected CDN propagation delay after publishing.
+
+

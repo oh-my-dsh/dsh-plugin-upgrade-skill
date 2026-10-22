@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "§2.1–2.2 identify PID 42432 (dsh web host) as the koffi.node holder and explain the mapped DLL stays locked until that process exits, so npm's copyfile fails with EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "§2.3 explains a refresh only reloads the SPA against the same running host; §2.5/§4 give the ordered procedure stop/verify host exit → pinned install → verify version → restart."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "§3 explains a bare spec resolves to the latest tag = 0.1.1-rc.2 (alpha = 0.1.2-alpha.5) and that npm installs it over the installed alpha.4 with no downgrade protection."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "§4 provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 and a pinned TUI install after stopping hosts, verifies dsh --version = alpha.5, then restarts the host."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "§5 tells README authors to pin the exact tested host version whenever the command installs dsh, pin every package, and document stop/verify requirements to avoid silent latest drift."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "culprit-attribution",
+      "verdict": "pass",
+      "reason": "Attributes the sole crash to plugin A's unconditional useSessionPendingInteraction call in SessionProgressBar, grounded in the console excerpt and the source excerpt; explains alpha.2 dropped the prop in favor of useSessionStatus while useSessions stays. Correctly states plugin B uses no standard-kit hooks and throws nothing; does not claim useSessions was removed."
+    },
+    {
+      "id": "cotenant-mechanism",
+      "verdict": "pass",
+      "reason": "Explains via the render-tree note that the dock is one list slot whose entries mount under one shared DrawerErrorBoundary, so A's throw unmounts the whole boundary subtree including B's chips; cites the unmounted-entries console line. Notes the attach button survives because conversation.input.left is a separate slot under its own boundary."
+    },
+    {
+      "id": "experiment-reading",
+      "verdict": "pass",
+      "reason": "Reads the disable-A experiment as proving render-crash coupling (B was never broken) while explicitly noting it does not prove B is fully alpha.2-compatible nor that the A crash is the only dock defect. Explains reinstalling B could never help and refutes the colleague's both-plugins-removed theory using B's hook-free render path and the single console error."
+    },
+    {
+      "id": "degradation-fix",
+      "verdict": "pass",
+      "reason": "Proposed code reads pending through useSessionStatus(...).pendingInteraction on alpha.2 with a legacy-hook fallback, capability-detected calls and stable empty fallbacks so at worst only pending indicators hide while running/todos/token/ETA keep working. Explains silent degradation: a throwing tenant re-unmounts co-tenants via the shared boundary, so a missing indicator is cosmetic versus a multi-plugin outage."
+    },
+    {
+      "id": "verification-and-hygiene",
+      "verdict": "pass",
+      "reason": "Verification uses hard refresh without host restart (client bundles re-fetch), asserts both entries render together with zero errors and no boundary-fallback line, and covers B's paste/remove/re-paste regression with A enabled. Hygiene: tenants capability-detect hooks and may wrap their own entry in a local boundary; host could mount per-entry boundaries with the trade-off in boundary count, layout holes, and reset cost spelled out."
+    }
+  ],
+  "caps": [
+    {
+      "id": "innocent-plugin-fix",
+      "triggered": false,
+      "reason": "The final remedy fixes plugin A's component and optionally the host's boundary granularity; the report explicitly rejects reinstalling or fixing B and denies the two symptoms are independent plugin-level bugs."
+    }
+  ]
+}

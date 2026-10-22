@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Relative sibling imports resolve against the entry chunk's own URL; the evidence states the siblings were not shipped, so 200 on the entry still rejects the dynamic import; fix is one self-contained chunk with inlineDynamicImports and no sibling specifiers."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Compares uppercase-E LIB_DIR (fileURLToPath-derived) with lowercase-e realpathSync under case-sensitive startsWith; table explains Linux (identical case, single root) and the lowercase-c: laptop passing; appendix explicitly notes the lowercasing is not universal and Windows paths are not unreliable."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "path.relative containment with platform-appropriate case-folding only on win32, both sides canonicalized via realpath (symlink defense kept), rejects '..'/absolute results, preserves a JavaScript MIME type for dynamic import."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Both handlers react to the same Ctrl+wheel; modal is exclusive owner while open with preventDefault + stopPropagation, and the pane independently gates on ownership state, correctly noting capture-phase ancestors cannot be undone by later stopPropagation."},
+    {"id": "incident-regressions", "verdict": "pass", "reason": "Covers build-graph closure/tarball deployability with fallback, case-differing contained path serving 200 while traversal/symlink escapes stay blocked, and modal-only zoom with pane font-size unchanged; all framed as planned checks."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "The fix strengthens containment (realpath both sides, sibling-prefix and escape rejection); only quoted bad idioms are shown as rejected examples."}
+  ]
+}

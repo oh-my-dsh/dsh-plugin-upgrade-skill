@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Proves link install from Junction LinkType/Target, empty LinkType on repo side, and # link: marker; repo tree is the installed copy, copy is self-copy, copied-dependency track distinguished."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Host owns the EBUSY handles and in-memory bundle; browser tab is only an HTTP client so closing it releases nothing; browser cache staleness handled by hard refresh; serving behavior version-scoped to 0.1.7+ cards rather than universalized."},
+{"id":"rename-recovery","verdict":"pass","reason":"Junction rename renamed the one physical source file so the copy's source vanished; recovery renames .old2 back in the repo path, node --check both, stop host, restart, hard refresh; EBUSY fallback stops host first."},
+{"id":"ordered-activation","verdict":"pass","reason":"Ordered procedure: confirm link mode, node --check, fully stop dsh web, restart, hard-refresh, then verify served bundle bytes and mount; browser need not be killed and refresh alone rejected."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Mandatory pre-file LinkType/Target and cordis.patch.yml marker check with link-vs-copied branching; explains the copied-install advice was redundant, manufactured EBUSY, and led to the rename disaster."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final plans prohibit copying for link installs; recovery preserves the .old2 files by renaming back."},
+{"id":"browser-only-activation","triggered":false,"reason":"Host stop+restart is mandatory in every final procedure; refresh alone explicitly called insufficient."}
+]}

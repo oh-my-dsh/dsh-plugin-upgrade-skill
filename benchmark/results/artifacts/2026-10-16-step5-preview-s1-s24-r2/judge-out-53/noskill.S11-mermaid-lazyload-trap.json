@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Explains sibling specifiers resolve relative to the fetched chunk URL at runtime, siblings never shipped so the 200 entry still fails the whole dynamic import; proposes single self-contained bundle (inlineDynamicImports / no splitting) or ship the full closure."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Identifies guard #2 comparing differently-canonicalized strings (uppercase E: LIB_DIR vs lowercase e: realpath) with case-sensitive startsWith; explains Linux (no drive letter) and lowercase-laptop pass; explicitly rejects 'Windows paths unreliable' folklore."},
+{"id":"safe-route-fix","verdict":"pass","reason":"realpath'd root + boundary-aware path.relative containment rejecting '', '..' traversal, sibling prefix and absolute/cross-drive results; keeps realpath guard against symlink escapes; preserves application/javascript MIME."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"Both handlers act on one bubbling wheel event; modal claims with preventDefault + stopPropagation (non-passive, stopImmediatePropagation on same target), pane yields on defaultPrevented; notes capture-phase ordering caveat."},
+{"id":"incident-regressions","verdict":"pass","reason":"T3 Playwright smoke (rendered svg, no >=400, code-block fallback treated as failure), T1/T2 closure+packlist deployability, T4/T5 case-differing contained path serves while traversal/symlink escapes refused with JS MIME asserted, T6 modal Ctrl+wheel changes diagram scale but not pane font-size."}
+],"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"Fix strengthens containment (same-boundary canonicalization + path.relative) and keeps both guards; never serves outside the lib root."}
+]}

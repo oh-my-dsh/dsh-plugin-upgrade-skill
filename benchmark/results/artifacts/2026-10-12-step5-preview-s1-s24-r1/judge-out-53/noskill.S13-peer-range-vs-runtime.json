@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Ties plugin .events read sites (channel.js:623 etc.) to undefined access and 'events is not iterable', citing changelog removal at alpha.4 replaced by seq/eventAt/snapshotEvents."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"alpha.5 satisfies ^0.1.2-alpha.2 by version-string arithmetic; npm checks only declared versions, not API existence; peer range is author declaration, not test evidence."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Gives removal/rename plus semantic/type drift on surviving APIs (and nested-copy layout mismatch) as distinct peer-passing runtime failures."},
+{"id":"author-prevention","verdict":"pass","reason":"Requires CI testing against actual host versions in range, plus upper-bounded peer range excluding alpha.4 or runtime feature-detection guard; engines noted as advisory only."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Concrete pre-install changelog diff between peer floor and installed host, throwaway-prefix smoke boot; explicitly tied to the Session.events boundary."}
+],"caps":[{"id":"peers-prove-runtime","triggered":false,"reason":"Conclusions repeatedly state peer satisfaction proves nothing about runtime compatibility."}]}

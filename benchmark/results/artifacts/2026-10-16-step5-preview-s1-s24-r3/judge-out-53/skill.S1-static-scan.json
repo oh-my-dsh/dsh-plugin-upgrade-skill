@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates declaration/target/script, uses API-08 to classify cordis.patch.yml as composition (negative control) vs the real patch surface, and ties it to the SessionView /internal coupling under A1-03+API-07."},
+{"id":"events","verdict":"pass","reason":"Locates producer/observer and ignorable:true; correctly folds A1-02 removal / A2-01 restoration to net state, keep the marker as informational, and flags API-05 that Session.append still cannot write it."},
+{"id":"host-services","verdict":"pass","reason":"Maps apiProxy deletion to A1-01/API-01, gives the host-plane recipe (inject llm, ctx.llm.listProviders) and warns against the client-plane ctx.remote swap; no invented Host remote service."},
+{"id":"host-path","verdict":"pass","reason":"Locates the hardcoded path, prescribes runtime DSH_HOME + target profile as source of truth, and explicitly notes --profile existed in rc.2 (A1-04 not misread)."},
+{"id":"ui","verdict":"pass","reason":"Locates both the /internal import and registerCommand, and prescribes exact-tag compare / rebuild imports by owning module with pending-confirmation for seams lacking a public surface."},
+{"id":"channel","verdict":"pass","reason":"Locates the loopback server, states loopback-only is explicitly not an auth exemption (pre-flight #6), and distinguishes host-managed authenticated channels (webServer.register + requestRejection, Connection seams) from the raw route."},
+{"id":"subprocess","verdict":"pass","reason":"Locates both wrappers; A1-05/API-06 explain stdout final text vs stderr reasoning segment, exit-code criterion, and explicitly attribute the JSONL assumption as a pre-existing rc.2 defect (R-06), not an alpha.2 stdout change."},
+{"id":"mapping","verdict":"pass","reason":"Correct full-ID mapping: A1-03 for patch/UI, A2-01 net (+A1-02 intermediate) for events, A1-01 for apiProxy, A1-04 for path, A1-08 for channel, A1-05 for stdout; grounded in actual couplings, not a bare list."},
+{"id":"limits","verdict":"pass","reason":"All seven hits accounted, heuristic limits and blind spots stated, and a layered plan with target-tag typecheck/build, isolated cold boot with no pending rows, and per-hit functional paths; fixture execution never demanded."}
+],"caps":[]}

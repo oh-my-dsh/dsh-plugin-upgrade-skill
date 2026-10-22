@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Correctly attributes failure to sibling imports resolving relative to the fetched chunk URL while the emitted siblings were never shipped, so the 200 entry still fails its dynamic import; proposes a self-contained single-chunk build with splitting disabled plus packaging closure, without over-committing to one option spelling."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Precisely explains the E: (fileURLToPath) vs e: (realpathSync volume casing) divergence hitting a case-sensitive startsWith guard, and why Linux (no drive letter) and the C:\\ volume (matching casing) pass, while explicitly rejecting the 'Windows paths are unreliable' folklore."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes equivalent safe containment: canonicalize both sides through the same realpathSync (resolving symlink/junction escapes), keep the whole-segment boundary, and names the path.relative idiom rejecting ''/'.'/..-prefixed/absolute results; preserves the already-correct JavaScript MIME type and warns lowercasing/normalize alone is insufficient."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both handlers act on the same bubbling Ctrl+wheel gesture and that preventDefault does not stop other listeners; grants the modal exclusive ownership via stopPropagation+preventDefault (or the pane handler standing down on an ownership flag), covering the arbitration requirement without needing exact selectors."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Plans checks with expected outcomes for all three incidents: sibling-closure/pack tests plus route 200+JS MIME deployability, a case-differing contained Windows path serving while traversal/symlink escapes are refused, and modal Ctrl+wheel zooming the diagram with pane font unchanged; framed as planned, not executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The final fix preserves containment via canonicalized realpath on both sides with a segment-boundary check and explicitly rejects escapes; no affirmative advice serves outside the resource root."
+    }
+  ]
+}

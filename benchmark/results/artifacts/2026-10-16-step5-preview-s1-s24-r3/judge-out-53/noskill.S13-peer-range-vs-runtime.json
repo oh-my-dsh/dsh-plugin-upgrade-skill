@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates session.events reads (lines 734/6685/.at(-1), 42 refs), the TypeError in prepareReplayEvents, cites changelog for removal at 0.1.2-alpha.4 replaced by seq/eventAt/snapshotEvents, and explains non-iterable/undefined access."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Explains ^0.1.2-alpha.2 admits alpha.5 via same-base prerelease ordering, npm only compares version strings against metadata, never loads code or checks APIs; peer range is an author claim, not tested evidence."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives multiple distinct classes: removed/renamed API, signature/return-shape change (array to lazy iterator/Promise), semantic sync-to-async drift, plus bundled-instance and env-gated classes."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires CI testing oldest and newest in-range versions plus smoke of the load path; narrows peer range to exclude alpha.4 or implements runtime feature detection with correct old/new branches; notes engines cannot test API behavior."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install steps: read peer ranges, diff host changelog across the span from floor to installed version (surfacing the alpha.4 removal), and capability-probe the installed host — tied directly to this Session.events incident."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "Conclusion explicitly rejects that satisfied peer ranges or silent installs prove runtime compatibility; removal is affirmed."
+    }
+  ]
+}

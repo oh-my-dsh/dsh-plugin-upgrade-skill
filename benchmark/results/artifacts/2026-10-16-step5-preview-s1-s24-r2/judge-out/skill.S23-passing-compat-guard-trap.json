@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Walks the per-keystroke chain: getSnapshot succeeds, current removed, id undefined, null every keystroke, onKeyDown exits before preventDefault; explains guard passes (four member probes survive, only a field gone) and the designed null/no-op silence; no claim the service or guard was removed or throws."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Compares alpha.1 SessionListState vs alpha.2 SessionListSnapshot, quotes navigation-belongs-to-view-owners; maps uiSession.adapter.current ObservableSnapshot<SessionBindingValue> with {key, ctx, hooks, keyedHooks, props}, key replacing current and ctx replacing sessions.scope(id)."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "One-build resolver feature-detects uiSession and falls back to legacy current + scope(id); inject gains uiSession with alpha.1 tolerance discussed; conversation resolves through binding-value ctx and input.for receives that scope; explicitly states inject alone is not a fix."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names shape/field-level removal behind container presence and the once-at-activation vs per-use gap; hardened guard probes actual snapshot fields ('current' in snap, key/ctx in binding) and mandates re-probing at effect time on first published snapshot."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "pass",
+      "reason": "Dual-host smoke including key===undefined absent case, branch instrumentation, tsc against both alpha.1 and alpha.2 published types as the strongest gate, negative guard simulation; prevention proposes throwing deprecated getter or validated snapshot-schema contract."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Explicitly labels the colleague's inject-only suggestion insufficient; the final remedy rewrites the resolution code."
+    }
+  ]
+}

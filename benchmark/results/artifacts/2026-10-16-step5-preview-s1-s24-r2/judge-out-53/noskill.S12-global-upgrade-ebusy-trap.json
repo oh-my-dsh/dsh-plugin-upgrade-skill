@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"Identifies the dsh web-host node.exe PID 42432 as the koffi.node holder; explains the mapped DLL stays locked until process exit so npm's copyfile/reify gets EBUSY; also notes the session worker as a second holder."},
+{"id":"browser-versus-host-sequence","verdict":"pass","reason":"Browser refresh only reloads the SPA served by PID 42432 and releases nothing; ordered procedure stop host/workers, verify with tasklist, install, verify version, restart — limited to dsh processes, not unrelated Node."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Bare name follows latest = 0.1.1-rc.2 (next same), alpha = 0.1.2-alpha.5; explains npm installs exactly what the tag resolves to, silently replacing the installed prerelease rather than preserving/upgrading it."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus the TUI package (pinned) after stopping the host, combined and split variants, dsh --version must print alpha.5, then restart; @alpha discussed as a floating alternative only."},
+{"id":"readme-prevention","verdict":"pass","reason":"README rules: never ship a bare core name, pin exact tested version when a plugin command also installs dsh, pin the plugin too, avoid silently following latest over an existing prerelease, plus verification and stop-first steps."}
+],"caps":[]}

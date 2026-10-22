@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"baked-version-release-order","verdict":"pass","reason":"Build at 16:22 preceded the 16:23 bump, baking 0.3.6 into the tagged v0.3.7 bundle; explains package.json is never reread at runtime; bump-before-build order, pre-tag constant gate, mirror verification retained; v0.3.8 manifest not confused with the earlier build."},
+{"id":"client-host-update-asymmetry","verdict":"pass","reason":"Uses probe + disk excerpt: PNG 200 proves route alive, SVG 404 'unsupported image type' proves old running whitelist while disk has svg; host restart (or true cache-dropping reload) required; client refresh cannot replace the boot-time closure; kept specific to this host lifecycle."},
+{"id":"payload-corruption-attribution","verdict":"pass","reason":"Byte-exact splice proof localizes corruption to persisted model-visible result-text assembly; clean source, clean typed read, clean reread; plugin consumed the damaged copy; payload treated as untrusted and repairing the good SVG explicitly rejected."},
+{"id":"validated-render-fallbacks","verdict":"partial","reason":"States untrusted-input posture, validation before render, disk-first, and never writing back, but the shown report text lacks the ordered chain with a concrete XML well-formedness gate, sandboxed iframe with scripts blocked/SMIL allowed, and an explicit error state (later sections are referenced but not present in the provided report)."},
+{"id":"forensics-and-prevention","verdict":"pass","reason":"Run-log shows concatenated-zstd frame carving in order, JSONL recovery, exact stored splice reconstruction and comparison with the source; checklist covers bump-before-build, baked-constant verification, per-mirror tag SHA, plane-specific probes; upstream reporting stated; no real decode required."}
+],
+"caps":[
+{"id":"contradictory-release-render-advice","triggered":false,"reason":"No affirmative bad advice: bump-first, host restart required, no file editing, validation before render; bad options appear only as rejected alternatives."}
+]}

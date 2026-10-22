@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"silent-break-attribution","verdict":"pass","reason":"Full resolve() walk: snapshot read succeeds, current gone so id undefined and null on every keystroke before preventDefault; explains all four presence probes survive (member vs payload) and undefined was a legitimate quiet no-session state; does not claim service/guard removal."},
+{"id":"evidence-mapping","verdict":"pass","reason":"Type-walk across both .d.ts files: current/byId removed, navigation-to-view-owners doc quoted; uiSession.adapter.current -> SessionBindingValue {key, ctx, hooks, keyedHooks, props} with key replacing current and ctx replacing sessions.scope(id)."},
+{"id":"dual-host-migration","verdict":"pass","reason":"resolveCurrentScope reads uiSession.adapter.current.getSnapshot() when present, falls back to legacy current + sessions.scope, one build; inject discussion adds uiSession; conversation via actx.get('conversation') with binding ctx and input.for(actx)."},
+{"id":"guard-hardening","verdict":"pass","reason":"Names field-level removal behind service-level stability plus once-at-activation timing; hardened guard probes snapshot fields (key/ctx, legacy current/byId) at activation and live on binding emissions/first use, distinguishing no-session from broken."},
+{"id":"verification-and-prevention","verdict":"pass","reason":"Fixture-driven dual-host tests, branch instrumentation, chord smoke tests on both hosts with session open, compile against host types (alpha.2 read becomes compile error); prevention via versioned snapshot contract or deprecated warning getter."}],
+"caps":[
+{"id":"slot-reregistration-misdiagnosis","triggered":false,"reason":"Final remedy rewrites the current-session resolution code; inject-only/slot re-registration explicitly labeled insufficient."}
+]}

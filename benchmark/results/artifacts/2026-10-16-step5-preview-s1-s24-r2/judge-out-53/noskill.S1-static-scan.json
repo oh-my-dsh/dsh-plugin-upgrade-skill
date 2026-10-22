@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates cordis.patch.yml declaration, patch.yml target/anchor, and apply-patch.mjs script; distinguishes host-source patching from composition and ties the target to session-view internals."},
+{"id":"events","verdict":"pass","reason":"Locates emit/observe and ignorable:true; folding analysis correctly maps removal (alpha.1) superseded by restoration (alpha.2), net zero, keep the marker; no Session.append claim."},
+{"id":"host-services","verdict":"partial","reason":"apiProxy usage and removal located precisely, but the Host llm injection/listProviders replacement vs Web Client Remote distinction is not made; replacement left as unknown."},
+{"id":"host-path","verdict":"partial","reason":"Fixed ~/.dsh/profiles/default path and write coupling located, but the fix is generic ('derive from the host'); runtime DSH_HOME/profile information is not named."},
+{"id":"ui","verdict":"pass","reason":"Both the deep /internal SessionView import and registerCommand located; explains module-resolution failure, unknown new signature, and verifying against target public seams."},
+{"id":"channel","verdict":"pass","reason":"Locates loopback server on 43121; explains it bypasses Gateway auth and must become a Gateway-authenticated channel rather than a raw route; dead code still a hit."},
+{"id":"subprocess","verdict":"partial","reason":"Both dsh call sites and JSON.parse located with final-text consequence, but stderr-progress is not explained and the JSONL break is attributed to an alpha.2 stdout change instead of being already wrong."},
+{"id":"mapping","verdict":"partial","reason":"Coupling-to-change mappings are substantively argued per touchpoint, but card IDs are self-invented (A2-02/A2-06/A2-08/A2-09) and collide with registry semantics (its A1-03 means the CLI surface); required A1-04 mapping absent."},
+{"id":"limits","verdict":"partial","reason":"All seven hits accounted with per-category ruled-out inventories and good scan-limit caveats, but no proposed target-version build/typecheck, isolated boot, or functional verification path."}
+],"caps":[]}

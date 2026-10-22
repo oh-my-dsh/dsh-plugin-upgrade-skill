@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Distinguishes the package.json declaration from the brief-supplied published list (alpha.1 never published, alpha.2 published), does not infer packages from dist-tags, and proposes package-specific npm view verification without requiring a live query."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Shows ^0.1.2-alpha.1 resolves to published 0.1.2-alpha.2, the missing lower bound does not break the range, and identifies the silent intent-vs-outcome baseline mismatch plus alpha-channel type-contract uncertainty; no false claim that all alphas are missing."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A is a complete feasible plan: exact-pin the published alpha.2 with pros/cons and verification, acknowledging alpha.1 is unavailable to diff/validate; alternate paths (lockfile, rc stopgap) also given."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Path B commits package-lock.json with npm ci on one consistent manager (npm), proposes tsc --noEmit typecheck against the target, and every path has an explicit exit; unverified registry/type details are honestly marked."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "All prescribed installs target published versions (alpha.2 or rc.2); no affirmative instruction to install the unpublished alpha.1 from npm."
+    }
+  ]
+}

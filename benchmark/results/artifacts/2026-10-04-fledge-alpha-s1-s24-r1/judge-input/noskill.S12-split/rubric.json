@@ -1,0 +1,37 @@
+{
+    "criteria":  [
+                     {
+                         "id":  "native-module-owner",
+                         "points":  20,
+                         "requirement":  "Identify the running Windows dsh web-host node.exe (PID 42432 in running-processes.txt) as the process that loaded koffi.node. Explain that the loaded native binary remains in use until that host exits, so npm cannot copy/replace it and reports EBUSY. File-in-use/handle wording is equivalent to lock; do not require universal claims about other operating systems or the word exclusive.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "browser-versus-host-sequence",
+                         "points":  20,
+                         "requirement":  "Explain that refreshing the browser reloads the page/SPA without stopping the native-module-owning host. Give the ordered procedure: stop/confirm exit of the relevant dsh host, install, then restart. Separate numbered steps, prose and command blocks together establish the sequence; do not require a single sentence. Do not prescribe killing every unrelated Node process.",
+                         "sourceRequired":  false
+                     },
+                     {
+                         "id":  "unpinned-dist-tag-resolution",
+                         "points":  20,
+                         "requirement":  "Explain that an unversioned npm global install follows latest, which npm-dist-tags.txt pins to 0.1.1-rc.2; alpha points to 0.1.2-alpha.5. This can replace the initially installed alpha.4 with rc.2 rather than preserving/upgrading it. A statement that an unpinned install does NOT preserve the installed version is correct, not contradictory advice. Distinguish a minor wrong prior-version label from a wrong resolution mechanism.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "safe-exact-commands",
+                         "points":  20,
+                         "requirement":  "Provide npm install -g (or npm i -g) @deepseek-ai/dsh@0.1.2-alpha.5 and @deepseek-harness-tui/dsh-tui, together or separately after stopping the host. Verify dsh --version is alpha.5 and restart the host. An explicit @alpha may be discussed as a mutable alternative but cannot replace the requested exact-version command. Shell examples are proposed instructions, not required executed actions.",
+                         "sourceRequired":  false
+                     },
+                     {
+                         "id":  "readme-prevention",
+                         "points":  20,
+                         "requirement":  "Tell README authors to pin the exact intended/tested core version whenever a plugin install command also installs dsh, and avoid silently following latest over an existing prerelease. Accept separate pinned core/plugin commands or one pinned combined command. Read the recommendation across headings and list items; quoted unpinned BAD examples are not endorsements.",
+                         "sourceRequired":  false
+                     }
+                 ],
+    "caps":  [
+
+             ]
+}

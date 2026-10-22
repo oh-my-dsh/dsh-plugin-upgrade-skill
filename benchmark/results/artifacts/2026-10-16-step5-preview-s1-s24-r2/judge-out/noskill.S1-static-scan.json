@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates patch.yml target/anchor, cordis.patch.yml declaration and apply-patch.mjs; explains textual host-source patch vs composition and ties target to private SessionView path."},
+    {"id": "events", "verdict": "pass", "reason": "Locates producer/consumer and ignorable:true; correctly folds alpha.1 removal against alpha.2 restoration, keeps the marker, and makes no Session.append claim."},
+    {"id": "host-services", "verdict": "partial", "reason": "Locates apiProxy usage and removal correctly and avoids prescribing a nonexistent Host remote, but never explains Host domain-service injection (llm/listProviders); says replacement is undeterminable."},
+    {"id": "host-path", "verdict": "partial", "reason": "Locates the hardcoded path and says derive it from the host, but never names runtime DSH_HOME/profile resolution; correctly makes no --profile-introduced-in-alpha.1 claim."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates both the /internal SessionView import and registerCommand; explains the decomposition moved the view to the client side and that the public seam/API must be re-derived and verified."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the dead loopback server; states an unauthenticated plugin-owned loopback surface must be re-expressed as a Gateway-authenticated channel, i.e. loopback does not exempt auth."},
+    {"id": "subprocess", "verdict": "partial", "reason": "Locates both dsh calls and the JSON.parse/JSONL assumption and explains final-text stdout, but attributes the break to an alpha.2 stdout change (the assumption was already wrong) and never mentions stderr progress."},
+    {"id": "mapping", "verdict": "partial", "reason": "Couplings are substantively tied to the right changes by name/evidence (apiProxy, ignorable removal+restoration, session-view split, profile dir, channel) but expressed in a self-derived ID space that diverges from the registry, includes inferred cards, and misfiles a --profile invocation change as alpha.1 card A1-03."},
+    {"id": "limits", "verdict": "partial", "reason": "Accounts for all seven hit categories and states scan limits extensively, but does not propose target-version build/typecheck, isolated boot, or a functional verification path — only registry consultation."}
+  ],
+  "caps": []
+}

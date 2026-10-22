@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the import at index.ts:1, maps A1-25, requires removing the deleted-package import while re-sourcing ClientContext for the apply() signature, explicitly rejecting type erasure; the target package is correctly marked unconfirmed."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Correctly contrasts 'pet-legacy-bundle' with package.json name dsh-pet-session-bench, maps A1-26 and gives the exact rename, but proposes no client activation/boot verification step."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates useSession/nodes at lines 12-13, maps A1-27, requires moving off the flat top-level nodes read to the new snapshot shape with the indexing updated, marking exact accessor unconfirmed and inventing nothing."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates ctx.connection.api.agentPresets.list at line 11, maps A1-30, requires deleting the removed face and re-issuing the call through the replacement face, correctly marked unconfirmed without inventing a name."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "No claim about apply-to-setup/activate replacement or moving service inject into a manifest; inject list is explicitly cleared."
+    }
+  ]
+}

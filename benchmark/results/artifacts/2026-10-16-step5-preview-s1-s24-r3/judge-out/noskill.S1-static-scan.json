@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates patch declaration, target and applier script; explicitly distinguishes host-source textual rewriting from plugin composition and explains the SessionView coupling to touchpoint #5."},
+    {"id": "events", "verdict": "pass", "reason": "Locates producer/consumer and ignorable:true; explains alpha.1 removal vs alpha.2 restoration, concludes keep the marker and re-verify the producer/persistence contract; makes no false Session.append claim."},
+    {"id": "host-services", "verdict": "partial", "reason": "Locates apiProxy usage and its removal, but does not distinguish Host domain-service injection (llm/listProviders) from Web Client Remote; no nonexistent Host remote prescribed though."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates the hardcoded homedir/.dsh/profiles/default path and prescribes Host-provided profile/state resolution (DSH_HOME/profile semantics) over renaming the literal; no --profile-introduced claim."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates both the /internal SessionView import and registerCommand usage; explains the unsupported private seam and that a public contribution seam must be verified after the split."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the raw loopback server; explains it answers with no auth and that plugin traffic must traverse the authenticated Gateway rather than a raw side route."},
+    {"id": "subprocess", "verdict": "partial", "reason": "Locates both wrappers and explains stdout-is-final-text and missing stderr handling, but does not explicitly attribute the JSONL assumption as pre-existing (already wrong at rc.2) versus an alpha.2 change; no invented change either."},
+    {"id": "mapping", "verdict": "partial", "reason": "Named-change mapping is substantively correct, but the self-assigned ordinal IDs conflict with the real registry (its A1-01/A1-03 etc. are wrong) and the required A1-02+A2-01 pairing and A1-08 are absent."},
+    {"id": "limits", "verdict": "partial", "reason": "Correctly reports all seven categories hit with no no-hit category and states scan limits, but proposes no concrete target-version build/typecheck, isolated boot, or functional verification path."}
+  ],
+  "caps": []
+}

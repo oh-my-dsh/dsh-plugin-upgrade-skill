@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"half-cell-background","verdict":"pass","reason":"Locates up-only/lo-only branches emitting foreground only; stale SGR background paints the transparent half; fix is ESC[49m per half-filled cell; row-end reset too late; mechanism tied to edge symptoms, no artwork/emulator blame."},
+{"id":"frame-clearing","verdict":"pass","reason":"Explains trailing-space trim plus downstream whitespace stripping leaving surplus columns stale; fix is full-box-width output with explicit default-background padding plus ESC[K erase; SGR state controlled; notes padding alone is defeated by the pipeline."},
+{"id":"frame-data-integrity","verdict":"pass","reason":"Identifies tail2 hand-port drift of 23 cells, notes visible cluster is not the full count; distinguishes data drift from renderer artifacts; excerpt test covered a different frame and only a slice; full-frame digest against source art for every frame."},
+{"id":"timer-liveness","verdict":"pass","reason":"Probe hosts mount without unmounting; planner continuously rearms ref'd setTimeout chain so finished checks cannot exit; TTY/stdin already keeps interactive product alive; unref each newly scheduled timeout; rejects CI-timeout extension."},
+{"id":"renderer-and-rollout-prevention","verdict":"pass","reason":"Checklist consolidates background reset, full-width/erase, balanced SGR, source-backed all-frame integrity; pre-rollout audit of timers and every mounting host including non-unmounting probes; exit/liveness regression proposed."}
+],"caps":[
+{"id":"contradictory-render-advice","triggered":false,"reason":"Final advice affirms background reset, explicit clearing, source-backed checks, and unref; no emulator blame."}
+]}

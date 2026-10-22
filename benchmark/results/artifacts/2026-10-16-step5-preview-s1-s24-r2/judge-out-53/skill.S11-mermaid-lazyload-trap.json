@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Sibling imports resolve relative to the entry chunk's own URL, unshipped siblings 404 and reject the whole import() while the entry returned 200; proposes one self-contained file (inlineDynamicImports / splitting:false) plus ship-the-whole-set and route-allowlist measures."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Guard #2 compares fileURLToPath case (uppercase E:) vs realpathSync OS-canonical case (lowercase e:) with case-sensitive startsWith; explains Linux passes structurally (no drive letter) and laptop passes by coincidence; notes realpath case is not a contract, avoiding folklore."},
+{"id":"safe-route-fix","verdict":"pass","reason":"Root pushed through the same realpath boundary, containment via path.relative (case-insensitive on win32, case-sensitive posix) rejecting '..', absolute cross-drive, sibling-prefix; symlink guard kept as path comparison; JS MIME invariant preserved and derived from extension."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"One wheel event reaches both handlers on the propagation path; modal claims with preventDefault+stopPropagation non-passive (stopImmediatePropagation on same node), pane yields on defaultPrevented; explicitly handles the capture-phase ordering trap where a later modal stop cannot undo an ancestor capture handler."},
+{"id":"incident-regressions","verdict":"pass","reason":"T1-T5 chunk closure/packlist/config-lock/e2e svg + fallback-is-failure; T6-T8 case-differing contained path serves, symlink/traversal refused, real-route JS MIME; T10-T13 modal Ctrl+wheel changes diagram transform while pane font-size unchanged and pane shortcut still works with modal closed."}
+],"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"Fix keeps and strengthens containment; no advice to disable the guard or serve outside the lib root."}
+]}

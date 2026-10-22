@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "official-short-name", "verdict": "partial", "reason": "Locates greet, distinguishes plugin name from coordinate and package name, and affirms greet is a valid short name — but then declares a compatibility error for the manifest/package-name mismatch, an invented local rule the report itself admits has no policy text."},
+    {"id": "service-collision-advice", "verdict": "pass", "reason": "Locates unprefixed service search, explains collision risk, classifies it as a collision recommendation rather than a compatibility error, and claims no uniqueness without a registry query."},
+    {"id": "shared-event-context", "verdict": "pass", "reason": "Reads web-search/ready as subscribing to a shared channel owned by another package, marks registry overlap not checked, and infers no conflict from the name alone."},
+    {"id": "coverage-and-registry-limits", "verdict": "partial", "reason": "Covers loader/tool/command/skill-provider/settings/route, separates local from registry-dependent claims, and explicitly rejects all-clear; however it invents local compatibility errors (skill name greet, plugin/package mismatch) from intra-file consistency despite lacking the policy text."}
+  ],
+  "caps": [
+    {"id": "unsupported-all-clear", "triggered": false, "reason": "The report explicitly retracts every free/reserved/available claim and marks all registry questions not checked; no blanket all-clear conclusion."}
+  ]
+}

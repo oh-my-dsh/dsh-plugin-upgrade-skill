@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Uses LinkType Junction, Target, and link: patch marker to establish one physical directory reached by two paths; repo edit is the deploy, copying is a self-copy; contrast table for copied installs."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Host process owns both the file-handle locks (browser tab holds none, locks are process-scoped) and the boot-time client-bundle cache; browser HTTP cache is a separate second layer needing cache-bypassing refresh after host restart; no extrapolation beyond documented behavior."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains junction rename moved the sole files and made the source copy fail (source path renamed away); recovery: stop host, rename .old2 back preserving content, node --check both files, feature-marker grep, then activate; no deletes or recreation."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Ordered procedure: edit → static check → fully stop host → restart dsh web → hard refresh (order matters) → verify served bytes, registration, boot log, and behavior; syntax check not treated as activation."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Two-command pre-flight (LinkType/Target + link: marker in cordis.patch.yml, plus package.json corroboration) choosing linked vs copied procedure; detailed explanation of why generic copy advice caused the outage."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "Plan explicitly prohibits copying, reinstalling, or deleting .old2 files; paths treated as one directory."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "Plan mandates full host stop and restart; browser-only refresh explicitly called insufficient."
+    }
+  ]
+}

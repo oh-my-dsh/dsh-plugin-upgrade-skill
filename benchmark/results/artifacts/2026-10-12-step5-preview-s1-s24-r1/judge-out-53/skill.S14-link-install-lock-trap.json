@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Junction/Target/link: marker establish profile entry resolves to repo; repo save is the deployed copy; copy is file-onto-itself; copied-install mode contrasted."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Host process owns EBUSY handles and module/bundle cache; tab close releases nothing; browser HTTP cache explained separately; version-scoped (0.1.7 boot-cache vs earlier) rather than universalized."},
+{"id":"rename-recovery","verdict":"pass","reason":"Rename through junction hit the single inode; recovery renames .old2 files back (contents preserved, post-edit), node --check both, host stopped first, git as fallback."},
+{"id":"ordered-activation","verdict":"pass","reason":"Order: edit repo, stop host fully, start dsh web, hard-refresh browser, verify boot manifest/served bytes/behavior and no load errors."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Pre-flight inspects LinkType/Target and patch.yml marker, mode-dependent procedures, and explains why copy-into-node_modules advice caused the incident."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final procedures never copy repo files onto the junction target or delete .old2 files."},
+{"id":"browser-only-activation","triggered":false,"reason":"Host full stop and restart are mandatory in the plan; browser reload is only the cache-bypass step."}
+]}

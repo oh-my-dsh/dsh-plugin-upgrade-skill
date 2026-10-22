@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"duplicate-loader-attribution","verdict":"pass","reason":"Both excerpts compared: same id workspace-files inserted by profile and by bundle; rejection located at EntryGroup.update during cordis:include composition; fatal hard error, explicitly not silent merge/last-write-wins; the profile comment's harmless-redundancy claim is directly falsified."},
+{"id":"three-layering-cases","verdict":"pass","reason":"Three-case table (config-by-id override safe, genuinely-new insert safe, bundle-provided insert fatal), maintainer's row classified as the third case, grounded in profile-patch-excerpt.txt:16-20 and web-app-patch-excerpt.txt:6-8."},
+{"id":"minimal-profile-fix","verdict":"pass","reason":"Delete only the workspace-files insert block (with comments) from the profile cordis.patch.yml, preserve bundle service and unrelated external plugins, use config-by-id override for any tuning; explicitly rejects renaming or re-adding."},
+{"id":"plugin-and-failure-boundary","verdict":"pass","reason":"Crash is a composition-layer error before any plugin code runs, so no plugin-side change can fix it; explicitly notes removing the duplicate restores boot but does not cure the pre-existing resource-metadata read failure, kept as a separate verification item."},
+{"id":"author-and-host-prevention","verdict":"pass","reason":"Grep the installed bundle's cordis.patch.yml for the id before inserting, distinguish bundle-provided vs external rows, and a concrete host message naming workspace-files with both declaration origins, file:line, ownership labels, and the exact block to delete."}
+],"caps":[
+{"id":"retain-or-add-duplicate","triggered":false,"reason":"Final advice deletes the duplicate; plugin-side edit affirmatively rejected."}
+]}

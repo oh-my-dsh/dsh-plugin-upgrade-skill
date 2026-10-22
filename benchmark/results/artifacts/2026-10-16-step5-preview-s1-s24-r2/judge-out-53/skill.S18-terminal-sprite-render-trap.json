@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"half-cell-background","verdict":"pass","reason":"Pinpoints half-filled branches emitting fg only; sticky 48;2 background paints the empty half; per-cell ESC[39m/ESC[49m fix restores defaults; row-final reset too late; tied to outline/sleep-Z/heart edge symptoms, no emulator blame."},
+{"id":"frame-clearing","verdict":"pass","reason":"Trailing-space trim plus pipeline whitespace strip leaves surplus columns unaddressed; fix: pad to full sprite width with explicit clear cells and erase the viewport (ESC[2K per row / equivalent) to max(prev,cur) width; SGR channels tracked independently."},
+{"id":"frame-data-integrity","verdict":"pass","reason":"tail2 mismatch = 23 cells from hand-copying, visible 6-pixel cluster not the full diff; data drift distinguished from renderer artifacts; excerpt regression covered a different frame and sampled positions; full-rectangle digest vs source art for all frames plus generated-not-transcribed frames."},
+{"id":"timer-liveness","verdict":"pass","reason":"CI hosts mount and finish without unmount; rearming ref'd setTimeout chain pins the loop; interactive TTY/stdin masks it; unref() each re-armed timer keeps animation alive with other handles; clearTimeout hygiene and exit watchdog added, no CI-timeout extension."},
+{"id":"renderer-and-rollout-prevention","verdict":"pass","reason":"Renderer contract checklist consolidates complete SGR, full-width/erase, sticky-state discipline, digest-pinned source-backed frames; pre-flip audit covers timers, every mounting host (non-unmounting probes), and a process-exits-by-itself regression."}
+],"caps":[
+{"id":"contradictory-render-advice","triggered":false,"reason":"Advice affirms background reset, explicit clearing, source-backed digest checks, and unref; terminal not blamed."}
+]}
