@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Upper-only/lower-only branches emit fg only, so the previous full cell's 48;2 bg paints the half-filled cell's empty half (mid-row, before any reset); fix = ESC[0m before each attribute change or fg+ESC[49m per half cell; mechanism tied to one-cell-wide edge noise, exonerating artwork and terminal."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Trailing-space trim (plus downstream whitespace stripping) means a narrower frame never overwrites the wider frame's surplus columns; fix = constant full-width (40-cell) rows plus per-row ESC[K that survives trimming, with RESET-balanced SGR — not merely added spaces."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2 hand-port = 23 differing cells while the visible symptom is the 6-pixel cluster; data drift distinguished from the renderer bugs; the excerpt test covered a different frame; all-frame sha256 manifest generated from source art with machine conversion required."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Probe/scene hosts mount the header and finish without unmounting while the planner self-rearms ref'd setTimeouts, pinning the loop of a PASSed job; TTY/stdin masks it interactively; fix = .unref() on each rescheduled timeout so animation continues only while another handle is live."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Checklist consolidates per-cell SGR closure, constant width + ESC[K erase, balanced resets, and source-backed all-frame digests; rollout audit covers timers and every mounting host (esp. non-unmounting probes) plus an idle-after-PASS/liveness canary."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Advice affirms background reset, full-width+EL clearing, source-backed frame gate and unref; the renderer's state tracking is blamed, not the terminal."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Uses log and env-state to show host, tool worker and result channel all live inside the package npm replaces; host dies mid-install, GUI disconnects, result unpersisted; classifies it as structural self-host hazard, not network/timeout, and preserves the unknown outcome."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Reads env-state as content present but link step unfinished: dsh/dsh.cmd missing, dsh.ps1 stale; content presence is not a complete install; ties the hand-swapped non-standard tree to the broken shims and lists hand-copying/hand-writing shims as prohibited."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Records the repair-notes fix (external pinned npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerating the shim trio, dsh --version check) separately from proposed layered verification; separately handles aligning the source checkout to dsh-v0.1.2-rc.1 without unrelated edits."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Recognizes the target is the running host and hands off; procedure stops all dsh hosts before the pinned external install, restarts, hard-refreshes and verifies; §4.4 separates known stop-first/pinning rules from the new in-session-refusal rule and notes a dependent shell inside the dying host is not a handoff."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Designs a pre-dispatch deny gate comparing the effective global prefix against the executing ancestry; uses the 252-file version-only diff to conclude no plugin re-migration; post-restart checks cover version markers, hard refresh, real plugin mounting, with dsh-old-* cleanup only after verification."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final plan requires stopping all dsh processes first and running the pinned install only from an external terminal; in-session execution is named a structural impossibility, not advised."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Manual tree swaps and handmade shims appear only in the explicit prohibition list; the affirmed repair is the formal external pinned registry install."}
+  ]
+}

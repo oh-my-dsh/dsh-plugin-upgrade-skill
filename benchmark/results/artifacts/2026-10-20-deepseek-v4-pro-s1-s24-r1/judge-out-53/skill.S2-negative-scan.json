@@ -1,0 +1,25 @@
+{
+ "decisions": [
+  {
+   "id": "host-break",
+   "verdict": "pass",
+   "reason": "定位 inject/providers/死依赖；映射 A1-01+API-01：Host 面替换为 inject ['llm']+ctx.llm.listProviders()，保留依赖将 pending 挂起；论证完整非裸卡名"
+  },
+  {
+   "id": "negative-coverage",
+   "verdict": "pass",
+   "reason": "六类逐一有扫描证据（含 cordis.patch.yml=API-08 组合、session-notes.js 纯工具）；无文件名臆造耦合，无对存在文件的否认"
+  },
+  {
+   "id": "inference-boundary",
+   "verdict": "pass",
+   "reason": "零命中仅为'未检测到模式'；明确依赖/配置/运行时需独立证据，且六类干净不能抵消 apiProxy 决定性断裂"
+  },
+  {
+   "id": "verification-plan",
+   "verdict": "pass",
+   "reason": "build/typecheck（skipLibCheck:false）、隔离冷启动无 pending、实际调用 ctx.llm.listProviders() 冒烟；均标注为未执行的提议检查"
+  }
+ ],
+ "caps": []
+}

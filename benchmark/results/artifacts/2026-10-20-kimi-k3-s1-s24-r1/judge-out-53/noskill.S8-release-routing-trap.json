@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "双证据归因脚本只推HEAD不推tag,绑定尝试1,排除网络误判"
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "方向完整:新API工件配旧rc.2缺useConversation,重启≠兼容"
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "认出v0.9.3正确且镜像缺tag,但改推未验证v0.9.1,缺条件命令"
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "每镜像推tag+发布后验证门+回填,超出裸--tags要求"
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "partial",
+      "reason": "矩阵与版本检查齐,但rc混入v0.9.1且≥alpha.1泛化未来版"
+    }
+  ],
+  "caps": []
+}

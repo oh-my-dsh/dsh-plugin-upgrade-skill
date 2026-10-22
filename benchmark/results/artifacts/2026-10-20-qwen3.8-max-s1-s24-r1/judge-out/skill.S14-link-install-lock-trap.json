@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "junction-deployment", "verdict": "pass", "reason": "Cites LinkType Junction, Target, and link: marker; repo edit is the deployment, copy is a self-copy; copied-install contrast given."},
+    {"id": "host-lock-and-client-cache", "verdict": "pass", "reason": "Host PID owns handles and boot-time cache/routes; browser holds sockets not handles; separates browser HTTP cache from filesystem lock; restart plus cache-bypass refresh required."},
+    {"id": "rename-recovery", "verdict": "pass", "reason": "Rename through junction hit the one physical file, leaving the copy without a source; recovery renames .old2 back preserving contents, node --check both, then activate; host stop first as precaution."},
+    {"id": "ordered-activation", "verdict": "pass", "reason": "Explicit order: stop host → start dsh web → hard refresh with cache bypass → verify served bytes, network, and behavior incl. new route; syntax check is pre-downtime, not activation."},
+    {"id": "install-mode-preflight", "verdict": "pass", "reason": "Read-only LinkType/Target and marker probes before any file operation, linked-vs-copied decision rule, and explanation of why copy-into-node_modules advice was harmful here."}
+  ],
+  "caps": [
+    {"id": "copy-through-junction", "triggered": false, "reason": "Plan copies nothing; forbids deleting .old2 and restores them by rename-back; treats both paths as one directory throughout."},
+    {"id": "browser-only-activation", "triggered": false, "reason": "Host stop/restart is mandatory in the plan; browser refresh alone is explicitly rejected as sufficient."}
+  ]
+}

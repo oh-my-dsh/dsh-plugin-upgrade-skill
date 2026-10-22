@@ -1,0 +1,2485 @@
+{
+  "generated_at": "2026-10-20T16:32:23.441Z",
+  "judge": "judge-out",
+  "invalid": [
+    {
+      "cell": "NONE",
+      "score": 0,
+      "reason": "invalid:roaming (real out-of-allowlist write; adjudication)"
+    }
+  ],
+  "results": [
+    {
+      "arm": "noskill",
+      "task": "S11-mermaid-lazyload-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "split-chunk-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly ties console-split-chunks.txt 404 siblings to relative resolution against the entry chunk URL with only the facade shipped, and proposes single self-contained file via inlineDynamicImports/splitting:false accounting for all dependencies."
+        },
+        {
+          "id": "windows-containment-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains uppercase-E LIB_DIR vs lowercase-e realpath against case-sensitive startsWith, why Linux/control pass, and explicitly avoids overclaims about Windows paths or unconditional lowercasing."
+        },
+        {
+          "id": "safe-route-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Canonicalizes both operands with realpathSync, uses path.relative rejecting '..' prefixes and absolute results (covers symlink escapes via realpath), and preserves application/javascript MIME."
+        },
+        {
+          "id": "modal-event-ownership",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains bubbling so both handlers see one Ctrl+wheel; modal claims with preventDefault+stopPropagation (bubble phase noted) plus pane stand-down alternative."
+        },
+        {
+          "id": "incident-regressions",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Covers build-output completeness, Windows case-differs-serves with MIME, and modal single-owner checks, but omits a check that real traversal/symlink escapes are refused."
+        }
+      ],
+      "caps": [
+        {
+          "id": "unsafe-containment",
+          "triggered": false,
+          "total": 40,
+          "reason": "Proposed path.relative + realpathSync fix preserves containment; no affirmative advice to disable the guard or serve outside the root."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S11-mermaid-lazyload-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "split-chunk-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains facade entry resolves sibling imports relative to its own URL while siblings were never shipped, so 200 entry still fails the dynamic import; fix inlines all dynamic imports into one self-contained chunk accounting for every dependency."
+        },
+        {
+          "id": "windows-containment-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Precisely attributes the 403 to case-sensitive startsWith comparing lexical uppercase-E LIB_DIR against OS-canonical lowercase-e realpath; explains Linux/control pass; explicitly notes casing is volume-dependent, no overclaim."
+        },
+        {
+          "id": "safe-route-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Canonicalizes the root with the same realpathSync and rejects '', '..', '..'+sep and absolute relative results (symlink escapes covered by realpath and the integration test); keeps application/javascript MIME."
+        },
+        {
+          "id": "modal-event-ownership",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "One wheel event reaches both bubble-phase listeners; modal gets exclusive ownership via stopPropagation plus preventDefault with {passive:false}, and the pane handler stands down defensively."
+        },
+        {
+          "id": "incident-regressions",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Matrix covers all three: build completeness plus browser smoke asserting no failed import fallback, case-differing contained path serves while traversal and symlink/junction escapes return 403, and modal zoom without pane font change."
+        }
+      ],
+      "caps": [
+        {
+          "id": "unsafe-containment",
+          "triggered": false,
+          "total": 40,
+          "reason": "Fix strengthens containment via canonicalized path.relative checks; no advice to disable the guard or serve outside the resource root."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S13-peer-range-vs-runtime",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "removed-api-and-crash",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates the session.events reads/iteration in the plugin source, ties them to the crash-stack TypeError, cites the changelog removal at 0.1.2-alpha.4 with the seq/eventAt/snapshotEvents replacements, and explains the undefined/non-iterable failure."
+        },
+        {
+          "id": "peer-check-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Desugars ^0.1.2-alpha.2 to >=0.1.2-alpha.2 <0.2.0-0, shows alpha.5 sorts inside it, and explains npm only performs static version-number comparison with no knowledge of API existence or behavior; explicitly lists what the range does not guarantee."
+        },
+        {
+          "id": "distinct-breakage-categories",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives three genuinely distinct classes: removed API, signature/return-shape (sync-to-async) change, and behavioral/semantic change, each concretely explained; more than the required two."
+        },
+        {
+          "id": "author-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Requires testing against the exact supported versions via a pinned CI matrix, plus an actionable policy: narrow/pin the peer range below breaking releases and add runtime feature detection with correct new paths; explains metadata bounds cannot prove compatibility versus runtime guards."
+        },
+        {
+          "id": "user-preinstall-check",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives concrete pre-install steps: read the changelog between the peer floor and the installed version and feature-detect Session.events vs snapshotEvents/eventAt on the installed package, tied directly to this incident."
+        }
+      ],
+      "caps": [
+        {
+          "id": "peers-prove-runtime",
+          "triggered": false,
+          "total": 20,
+          "reason": "Report explicitly states a satisfied range cannot prove compatibility and recommends runtime guards; final advice never claims install success implies runtime compatibility and affirms the Session.events removal."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S13-peer-range-vs-runtime",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "removed-api-and-crash",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates the session.events reads and replayEvents path, ties the missing getter to the crash-stack TypeError at channel.js:623, cites the changelog removal at 0.1.2-alpha.4, and lists the seq/eventAt/snapshotEvents replacements with a migration mapping."
+        },
+        {
+          "id": "peer-check-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains npm's peer check as a static semver-ordering comparison (^0.1.2-alpha.2 → >=0.1.2-alpha.2 <0.2.0-0 admits alpha.5 and the breaking alpha.4) and lists everything it does not guarantee, including that it is a maintainer claim/promise, not an enforced or tested mechanism."
+        },
+        {
+          "id": "distinct-breakage-categories",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Lists four distinct classes: removed/renamed member, signature/return-shape change on a present symbol, missing runtime service/inject, and unconditional import of an optional dependency — all concrete and distinct."
+        },
+        {
+          "id": "author-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Requires a real cold-boot run against the pinned target version exercising the .events path, plus a policy of narrowing the peer ceiling below the breaking release or migrating and raising the floor, and runtime feature detection with correct old/new paths; explains metadata encodes version bounds while guards encode capability."
+        },
+        {
+          "id": "user-preinstall-check",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Concrete steps: npm pack + grep the plugin's host-API usage, scan the host changelog between the peer floor (alpha.2) and installed alpha.5 for removals, and feature-detect events vs snapshotEvents/eventAt — all tied to this Session.events boundary."
+        }
+      ],
+      "caps": [
+        {
+          "id": "peers-prove-runtime",
+          "triggered": false,
+          "total": 20,
+          "reason": "Final conclusions and advice consistently deny that peer-range satisfaction or a silent install proves runtime compatibility, and affirm the documented Session.events removal at alpha.4."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S14-link-install-lock-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "junction-deployment",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses Junction LinkType/Target and the cordis.patch.yml link: marker to show the profile entry resolves to the repo; explains edits are already deployed and copying is a self-copy acting on the same files; contrasts with a copied install."
+        },
+        {
+          "id": "host-lock-and-client-cache",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Attributes both EBUSY handles and stale served/cached client.js to the running dsh host; tab close releases nothing; separates browser HTTP cache from filesystem lock and requires host restart plus cache-bypassing refresh."
+        },
+        {
+          "id": "rename-recovery",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains rename through the junction renamed the sole repo files, making the subsequent source copy fail; restores both .old2 files via Rename-Item, notes content preserved, verifies with node --check, then activates; stopping the host first is an optional precaution."
+        },
+        {
+          "id": "ordered-activation",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives the semantic order: fully stop host, restart, hard-refresh with cache bypass, then verify feature/served bytes and no console errors; states restart-before-refresh and why either alone fails."
+        },
+        {
+          "id": "install-mode-preflight",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Provides pre-flight Get-Item LinkType/Target plus marker inspection before any file operation with linked-vs-copied branching, and explains why generic copy-into-node_modules advice is destructive for link installs."
+        }
+      ],
+      "caps": [
+        {
+          "id": "copy-through-junction",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final plan explicitly renames back with no copy step and rejects copying through the junction; the bad copy appears only as rejected diagnosis."
+        },
+        {
+          "id": "browser-only-activation",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final plan stops and restarts the host before the hard refresh; browser-only closure/refresh is explicitly rejected."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S14-link-install-lock-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "junction-deployment",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Cites LinkType Junction with Target to the repo and the link: install marker; concludes repo edits are already deployed and Copy-Item was never right because both paths are one physical directory, contrasted with a copied dependency."
+        },
+        {
+          "id": "host-lock-and-client-cache",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Assigns both the EBUSY file handles and the stale served/cached client bundle to the running dsh web host; tab close releases nothing; browser HTTP cache is kept distinct from the filesystem lock and the fix requires host restart plus hard refresh."
+        },
+        {
+          "id": "rename-recovery",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the junction made the profile-path renames hit the only physical files so the later source copy failed; recovery renames both .old2 files back with contents preserved, verifies with node --check, then activates; stopping the host first is allowed."
+        },
+        {
+          "id": "ordered-activation",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Order is fully stop host, restart dsh web, hard-refresh to bypass cache, then verify served bytes, feature, host route, and console errors; notes a refresh/tab-close is not a host stop and plain refresh of a live tab can show old code."
+        },
+        {
+          "id": "install-mode-preflight",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Preflight inspects LinkType/Target and the cordis.patch.yml link: marker before any file operation with linked-vs-copied branching, and explains the generic copy-into-node_modules advice is a self-copy that mutates the only source."
+        }
+      ],
+      "caps": [
+        {
+          "id": "copy-through-junction",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final plan copies nothing; it renames the .old2 files back and explicitly calls copying a self-copy/no-op."
+        },
+        {
+          "id": "browser-only-activation",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final plan stops and restarts the host before any refresh; browser-only measures are explicitly rejected as insufficient."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S16-self-host-upgrade-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "self-host-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Traces host process and its pwsh tool worker to the npm-replaced tree; host dies at linkStuff, GUI drops, tool result unrecordable; explicitly keeps outcome unknown, no network-flake claim, and its universal wording stays about severing the result channel, not mandating every in-place upgrade crash."
+        },
+        {
+          "id": "interrupted-install-signature",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains shims vs content: dsh/dsh.cmd missing, dsh.ps1 stale, so content presence proves nothing; ties hand-swapped tree to broken shims and rejects manual swaps/shim patching as the fix."
+        },
+        {
+          "id": "external-pinned-repair",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Grounds repair in the recorded external pinned install of rc.1 regenerating shims, verified via dsh --version; aligns source checkout to dsh-v0.1.2-rc.1; separates recorded repair from its proposed verification steps."
+        },
+        {
+          "id": "handoff-protocol",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explicitly says the agent is the upgrade target and must hand off an external procedure, never execute; stop-host-first before pinned install, then restart/refresh/verify; marks stop-first and pinning as standing rules and self-host refusal as the new rule; rejects detached/in-session execution."
+        },
+        {
+          "id": "guard-and-postupgrade-checks",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes a pre-flight guard comparing the npm target path to the host's own code root; uses the alpha.5→rc.1 version-only diff to skip re-migration; checks version markers, shim presence, plugin load after restart/refresh, backup cleanup only after confirmed rc.1; no code changes."
+        }
+      ],
+      "caps": [
+        {
+          "id": "execute-inside-target",
+          "triggered": false,
+          "total": 20,
+          "reason": "Final plan mandates external execution after stopping the host; in-session execution appears only as the rejected mistake."
+        },
+        {
+          "id": "manual-shim-repair",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final fix is the formal external pinned npm install; manual swaps are described only as rejected/worse options."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S16-self-host-upgrade-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "self-host-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Connects host process and its tool worker to the npm-replaced install tree; host dies at linkStuff (16:41:31), GUI loss and unrecorded tool result explained; preserves unknown outcome and frames the crash as a signature, not a network flake, without universal-platform claims."
+        },
+        {
+          "id": "interrupted-install-signature",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains shim layer vs package content: dsh/dsh.cmd missing, dsh.ps1 stale, so content presence proves nothing; ties the manually swapped tree to missing shims and rejects hand-copying/shim surgery in favor of formal reinstall."
+        },
+        {
+          "id": "external-pinned-repair",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Records the external pinned rc.1 install regenerating all shims with dsh --version verification, plus source checkout aligned to the rc.1 tag; distinguishes the recorded repair from its proposed real-machine verification."
+        },
+        {
+          "id": "handoff-protocol",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Recognizes the agent runs on the upgrade target and must hand off the external procedure, never execute it; full host stop before the pinned install, then restart, hard refresh, verify; classifies stop-first/pinning as standing rules and self-host refusal as the incident-specific rule; a dependent worker shell is implicitly excluded by 'external terminal, not a child of the host'."
+        },
+        {
+          "id": "guard-and-postupgrade-checks",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Guard compares install target path to the running runtime's module path and refuses/downgrades to external handoff; uses the 252-file version-only alpha.5→rc.1 diff to rule out re-migration; checks shims, version markers after hard refresh, plugin loading, and optional backup cleanup only after stable rc.1; no code changes demanded."
+        }
+      ],
+      "caps": [
+        {
+          "id": "execute-inside-target",
+          "triggered": false,
+          "total": 20,
+          "reason": "Final advice is handoff plus external pinned install after stopping the host; in-session execution appears only as the rejected error."
+        },
+        {
+          "id": "manual-shim-repair",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final fix is the formal external pinned install; manual swaps are cited only as rejected options."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "whole-combo-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly ties top-level ESM in plugin/lib/client.js to the all-or-nothing classic-script combo compile failure (1:1), explains zero entries register, and identifies typert-registry as the first-awaited innocent victim; scopes ESM invalidity to the classic-script context."
+        },
+        {
+          "id": "diagnosis-and-packaging",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Bisects the patch insert rows, gives an equivalent static classic-script check (grep for leading top-level import/export, noting a correct bundle never starts with import), and fully describes the ModuleLoader.load({id, factory}) bundle with require-based React and apply/inject exports."
+        },
+        {
+          "id": "cross-entry-slot-registration",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Explains foreign-entry ownership and apply-time rejection and recommends slots.inject, but never shows the deferred inject(name, () => register(...)) form (bare-ish mention), and wrongly claims registrants must not pass the slot name, contradicting the name/id/order-only rule."
+        },
+        {
+          "id": "boot-restart-discipline",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "States combo is assembled once at boot with no watch/rebuild, gives full stop/restart/refresh/verify procedure, explains EADDRINUSE as the surviving orphaned node process holding the port, and names taskkill /PID /T /F."
+        },
+        {
+          "id": "host-and-author-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes per-bundle compile validation and culprit attribution at startup/combo failure instead of blaming the first awaited entry, plus an authoring checklist covering loader factory, host React, inject/apply, deferred slot usage, and Windows tree restart."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-operational-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "Final advice consistently requires the loader wrapper, slots.inject, no registrant kind/scope, and full host restarts; no affirmative contradictory recommendation."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "whole-combo-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Connects bare-ESM client.js to the once-per-boot classic-script combo, explains one parse error aborts the whole concatenated program so nothing registers, and identifies typert-registry as the first-awaited innocent victim; correctly limits ESM invalidity to the classic-script parse."
+        },
+        {
+          "id": "diagnosis-and-packaging",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Bisects cordis.patch.yml insert rows and proposes classic-script parsing per bundle (node --check as a script / static gate), plus a complete ModuleLoader.load({id, factory}) description: package-name id, factory-built module shape, require-based React, apply/inject exports."
+        },
+        {
+          "id": "cross-entry-slot-registration",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains owner-declared children table and unconstrained apply ordering, shows the exact ctx.slots.inject(name, () => ctx.slots.register(...)) deferred form, and gives the correct registrant field rule (name/id/order + optional label, never kind/scope)."
+        },
+        {
+          "id": "boot-restart-discipline",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "States the combo is assembled and cached once at boot with no HMR path for the external bundle, gives the tree-kill taskkill /PID /T /F restart-and-verify procedure, and explains EADDRINUSE as the orphaned old process holding the port, not a packaging defect."
+        },
+        {
+          "id": "host-and-author-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Host side: per-bundle compile validation with culprit attribution at startup/combo failure and fail-one-not-all isolation. Author side: checklist covering loader factory, host React via require, apply/inject, deferred cross-entry slots, and Windows tree restart."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-operational-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "All affirmative conclusions require the classic wrapper, slots.inject deferred registration, owner-only kind/scope, and full host restarts; contradictory behaviors appear only as rejected examples."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S18-terminal-sprite-render-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "half-cell-background",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly identifies the upper-only/lower-only branches emitting foreground only, sticky SGR background painting the transparent half, ties it to edge cells beside outline/Z/heart, and fixes with explicit default background / ESC[49m."
+        },
+        {
+          "id": "frame-clearing",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the trailing-space trim and lack of downstream erase, and proposes full-width row output plus ESC[K/region clear with SGR state kept controlled."
+        },
+        {
+          "id": "frame-data-integrity",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses the digest report to isolate tail2 as the only mismatch with 23 changed cells, distinguishes data drift from renderer artifacts, notes the different-frame excerpt test missed it, and proposes per-frame digest checks against source art."
+        },
+        {
+          "id": "timer-liveness",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains never-unmounted hosts with a self-rearming ref'd setTimeout pinning the loop, notes interactive TTY/stdin already keeps the product alive, and unrefs each scheduled tick so animation continues."
+        },
+        {
+          "id": "renderer-and-rollout-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Checklist covers per-cell SGR self-sufficiency, full-width plus erase semantics, frame digests; pre-rollout audit covers mount/unmount hosts and a clean-exit/liveness regression."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-render-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "Final advice affirms background reset, full-width clearing, source-backed frame checks, and unref; no blame on the terminal emulator."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S18-terminal-sprite-render-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "half-cell-background",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates both half-filled branches emitting foreground only, explains sticky background painting the transparent half, ties symptoms to right-edge outline/Z/heart cells, and fixes each half-filled cell with ESC[49m."
+        },
+        {
+          "id": "frame-clearing",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the trim regex and that redraw writes no erase so surplus columns persist; proposes full fixed-width rows plus ESC[K/bounding-box erase with SGR state restored."
+        },
+        {
+          "id": "frame-data-integrity",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Identifies tail2 as the sole digest MISMATCH with 23 changed cells in the upper-right cluster, separates data drift from renderer artifacts, explains the different-frame excerpt check missed it, and gates every frame via full-grid sha256 against source art."
+        },
+        {
+          "id": "timer-liveness",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains self-rearming ref'd setTimeout in never-unmounting hosts pinning the loop, interactive TTY/stdin already keeping that process alive, and unrefs each newly scheduled tick so animation continues without holding probes."
+        },
+        {
+          "id": "renderer-and-rollout-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Checklist consolidates explicit background default, full-width rows, region erase, SGR restoration, and all-frame digest pinning; audit covers headless mount-without-unmount hosts and an event-loop drain/exit regression."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-render-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "Final advice affirms ESC[49m reset, full-width/erase clearing, full-frame digest checks, and timer unref; no emulator blaming."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S19-phantom-update-stale-host",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "baked-version-release-order",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly derives build-before-bump from release log, explains tsdown-inlined build-time constant not reread at runtime, mirror SHAs irrelevant, prescribes bump-first plus post-build constant assertion and retained mirror verification."
+        },
+        {
+          "id": "client-host-update-asymmetry",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "PNG 200 vs SVG 404 on same route plus disk whitelist triangulates stale running host closure; restart required, client refresh insufficient; conclusion scoped to this host lifecycle."
+        },
+        {
+          "id": "payload-corruption-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Clean source XML, clean TYPE result and clean reread vs spliced persisted model-visible text at shared prefix 'stro' locates upstream result-text assembly; payload treated as untrusted, editing the good SVG explicitly rejected."
+        },
+        {
+          "id": "validated-render-fallbacks",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Ordered chain: asset-route bytes first, payload gated by DOMParser/parsererror before use, sandboxed iframe without allow-scripts permitting SMIL, explicit named error; malformed payload falls through, never rendered unchecked."
+        },
+        {
+          "id": "forensics-and-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains decoding concatenated zstd frames in order to recover exact stored splice and compare with source, then report upstream; checklist covers bump-before-build, shipped-constant gate, per-mirror SHAs and (in section 2) plane-specific probes."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-release-render-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "Final advice consistently requires bump-before-build, host restart, no SVG edit, and validated renders with scripts blocked."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S19-phantom-update-stale-host",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "baked-version-release-order",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly attributes stale PLUGIN_VERSION to build-time inlining not reread at runtime, build-before-bump order from release log, mirror SHA integrity blind to baked constant, bump-first fix plus post-build constant gate."
+        },
+        {
+          "id": "client-host-update-asymmetry",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Probe table shows route alive (PNG 200) but running whitelist rejects svg while disk permits it; boot-time registration requires host restart, refresh only covers client half; scoped to this host."
+        },
+        {
+          "id": "payload-corruption-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Reconciles well-formed source, clean TYPE result and clean reread against spliced persisted model-visible text at shared prefix to upstream result-text assembly; payload untrusted, editing the good file rejected with reasons."
+        },
+        {
+          "id": "validated-render-fallbacks",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Ordered chain: disk-byte asset route, payload only after DOMParser parsererror gate, sandboxed iframe without allow-scripts while SMIL runs, named explicit errors; corrupt payload never reaches unvalidated render."
+        },
+        {
+          "id": "forensics-and-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Frame-by-frame (or streaming) decode of concatenated zstd frames preserving order to recover exact stored splice, compare to source, report upstream; checklist has bump-before-build, shipped-constant check, per-mirror SHAs, and section 2's plane-specific probes."
+        }
+      ],
+      "caps": [
+        {
+          "id": "contradictory-release-render-advice",
+          "triggered": false,
+          "total": 0,
+          "reason": "Affirmative advice is bump-first, restart for host, keep good file unchanged, validated render with scripts blocked; bad examples appear only as rejected cases."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S20-msvc-flock-trap",
+      "status": "scored",
+      "score": 82.5,
+      "decisions": [
+        {
+          "id": "native-install-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly attributes failure to fs-ext@2.1.1 install script (node-gyp configure build) pulled by dsh-session-persistence-jsonl, with missing Windows MSVC/VS as the cause."
+        },
+        {
+          "id": "static-import-trap",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the top-level flock import forces fs-ext to load on Windows at boot, so --ignore-scripts only moves the failure from install time to boot time."
+        },
+        {
+          "id": "platform-lock-contract",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Distinguishes Windows named kernel semaphore (acquireLockHandleWin32) from POSIX flock, notes the fs-ext flock branch is dead code on Windows, and requires POSIX keep real flock."
+        },
+        {
+          "id": "reproducible-local-patch",
+          "verdict": "partial",
+          "points": 25,
+          "awarded": 12.5,
+          "reason": "Solid pnpm patchedDependencies plan with entry platform branch and verification; but the described patch neutralizes the install script unconditionally, so its own claim that POSIX still compiles the native addon is not achieved by the stated mechanism — non-Windows native preservation is asserted, not actually implemented in the plan."
+        },
+        {
+          "id": "machine-and-upstream-boundaries",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Explicitly avoids installing Visual Studio, uses the repository-managed patch mechanism, and correctly rejects overrides/ignore-scripts without confusing local patching with upstream modification."
+        },
+        {
+          "id": "corridor-mapping",
+          "verdict": "fail",
+          "points": 5,
+          "awarded": 0,
+          "reason": "Never cites DSH-0.1.3-A1-03; explicitly declines to identify the card, only describing the matching scenario."
+        }
+      ],
+      "caps": [
+        {
+          "id": "requires-visual-studio",
+          "triggered": false,
+          "total": 50,
+          "reason": "Plan installs no Visual Studio and states so as final advice."
+        },
+        {
+          "id": "ignore-scripts-only",
+          "triggered": false,
+          "total": 40,
+          "reason": "Explicitly rejects --ignore-scripts as boot-breaking; the final plan also patches the entry to be loadable."
+        },
+        {
+          "id": "upstream-edit-required",
+          "triggered": false,
+          "total": 40,
+          "reason": "Uses a repository-local pnpm patch; no upstream edit or release required."
+        },
+        {
+          "id": "lock-bypass",
+          "triggered": false,
+          "total": 20,
+          "reason": "Windows keeps the semaphore; the no-op stub covers only the dead Windows flock path and POSIX keeps real flock."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S20-msvc-flock-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "native-install-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly attributes failure to fs-ext@2.1.1 install script (node-gyp configure build) as a pinned dependency of dsh-session-persistence-jsonl, with missing Visual Studio/MSVC toolchain as the cause."
+        },
+        {
+          "id": "static-import-trap",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the static top-level flock import forces fs-ext to load even on Windows, so --ignore-scripts trades a build failure for a boot-time module-load failure."
+        },
+        {
+          "id": "platform-lock-contract",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Distinguishes acquireLockHandleWin32/named kernel semaphore from POSIX flock with evidence, concludes the fs-ext flock branch is dead on Windows, and keeps real flock on Linux/macOS."
+        },
+        {
+          "id": "reproducible-local-patch",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Full plan: platform-gated install script, pure-JS flock shim with callback no-op on Windows only, patch registered in pnpm-workspace.yaml plus allowBuilds, and reinstall/module-load/HTTP-boot verification while POSIX keeps the native addon."
+        },
+        {
+          "id": "machine-and-upstream-boundaries",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Explicitly respects the no-Visual-Studio owner constraint and uses the repository-managed patch mechanism with no upstream changes."
+        },
+        {
+          "id": "corridor-mapping",
+          "verdict": "pass",
+          "points": 5,
+          "awarded": 5,
+          "reason": "Cites DSH-0.1.3-A1-03 and connects it to the fs-ext install-channel failure and the Windows pnpm-patch recipe."
+        }
+      ],
+      "caps": [
+        {
+          "id": "requires-visual-studio",
+          "triggered": false,
+          "total": 50,
+          "reason": "Final plan explicitly installs no Visual Studio or Build Tools."
+        },
+        {
+          "id": "ignore-scripts-only",
+          "triggered": false,
+          "total": 40,
+          "reason": "Rejects --ignore-scripts alone; final plan patches the entry so it loads, not just skipping the build."
+        },
+        {
+          "id": "upstream-edit-required",
+          "triggered": false,
+          "total": 40,
+          "reason": "Uses a repository-local pnpm patch; no upstream repository edit or release is required."
+        },
+        {
+          "id": "lock-bypass",
+          "triggered": false,
+          "total": 20,
+          "reason": "Windows locking stays on the named kernel semaphore; the no-op shim covers only the unused Windows flock path and POSIX keeps real flock."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S21-resource-service-unavailable-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "metadata-chain-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly localizes the failure to the workspace-files resource-provider/RPC metadata chain via the two-reader contrast; rules out disk and renderer; notes meta.status never leaves 'none' while the host row is declared."
+        },
+        {
+          "id": "valid-probes-and-partitioning",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Marks the 62/62 sweep valid and the ~4–5 KB joined 404 a probe artifact the loader would never generate; recognizes per-entry/small-combo fetching with per-entry rev; does not invent a reconciliation of the 60-vs-62 roster count."
+        },
+        {
+          "id": "distractors-and-tab-scope",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Separates paste-input fold warnings as an independent cosmetic family; uses the manifest to explain textpreview→documentpreview and session-only canOpen, explaining the absolute-address claim failure but not the session tab's stalled metadata."
+        },
+        {
+          "id": "ordered-mitigation",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Gives rollback to 0.1.3-alpha.2 then upstream, rejects plugin rewrite/fallback, and treats alpha.1 as prior art; but omits the restart-once-first step (its first step is a read-only inspection) and floats an 'optional bounded retry' only as fail-loud UX, not a cure."
+        },
+        {
+          "id": "upstream-forensics-and-fail-loud",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Lists versions/upgrade history, exact addresses and symptoms, roster excerpt, sweep, contrast plus meta.status, and the invalid-join caveat; proposes named host diagnostics (provider registration check, workspace-root resolution self-check, meta.status guard) without demanding unseen APIs."
+        }
+      ],
+      "caps": [
+        {
+          "id": "invalid-probe-as-missing-bytes",
+          "triggered": false,
+          "total": 40,
+          "reason": "Report explicitly rejects treating the joined-URL 404 as missing modules; the final conclusion affirms 62/62 serving."
+        },
+        {
+          "id": "plugin-workaround-or-duplicate-insert",
+          "triggered": false,
+          "total": 40,
+          "reason": "Affirmative advice forbids plugin rewrite/permanent fallback and duplicate service insertion; the bounded-retry mention is fail-loud UX, not a remedy hiding the host failure."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S21-resource-service-unavailable-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "metadata-chain-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Two-reader contrast localizes the stall to the workspaceFiles Remote/stat-scope-resolution chain in front of the byte read; rules out disk existence and renderer; explains title-but-no-content via client-side title derivation and meta.status stuck at 'none'."
+        },
+        {
+          "id": "valid-probes-and-partitioning",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Validates the 62/62 sweep, exposes the joined ~4–5 KB 404 as a request-shape artifact the loader never issues, and explains per-entry pre-built combo URLs with own revs; no invented reconciliation of the roster-count discrepancy."
+        },
+        {
+          "id": "distractors-and-tab-scope",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Files the paste-input fold warnings as a separate per-message cosmetic family; uses the manifest to explain the rename and the session-only canOpen, which accounts for the absolute-claim failure but explicitly not the session tab's stalled read."
+        },
+        {
+          "id": "ordered-mitigation",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Restart once (re-probe after) → pinned rollback to 0.1.3-alpha.2 from an external terminal → upstream follow-up; explicitly rejects plugin rewrite/retry/fallback and explains alpha.1's roster mismatch as prior art that does not imply missing alpha.2 bytes."
+        },
+        {
+          "id": "upstream-forensics-and-fail-loud",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Complete forensics list (versions/upgrade path, exact address/session, roster with revs, sweep, contrast and meta.status, invalid-join caveat, reproduction matrix); proposes named boot/first-use diagnostics (combo servability check, workspaceFileScope lookup round-trip, surfaced Remote error code) without requiring an unseen health-check API."
+        }
+      ],
+      "caps": [
+        {
+          "id": "invalid-probe-as-missing-bytes",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final diagnosis affirmatively states the joined 404 is not evidence of missing modules; the sweep result is cited instead."
+        },
+        {
+          "id": "plugin-workaround-or-duplicate-insert",
+          "triggered": false,
+          "total": 40,
+          "reason": "Affirmative remedy is host-side only (restart, pinned rollback, upstream); plugin workaround is explicitly rejected as masking a host regression."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "duplicate-loader-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Quotes both insert rows for workspace-files, locates rejection at EntryGroup.update during cordis:include via the stack, explains fatal fail-closed behavior instead of last-write-wins, and rejects the 'redundant' comment."
+        },
+        {
+          "id": "three-layering-cases",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explicitly distinguishes config-by-id (safe), new id insert (safe), and insert of bundle-shipped id (fatal), classifies the maintainer's row as the fatal case, grounded in the two excerpts."
+        },
+        {
+          "id": "minimal-profile-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Removes only the trailing workspace-files insert block from the profile patch, keeps the bundle's service, forbids editing the installed bundle, and points to config-by-id for config changes."
+        },
+        {
+          "id": "plugin-and-failure-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "States the crash is composition-stage, before plugin code runs, so plugin changes cannot fix it; separately notes the original read failure needs its own diagnosis and is not fixed by the removal."
+        },
+        {
+          "id": "author-and-host-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Advises grepping the installed bundle patch for the id before inserting, use config-by-id not a second insert, and proposes a host diagnostic naming workspace-files, both declaration origins, blame, and removal of the profile block."
+        }
+      ],
+      "caps": [
+        {
+          "id": "retain-or-add-duplicate",
+          "triggered": false,
+          "total": 20,
+          "reason": "Final advice removes the duplicate; duplicate-insert-merges or plugin-edit cures appear only as rejected alternatives."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "duplicate-loader-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Identifies both workspace-files insert rows (bundle and profile), pins rejection to EntryGroup.update during cordis:include via the stack, argues fail-closed over last-write-wins, and flags the 'redundant' comment as wrong."
+        },
+        {
+          "id": "three-layering-cases",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Table distinguishes config-by-id (safe), genuinely new id (safe), and insert of bundle-shipped id (fatal); classifies the maintainer's row as fatal with evidence from web-app-patch-excerpt.txt and the crash log id."
+        },
+        {
+          "id": "minimal-profile-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Deletes only the manual workspace-files insert stanza from the profile patch, adds no row since the bundle provides it, and preserves bundle provision."
+        },
+        {
+          "id": "plugin-and-failure-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains composition-time failure before any plugin loads so no plugin-side change can help; treats the original file-read symptom as a separate misdiagnosed problem (restart healing) rather than claiming the removal cures it."
+        },
+        {
+          "id": "author-and-host-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Recommends inspecting the installed bundle's patch for the id before hand-adding rows and proposes a host message naming workspace-files, both sources, blame, and deleting the manual profile row."
+        }
+      ],
+      "caps": [
+        {
+          "id": "retain-or-add-duplicate",
+          "triggered": false,
+          "total": 20,
+          "reason": "Final advice removes the duplicate insert; no affirmative claim that duplicates merge or that editing the plugin cures the boot."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S23-passing-compat-guard-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "silent-break-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Walks resolve() exactly: snapshot read succeeds, current removed, id undefined, null every keystroke; explains both silences (all four presence probes survive, undefined is the tolerated no-session state) without claiming removal/throw."
+        },
+        {
+          "id": "evidence-mapping",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Full type-walk: current gone from alpha.1 state, uiSession.adapter.current (ObservableSnapshot<SessionBindingValue>) yields key/ctx/hooks/keyedHooks/props with key replacing current and ctx replacing sessions.scope(id)."
+        },
+        {
+          "id": "dual-host-migration",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Single build reads uiSession.adapter.current when present with legacy current+scope fallback; inject gains uiSession (optional); conversation resolves via binding ctx and input.for receives that scope."
+        },
+        {
+          "id": "guard-hardening",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Names field-level removal behind service-level stability; hardened probe asserts the actual snapshot field / feature-detects uiSession, and explicitly re-probes lazily at first non-empty snapshot, not only activation."
+        },
+        {
+          "id": "verification-and-prevention",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Has typecheck against both hosts' d.ts and fixture-driven runtime tests plus throwing-deprecation prevention, but never verifies chord behavior in the real listener on both hosts nor probes adapter.current key with a session open."
+        }
+      ],
+      "caps": [
+        {
+          "id": "slot-reregistration-misdiagnosis",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final remedy is the resolution code fix; slot re-registration is explicitly rejected as unsupported by evidence."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S23-passing-compat-guard-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "silent-break-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Exact walk: current read yields undefined on alpha.2, resolve() nulls every keystroke, onKeyDown bails before preventDefault; both silences explained (four presence probes survive; undefined tolerated as legitimate no-session state)."
+        },
+        {
+          "id": "evidence-mapping",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Full d.ts walk plus card DSH-0.1.6-A2-01: current removed, uiSession/adapter.current/SessionBindingValue with key replacing current and ctx replacing sessions.scope(id)."
+        },
+        {
+          "id": "dual-host-migration",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "One build prefers uiSession.adapter.current binding, falls back to legacy current + sessions.scope; inject gains uiSession; conversation resolves through binding ctx and input.for receives that scope."
+        },
+        {
+          "id": "guard-hardening",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Names field-level removal behind service-member stability; hardened probes assert the actual field/canonical replacement, with the equivalence probe run lazily at first resolve rather than only at activation."
+        },
+        {
+          "id": "verification-and-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Covers both-host stub tests plus real mount smoke asserting the chord/setDraft behavior, typecheck against alpha.2 types, adapter.current-key probe with a session open, and a deprecated warning-getter prevention."
+        }
+      ],
+      "caps": [
+        {
+          "id": "slot-reregistration-misdiagnosis",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final remedy is the resolution code fix with inject change; slot re-registration never offered as the answer."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S24-dock-cotenant-crash-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "culprit-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Attributes the sole crash to plugin A's unconditional useSessionPendingInteraction call, explains alpha.2 replaced it with useSessionStatus while useSessions stays, and clears plugin B of standard-kit hook usage."
+        },
+        {
+          "id": "cotenant-mechanism",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Cites dock-render-tree and console: one shared input.dock DrawerErrorBoundary whose null fallback unmounts the whole slot; attach button survives in the separately-bounded conversation.input.left slot."
+        },
+        {
+          "id": "experiment-reading",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly limits the disable test to proving A caused the unmount; states it neither proves B's general alpha.2 compatibility nor that A's crash is the only dock defect; explains reinstalling B is useless and refutes the both-plugins theory since B uses no kit hooks."
+        },
+        {
+          "id": "degradation-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Corrected code reads pending via useSessionStatus(...).pendingInteraction with feature detection and stable empty-map fallbacks, never calling a missing hook; explains silent degradation is required because a throw unmounts co-tenants; non-pending features keep working."
+        },
+        {
+          "id": "verification-and-hygiene",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Verification without host restart via client bundle reload, both entries mounted together, and B regression covering paste/add/remove with A active. Hygiene covers defensive destructuring, local boundary per entry, and host per-entry boundaries with the observability-vs-isolation trade-off."
+        }
+      ],
+      "caps": [
+        {
+          "id": "innocent-plugin-fix",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final remedy fixes plugin A's component; B is explicitly identified as never broken and reinstalling B is rejected."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S24-dock-cotenant-crash-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "culprit-attribution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly pins the only crash on plugin A's unconditional useSessionPendingInteraction call, cites the alpha.1→alpha.2 kit reduction (useSessionStatus/useSessionRetainInfo in, useSessions unchanged), and notes B uses no standard-kit hooks."
+        },
+        {
+          "id": "cotenant-mechanism",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the whole input.dock list unmounts under the single shared DrawerErrorBoundary with null fallback, backed by the console unmounted-entries line, and that the attach button survives in the separately-bounded input.left slot."
+        },
+        {
+          "id": "experiment-reading",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "States the disable test proves A's throw caused the coupled unmount but not B's general alpha.2 compatibility nor absence of other dock defects; reinstalling B cannot help since B was never broken; refutes the both-plugins theory because B touches no kit prop."
+        },
+        {
+          "id": "degradation-fix",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Fix reads pending via useSessionStatus(...)?.pendingInteraction with typeof feature detection and silent empty fallback for a host supplying neither hook; identifies the pending highlight as the only degraded feature and explains a throw would re-null the shared dock."
+        },
+        {
+          "id": "verification-and-hygiene",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "No-restart verification, both entries co-rendering, hygiene (defensive destructuring, local boundary, per-entry host boundaries with trade-off) are all present, but the B regression omits chip removal — it covers paste/re-paste attribution and the no-session case, not remove/re-paste of chips with A enabled."
+        }
+      ],
+      "caps": [
+        {
+          "id": "innocent-plugin-fix",
+          "triggered": false,
+          "total": 40,
+          "reason": "Final remedy rewrites plugin A; B is declared the wrong plugin to fix and reinstalling it is explicitly rejected."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S1-static-scan",
+      "status": "scored",
+      "score": 45,
+      "decisions": [
+        {
+          "id": "source-patch",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Locates declaration, surface target and apply script, but never explicitly distinguishes source patching from ordinary profile composition and only names the SessionView.ts target without explaining that coupling."
+        },
+        {
+          "id": "events",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Correctly locates producer/consumer and ignorable:true and gets the alpha.1 removal / alpha.2 restoration net-state right, but omits the omission-safe-informational-marker (vs whitelist) rationale and the Session.append caveat."
+        },
+        {
+          "id": "host-services",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Locates both apiProxy.invoke calls and says the proxy must migrate, but does not distinguish Host domain-service injection from Web Client Remote nor name llm/listProviders."
+        },
+        {
+          "id": "host-path",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates the hard-coded homedir/.dsh/profiles/default path and says it must be resolved via the runtime host-directory API instead; no --profile claim."
+        },
+        {
+          "id": "ui",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Locates both the private internal import and the command registration, but only says 'migrate to target surface' without explaining public owner/seam verification after the split."
+        },
+        {
+          "id": "channel",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Locates the loopback server but asserts it 'bypasses the Host Gateway authentication model', the opposite of the required point that loopback does not exempt handlers from auth; host-managed vs raw-route distinction absent."
+        },
+        {
+          "id": "subprocess",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Locates both dsh call sites and the JSONL misparse, and knows stdout is final text vs stderr progress, but frames the contract as changed for the target, implying an alpha.2 stdout change rather than the assumption already being wrong."
+        },
+        {
+          "id": "mapping",
+          "verdict": "fail",
+          "points": 20,
+          "awarded": 0,
+          "reason": "Explicitly declines canonical card IDs and maps hits only to fixture annotations; no A1-01/A1-02+A2-01/A1-03/A1-04/A1-08 mapping is given."
+        },
+        {
+          "id": "limits",
+          "verdict": "partial",
+          "points": 10,
+          "awarded": 5,
+          "reason": "Accounts for all seven hit categories and states static-scan limits well, but does not propose target-version build/typecheck, isolated boot, or a functional path."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S1-static-scan",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "source-patch",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates declaration, target and script, explicitly classifies cordis.patch.yml as composition vs patch.yml as a genuine source-patch surface, and explains the SessionView.ts / renderSessionView internal coupling."
+        },
+        {
+          "id": "events",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates producer/consumer and ignorable:true, explains alpha.1 removal and alpha.2 restoration with net-state folding, correctly notes Session.append has no ignorable parameter without falsely claiming it does."
+        },
+        {
+          "id": "host-services",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates apiProxy usage and its removal, distinguishes Host domain-service injection (llm/listProviders) from the client-plane ctx.remote path, and warns against injecting a nonexistent Host remote."
+        },
+        {
+          "id": "host-path",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates the hard-coded path and prescribes runtime DSH_HOME + target profile resolution; explicitly notes --profile existed in rc.2, no alpha.1 introduction claim."
+        },
+        {
+          "id": "ui",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates both the internal SessionView import and the command registration and explains re-confirming the public owner/seam against the target tag after the split."
+        },
+        {
+          "id": "channel",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates the loopback server, states loopback is not exempt and raw routes inherit no auth, and distinguishes host-managed authenticated channels from raw routes."
+        },
+        {
+          "id": "subprocess",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Locates both call sites and the JSON.parse stdout assumption, explains stdout final text vs stderr reasoning, and states the JSONL assumption was already wrong in rc.2 rather than inventing an alpha.2 stdout change."
+        },
+        {
+          "id": "mapping",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Maps all couplings to A1-01, A1-02 folded into A2-01, A1-03, A1-04, A1-08 plus A1-05 for stdout, each with substantive located evidence rather than a bare card list."
+        },
+        {
+          "id": "limits",
+          "verdict": "pass",
+          "points": 10,
+          "awarded": 10,
+          "reason": "Accounts for all seven hit categories, states heuristic-scan limits, proposes target build/typecheck, profile mount and functional smoke without requiring execution of the static fixture."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S2-negative-scan",
+      "status": "scored",
+      "score": 80,
+      "decisions": [
+        {
+          "id": "host-break",
+          "verdict": "partial",
+          "points": 40,
+          "awarded": 20,
+          "reason": "Correctly locates inject=[\"apiProxy\"] and ctx.apiProxy.llm.providers(), explains the injection/listProviders surface and the dead apiproxy dependency with the replacement mechanism, but cannot map to the A1-01 card (card ID withheld due to no-skill access), so the explicit card mapping requirement is unmet."
+        },
+        {
+          "id": "negative-coverage",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "All six other categories covered with grep/read evidence; session-notes.js correctly identified as a pure string/array utility, and the patch-name file is handled as registration/composition without inventing host-source coupling."
+        },
+        {
+          "id": "inference-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explicitly explains zero hits are only evidence of absence limited by scan coverage and that dependency/config/runtime behavior needs separate checks, and keeps the decisive apiProxy break separate from the six clean categories."
+        },
+        {
+          "id": "verification-plan",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Specifies post-migration build/typecheck, an isolated-profile cold boot, and a functional smoke of the providers() path, clearly framed as proposed checks not executed in the read-only fixture."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S2-negative-scan",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "host-break",
+          "verdict": "pass",
+          "points": 40,
+          "awarded": 40,
+          "reason": "Locates inject=[\"apiProxy\"] and ctx.apiProxy.llm.providers() with file:line evidence, maps the break to DSH-0.1.2-A1-01 with the replacement pattern inject llm + ctx.llm.listProviders(), and explains the removed apiproxy package/dependency including the pending-stall consequence; card name is backed by full reasoning, not a bare citation."
+        },
+        {
+          "id": "negative-coverage",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "All six other categories covered with scanned-token evidence; cordis.patch.yml correctly classified as Loader composition (API-08), not a host-source patch; session-notes.js correctly identified as a pure string/array utility with no coupling invented from its name."
+        },
+        {
+          "id": "inference-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "States zero hits only mean no pattern detected, that clean categories cannot offset the decisive apiProxy break, and that compatibility still depends on dependencies, removed service keys, and runtime behavior requiring separate evidence."
+        },
+        {
+          "id": "verification-plan",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Specifies post-migration build/typecheck (skipLibCheck off), a dump-config/cold boot check with no pending services, and an actual ctx.llm.listProviders() functional smoke, all as proposed checks not run in the read-only fixture."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S3-snapshot-migration",
+      "status": "scored",
+      "score": 20,
+      "decisions": [
+        {
+          "id": "chat-projection",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Correctly locates the partial/runningCalls/turnEnds reads in Pet.tsx, but its projection-vs-switch classification is contradicted by the rubric: it speculates running and runningCalls are projection-safe while partial/turnEnds must switch immediately, never identifying the chat legacy projection (views.get('chat')?.legacy) or the target-owned Chat/useChat access."
+        },
+        {
+          "id": "session-lifecycle",
+          "verdict": "fail",
+          "points": 20,
+          "awarded": 0,
+          "reason": "Locates the running read but treats it as a projection-derivable snapshot field; never explains it belongs to the Session/useSession lifecycle seat outside chat legacy."
+        },
+        {
+          "id": "type-and-inject",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Locates the removed ConversationSnapshot/ClientContext runtime imports and legitimately defers exact new symbols, but never locates the package.json client.inject entry and does not repoint Context to scoped cordis."
+        },
+        {
+          "id": "slot-registration",
+          "verdict": "fail",
+          "points": 20,
+          "awarded": 0,
+          "reason": "Mentions scope.slots.register exists but wrongly concludes index.ts is unaffected by the migration; no explanation of slots.inject, Context augmentation, ui-renderer ownership, or slot name/lifetime preservation."
+        },
+        {
+          "id": "mapping-and-plan",
+          "verdict": "fail",
+          "points": 20,
+          "awarded": 0,
+          "reason": "Explicitly declines to cite any card identifiers, so no DSH-0.1.2-A1-03 mapping and no card-grounded projection/immediate separation; per rubric a bare or absent card ID earns zero."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S3-snapshot-migration",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "chat-projection",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates all three reads with line evidence and correctly routes partial/runningCalls/turnEnds through the temporary views.get('chat')?.legacy projection (dual-host only) with final useChat/ChatSnapshot ordered-node access as target-owned Chat."
+        },
+        {
+          "id": "session-lifecycle",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates Pet.tsx:19 s.running and explains it is a lifecycle field not in the legacy projection, served by the useSession seat; does not claim the useSession call itself must be renamed."
+        },
+        {
+          "id": "type-and-inject",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates removed runtime imports and the package.json client.inject entry; repoints ClientContext to cordis Context and ConversationSnapshot to ui-chat's ChatSnapshot, with unknown exact symbols explicitly deferred to target exports rather than claiming cordis exports them."
+        },
+        {
+          "id": "slot-registration",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates the scoped slots.register call at index.ts:38, explains ctx.inject of 'slots' and the ui-renderer-owned Context augmentation needed for the type graph, and preserves the slot name and service lifetime."
+        },
+        {
+          "id": "mapping-and-plan",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Ties each snapshot/lifecycle/slot change to full DSH-0.1.2-A1-03 with field-note grounding, cleanly separates temporary projection from immediate type/inject/lifecycle changes, and adds DSH-0.1.2-A1-25 as the valid package-removal card; no bare IDs."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S4-legacy-client-imports",
+      "status": "scored",
+      "score": 87.5,
+      "decisions": [
+        {
+          "id": "runtime-removal",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates the ClientContext import at index.ts:1 (used at :9), maps A1-25, states Web Client plane, and directs removing the deleted-package import and re-sourcing the type from its successor owner with the concrete name marked unconfirmed; no invented replacement."
+        },
+        {
+          "id": "registration-id",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Compares loader id 'pet-legacy-bundle' with package.json name dsh-pet-session-bench, maps A1-26, and requires the exact name alignment so the client module activates correctly."
+        },
+        {
+          "id": "session-content",
+          "verdict": "partial",
+          "points": 25,
+          "awarded": 12.5,
+          "reason": "Locates useSession/nodes (index.ts:12-13), maps A1-27, and correctly says the flat top-level nodes no longer applies, but the migration direction names no supported target content-reading surface (chat/durable window or selector), only an unspecified 'new snapshot shape'; ordering preservation is not addressed."
+        },
+        {
+          "id": "connection-face",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates connection.api.agentPresets.list (index.ts:11), maps A1-30, and directs dropping the removed face in favor of the successor client API for the same presets operation, with the exact API marked unconfirmed; no invented name."
+        }
+      ],
+      "caps": [
+        {
+          "id": "invented-migration",
+          "triggered": false,
+          "total": 70,
+          "reason": "Report asserts no apply/setup/activate lifecycle replacement and no general inject-into-manifest requirement; it explicitly treats the inject export as unchanged."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S4-legacy-client-imports",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "runtime-removal",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates the ClientContext import (index.ts:1, used at :9), maps A1-25, gives a concrete supported direction — import Context from the owning package with the needed type augmentations per owning package — consistent with the rubric's sufficient direction; no reliance on type erasure."
+        },
+        {
+          "id": "registration-id",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Compares 'pet-legacy-bundle' against package.json name dsh-pet-session-bench, maps A1-26, and requires the exact name alignment (entry id == package name == loader id) with the activation contract stated."
+        },
+        {
+          "id": "session-content",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates useSession/nodes (index.ts:12-13), maps A1-27, replaces the removed flat access with a supported content-reading surface (useChat keyed store iterated via order and nodes.get, plus a durable-window alternative), preserving ordering, and does not claim the old flat API remains; names are consistent with the rubric's examples and the residual uncertainty is flagged."
+        },
+        {
+          "id": "connection-face",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates connection.api.agentPresets.list (index.ts:11), maps A1-30, and replaces the deleted face with a verified public remote domain interface for the same operation, including result-shape handling; remote/public domain APIs are a rubric-supported direction."
+        }
+      ],
+      "caps": [
+        {
+          "id": "invented-migration",
+          "triggered": false,
+          "total": 70,
+          "reason": "No unsupported lifecycle replacement is asserted and the report does not claim service inject must generally move into a manifest; it explicitly finds nothing to remove in the inject export."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S5-negative-naming",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "official-short-name",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Distinguishes greet (official short name) from package dsh-greet and coordinate acme/greet; calls it valid, not a compatibility error, with prefixing only a collision recommendation."
+        },
+        {
+          "id": "service-collision-advice",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Flags unprefixed service `search` as collision-prone, recommends namespacing, explicitly classifies it as a warning not a compatibility error."
+        },
+        {
+          "id": "shared-event-context",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Treats web-search/ready as a shared cross-plugin channel, not a conflict from the name alone; ownership/authorization deferred to registry context with no uniqueness claim."
+        },
+        {
+          "id": "coverage-and-registry-limits",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Covers loader, tool, command, skill/provider, settings, route (grouped rows with reasons); consistently reports registry questions as unknown/not-checked, proposes none as run, and does not invent an error from private:true."
+        }
+      ],
+      "caps": [
+        {
+          "id": "unsupported-all-clear",
+          "triggered": false,
+          "total": 30,
+          "reason": "Report explicitly asserts no availability/reservation and rejects all-clear; its no-error conclusion is local/grammar-scoped and qualified."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S5-negative-naming",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "official-short-name",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates greet as plugin short name, separates it from package name dsh-greet and coordinate acme/greet, marks it valid with prefixing only a recommendation, availability unknown."
+        },
+        {
+          "id": "service-collision-advice",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Flags unprefixed service `search` as collision-prone in a shared namespace, recommends namespacing, explicitly not a compatibility error."
+        },
+        {
+          "id": "shared-event-context",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Classifies web-search/ready as an external shared channel needing owner/registry coordination; informational, no conflict inferred from the name alone, no uniqueness claim."
+        },
+        {
+          "id": "coverage-and-registry-limits",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Accounts for loader, tool, command, skill/provider, settings, route with a common no-error verdict; all registry-dependent facts stated unknown/not checked; private:true correctly treated as test material, not a naming error."
+        }
+      ],
+      "caps": [
+        {
+          "id": "unsupported-all-clear",
+          "triggered": false,
+          "total": 30,
+          "reason": "Report explicitly makes no reserved/available claim and states no-findings ≠ no-problems; no blanket all-clear."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S6-corridor-net-state",
+      "status": "scored",
+      "score": 75,
+      "decisions": [
+        {
+          "id": "corridor-net-state",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Explains alpha.1 temporary removal followed by alpha.2 restoration of retention semantics and applies the restored state to produceExternalEvent; history is substantiated beyond bare card names."
+        },
+        {
+          "id": "remove-marker-stripping",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates the delete line, rejects the keep-stripping comment, recommends removing the defense and its obsolete rationale, and distinguishes deleting the stripping code from removing the marker itself; no-op observation also correct."
+        },
+        {
+          "id": "informational-producer",
+          "verdict": "fail",
+          "points": 25,
+          "awarded": 0,
+          "reason": "Never explains which events may carry ignorable:true (omission-safe informational only), that required events must not be ignorable, or that retention is not reader-side filtering and marked events persist after reload."
+        },
+        {
+          "id": "public-append-gap",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "States the public append surface has no ignorable parameter, forbids manipulating the field (no casts/invented arguments), and explicitly defers the exact integration pending verification of the real signature."
+        }
+      ],
+      "caps": [
+        {
+          "id": "keep-stripping-marker",
+          "triggered": false,
+          "total": 10,
+          "reason": "Final recommendation is to delete the defense line; the stripping policy is rejected, not kept."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S6-corridor-net-state",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "corridor-net-state",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Full rc.2 → alpha.1 (removal) → alpha.2 (restoration) history with semantics, folded to net state and applied to produceExternalEvent with correct reasoning."
+        },
+        {
+          "id": "remove-marker-stripping",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Locates the delete line, rejects the keep comment as a trap, recommends removing the defense, distinguishes removing the stripping code from removing the marker, and correctly notes the delete is a no-op on the shown literal."
+        },
+        {
+          "id": "informational-producer",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Explains ignorable:true is only for informational events old readers can safely omit, unmarked unknown events stay required-on-read, retention is not reader-side filtering (marked events persist after reload), and applies it to the producer via the sidecar recommendation respecting the live append limitation."
+        },
+        {
+          "id": "public-append-gap",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Identifies that Session.append has no supported ignorable parameter, forbids faking via casts or hand-edited persistence, and defers formal integration pending a supported upstream mechanism; proposes validation without requiring execution."
+        }
+      ],
+      "caps": [
+        {
+          "id": "keep-stripping-marker",
+          "triggered": false,
+          "total": 10,
+          "reason": "Final recommendation removes the defense; continuing to strip the marker is explicitly rejected."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S7-unpublished-cohort",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "published-version-evidence",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Correctly separates the ^0.1.2-alpha.1 declaration from the published set (alpha.1 never published, alpha.2 was), and proposes package-specific npm view verification without requiring network access."
+        },
+        {
+          "id": "caret-resolution",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Explains the caret range resolves to 0.1.2-alpha.2 with correct semver prerelease reasoning, identifies silent type-baseline drift/mismatch, and avoids claiming alpha.1 is guaranteed or that all alphas are missing."
+        },
+        {
+          "id": "workable-baseline-plan",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Path B gives an exact pin to published alpha.2 with tradeoff and explicitly acknowledges the type surface may differ from the never-published alpha.1; several coherent alternatives with tradeoffs and exit paths."
+        },
+        {
+          "id": "reproducibility-and-exit",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Consistent npm usage, notes the missing lockfile and that install would record alpha.2, includes manual-bump + type-check for the pin, honest unverified-items section, and exit paths per plan."
+        }
+      ],
+      "caps": [
+        {
+          "id": "install-unpublished-registry-version",
+          "triggered": false,
+          "total": 10,
+          "reason": "Never prescribes installing alpha.1 from npm; explicitly notes an exact pin to alpha.1 would fail with ETARGET and only targets published versions or flags the mismatch."
+        }
+      ]
+    },
+    {
+      "arm": "skill",
+      "task": "S7-unpublished-cohort",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "published-version-evidence",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Records the package.json declaration and the brief-supplied registry facts (alpha.1 never published; alpha.2 and rc versions exist), with proposed npm view verification; no inference of packages from root package or dist-tags."
+        },
+        {
+          "id": "caret-resolution",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Correct caret+prerelease reasoning shows the range silently selects 0.1.2-alpha.2, names the drift-not-breakage hazard and alpha.1→alpha.2 type-surface drift uncertainty, and correctly notes future stable uptake."
+        },
+        {
+          "id": "workable-baseline-plan",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Path 1 targets published alpha.2 with tradeoff acknowledging the baseline is not alpha.1; Path 2 gives a complete build-from-verified-tag, pack, and explicit tarball-overrides plan with tradeoffs; Path 3 offers a verify-only alternative."
+        },
+        {
+          "id": "reproducibility-and-exit",
+          "verdict": "pass",
+          "points": 25,
+          "awarded": 25,
+          "reason": "Frozen lockfile/absolute-path caveats, consistent manager per plan (pnpm or npm), tsc --noEmit typecheck against the alpha.1 source baseline, defined exit paths (e.g. remove overrides once published), and honest unconfirmed-items section."
+        }
+      ],
+      "caps": [
+        {
+          "id": "install-unpublished-registry-version",
+          "triggered": false,
+          "total": 10,
+          "reason": "States alpha.1 can only be obtained by building from a Git tag with local tarballs, never prescribes installing alpha.1 from npm as if available."
+        }
+      ]
+    },
+    {
+      "arm": "noskill",
+      "task": "S8-release-routing-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "missing-mirror-tag",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses ls-remote-tags.txt (v0.9.2–v0.9.6 absent) and sync-script.sh (HEAD:main branch-only push) to explain #v0.9.5 resolution failure as a release-engineering defect, explicitly ruling out network/command issues."
+        },
+        {
+          "id": "runtime-compatibility-direction",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses 0.1.1-rc.2 vs v0.9.7→0.1.2-alpha.1 to explain the newer-client-API artifact lacking useConversation on the older runtime; states restart cannot help and explains the direction explicitly."
+        },
+        {
+          "id": "frozen-runtime-remedy",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Honors the freeze, selects v0.9.3 via rc.1 verification plus the additive rc.2 note, notices v0.9.3 is also absent from the mirror, and gives the #v0.9.3 pin conditioned on maintainer tag republication (no invented SHA, no DSH upgrade)."
+        },
+        {
+          "id": "tag-distribution-repair",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes explicit tag distribution (--follow-tags/--tags or explicit refs/tags push) grounded in the branch-only script, backfill of missing tags, and an ls-remote verification gate per mirror."
+        },
+        {
+          "id": "version-routing-docs",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Replaces the newest-tag default with a maintained compatibility matrix and per-runtime install snippets ('newest compatible'), mapping rc line to v0.9.3 and v0.9.7 to the alpha.1 line; no over-generalization to future alphas."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S8-release-routing-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "missing-mirror-tag",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Ties the absent v0.9.5 (and v0.9.3) in ls-remote-tags.txt to the sync script's branch-only HEAD:main push, explains pnpm resolves #tag against remote refs, and rules out network/command causes."
+        },
+        {
+          "id": "runtime-compatibility-direction",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains v0.9.7 targets 0.1.2-alpha.1 while the runtime 0.1.1-rc.2 predates the alpha.1 useConversation seat, so the reference is undefined; explicitly states the forward-incompatibility direction and that restart cannot help."
+        },
+        {
+          "id": "frozen-runtime-remedy",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Selects v0.9.3 from the rc.1 verification plus additive rc.2 note, gives the #v0.9.3 install command, and conditions it on the maintainer first pushing the tag or installing from a source where it resolves — no invented SHA, no DSH upgrade."
+        },
+        {
+          "id": "tag-distribution-repair",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes pushing refs/tags/*:refs/tags/* (or --tags) after the branch push, grounded in the branch-only script, plus an ls-remote --tags gate per mirror before README updates."
+        },
+        {
+          "id": "version-routing-docs",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Routes install commands by runtime cohort (0.1.1-rc.x → v0.9.3; ≥0.1.2-alpha.1 → v0.9.7) with a declared peer range/compat cross-check; no single newest-tag default or future-alpha generalization."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S9-composer-coordinate-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "projection-contract",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly distinguishes clipboardText/draft (chip expanded) from detectText (chip = one U+FFFC) using both host files, citing the facade's detect splices; ordinary text and separator width handled."
+        },
+        {
+          "id": "repeat-paste-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Locates snapshot.draft.length in add, shows {0,0} valid on empty composer, {29,29} past a 2-char detect text after one chip, insertReference false → changed-composer toast; explicitly rules out revision CAS/concurrent edit."
+        },
+        {
+          "id": "removal-and-bookkeeping",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Traces remove: unconverted {0,28} span into detect space, out-of-range splice no-ops, false return ignored, records.delete runs anyway; chip stays and dock renders unavailable from the missing record — both tied to the same coordinate mismatch."
+        },
+        {
+          "id": "conversion-and-success-gate",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives concrete toDetect = p − Σ(length−1) for preceding chips, applies it at insert end and removal, uses a one-detect-character removal span, keeps draftRev, and gates records.delete on a true result."
+        },
+        {
+          "id": "regression-sequences",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Includes two successive pastes with both chips present (T2) and removal of the second chip with the first surviving (T4), plus declined-consumption and empty-again variants; stays within scored items 1-4."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S9-composer-coordinate-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "projection-contract",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Correctly distinguishes InputState.draft/Occurrence clipboard projection (chip expanded) from detectText (chip = one U+FFFC), citing contract and facade splice code; notes the shared revision CAS is not positional."
+        },
+        {
+          "id": "repeat-paste-failure",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Identifies {start,end} = snapshot.draft.length in add; empty composer coincides, after one chip 29 vs 2-char detect text makes the zero-width splice fail, insertReference false → toast; explicitly rules out revision failure/concurrent edit."
+        },
+        {
+          "id": "removal-and-bookkeeping",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Traces remove with unconverted {0,28} span, guard passes but detect splice no-ops, consumeToken false ignored, records.delete unconditional → composer chip survives and dock falls through to unavailable, both from the same coordinate error."
+        },
+        {
+          "id": "conversion-and-success-gate",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Derives detect = p − Σ(length−1), applies it at insert end and maps occurrence.offset for removal with a one-character detect span, keeps draftRev, and gates records.delete/changed on the consumed result; setDraft fallback correctly identified as already draft-coordinate."
+        },
+        {
+          "id": "regression-sequences",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "T2 repeats paste with both chips present; T6 removes the first chip with another surviving and T7 removes a middle chip with flanking chips intact; T9 covers declined-consumption bookkeeping; stays within scored items."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S10-paste-rename-and-version-chip",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "paste-names-and-scope",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives paste_image/paste_file names with smallest-N (2)+ suffix before extension, reserves names within the batch and against live attachments, scopes renaming to the paste path via a source flag on add() while drop/picker keep real names."
+        },
+        {
+          "id": "live-conflict-state",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Names live composer snapshot occurrences via getSnapshot() as authoritative, quotes the subscription showing records.delete fires on any momentary empty snapshot while the attachment remains live, and adds each batch-assigned name to the working set."
+        },
+        {
+          "id": "stale-tag-display",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses the captured response (x-cache HIT, age 178, stale v0.2.9) and renderCurrentChip(tag) to explain the stale label, and gives the semantic rule remote > local shows update, remote <= local shows running PLUGIN_VERSION, never the older fetched tag."
+        },
+        {
+          "id": "regressions",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes repeated and same-batch pastes with expected names, a test where the records entry is retired but the live occurrence still forces (2), drop/picker names unchanged, and older and genuinely newer remote tag chip tests."
+        },
+        {
+          "id": "release-hygiene",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Covers syncing package.json with the hand-inlined PLUGIN_VERSION and node --check plus regressions, but deployment is under-explained: it says users re-fetch on hard refresh and that the chip is notification-only, without explaining updating/deploying the served artifact itself before the reload."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S10-paste-rename-and-version-chip",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "paste-names-and-scope",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Defines paste_image/paste_file stems with (2), (3) suffixes before the extension, first candidate unused name with in-batch taken-set recomputation, and paste-only scoping via a paste-source flag so drop and picker keep real names."
+        },
+        {
+          "id": "live-conflict-state",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Identifies composer occurrences from input.state.getSnapshot() as the authoritative taken-set, explains the records subscription deletes entries on a transient empty snapshot while the attachment is live, and recomputes the taken-set per batch item to cover in-batch reservations."
+        },
+        {
+          "id": "stale-tag-display",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses the captured cached response (x-cache HIT, age 178, s-maxage 300, newest tag v0.2.9) and renderCurrentChip(tag) to explain the stale label, and states the semantic rule: remote > local shows the update, remote <= local shows the running PLUGIN_VERSION, never the older fetched tag."
+        },
+        {
+          "id": "regressions",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes cross-batch and same-batch paste tests with concrete expected names, a records-retired-but-live test still yielding (2), drop/picker name-preservation, and chip tests for older, equal, and genuinely newer remote tags."
+        },
+        {
+          "id": "release-hygiene",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Requires package.json parity with the hand-inlined PLUGIN_VERSION, node --check of the shipped bundle in CI, and explains real delivery: package-manager upgrade, host restart because client bundles are cached at boot, then page refresh — no host-side auto-update."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S12-global-upgrade-ebusy-trap",
+      "status": "scored",
+      "score": 90,
+      "decisions": [
+        {
+          "id": "native-module-owner",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Names PID 42432 dsh web host as loader of koffi.node; explains handle stays open until process exit so npm copy gets EBUSY."
+        },
+        {
+          "id": "browser-versus-host-sequence",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Refresh only reloads SPA while host keeps the lock; gives ordered steps stop host → confirm exit → install → verify."
+        },
+        {
+          "id": "unpinned-dist-tag-resolution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Unpinned name resolves to latest=0.1.1-rc.2 (alpha=0.1.2-alpha.5), silently replacing installed alpha.4; correct mechanism."
+        },
+        {
+          "id": "safe-exact-commands",
+          "verdict": "partial",
+          "points": 20,
+          "awarded": 10,
+          "reason": "Exact pinned alpha.5 install plus TUI, stop-first and dsh --version verify are given, but no explicit host restart step after install."
+        },
+        {
+          "id": "readme-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Tells README authors to pin the exact version on any combined install and warns unpinned name silently follows latest over the prerelease."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S12-global-upgrade-ebusy-trap",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "native-module-owner",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Identifies dsh web host PID 42432 as holder of koffi.node; loaded image is held open until process exit so npm copyfile fails EBUSY."
+        },
+        {
+          "id": "browser-versus-host-sequence",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Refresh reloads only the SPA and cannot free the host-held handle; ordered stop both dsh processes → verify gone → install → verify → restart host."
+        },
+        {
+          "id": "unpinned-dist-tag-resolution",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Bare name follows latest=0.1.1-rc.2 while alpha.5 sits only on alpha tag, downgrading the running alpha.4; explicitly notes no preservation of installed version."
+        },
+        {
+          "id": "safe-exact-commands",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 with TUI (pinned placeholder plus split fallback), verify dsh --version is alpha.5, then restart dsh web."
+        },
+        {
+          "id": "readme-prevention",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Advises READMEs to pin the exact host version on any install that also installs dsh and route prereleases to their tag instead of latest."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "noskill",
+      "task": "S15-slot-error-boundary-crash",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "busy-scope-and-trigger",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Quotes the exact disabled expression, identifies busy as AttachButton-local state unbound in AttachmentChips, explains empty occurrences returning null before the map and plain-phase short-circuit fall-through causing ReferenceError."
+        },
+        {
+          "id": "slot-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the render-phase throw is caught by the slot error boundary which unmounts the whole dock entry, the separate input.left attach-button slot survives, and the error is console-only with no visible banner."
+        },
+        {
+          "id": "attribution-and-isolation",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Uses the shipped v0.2.10 source to show busy pre-exists, proposes data-present plain-phase baseline mount plus rollback/re-add isolation, and discusses the extra imageItem scope defect in the diff without forcing the hover diff to be harmless; appropriately limits historical-exercise claims."
+        },
+        {
+          "id": "fix-and-hardening",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Removes the dangling reference or lifts properly owned busy state as a prop, preserving the phase guard; hardens record?.items ?? [] and event.target.closest?/Element guard; notes imageItem/status/record need proper scoping."
+        },
+        {
+          "id": "data-present-regression",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Proposes a render smoke with a SOURCE occurrence in plain phase asserting chip/remove DOM presence and no boundary capture, explains empty-state tests miss the line and that node --check only parses, and includes the data-present slot smoke in pre-ship checks."
+        }
+      ],
+      "caps": []
+    },
+    {
+      "arm": "skill",
+      "task": "S15-slot-error-boundary-crash",
+      "status": "scored",
+      "score": 100,
+      "decisions": [
+        {
+          "id": "busy-scope-and-trigger",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Quotes the exact disabled expression, establishes busy as a free identifier local to sibling AttachButton, and explains both the empty-occurrences early return and the plain-phase falsy-guard path evaluating busy into a ReferenceError."
+        },
+        {
+          "id": "slot-boundary",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Explains the render throw is caught by the slot-level error boundary which unmounts the entire slot entry (whole dock), the separate AttachButton slot survives, and the diagnostic is a console-only ReferenceError with no UI banner."
+        },
+        {
+          "id": "attribution-and-isolation",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Cites the shipped v0.2.10 expression to attribute busy to the baseline, notes the diff misleadingly renders the old line, proposes rollback/re-add and a data-present plain-phase minimal mount, and flags the imageItem-outside-callback scope defect; keeps historical-exercise claims appropriately unproven."
+        },
+        {
+          "id": "fix-and-hardening",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Restores the phase-only guard or properly lifts owned busy state; hardens with (record?.items ?? []).find and event.target.closest?; moves imageItem inside the callback where record/status are scoped."
+        },
+        {
+          "id": "data-present-regression",
+          "verdict": "pass",
+          "points": 20,
+          "awarded": 20,
+          "reason": "Provides a concrete plain-phase occurrence render test asserting chip/remove DOM presence and no boundary capture, explains empty-state-only tests miss the line and that node --check cannot see runtime free identifiers, and includes a data-present render smoke as the mandatory pre-ship check."
+        }
+      ],
+      "caps": []
+    }
+  ],
+  "aggregate": {
+    "noskill": {
+      "n": 24,
+      "total": 2130,
+      "byTask": {
+        "S11-mermaid-lazyload-trap": 90,
+        "S13-peer-range-vs-runtime": 100,
+        "S14-link-install-lock-trap": 100,
+        "S16-self-host-upgrade-trap": 100,
+        "S17-external-ui-plugin-onboarding-trap": 90,
+        "S18-terminal-sprite-render-trap": 100,
+        "S19-phantom-update-stale-host": 100,
+        "S20-msvc-flock-trap": 82.5,
+        "S21-resource-service-unavailable-trap": 90,
+        "S22-duplicate-insert-boot-crash-trap": 100,
+        "S23-passing-compat-guard-trap": 90,
+        "S24-dock-cotenant-crash-trap": 100,
+        "S1-static-scan": 45,
+        "S2-negative-scan": 80,
+        "S3-snapshot-migration": 20,
+        "S4-legacy-client-imports": 87.5,
+        "S5-negative-naming": 100,
+        "S6-corridor-net-state": 75,
+        "S7-unpublished-cohort": 100,
+        "S8-release-routing-trap": 100,
+        "S9-composer-coordinate-trap": 100,
+        "S10-paste-rename-and-version-chip": 90,
+        "S12-global-upgrade-ebusy-trap": 90,
+        "S15-slot-error-boundary-crash": 100
+      },
+      "mean": 88.8
+    },
+    "skill": {
+      "n": 24,
+      "total": 2390,
+      "byTask": {
+        "S11-mermaid-lazyload-trap": 100,
+        "S13-peer-range-vs-runtime": 100,
+        "S14-link-install-lock-trap": 100,
+        "S16-self-host-upgrade-trap": 100,
+        "S17-external-ui-plugin-onboarding-trap": 100,
+        "S18-terminal-sprite-render-trap": 100,
+        "S19-phantom-update-stale-host": 100,
+        "S20-msvc-flock-trap": 100,
+        "S21-resource-service-unavailable-trap": 100,
+        "S22-duplicate-insert-boot-crash-trap": 100,
+        "S23-passing-compat-guard-trap": 100,
+        "S24-dock-cotenant-crash-trap": 90,
+        "S1-static-scan": 100,
+        "S2-negative-scan": 100,
+        "S3-snapshot-migration": 100,
+        "S4-legacy-client-imports": 100,
+        "S5-negative-naming": 100,
+        "S6-corridor-net-state": 100,
+        "S7-unpublished-cohort": 100,
+        "S8-release-routing-trap": 100,
+        "S9-composer-coordinate-trap": 100,
+        "S10-paste-rename-and-version-chip": 100,
+        "S12-global-upgrade-ebusy-trap": 100,
+        "S15-slot-error-boundary-crash": 100
+      },
+      "mean": 99.6
+    }
+  }
+}

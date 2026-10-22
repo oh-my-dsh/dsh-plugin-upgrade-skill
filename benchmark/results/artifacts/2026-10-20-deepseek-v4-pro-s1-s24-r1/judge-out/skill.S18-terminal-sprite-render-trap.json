@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Locates both half-filled branches emitting foreground only, explains sticky background painting the transparent half, ties symptoms to right-edge outline/Z/heart cells, and fixes each half-filled cell with ESC[49m."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains the trim regex and that redraw writes no erase so surplus columns persist; proposes full fixed-width rows plus ESC[K/bounding-box erase with SGR state restored."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Identifies tail2 as the sole digest MISMATCH with 23 changed cells in the upper-right cluster, separates data drift from renderer artifacts, explains the different-frame excerpt check missed it, and gates every frame via full-grid sha256 against source art."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Explains self-rearming ref'd setTimeout in never-unmounting hosts pinning the loop, interactive TTY/stdin already keeping that process alive, and unrefs each newly scheduled tick so animation continues without holding probes."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Checklist consolidates explicit background default, full-width rows, region erase, SGR restoration, and all-frame digest pinning; audit covers headless mount-without-unmount hosts and an event-loop drain/exit regression."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms ESC[49m reset, full-width/erase clearing, full-frame digest checks, and timer unref; no emulator blaming."
+    }
+  ]
+}

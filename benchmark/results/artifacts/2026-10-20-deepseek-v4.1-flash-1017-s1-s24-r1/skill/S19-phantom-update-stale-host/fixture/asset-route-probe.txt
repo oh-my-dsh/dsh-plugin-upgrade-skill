@@ -1,0 +1,19 @@
+# Host asset route probes, executed AFTER the browser was confirmed refreshed
+# (the new SVG render toggle was visible and clickable), host NOT restarted
+# since before the SVG whitelist change.
+
+$ GET /dsh-file-trace/asset?path=E%3A%5C...%5Cdaigo-final.png
+< 200 OK
+< content-type: image/png
+
+$ GET /dsh-file-trace/asset?path=E%3A%5C...%5Cdaigo-bicycle.svg
+< 404 Not Found
+< "unsupported image type"
+
+# The route handler itself is alive (PNG answers 200), so the 404 is the
+# extension whitelist rejecting svg — not a missing route.
+# The link-installed repo's shipped lib/index.js at this moment:
+#
+#   const CONTENT_TYPES = { ..., ico: 'image/x-icon', svg: 'image/svg+xml', pdf: ... }
+#
+# (excerpt in lib-index-excerpt.js) — the disk copy DOES whitelist svg.

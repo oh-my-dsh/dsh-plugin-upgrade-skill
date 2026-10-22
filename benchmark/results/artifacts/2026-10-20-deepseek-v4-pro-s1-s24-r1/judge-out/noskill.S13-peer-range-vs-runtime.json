@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates the session.events reads/iteration in the plugin source, ties them to the crash-stack TypeError, cites the changelog removal at 0.1.2-alpha.4 with the seq/eventAt/snapshotEvents replacements, and explains the undefined/non-iterable failure."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Desugars ^0.1.2-alpha.2 to >=0.1.2-alpha.2 <0.2.0-0, shows alpha.5 sorts inside it, and explains npm only performs static version-number comparison with no knowledge of API existence or behavior; explicitly lists what the range does not guarantee."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives three genuinely distinct classes: removed API, signature/return-shape (sync-to-async) change, and behavioral/semantic change, each concretely explained; more than the required two."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing against the exact supported versions via a pinned CI matrix, plus an actionable policy: narrow/pin the peer range below breaking releases and add runtime feature detection with correct new paths; explains metadata bounds cannot prove compatibility versus runtime guards."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Gives concrete pre-install steps: read the changelog between the peer floor and the installed version and feature-detect Session.events vs snapshotEvents/eventAt on the installed package, tied directly to this incident."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "Report explicitly states a satisfied range cannot prove compatibility and recommends runtime guards; final advice never claims install success implies runtime compatibility and affirms the Session.events removal."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "定位只发 fg 的单半分支：残留 48;2 背景涂满透明半格(示踪验证)；修复为每个半格补 ESC[49m 或画布色；行尾 RESET 在幻影已画之后、来不及；机制对应右缘列症状，不怪美术或终端模拟器"
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "行尾透明格被 trim 删除 + 下游管线再删尾随空白 → 窄帧不覆盖旧宽帧多余列；方案 = 定宽全行输出 + 每行 ESC[K(实测 pad 会被管线 trim 而 EL 存活)；SGR 状态受控"
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2 MISMATCH、23 格(行3 追加 D、36-37 追加 DD、4-6 行整体左移)是手工转写的数据缺陷而非渲染伪影；excerpt 回归测的是别的帧且窗口不含该区；全帧 sha256 清单从源美术生成、双向穷尽、禁止自证哈希"
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "probe 宿主从不 unmount，planner 自续 re-arm 的 ref'd setTimeout 使跑完检查的进程无法退出；交互端 TTY/stdin 本就保活无感；每 tick unref 一行修复，动画随其他句柄继续但不独自保活；不靠延长 CI 超时"
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "渲染契约清单(双通道置位/固定宽/ANSI 擦除/源美术全帧摘要/有界生命周期)+默认开启前审计(枚举全部挂载点、活性/退出断言、挂卸载生命周期、宽窄过渡渲染、门禁与灰度)"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "建议恰为补 49m 重置、去 trim 加 ESC[K、源美术全帧校验、unref 定时器；未怪终端模拟器"
+    }
+  ]
+}

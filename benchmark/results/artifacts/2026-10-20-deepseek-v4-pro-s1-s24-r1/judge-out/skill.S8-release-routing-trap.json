@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Ties the absent v0.9.5 (and v0.9.3) in ls-remote-tags.txt to the sync script's branch-only HEAD:main push, explains pnpm resolves #tag against remote refs, and rules out network/command causes."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explains v0.9.7 targets 0.1.2-alpha.1 while the runtime 0.1.1-rc.2 predates the alpha.1 useConversation seat, so the reference is undefined; explicitly states the forward-incompatibility direction and that restart cannot help."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Selects v0.9.3 from the rc.1 verification plus additive rc.2 note, gives the #v0.9.3 install command, and conditions it on the maintainer first pushing the tag or installing from a source where it resolves — no invented SHA, no DSH upgrade."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes pushing refs/tags/*:refs/tags/* (or --tags) after the branch push, grounded in the branch-only script, plus an ls-remote --tags gate per mirror before README updates."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Routes install commands by runtime cohort (0.1.1-rc.x → v0.9.3; ≥0.1.2-alpha.1 → v0.9.7) with a declared peer range/compat cross-check; no single newest-tag default or future-alpha generalization."
+    }
+  ],
+  "caps": []
+}

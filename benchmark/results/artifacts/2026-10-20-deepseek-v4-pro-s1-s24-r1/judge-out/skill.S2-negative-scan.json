@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Locates inject=[\"apiProxy\"] and ctx.apiProxy.llm.providers() with file:line evidence, maps the break to DSH-0.1.2-A1-01 with the replacement pattern inject llm + ctx.llm.listProviders(), and explains the removed apiproxy package/dependency including the pending-stall consequence; card name is backed by full reasoning, not a bare citation."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six other categories covered with scanned-token evidence; cordis.patch.yml correctly classified as Loader composition (API-08), not a host-source patch; session-notes.js correctly identified as a pure string/array utility with no coupling invented from its name."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "States zero hits only mean no pattern detected, that clean categories cannot offset the decisive apiProxy break, and that compatibility still depends on dependencies, removed service keys, and runtime behavior requiring separate evidence."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies post-migration build/typecheck (skipLibCheck off), a dump-config/cold boot check with no pending services, and an actual ctx.llm.listProviders() functional smoke, all as proposed checks not run in the read-only fixture."
+    }
+  ],
+  "caps": []
+}

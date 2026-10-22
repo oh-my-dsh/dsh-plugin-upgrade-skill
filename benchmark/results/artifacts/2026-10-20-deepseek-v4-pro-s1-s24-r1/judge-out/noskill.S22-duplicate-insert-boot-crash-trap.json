@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Quotes both insert rows for workspace-files, locates rejection at EntryGroup.update during cordis:include via the stack, explains fatal fail-closed behavior instead of last-write-wins, and rejects the 'redundant' comment."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Explicitly distinguishes config-by-id (safe), new id insert (safe), and insert of bundle-shipped id (fatal), classifies the maintainer's row as the fatal case, grounded in the two excerpts."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Removes only the trailing workspace-files insert block from the profile patch, keeps the bundle's service, forbids editing the installed bundle, and points to config-by-id for config changes."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "States the crash is composition-stage, before plugin code runs, so plugin changes cannot fix it; separately notes the original read failure needs its own diagnosis and is not fixed by the removal."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises grepping the installed bundle patch for the id before inserting, use config-by-id not a second insert, and proposes a host diagnostic naming workspace-files, both declaration origins, blame, and removal of the profile block."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice removes the duplicate; duplicate-insert-merges or plugin-edit cures appear only as rejected alternatives."
+    }
+  ]
+}

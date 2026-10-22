@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "完整叙述 pre-alpha.1 存在→alpha.1 移除（A1-02，temporary）→alpha.2 恢复（A2-01 revert）的净状态（marker 与 retention 重新生效），应用到 produceExternalEvent：删防御并进一步指出整条生产路径的冷加载风险"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位该行并驳回注释'保留'指示，建议删除并纠正过时理由；指出对新建字面量为 runtime no-op 但仍拒绝 marker-dropping 模式，且明确持久化/传输层必须保留 marker（区分删代码与删 marker）"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "解释仅老读者可省略而不破坏 Session 重建的 informational 事件可带 ignorable:true、无标记未知事件按 required fail-closed、标记非消费侧过滤（reload 后仍在日志），并应用到该 third-party/informational 生产者与 live append 限制"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "精确识别公共 Session.append 无 ignorable 参数（仅 type/data/SurfaceIntent），禁止 cast/解冻/手改 JSONL 等伪造，把生产者接缝标为 capability gap 并显式搁置待上游 API 验证（正式 append(...,{ignorable:true}) 前 re-evaluate）"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "结论为 DELETE 防御语句与注释，全篇无保留 alpha.1 防御或在 alpha.2 继续删 marker 的肯定性建议"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 cordis.patch.yml 的 patch: 声明、patch.yml 的 SessionView/renderSessionView 目标与 apply-patch.mjs 脚本，区分改写 Host 源码与普通组合，并解释 session-view 私有目标耦合。"
+    },
+    {
+      "id": "events",
+      "verdict": "partial",
+      "reason": "定位生产/消费者与 ignorable:true 并正确折叠 alpha.1 移除→alpha.2 恢复（保留字段），但未传达 omission-safe marker 语义与『非必需事件白名单』之区分。"
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "定位 apiProxy 两处调用与移除并给出接替方向，但未区分 Host 域服务注入（llm/listProviders）与 Web Client Remote 两种接替面。"
+    },
+    {
+      "id": "host-path",
+      "verdict": "partial",
+      "reason": "定位硬编码 ~/.dsh/profiles/default 且避开 --profile 陷阱，但只给『Host 路径 API』+非默认 profile 提示，未说明运行时 DSH_HOME 解析。"
+    },
+    {
+      "id": "ui",
+      "verdict": "partial",
+      "reason": "定位 /internal 私有导入与 registerCommand，但未给出拆分后按 owning module/公开 seam 在目标 tag 核验的方法论。"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位回环 HTTP 服务器，明确回环监听不豁免 Gateway 认证（未鉴权端点即违规），区分宿主托管鉴权通道与裸路由。"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "partial",
+      "reason": "定位两处 dsh 调用与 JSON.parse、『目标版 stdout 为最终文本』结论正确，但未提 stderr 进度流，且把本就错误的 JSONL 假设当作走廊 stdout 变更卡处理。"
+    },
+    {
+      "id": "mapping",
+      "verdict": "partial",
+      "reason": "耦合↔变更内容的语义映射全部正确且非裸列表，但 ID 仅 A1-04 命中：A1-03/A1-08/A2-01 缺失，A1-01/A1-02/A1-05/A1-06/A1-07 错配（自注 presumed）。"
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "七类全命中且扫描局限论证充分，但未提出目标版本 build/typecheck、隔离冷启动与功能路径的验证方案。"
+    }
+  ],
+  "caps": []
+}

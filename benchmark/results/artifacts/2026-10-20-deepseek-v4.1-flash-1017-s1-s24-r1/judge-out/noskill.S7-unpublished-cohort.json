@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Uses the supplied README registry list: alpha.1 never published, alpha.2 published; rc.1/rc.2 exist; proposes package-specific npm view verification without executing it."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Correctly derives >=0.1.2-alpha.1 <0.2.0-0 with prerelease same-tuple gate, shows alpha.2 is the max satisfying published version, and identifies the silent declaration/type-baseline mismatch and drift uncertainty."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Option B (recommended in plan) is a complete feasible plan: exact pin to published alpha.2 with manifest-as-baseline tradeoff, and it acknowledges alpha.1 remains unvalidated."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "One package manager (npm), committed lockfile with integrity check, npm ci in CI plus tsc --noEmit against the target, explicit exit paths for overrides and future upgrades, unverified items honestly registered."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Never prescribes installing alpha.1 from npm; Option D mirror/publish routes are marked unconfirmed and explicitly noted not to fix the range, and exact-install commands appear only as failing examples."
+    }
+  ]
+}

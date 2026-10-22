@@ -1,0 +1,51 @@
+{
+  "run_id": "2026-10-20-qwen3.8-max-s1-s24-r1",
+  "model": "Qwen3.8-Max",
+  "provider": "paratera",
+  "orchestrator_session": "session-1bd9122e-4ff9-46d0-8275-43f02c89f217",
+  "started_at": "2026-10-20T14:42:15+08:00",
+  "repo": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+  "artifact_root": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1",
+  "protocol": {
+    "source": "E:\\deepseek-harness\\test-lhh010\\HANDOFF-new-models-benchmark.md",
+    "cells": "24 tasks x 2 arms (noskill, skill) = 48",
+    "order": "S1->S24; per task noskill spawned before skill; concurrency 2; per-cell timeout 30 min",
+    "fixture_source": "benchmark/tasks/<task>/environment/fixture/ (this repo's sealed material dir; = 'fixture/' in handoff)",
+    "cell_layout": "<root>/<arm>/<task>/{fixture/, agent-output/, status.json, fixture-hash-before.json, fixture-hash-after.json, audit.json}",
+    "solver_prompt": "three sections: task (instruction.md full text + path mapping /app -> cell dir), boundary (read whitelist = cell dir + skill arm only skills/plugin-upgrade; no reads of tests/, solution/, benchmark/results/, other repo dirs; no writes outside cell dir incl. TEMP; card citations = key points + card ID only, 256k budget), arm clause",
+    "closeout": "report exists non-empty; fixture SHA-256 recheck; transcript audit; status persisted; ledger updated",
+    "recovery": "orchestrator-state.json + manifest + ledger updated in real time; on interruption run only pending cells",
+    "iron_rules": "no reads of pre-existing artifacts dirs; no git operations; no model changes"
+  },
+  "audit_note": "沿用修正判定：grep/rg 模式里的正则字符类（如 [/\\]）、引号内的路径字面量参数、无 path 但 pattern 为格内绝对路径的 glob、node --version 类无文件系统访问的探针，均不算违规；只有真实越界读写才记 invalid:roaming。 增补（本轮校准）：run_code 输出截断的 spill 文件（%TEMP%\\dsh-spill-*\\session-*\\*.txt）是 harness 自身回传通道，路径由 harness 的 tool/result 截断提示提供；solver 读回自己的 spill 文件记 infraSkipped（基础设施访问），不算 roaming；对 TEMP 的写入仍算违规。 增补2（S7 校准）：run_code 代码体（直接 tool/call 与 ptc 两种记录形态）与 write.content/edit.old_string/new_string 等数据字段中的路径字面量按修正判定记 soft（数据非访问）；node/nvm 运行时工具链树（AppData\\Local\\nvm、Program Files\\nodejs、process.execPath 所在树）下的读取归 soft:toolchain（题面 'local tools read-only' 授权范畴）；两者均记录在 audit.json 但不改变 done 状态；真实 hard 越界（tests/solution/benchmark-results/他格/仓库其他目录的读写、TEMP 写入）仍触发 review→人工裁决。 增补3（S11 校准）：候选 token 含 CJK/全角字符（U+3000-9FFF、FF00-FFEF）时归 soft:prose-cjk——本环境所有真实路径均为 ASCII，此类 token 是散文里盘符/路径记号与后续中日韩文字的误拼接；记录不拦截，真实 CJK 路径访问会在收尾输出中可见并人工裁决。 增补4（S14 校准）：send_message 的 message 文本归 soft 数据通道——solver 按协议向父代理汇报，文中引用的路径（如 fixture 证据里的 junction Target）是数据引述而非访问，send_message 无文件读取能力；与'quoted path-literal args'修正判定一致。 增补5（S17 校准）：web_fetch 指向回环地址（127.0.0.1/localhost/[::1]，即本机 DSH Web GUI/宿主运行时）归 soft:network:local-probe——与 cordis_inspect 本地运行时只读先例同类（'local tools read-only' 授权范畴），非外部网络、非文件系统越界；web_search 与一切外部 URL 仍记 hard。",
+  "sessions_root": "C:\\Users\\lhh\\.dsh\\sessions",
+  "tasks": [
+    "S1-static-scan",
+    "S2-negative-scan",
+    "S3-snapshot-migration",
+    "S4-legacy-client-imports",
+    "S5-negative-naming",
+    "S6-corridor-net-state",
+    "S7-unpublished-cohort",
+    "S8-release-routing-trap",
+    "S9-composer-coordinate-trap",
+    "S10-paste-rename-and-version-chip",
+    "S11-mermaid-lazyload-trap",
+    "S12-global-upgrade-ebusy-trap",
+    "S13-peer-range-vs-runtime",
+    "S14-link-install-lock-trap",
+    "S15-slot-error-boundary-crash",
+    "S16-self-host-upgrade-trap",
+    "S17-external-ui-plugin-onboarding-trap",
+    "S18-terminal-sprite-render-trap",
+    "S19-phantom-update-stale-host",
+    "S20-msvc-flock-trap",
+    "S21-resource-service-unavailable-trap",
+    "S22-duplicate-insert-boot-crash-trap",
+    "S23-passing-compat-guard-trap",
+    "S24-dock-cotenant-crash-trap"
+  ],
+  "execution_notes": [
+    "2026-10-21 00:5x +08:00 — orchestrator-ordered rerun of S15-slot-error-boundary-crash BOTH arms: attempt-1 instances died before writing any artifact (recorded no-report; provider-side context exhaustion / silent failure), fixtures were intact. Attempt-1 metrics archived in state cells[].attempt1 + <cell>/status.attempt1.json/audit.attempt1.json/fixture-hash-*.attempt1.json. Rerun = fresh single-attempt instances, re-copied fixtures with SHA-256 re-verify, byte-identical 3-section prompts via buildPrompt, full 5-point closeout. All other 46 cells remained done; zero other pending cells at rerun time (the '21 pending' figure in the rerun order was stale — final pre-rerun state was 46 done + 2 no-report + 0 pending)."
+  ]
+}

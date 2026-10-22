@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "corridor-net-state",
+   "verdict": "pass",
+   "reason": "正确叙述 alpha.1 暂时移除→alpha.2 恢复→净态=恢复，并据此判定 produceExternalEvent 应删除防御；有历史论证非裸卡名"
+  },
+  {
+   "id": "remove-marker-stripping",
+   "verdict": "pass",
+   "reason": "定位 delete 行并拒绝注释的'继续保留'指令；建议删除防御并纠正其过时理由；指出字面量无标记故 delete 为 no-op；区分删剥离代码与删标记"
+  },
+  {
+   "id": "informational-producer",
+   "verdict": "partial",
+   "reason": "给出生产者零操纵语义并应用于第三方事件、尊重 append 限制，但未解释仅信息性事件可带 ignorable（必需事件不得标记）及'标记事件仍在加载日志'的保留语义"
+  },
+  {
+   "id": "public-append-gap",
+   "verdict": "pass",
+   "reason": "识别公共 Session.append 无 ignorable 参数（签名标注 unconfirmed）；建议零操纵不伪造；显式延后精确生产者/持久化集成待目标 API 验证"
+  }
+ ],
+ "caps": [
+  {
+   "id": "keep-stripping-marker",
+   "triggered": false,
+   "reason": "最终建议是删除 delete 行与注释（保留 append 不变），未主张保留 alpha.1 防御"
+  }
+ ]
+}

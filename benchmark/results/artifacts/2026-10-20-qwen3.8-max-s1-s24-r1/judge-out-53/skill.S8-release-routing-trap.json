@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Explains v0.9.5 (and v0.9.2–v0.9.6) missing because the sync script pushes only HEAD:main with no tag refspec; immediate failure is ref-not-found, not network/syntax; consumer causes ruled out by evidence."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Artifact v0.9.7 forward-migrated to the 0.1.2-alpha.1 client API while the host is older rc.2 lacking useConversation; explains why install succeeded and why restarts cannot help."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Chooses v0.9.3 via rc.1 verification + additive rc.1→rc.2 cards, flags v0.9.3 also absent, gives the #v0.9.3 command only after maintainer tag push, caveated v0.9.1 interim, no upgrade demanded."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Sync-script change pushes each release tag to every mirror (non-forced refspec) with a per-mirror ls-remote verification gate covering the new tag and every README-pinned tag."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "partial",
+      "reason": "Per-runtime-line commands, compat matrix, dsh --version check and legacy maintenance line are all present, but 'DSH 0.1.2-alpha.1+ → #v0.9.7' routes every untested future alpha to v0.9.7, which the rubric forbids."
+    }
+  ],
+  "caps": []
+}

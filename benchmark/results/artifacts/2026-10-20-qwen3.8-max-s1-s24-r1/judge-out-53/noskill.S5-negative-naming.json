@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "定位 greet 并区分 name/coordinate/packageName，论证 unprefixed 短名合法（唯一性由坐标承载）非兼容性错误，前缀仅为减撞建议而非必需修复"
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "定位裸服务名 search，解释 host 全局服务空间的静默遮蔽碰撞风险，判为 CR/警告而非兼容性错误；未把任何 strict-mode 退出当不兼容证据"
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "定位 web-search/ready，判为第三方共享通道/informational，不因同名断言冲突——所有权/保留状态离线不可定、明确不作断言，契约耦合与 registry 上下文决定冲突"
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "partial",
+      "reason": "14 个命名面全覆盖、本地兼容与 registry 占用严格区分、not-checked 与后续核验齐备且明确拒绝 all-clear；但把 private:true 升格为 'CE(packaging)' 硬阻断并纳入 do-not-publish 依据，尽管已注明 test material 且排除在命名判定之外"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "报告明确拒绝一切 available/free/reserved/globally-unique 断言（§0/§4），结论为 'undecided/do not publish as-is'，无任何 all-clear"
+    }
+  ]
+}

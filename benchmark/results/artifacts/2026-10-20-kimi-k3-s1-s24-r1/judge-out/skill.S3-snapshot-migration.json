@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates all three reads (B4-B6); explains the two-stage legacy projection for partial/runningCalls/turnEnds and the final keyed target-owned Chat access (useChat, ChatSnapshot nodes/order), with remaining exact selectors explicitly deferred to target-tag verification."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "B7 assigns running to the useSession lifecycle seat, notes it is absent from the chat legacy projection, and keeps the existing selector without any rename claim."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates both removed dsh-client-runtime imports (index.ts:6, Pet.tsx:8) and the package.json inject entry; removes the inject entry as a phantom dependency, repoints ClientContext to Context from scoped cordis, and moves snapshot types to their target owner (dsh-client-ui-chat) with explicit deferral of unknown symbols."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Shows the scoped slots.register call with the slot name and id preserved, explains the unchanged inject service list, type-only imports activating Context/SlotMap augmentation, and direct-dependency ownership of the augmenting packages."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties snapshot/lifecycle changes to fully described DSH-0.1.2-A1-03 and uses A1-25 as the package-removal card; §4 cleanly separates projection-first fields from immediate changes (imports, inject, lifecycle seat)."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "A1-02(alpha.1 临时移除、未知持久事件按 required 拒绝 reload)→A2-01(alpha.2 恢复、A1-02 的 revert)的完整历史与 remove-then-restore 净态,并落到 produceExternalEvent:删除防御、勿'删了再加回'。"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位 delete (event as any).ignorable,驳斥注释并指出因果颠倒(删 marker 才导致拒绝)且本为 no-op;建议删除防御代码,同时要求 persistence/transport 属主端到端保留已有 marker,清楚区分删代码与删 marker。"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "讲清 ignorable:true 仅应写给老 reader 省略后仍可正确重建 Session 的辅助 informational 事件(required 不得标记),且非消费端过滤、reload 后仍在 loaded events;对第三方生产者给出尊重 live append 限制的 sidecar/capability-gap 处理。"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "明确公共 Session.append 只接受 type/data/SurfaceIntent、不写 ignorable,cast/解冻对象/手改 JSONL 伪造均不受支持,并将第三方持久事件 seam 记为 capability gap、等上游受支持机制后再评估。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "结论明确'防御代码:删除',引用旧代码仅为诊断,未主张保留 alpha.1 防御或继续删 marker。"
+    }
+  ]
+}

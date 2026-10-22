@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "partial", "reason": "Locates declaration, surface target and apply script, but never explicitly distinguishes source patching from ordinary profile composition and only names the SessionView.ts target without explaining that coupling."},
+    {"id": "events", "verdict": "partial", "reason": "Correctly locates producer/consumer and ignorable:true and gets the alpha.1 removal / alpha.2 restoration net-state right, but omits the omission-safe-informational-marker (vs whitelist) rationale and the Session.append caveat."},
+    {"id": "host-services", "verdict": "partial", "reason": "Locates both apiProxy.invoke calls and says the proxy must migrate, but does not distinguish Host domain-service injection from Web Client Remote nor name llm/listProviders."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates the hard-coded homedir/.dsh/profiles/default path and says it must be resolved via the runtime host-directory API instead; no --profile claim."},
+    {"id": "ui", "verdict": "partial", "reason": "Locates both the private internal import and the command registration, but only says 'migrate to target surface' without explaining public owner/seam verification after the split."},
+    {"id": "channel", "verdict": "partial", "reason": "Locates the loopback server but asserts it 'bypasses the Host Gateway authentication model', the opposite of the required point that loopback does not exempt handlers from auth; host-managed vs raw-route distinction absent."},
+    {"id": "subprocess", "verdict": "partial", "reason": "Locates both dsh call sites and the JSONL misparse, and knows stdout is final text vs stderr progress, but frames the contract as changed for the target, implying an alpha.2 stdout change rather than the assumption already being wrong."},
+    {"id": "mapping", "verdict": "fail", "reason": "Explicitly declines canonical card IDs and maps hits only to fixture annotations; no A1-01/A1-02+A2-01/A1-03/A1-04/A1-08 mapping is given."},
+    {"id": "limits", "verdict": "partial", "reason": "Accounts for all seven hit categories and states static-scan limits well, but does not propose target-version build/typecheck, isolated boot, or a functional path."}
+  ],
+  "caps": []
+}

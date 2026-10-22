@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Identifies dsh web host PID 42432 as holder of koffi.node; loaded image is held open until process exit so npm copyfile fails EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Refresh reloads only the SPA and cannot free the host-held handle; ordered stop both dsh processes → verify gone → install → verify → restart host."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Bare name follows latest=0.1.1-rc.2 while alpha.5 sits only on alpha tag, downgrading the running alpha.4; explicitly notes no preservation of installed version."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 with TUI (pinned placeholder plus split fallback), verify dsh --version is alpha.5, then restart dsh web."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Advises READMEs to pin the exact host version on any install that also installs dsh and route prereleases to their tag instead of latest."
+    }
+  ],
+  "caps": []
+}

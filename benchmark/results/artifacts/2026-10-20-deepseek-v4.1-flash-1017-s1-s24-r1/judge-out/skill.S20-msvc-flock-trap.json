@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Attributes the failure to fs-ext@2.1.1's install lifecycle script (node-gyp configure build) failing at VS/MSVC discovery, pulled as a pinned production dependency of dsh-session-persistence-jsonl; explicitly excludes code, pnpm, registry, or network causes."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Uses the top-level static flock import to show module loading still happens on Windows before any platform branch, so --ignore-scripts only converts the install failure into a boot-time MODULE_NOT_FOUND and cannot yield a working service boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Contrasts Windows acquireLockHandleWin32 named kernel semaphore (CreateSemaphoreW/Wait/Release/Close, MoveFileExW publish) with POSIX flock through fs-ext, drawing the branch meaning: fs-ext is dead code on Windows permitting a stub, POSIX must keep the real native build, and the semaphore remains the untouched arbiter."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the node-pty patchedDependencies precedent: pnpm patch/patch-commit producing patches/fs-ext@2.1.1.patch registered in pnpm-workspace.yaml, guarded install script (win32 no-op, POSIX node-gyp unchanged), shape-compatible import-safe stubs with callback/return contract, allowBuilds registration, and reinstall/module-load/behavior verification layers."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly honors the owner's refusal to install Visual Studio and confines changes to the repo-managed patch; rejects upstream pins, forks, and overrides."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites full DSH-0.1.3-A1-03 and matches it to this fixture's fs-ext install failure, static-import trap, named-semaphore path, and pnpm-patch recipe."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Installing VS Build Tools is listed only as an explicitly rejected alternative; the final plan installs no toolchain."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "--ignore-scripts is rejected as a diagnosis probe only; the plan makes the statically imported entry loadable via win32 stubs while skipping only the unused build."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Plan uses the repository-managed pnpm patch mechanism; upstream edits/overrides/forks are explicitly rejected."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows keeps the named kernel semaphore untouched and POSIX keeps real flock; the win32 no-op stub covers only the never-called path, not a universal lock bypass."
+    }
+  ]
+}

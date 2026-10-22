@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "culprit-attribution", "verdict": "pass", "reason": "Correctly attributes the sole crash to plugin A's unconditional useSessionPendingInteraction call (undefined on alpha.2), shows the prop was dropped in favor of useSessionStatus while useSessions stays, and establishes B uses no standard-kit hooks and threw nothing."},
+    {"id": "cotenant-mechanism", "verdict": "pass", "reason": "Explains the shared DrawerErrorBoundary over the whole input.dock list whose null fallback unmounts all entries (citing the 'unmounted entries' console line), and the button's survival via the separate input.left slot/boundary."},
+    {"id": "experiment-reading", "verdict": "pass", "reason": "Reads the disable test as proving A's render crash caused the unmount and B renders once freed; explicitly denies it proves B's full alpha.2 compatibility or that A is the only dock defect; explains reinstall of B was futile and refutes the colleague's both-plugins theory because B consumes zero kit hooks."},
+    {"id": "degradation-fix", "verdict": "pass", "reason": "Code reads pending via useSessionStatus(...).pendingInteraction, feature-detects seats and never calls an absent one, uses stable empty fallbacks so only pending indicators degrade, and justifies silent degradation because a throwing tenant unmounts co-tenants."},
+    {"id": "verification-and-hygiene", "verdict": "pass", "reason": "Verifies via rebuild + browser refresh with no host restart, requires both entries mounted together and a B regression (paste/remove/multi-paste) with A enabled; hygiene covers defensive feature detection, a tenant-local boundary, and host per-entry boundaries with trade-off analysis."}
+  ],
+  "caps": [
+    {"id": "innocent-plugin-fix", "triggered": false, "reason": "Final remedy fixes plugin A's component only; B is consistently treated as a victim, and the colleague's fix-B theory is explicitly rejected."}
+  ]
+}

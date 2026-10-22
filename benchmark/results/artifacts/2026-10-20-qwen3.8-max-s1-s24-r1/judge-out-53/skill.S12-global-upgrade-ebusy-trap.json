@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "PID 42432 的 dsh web 宿主加载并映射 koffi.node，进程退出前 OS 拒绝他进程写/覆盖致 npm copyfile EBUSY；并补充勿从 dsh 会话内执行全局升级的结构性纪律。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "刷新/关标签只影响 SPA 客户端、不触碰 PID 42432；步骤为全停 dsh(外部终端)→tasklist 证明无残留(仅对已确认的 dsh PID 用 taskkill)→钉版安装→dsh web 重启+硬刷新，未要求杀无关 Node。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸名跟随 latest=0.1.1-rc.2 而非已装版本或注册表最高版，alpha=0.1.2-alpha.5 因预发布通道纪律；0.1.2-alpha.4→rc.2 为静默跨线降级，'npm 不保留已装版本'表述正确。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "停机验证后外部终端 npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 @deepseek-harness-tui/dsh-tui@<精确版>(并给出解析步骤)，dsh --version 验证 0.1.2-alpha.5 后 dsh web 重启；@alpha 仅作移动 tag 备选说明。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "要求 README 发布的安装命令一律精确钉版(给出示例)且永不裸名；说明支持走廊与 dist-tag、停机先行+外部终端+安装后 dsh --version 验证，把静默降级变为可捕获。"
+    }
+  ],
+  "caps": []
+}

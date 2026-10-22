@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates declaration, target and script, explicitly classifies cordis.patch.yml as composition vs patch.yml as a genuine source-patch surface, and explains the SessionView.ts / renderSessionView internal coupling."},
+    {"id": "events", "verdict": "pass", "reason": "Locates producer/consumer and ignorable:true, explains alpha.1 removal and alpha.2 restoration with net-state folding, correctly notes Session.append has no ignorable parameter without falsely claiming it does."},
+    {"id": "host-services", "verdict": "pass", "reason": "Locates apiProxy usage and its removal, distinguishes Host domain-service injection (llm/listProviders) from the client-plane ctx.remote path, and warns against injecting a nonexistent Host remote."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates the hard-coded path and prescribes runtime DSH_HOME + target profile resolution; explicitly notes --profile existed in rc.2, no alpha.1 introduction claim."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates both the internal SessionView import and the command registration and explains re-confirming the public owner/seam against the target tag after the split."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the loopback server, states loopback is not exempt and raw routes inherit no auth, and distinguishes host-managed authenticated channels from raw routes."},
+    {"id": "subprocess", "verdict": "pass", "reason": "Locates both call sites and the JSON.parse stdout assumption, explains stdout final text vs stderr reasoning, and states the JSONL assumption was already wrong in rc.2 rather than inventing an alpha.2 stdout change."},
+    {"id": "mapping", "verdict": "pass", "reason": "Maps all couplings to A1-01, A1-02 folded into A2-01, A1-03, A1-04, A1-08 plus A1-05 for stdout, each with substantive located evidence rather than a bare card list."},
+    {"id": "limits", "verdict": "pass", "reason": "Accounts for all seven hit categories, states heuristic-scan limits, proposes target build/typecheck, profile mount and functional smoke without requiring execution of the static fixture."}
+  ],
+  "caps": []
+}

@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S17-external-ui-plugin-onboarding-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S17-external-ui-plugin-onboarding-trap",
+    "status": "done",
+    "subagentId": "be67dff0-2b75-45ba-82aa-74be2ecb29d6",
+    "start": "2026-10-20T17:50:21+08:00",
+    "end": "2026-10-20T18:00:47+08:00",
+    "durationSec": 627,
+    "toolcalls": 46,
+    "tokensIn": 84582,
+    "tokensOut": 20850,
+    "tokensTotal": 728536,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S17-external-ui-plugin-onboarding-trap\\agent-output\\S17-external-ui-plugin-onboarding-trap\\report.md",
+    "fixtureFiles": 8,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; failure-1 = host boot assembles all 53 plugin client bundles into ONE revision-pinned classic-script combo (/plugins/??...&rev=..., window.__DSH_BOOT__); bare-ESM bundle (top-level import 1:1) = classic-script syntax error failing WHOLE combo at compile time -> no __ModuleLoader__.load registration runs; error names dsh-typert-registry only as FIRST AWAITED manifest entry (wrapped cause pins culprit); diagnosis discipline: cause chain, bisect cordis.patch.yml rows, node --check as classic, rg top-level import/export + __ModuleLoader__/PLUGIN_ID (pre-flight #5), combo fetch grep (A1-26); required format: __ModuleLoader__.load({id: package name, factory(require)}) + React via injected require (external, factory-time, R-02) + exports apply(ctx) + const inject (strict injection R1-04/05) + no top-level side effects; failure-2 = settings.section declared by settings-shell entry's children table, cross-entry apply order unconstrained -> bare ctx.slots.register can precede declaration; fix = ctx.slots.inject('settings.section', ...), registrant passes name/id/order(+label/locale), NOT kind/scope; dev loop = combo assembled+cached ONCE at boot (DSH-0.1.7-A2-04) -> full stop/restart/hard-refresh per client edit, Plugin list empty = combo failed; EADDRINUSE = orphaned socket-holding node after terminal close -> taskkill /PID /T /F; prevention = host-side per-bundle compile validation + fail-soft exclusion + cause-first attribution + module isolation + format lint; authoring template/checklist; 20+ card IDs cited; fixture 8/8 SHA match; no deviations",
+    "startMs": 1792489821261,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\be67dff0-2b75-45ba-82aa-74be2ecb29d6",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S17-external-ui-plugin-onboarding-trap\\agent-output\\S17-external-ui-plugin-onboarding-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S17-external-ui-plugin-onboarding-trap\\report.md",
+        "bytes": 22479
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 8
+    },
+    "metrics": {
+      "toolcalls": 46,
+      "requests": 12,
+      "tokensIn": 84582,
+      "tokensOut": 20850,
+      "tokensTotal": 728536,
+      "lastTime": 1792490447949
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\be67dff0-2b75-45ba-82aa-74be2ecb29d6",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\be67dff0-2b75-45ba-82aa-74be2ecb29d6\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

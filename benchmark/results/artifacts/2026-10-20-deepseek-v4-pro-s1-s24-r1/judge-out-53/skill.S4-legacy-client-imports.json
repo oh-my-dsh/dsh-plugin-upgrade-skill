@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "runtime-removal",
+   "verdict": "pass",
+   "reason": "定位 import 与 :9 用点；A1-25 映射含 cordis Context 别名+按需 type-only 增强方案；未因类型擦除视作无害"
+  },
+  {
+   "id": "registration-id",
+   "verdict": "partial",
+   "reason": "比较/映射 A1-26/要求 entry id==包名==loader id 精确对齐并解释 PLUGIN_ID 机制，但未提出客户端激活验证要求"
+  },
+  {
+   "id": "session-content",
+   "verdict": "pass",
+   "reason": "定位 nodes[0]；A1-27 映射给出 useChat+order/nodes.get 与 SessionBinding 持久窗口两条受支持方向，顺序经 order 保留；明言旧扁平面已移除"
+  },
+  {
+   "id": "connection-face",
+   "verdict": "pass",
+   "reason": "定位 connection.api.agentPresets.list；A1-30+A1-01 映射替换为 ctx.remote.agentPresets.list，声明 remote 注入、RemoteResult 处理与 A2-02 错误码"
+  }
+ ],
+ "caps": [
+  {
+   "id": "invented-migration",
+   "triggered": false,
+   "reason": "无 apply→setup/activate 断言或 inject 移入 manifest 主张；client.inject 清理属合法且本案无该项"
+  }
+ ]
+}

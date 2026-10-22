@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Clearly separates clipboard-text projection (chip = full clipboardText, InputState.draft/Occurrence offsets) from detect projection (chip = one U+FFFC) consumed by insertReference/consumeToken splices, with correct contract/facade line citations and 1:1 non-chip text."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Identifies snapshot.draft.length in add() as the source; walks paste #1 (coordinates coincide at empty document) and paste #2 (29 into a 2-char detect text, splice unmappable, returns false, plugin toast); rules out CAS race and phase guard as the observed cause."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces remove(): occurrence offsets passed unconverted, consumeToken false not inspected, records.delete unconditional, occurrence stays while missing record renders unavailable; ties the ghost chip to the same coordinate mismatch plus the bookkeeping defect."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives toDetect(p) = p - Σ(o.length-1) for preceding occurrences, applies at insert (full sum at draft end) and removal (mapped offset + one-detect-char span, never o.length), keeps draftRev guard, gates records.delete on consumed === true, and flags the clipboard fallback for verification."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "T2/T3 cover successive pastes with both chips present; T6 removes a middle chip asserting its composer chip, dock chip and record go together while A and C survive; T7 adds declined-consumption bookkeeping; T5/T8 add first-chip and interleaved variants."}
+  ],
+  "caps": []
+}

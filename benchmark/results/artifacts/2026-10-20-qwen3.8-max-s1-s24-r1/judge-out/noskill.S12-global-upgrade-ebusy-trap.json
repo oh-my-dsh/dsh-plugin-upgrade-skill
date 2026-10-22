@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Identifies PID 42432 dsh web host as the process that loaded koffi.node, explains the image stays locked until host exit, so npm's copyfile fails EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains refresh reloads only the SPA client while the host keeps the lock; gives ordered steps: stop host/workers, verify, install, verify version, restart."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Explains bare name resolves to latest=0.1.1-rc.2, alpha=0.1.2-alpha.5, npm does not preserve the installed alpha.4, so the command downgrades."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus @deepseek-harness-tui/dsh-tui after stopping the host, verifies dsh --version, then restarts; @alpha only as noted alternative."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Recommends removing core from plugin installs or pinning it (exact version/tag) with an explicit warning that bare name follows latest and downgrades prerelease users."
+    }
+  ],
+  "caps": []
+}

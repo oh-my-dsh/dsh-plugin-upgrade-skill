@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Full history with card meanings: A1-02 temporarily removed ignorable (readers reject unknown persisted events), A2-01 restored retention across persistence/reload/transport; concludes the marker is in force at alpha.2 and deletes the defense in produceExternalEvent."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete, refutes the keep-on-alpha.2 comment from the cards, recommends deleting statement and comment, distinguishes code removal from marker removal (marker-dropping pattern must not survive), and notes the current no-op with latent harm."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Explains only informational events omittable without breaking reconstruction may carry ignorable:true, unmarked unknown events stay required-on-read and fail closed, marked events remain in the loaded log (retention, not filtering), and applies this to the third-party producer while respecting the live-append limitation."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that live Session.append has no ignorable parameter (only type/data/surface), forbids faking via casts or JSONL edits, treats the producer seam as a capability gap deferred until a supported mechanism ships, and proposes a persist/restart/cold-load check without requiring execution."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Bottom line is DELETE the defense; marker-dropping is named as the A2-01 failure mode, not recommended."
+    }
+  ]
+}

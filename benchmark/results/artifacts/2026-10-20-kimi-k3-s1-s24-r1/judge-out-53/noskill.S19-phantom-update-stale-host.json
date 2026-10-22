@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "build先于bump烘焙0.3.6,运行时不重读,顺序/常量/镜像校验齐全"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "PNG200/SVG404/磁盘白名单三证齐,归因运行中宿主进程,需重启"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "拼接定位于上游结果装配层,磁盘文件清白,拒绝修复好文件"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "四级链齐全:路由→校验→禁脚本sandbox留SMIL→显式错误"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "逐帧解码保序,diff定位拼接;清单含bump/常量/SHA,平面探针已用"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "终稿均为正向建议,无bump后build/刷新代重启/改文件/免校验"
+    }
+  ]
+}

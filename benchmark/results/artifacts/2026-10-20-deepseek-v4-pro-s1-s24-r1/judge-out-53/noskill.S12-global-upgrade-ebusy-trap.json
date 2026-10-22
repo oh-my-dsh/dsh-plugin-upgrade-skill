@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "PID42432持koffi.node至退出报EBUSY"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "partial",
+      "reason": "刷新SPA不停宿主已释，但序列缺重启宿主一步"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "latest=rc.2覆盖alpha.4，机制与语义正确"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "partial",
+      "reason": "精确命令与dsh --version验证齐，仍缺重启宿主"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "钉版本、组合命令逐包钉、勿静默跟latest均覆盖"
+    }
+  ],
+  "caps": []
+}

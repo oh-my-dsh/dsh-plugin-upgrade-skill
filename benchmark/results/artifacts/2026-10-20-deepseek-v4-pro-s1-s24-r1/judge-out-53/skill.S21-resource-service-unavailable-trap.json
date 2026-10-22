@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "定位workspaceFiles Remote的scope解析链，排除磁盘与渲染层；卡片引用有实质论证"
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "join 404判为请求形状问题、loader按条目URL正确；60 vs 62差异未显式处理"
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "paste警告按历史消息独立归档；rename仅解释绝对scope claim失败而非内容失败"
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "重启一次→pin版回滚0.1.3-alpha.2→上游，顺序完整；明确no rewrite/retry/fallback"
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "法证含错误码与复现矩阵；boot自检含lookup往返stat/read直击失败链"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "join 404被定性为red herring，sweep证伪缺模块假说"
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "明确no rewrite/retry/fallback，修复只能落在host侧"
+    }
+  ]
+}

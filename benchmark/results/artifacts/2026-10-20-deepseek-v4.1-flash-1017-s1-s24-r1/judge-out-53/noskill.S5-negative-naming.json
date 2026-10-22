@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "official-short-name",
+   "verdict": "pass",
+   "reason": "定位 greet 并与 coordinate acme/greet、包名 dsh-greet 区分，判定为合法官方短名（非兼容错误），前缀仅为防撞建议且未检查注册表"
+  },
+  {
+   "id": "service-collision-advice",
+   "verdict": "pass",
+   "reason": "定位未加前缀服务 search，解释撞名风险并归为警告/建议而非兼容错误，未把任何严格模式退出当作不兼容证据（也未要求执行）"
+  },
+  {
+   "id": "shared-event-context",
+   "verdict": "pass",
+   "reason": "定位 web-search/ready 为他人域的共享频道，判定同名本身不构成冲突、须查频道归属与载荷契约，按 informational 处理且未声称全局唯一"
+  },
+  {
+   "id": "coverage-and-registry-limits",
+   "verdict": "pass",
+   "reason": "覆盖 loader/tool/command/skill/skillProvider/settings/route 等全部声明表面并给出一致判定，区分本地语法与未查询的注册表占用（not checked），提出逐名注册表查询等后续验证，private:true 未计为错误，明确拒绝 all-clear"
+  }
+ ],
+ "caps": [
+  {
+   "id": "unsupported-all-clear",
+   "triggered": false,
+   "reason": "结论明确'未被清除（not cleared）'并列举全部 non-claims，未作任何全量通过/全局可用/放行的断言"
+  }
+ ]
+}

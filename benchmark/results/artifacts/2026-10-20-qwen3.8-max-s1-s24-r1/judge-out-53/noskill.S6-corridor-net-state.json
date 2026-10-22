@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "正确叙述 alpha.1 移除→alpha.2 恢复的 remove-then-restore 走廊净状态（净零、语义在目标版本重新生效），并据此对 produceExternalEvent 判定删除防御代码"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位 delete (event as any).ignorable，驳斥注释'alpha.2 继续保留'的指示并纠正其过时理由；指出当前字面量无 marker 故 delete 为 no-op 但仍拒绝剥离策略，且区分删剥离代码与删 marker 本身"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "对生产者给出'不设不删 ignorable、marker 归 host'的安全应用并尊重 live append 限制，但未解释仅老读者可省略的 informational 事件方可携带 ignorable:true、required 事件不得标记，也未说明 retention 非读侧过滤（标记事件仍在加载日志）——自认语义 unconfirmed"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "借 hint 识别公共 Session.append 可能无 ignorable 参数、禁止伪造且未发明后继、签名细节显式 unconfirmed；但未把生产者/持久化集成作为待目标 API 验证的开放事项搁置，反而断言'纯删除即可、plain append 即正确形状'"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "最终建议为删除防御代码与注释（fate 表/§1），并明令 never delete ignorable，无保留 alpha.1 防御或继续删 marker 的主张"
+    }
+  ]
+}

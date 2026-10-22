@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Gives paste_image/paste_file names with smallest-N (2)+ suffix before extension, reserves names within the batch and against live attachments, scopes renaming to the paste path via a source flag on add() while drop/picker keep real names."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Names live composer snapshot occurrences via getSnapshot() as authoritative, quotes the subscription showing records.delete fires on any momentary empty snapshot while the attachment remains live, and adds each batch-assigned name to the working set."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured response (x-cache HIT, age 178, stale v0.2.9) and renderCurrentChip(tag) to explain the stale label, and gives the semantic rule remote > local shows update, remote <= local shows running PLUGIN_VERSION, never the older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes repeated and same-batch pastes with expected names, a test where the records entry is retired but the live occurrence still forces (2), drop/picker names unchanged, and older and genuinely newer remote tag chip tests."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "partial",
+      "reason": "Covers syncing package.json with the hand-inlined PLUGIN_VERSION and node --check plus regressions, but deployment is under-explained: it says users re-fetch on hard refresh and that the chip is notification-only, without explaining updating/deploying the served artifact itself before the reload."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates the session.events reads and replayEvents path, ties the missing getter to the crash-stack TypeError at channel.js:623, cites the changelog removal at 0.1.2-alpha.4, and lists the seq/eventAt/snapshotEvents replacements with a migration mapping."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Explains npm's peer check as a static semver-ordering comparison (^0.1.2-alpha.2 → >=0.1.2-alpha.2 <0.2.0-0 admits alpha.5 and the breaking alpha.4) and lists everything it does not guarantee, including that it is a maintainer claim/promise, not an enforced or tested mechanism."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Lists four distinct classes: removed/renamed member, signature/return-shape change on a present symbol, missing runtime service/inject, and unconditional import of an optional dependency — all concrete and distinct."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires a real cold-boot run against the pinned target version exercising the .events path, plus a policy of narrowing the peer ceiling below the breaking release or migrating and raising the floor, and runtime feature detection with correct old/new paths; explains metadata encodes version bounds while guards encode capability."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete steps: npm pack + grep the plugin's host-API usage, scan the host changelog between the peer floor (alpha.2) and installed alpha.5 for removals, and feature-detect events vs snapshotEvents/eventAt — all tied to this Session.events boundary."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "Final conclusions and advice consistently deny that peer-range satisfaction or a silent install proves runtime compatibility, and affirm the documented Session.events removal at alpha.4."
+    }
+  ]
+}

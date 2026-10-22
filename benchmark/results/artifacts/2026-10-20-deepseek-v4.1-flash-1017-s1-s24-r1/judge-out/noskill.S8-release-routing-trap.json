@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses E2 tag listing and E4 sync script (HEAD:main only, no tag refs) to show v0.9.5 was never distributed to the mirror, ties to immediate resolution failure, and explicitly rules out network/typo/registry causes."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explains v0.9.7 targets the 0.1.2-alpha.1 client API (useConversation seat) while the consumer is 0.1.1-rc.2, one generation behind; states install success proves only ref/tarball resolution and restart cannot fix a persisted version."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Selects v0.9.3 via rc.1 verification plus additive rc.2 note, no DSH upgrade; explicitly notes v0.9.3 is also absent from the mirror and conditions the pinned #v0.9.3 install on maintainer tag publication verified via ls-remote, offering a verified tarball as alternative; invents no SHA."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes pushing explicit refs/tags/$TAG:refs/tags/$TAG atomically to every mirror, grounded in the branch-only script, plus a per-mirror ls-remote --tags parity gate verifying peeled SHAs match origin."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "README default pins the tag certified for the current rc runtime, alpha artifacts move behind an explicit 'requires dsh 0.1.2-alpha.1+' section, and a routing table gives a 'run dsh --version, take the row' decision rule; no blanket support for future alphas."
+    }
+  ],
+  "caps": []
+}

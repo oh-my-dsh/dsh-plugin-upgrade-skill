@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "half-cell-background", "verdict": "pass", "reason": "Locates upper-only/lower-only branches emitting fg only, explains sticky SGR background bleeding into the empty half, ties it to right-edge/outline symptoms, and fixes with ESC[49m per half-filled cell."},
+    {"id": "frame-clearing", "verdict": "pass", "reason": "Identifies trailing-space trim and downstream whitespace loss, explains narrower frames leave surplus columns untouched, proposes full-width padding plus ESC[K (and bounding-box clear), noting control bytes survive trimming."},
+    {"id": "frame-data-integrity", "verdict": "pass", "reason": "Reports tail2 MISMATCH with 23 changed cells (visible cluster as subset), attributes it to hand-copying, distinguishes data drift from rendering, notes the different-frame excerpt test missed it, and requires all-frame digests against source art."},
+    {"id": "timer-liveness", "verdict": "pass", "reason": "Uses CI evidence: mounted hosts never unmount, planner re-arms referenced setTimeout chain pinning the loop; TTY/stdin keeps interactive alive; fix is timer.unref() on each new timeout, not CI timeout extension."},
+    {"id": "renderer-and-rollout-prevention", "verdict": "pass", "reason": "Consolidated checklist covers background reset, full-width/erase, balanced SGR, all-frame digests; pre-flip audit enumerates mounting hosts, unref verification, and an exit-drain/liveness assertion."}
+  ],
+  "caps": [
+    {"id": "contradictory-render-advice", "triggered": false, "reason": "Final advice affirms 49m resets, full-width/ESC[K clearing, all-frame digest gating, and timer unref; no emulator blame."}
+  ]
+}

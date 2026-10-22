@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates declaration (cordis.patch.yml), patch.yml target/symbol, and applier script; explicitly distinguishes patching harness source from composition and explains the fragile session-view export coupling."},
+    {"id": "events", "verdict": "pass", "reason": "Finds producer/consumer with ignorable:true; correctly folds A1-03 removal against A2-01 restoration (net: keep the marker), treats it as a producer-contract obligation, and never claims Session.append can write the marker."},
+    {"id": "host-services", "verdict": "pass", "reason": "Locates both apiProxy.invoke sites and the removal; directs migration to Host domain services (session-scoped method, provider-listing method) rather than prescribing a nonexistent Host remote service."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates join(homedir(),'.dsh','profiles','default') and demands Host-API/DSH_HOME/profile resolution; makes no claim that --profile was introduced in alpha.1."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates both the /internal SessionView import and registerCommand; explains re-homing to the public client-plugin entry/Slot seam and a data-returning public command contribution."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the loopback server, states it bypasses Gateway auth and must become a declared, token-enforced Gateway channel rather than a raw listener."},
+    {"id": "subprocess", "verdict": "partial", "reason": "Locates both dsh subprocess sites and the chunk-JSON.parse bug, and states stdout is final text; but never explains stderr as a progress/reasoning stream nor that the JSONL assumption was already wrong rather than a corridor change."},
+    {"id": "mapping", "verdict": "partial", "reason": "Coupling analysis and the remove/restore fold are substantively correct, but the corridor card numbering is invented/shifted: apiProxy mapped to A1-04 (not A1-01), ignorable to A1-03 (not A1-02), host-dir to A1-06 (not A1-04), channel to A1-09 (not A1-08), stdout to A1-10 (not A1-05); only A2-01 matches."},
+    {"id": "limits", "verdict": "pass", "reason": "Accounts for all seven categories as hits, gives a thorough limits section (indirection, presence vs reachability, version-blindness), and proposes isolated target-version boot plus functional smoke checks without demanding execution of the static fixture."}
+  ],
+  "caps": []
+}

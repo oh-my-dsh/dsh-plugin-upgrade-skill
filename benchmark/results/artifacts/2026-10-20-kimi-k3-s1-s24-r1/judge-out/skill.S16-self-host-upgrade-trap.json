@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Uses log timestamps to show npm removing the tree the host executes from; host dies, GUI disconnects, tool call recorded but no result durably recorded (outcome unknown); explicitly not a flaky race or network fault."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Content placed but shim/link phase never ran: dsh/dsh.cmd missing, dsh.ps1 stale; manual swap made install non-standard; rejects hand-copying trees and hand-writing shims, citing repair-notes rule."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Repair-notes-grounded external pinned install of 0.1.2-rc.1 regenerating shims; reference checkout aligned to dsh-v0.1.2-rc.1; separates recorded repair from user-performed verification (version, web restart, plugin load)."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Recognizes the session runs inside the target and hands off a user-executed procedure: full host stop first, pinned external install, restart/refresh/verify; correctly splits known upgrade rules from the new never-execute-inside rule."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Pre-execution guard compares host process path against install target and refuses/redirects; uses alpha.5→rc.1 zero-API-change diff to rule out re-migration; checks version markers, plugin loading, backup cleanup only after verification; no code changes required."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final protocol requires a fully stopped host and an external terminal; in-session execution is explicitly prohibited."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Manual directory swaps and handmade shims are described as damage and explicitly rejected; the fix is the formal pinned external install."}
+  ]
+}

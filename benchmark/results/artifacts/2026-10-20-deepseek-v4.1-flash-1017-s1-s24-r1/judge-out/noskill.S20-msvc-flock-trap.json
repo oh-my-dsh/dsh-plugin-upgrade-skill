@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes failure to fs-ext@2.1.1's node-gyp configure build pulled as a pinned runtime dep of dsh-session-persistence-jsonl, with missing MSVC/VS toolchain causing the find-VS abort at configure phase; explicitly rules out pnpm/network fault."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Explains the top-level flock import forces module resolution/load on Windows before branch selection, so --ignore-scripts trades install failure for a boot-time module-load failure and cannot achieve a working service boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes acquireLockHandleWin32/named kernel semaphore (CreateSemaphoreW/Wait/Release/Close, MoveFileExW publish) from POSIX flock with branch meaning; concludes the unused Windows call path permits an import-safe stub while POSIX keeps real flock."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the node-pty patchedDependencies precedent: registers patches/fs-ext@2.1.1.patch in pnpm-workspace.yaml, platform-aware install script (win32 no-build, POSIX real node-gyp), import-safe entry with named win32 stubs before the native require, plus reinstall, module-load, service-boot and POSIX regression checks."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly respects the no-Visual-Studio constraint and uses only the repo-managed pnpm patch; states upstream fs-ext, the published plugin, and the machine are untouched."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites full DSH-0.1.3-A1-03 and connects it to the install-channel fs-ext failure, the static-import constraint, and the pnpm patch remedy."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Plan explicitly installs no VS/MSVC; VS is named only as a rejected alternative."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "--ignore-scripts is rejected; the patch keeps the entry loadable via the win32 stub while only the unused build is skipped."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Uses the existing repository-managed pnpm patchedDependencies mechanism; no upstream edit or republication required."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows named-semaphore locking is untouched and POSIX keeps real flock; the win32 stub covers only the never-called path and throws loudly if called."
+    }
+  ]
+}

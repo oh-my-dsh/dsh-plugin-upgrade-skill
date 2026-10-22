@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "完整设计 paste_image/paste_file 及 (2)(3) 前置编号（批内 inflight 预留+跨 live 占用），重命名限定在粘贴获取、先于 validateItems 与记录创建，drop/picker 原名保留，并给出 add() 显式 origin 的等价形式。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "以 getSnapshot().occurrences 为权威占用名来源，解释 records 订阅在瞬时空快照即删缓存而附件仍存活，计入批内与 in-flight 预留，records 只可补充不可替代。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "用 x-cache HIT、age=178、正文最高 v0.2.9 复盘事件，指出 renderCurrentChip 打印的是抓取 tag；规则为仅 remote>running 显示更新，相等/更旧一律显示 running，绝不显示更旧 tag。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "A1/A2/A11 覆盖同批与重复粘贴不同名，A4 变体覆盖 records 清空后 live occurrence 仍阻塞命名，A5–A7 覆盖 drop/picker 不改名；B1/B3/B2 分别断言更旧/相等/更新 tag。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "要求同步 PLUGIN_VERSION 与 package.json（H1 校验）、node --check 加行为回归，说明无宿主端更新端点，更新需替换宿主侧工件并经浏览器重载生效。"
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "corridor-net-state", "verdict": "pass", "reason": "Correctly explains alpha.1 removal then alpha.2 restoration as remove-then-restore with net-zero change, and applies it to produceExternalEvent in src/events.ts; history is explained, not just card names."},
+    {"id": "remove-marker-stripping", "verdict": "pass", "reason": "Locates the delete, rejects the keep-it comment as a trap, recommends removing the defense, notes removing code vs not setting a marker, and correctly flags the delete as a no-op on the markerless literal."},
+    {"id": "informational-producer", "verdict": "partial", "reason": "Correctly bars the producer from touching host-owned ignorable and defers to host retention, but never states which informational events may carry ignorable:true, that required events must not be marked, or that marked events persist in the loaded log."},
+    {"id": "public-append-gap", "verdict": "partial", "reason": "Flags that public Session.append likely lacks an ignorable parameter and forbids any-cast faking, and marks the signature unconfirmed, but proposes a plain session.append migration without explicitly deferring producer/persistence integration pending API verification."}
+  ],
+  "caps": [
+    {"id": "keep-stripping-marker", "triggered": false, "reason": "Final recommendation is to delete the defense code; keeping the marker stripping is only quoted for diagnosis and rejected."}
+  ]
+}

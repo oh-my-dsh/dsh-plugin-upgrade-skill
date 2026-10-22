@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Names PID 42432 dsh web host as loader of koffi.node; explains handle stays open until process exit so npm copy gets EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Refresh only reloads SPA while host keeps the lock; gives ordered steps stop host → confirm exit → install → verify."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Unpinned name resolves to latest=0.1.1-rc.2 (alpha=0.1.2-alpha.5), silently replacing installed alpha.4; correct mechanism."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "partial",
+      "reason": "Exact pinned alpha.5 install plus TUI, stop-first and dsh --version verify are given, but no explicit host restart step after install."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Tells README authors to pin the exact version on any combined install and warns unpinned name silently follows latest over the prerelease."
+    }
+  ],
+  "caps": []
+}

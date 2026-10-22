@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "定位 greet 并区分短名/坐标/包名，论证其为合法官方短名而非错误，前缀只是减撞建议（flag 为 error 属 over-reach）"
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "定位裸服务名 search，解释共享服务命名空间的碰撞风险（host/他插件同注册），判为 collision recommendation/警告而非兼容性错误，保留状态不作断言"
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "定位 web-search/ready 为共享通道 informational，明确同名不构成冲突（'claiming ownership-style collision would be over-reach'），契约对齐为建议、注册归属待 registry 上下文"
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "loader/tool/command/skill/provider/settings/route 全覆盖逐项论证，本地判定与 not-checked 区分清晰，private:true 仅记为发布机制注记而非错误，明确拒绝 all-clear/reserved/available 并要求后续在线核验"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "明确声明不作 reserved/globally available/no-collisions/safe-to-publish 断言，底线为'在 registry 核验前不得宣布 publish-safe'"
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "task": "S3-snapshot-migration",
+  "plugin": "@demo/dsh-bench-pet",
+  "migration": "0.1.1-rc.1 -> 0.1.2-alpha.2",
+  "cardIdBasis": "reconstructed per DSH-0.1.2-A1-NN convention; noskill cell has no official card index; each card anchored by change content (see report §7)",
+  "surfaces": [
+    {
+      "id": "B1",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        8,
+        13
+      ],
+      "old": "import type { ConversationSnapshot } from '@deepseek-ai/dsh-client-runtime/client'",
+      "change": "flat ConversationSnapshot retired; projection-keyed snapshot (ProjectionSnapshot.values, SessionProjectionMap domain keys)",
+      "card": "DSH-0.1.2-A1-01",
+      "path": "immediate (compile-time type surface)"
+    },
+    {
+      "id": "B2a",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        14,
+        20
+      ],
+      "old": "snapshot.partial?.blocks.some(...)",
+      "change": "mutable partial streaming buffer removed; live tokens via transient AssistantStreamFrame/StreamChunk (reasoning-delta); persisted as assistant/message.stream records",
+      "card": "DSH-0.1.2-A1-02",
+      "path": "immediate (transient frames are unprojectable)"
+    },
+    {
+      "id": "B2b",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        14
+      ],
+      "old": "block.kind === 'reasoning'",
+      "change": "content-block discriminator kind -> type (ContentBlockMap; ReasoningBlock { type: 'reasoning' })",
+      "card": "DSH-0.1.2-A1-03",
+      "path": "immediate (value-level rename)"
+    },
+    {
+      "id": "B3",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        19
+      ],
+      "old": "useSession(s => s.running)",
+      "change": "run-state via status surface (agent/status idle<->running; api-session/status(running))",
+      "card": "DSH-0.1.2-A1-04",
+      "path": "compat-projection-first OK (committed-event fold)"
+    },
+    {
+      "id": "B4",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        21
+      ],
+      "old": "useSession(s => s.runningCalls.length > 0)",
+      "change": "in-flight calls = tool/call opened <-> tool/result closed, keyed by ToolCallId",
+      "card": "DSH-0.1.2-A1-05",
+      "path": "compat-projection-first OK (committed-event pairing fold)"
+    },
+    {
+      "id": "B5",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        23,
+        27
+      ],
+      "old": "s.turnEnds[s.turnEnds.length-1]?.reason",
+      "change": "turn timeline from turn/end events; reason scalar -> TurnEndReason object (.kind: completed|aborted|blocked|error|max-tokens|interrupted|forked)",
+      "card": "DSH-0.1.2-A1-06",
+      "path": "array: projection-first OK; accessor .reason -> .reason.kind: immediate"
+    },
+    {
+      "id": "B6",
+      "file": "fixture/src/client/Pet.tsx",
+      "lines": [
+        7,
+        10,
+        18,
+        19,
+        20,
+        21,
+        23
+      ],
+      "old": "PropsRuntime<...> useSession selectors typed over flat snapshot",
+      "change": "selectors re-typed to projection view; hook pattern expected stable (name TVC)",
+      "card": "DSH-0.1.2-A1-01",
+      "path": "immediate (compile-time)"
+    }
+  ],
+  "nonBreaking": [
+    {
+      "file": "fixture/src/client/index.ts",
+      "lines": [
+        29,
+        36,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        6,
+        8,
+        10,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "note": "slots/locale/inject registration surface + module augmentation expected stable in the A1 snapshot wave; TVC against alpha.2 release notes"
+    },
+    {
+      "file": "fixture/package.json",
+      "lines": [
+        8
+      ],
+      "note": "client.inject plugin names stable; bump version pins"
+    },
+    {
+      "file": "fixture/cordis.patch.yml",
+      "lines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "note": "unaffected"
+    },
+    {
+      "file": "fixture/src/client/locales.ts",
+      "lines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "note": "pure dictionaries; unaffected"
+    }
+  ],
+  "evidence": "live host contracts via read-only cordis_inspect (host Service/Event: sessionProjections, sessionController, agent/assistant-stream, api-session/status, agent/status); client-platform inspect unavailable (page not connected) -> client export names flagged TVC"
+}

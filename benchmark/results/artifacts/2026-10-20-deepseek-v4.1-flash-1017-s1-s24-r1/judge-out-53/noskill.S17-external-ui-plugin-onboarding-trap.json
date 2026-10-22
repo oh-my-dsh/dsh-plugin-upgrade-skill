@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "三份证据串成因果链：顶层 ESM import 进入 53 条目的单一 classic script 组合，整段 parse 失败→0 注册、stock 插件同灭；typert-registry 只是首个被 await 的受害者而非肇事 bundle，并给出三重无辜证明；未泛化 ESM 无效"
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "对 profile insert 行二分定位(每步全重启)、以 vm.Script 做经典脚本 parse 为首选(并注明 node --check 受 type:module 影响)；完整给出 __ModuleLoader__.load({id,factory}) 包装、id=包名、宿主 require 提供 React、inject/apply 导出"
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "正确讲清声明归父条目、apply 顺序不保证、注册方只给 id/order 不给 kind/scope；但全篇未提 ctx.slots.inject 延迟注册形式，代之以自造的 parent/children 立即 register 形式(§2.5 模板本身即裸立即注册)，核心修法缺失"
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "组合仅启动时组装一次、改文件/刷新不重建；每轮全停→确认 3080 释放→重启→强刷新→查插件列表；EADDRINUSE 归因孤儿进程树占端口而非新插件缺陷，taskkill /PID /T /F 清理"
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "partial",
+      "reason": "宿主侧逐条 vm.Script 校验+按条目归因(不怪首个 awaited)、模板覆盖 loader factory/宿主 React/inject-apply/重启与 Windows 进程树清理，但清单缺跨条目 slot 的延迟(deferred inject)注册项"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": true,
+      "reason": "最终模板与 §3.4 以立即 ctx.slots.register 注册他方声明的 settings.section，全篇省略 ctx.slots.inject 延迟包装，按其自身 §3.3 的顺序分析仍会复现 apply 竞态"
+    }
+  ]
+}

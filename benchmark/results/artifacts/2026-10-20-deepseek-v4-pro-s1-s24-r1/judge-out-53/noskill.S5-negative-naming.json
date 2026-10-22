@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "official-short-name",
+   "verdict": "pass",
+   "reason": "定位 greet 并区分插件名/包名/坐标；判有效官方短名而非兼容性错误，前缀仅碰撞建议非强制修复"
+  },
+  {
+   "id": "service-collision-advice",
+   "verdict": "pass",
+   "reason": "定位未加前缀的 search；解释高碰撞风险并归类为警告/建议而非错误，可用性标 unknown"
+  },
+  {
+   "id": "shared-event-context",
+   "verdict": "partial",
+   "reason": "定位 web-search/ready 共享通道并判非冲突（注册/契约问题），但'发布方 schema 兼容性'仅以'contract question'含糊带过"
+  },
+  {
+   "id": "coverage-and-registry-limits",
+   "verdict": "pass",
+   "reason": "loader/工具/命令/skill/设置/路由全覆盖；本地兼容与未查询注册表占用明确区分；unknown/not-checked 声明充分且建议后续注册表查询；private:true 不计错误"
+  }
+ ],
+ "caps": [
+  {
+   "id": "unsupported-all-clear",
+   "triggered": false,
+   "reason": "结论限于 manifest 本地兼容性并显式拒绝 reserved/available 断言，含 negative capability 声明"
+  }
+ ]
+}

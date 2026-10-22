@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "正确指出 build 时 manifest 仍为 0.3.6、bump 后置导致插件与自身 tag 比较出更新，SHA 校验只证复制不证正确；给出 bump 先行、构建产物 grep 常量断言、保留逐镜像精确 tag SHA 核验，未混淆 0.3.8 后续 manifest。"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "三探针排除法(路由活/白名单拒绝串为处理器自有/磁盘已白名单 svg)推出执行代码≠磁盘代码，apply 期闭包须重启宿主、浏览器刷新无用，并把热更新口号拆为两条窄规则明确不覆盖已导入的宿主模块，结论限于本生命周期。"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "用 typed result 干净 vs 持久化模型可见文本为前缀重叠拼接 vs 重读干净，把坏点定位于持久化之前的结果文本装配(插件上游)，文件无辜；论证 payload 是不可信投影并多角度论证编辑被 trace 文件是错误动作，未虚构内部函数。"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "L1 磁盘资产路由→L2 payload 必过 DOMParser/parsererror+根元素/命名空间+主动内容拒绝→L3 sandbox 空值禁脚本而 SMIL/CSS 动画照跑→L4 状态机化显式错误；校验失败的 payload 绝不注入文档或 iframe，各级附权衡论证。"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "顺序帧走查(明确拒绝魔数搜索)、保留帧号与顺序、verbatim 抽取 JSONL 记录与磁盘 diff 后打包报上游，并附真实可运行的逐帧解码器与自测；清单含 bump 先行、grep 发布物常量、逐镜像 SHA+内容复读、宿主重启+新旧类型双探针。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "最终清单全为正确建议：bump 先行、刷新无用须重启宿主、不编辑被 trace 的干净文件、payload 必过 XML 校验、iframe 无 allow-scripts；force-move tag 仅作为事故记录被批评而非推荐。"
+    }
+  ]
+}

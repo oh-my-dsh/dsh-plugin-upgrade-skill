@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "paste_image/paste_file 于扩展名前加 (2)(3);占用名=live 快照∪批内已分配;重命名限定 paste 路径(调用 add 前或显式 origin 标志),drop/picker 原名透传,要点齐全。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "以 composer 快照 occurrences 为权威占用名来源;解释 alive 订阅在瞬时空快照时 records.delete 使缓存漏报仍在线的附件;批内已分配名并入;明确弃用有损缓存。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "用 x-cache HIT/age=178/旧 v0.2.9 响应复现 semverCmp<=0 走 current 分支且插值 fetched tag 显示 v0.2.9;规则为仅远程更新才显示更新,否则显示运行版本,绝不显示更旧 tag。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "同批/跨批命名、缓存被退役但 occurrence 仍在时仍跳号、drop/picker 原名不变、旧远程 tag 显示运行版本、新 tag 显示更新,均有具体期望名与断言。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "PLUGIN_VERSION 与 package.json 同步并加 CI 断言;node --check 加回归测试作发布门禁;无宿主侧更新端点,需重新拉取/安装产物并硬刷新。"
+    }
+  ],
+  "caps": []
+}

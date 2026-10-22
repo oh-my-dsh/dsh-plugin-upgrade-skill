@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "junction-deployment", "verdict": "pass", "reason": "Cites LinkType Junction + Target and the link: marker; repo edits already deploy, copying is a self-copy; explicitly distinguishes copied installs."},
+    {"id": "host-lock-and-client-cache", "verdict": "pass", "reason": "Host process owns file handles (EBUSY) and old module state; closing tabs irrelevant; browser HTTP cache treated as separate; host restart + cache-bypassing refresh required."},
+    {"id": "rename-recovery", "verdict": "pass", "reason": "Explains rename through junction renamed sole source files and starved the subsequent copy; restores .old2 files by rename-back with contents preserved, node --check both, then activate; stopping host first as precaution."},
+    {"id": "ordered-activation", "verdict": "pass", "reason": "Gives full stop → restart dsh web → hard refresh/bypass cache → layered verification including absence of load errors; syntax check placed before downtime, not as activation."},
+    {"id": "install-mode-preflight", "verdict": "pass", "reason": "Preflight inspects LinkType/Target and link marker before any file op, branches linked vs copied, and explains why generic copy-into-node_modules advice caused the incident."}
+  ],
+  "caps": [
+    {"id": "copy-through-junction", "triggered": false, "reason": "Final plan copies nothing; explicitly forbids copying and deletes only stray *.old2 after verified restore, keeping the renamed-back originals."},
+    {"id": "browser-only-activation", "triggered": false, "reason": "Plan requires full host stop/restart; browser actions are supplementary and explicitly insufficient alone."}
+  ]
+}

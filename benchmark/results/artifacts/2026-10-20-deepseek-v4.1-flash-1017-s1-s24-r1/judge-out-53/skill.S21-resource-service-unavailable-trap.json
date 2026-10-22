@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "以双读者单变量对照将故障定位到 ctx.resources 的 file provider→remote.workspaceFiles Remote→宿主 workspace-files 这一资源供给链（meta.status 停在 none=读从未到达宿主 read()），排除磁盘/权限/host 与插件渲染，明确 host 行已在 bundle patch 中且静态 200 只证明产物在、不证明激活"
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "pass",
+      "reason": "区分 62/62 逐模块 200（唯一可信测量）与 4–5 KB join 404（触发路由长度/聚合上限、零长度无信息、不可证伪），说明真实 loader 按条目一 URL 一 rev 取且从不整表塞一个查询串；60 vs 62 与 -0/-3 rev 差只作未决取证瑕疵记录、不下结论"
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "paste-input 折叠警告被证为独立噪声（零路径交集、数量正比聊天历史），用 boot-manifest 解释 textpreview→documentpreview 与 canOpen 收窄 session-only 只解释 absolute 域无认领（D1），会话页签已被认领有标题、空白（D2）另有成因"
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "按序冷重启宿主一次→只读取证/干净 profile 二分→外部终端钉版本回退 0.1.3-alpha.2（#5999 验证）→上游并行，明确否决插件重写/重试/兜底与会话内全局升级，并说明 alpha.1 的 combo 不一致是先例签名、非 alpha.2 缺模块的证据"
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "取证包含版本/profile 历史与 junction 身份、双地址原文与症状、roster 原文、逐条 rev 的 200 清单与 60/62、-0/-3 未决标注、双读者对照与 status 迁移；提出具名 boot 诊断：逐条产物+注册断言、inject/remote.workspaceFiles 激活断言、tab 注册前 provider 在场断言、status none 超时升级报错"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "最终归因是客户端资源 provider 链未接管，明确判定 join 404 为无效测量且绝不能作为模块缺失证据，并以 62/62 反证产物齐"
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "处置明确不重写/不重试/不兜底、插件不发版不改代码，仅重启/取证/回滚/上游，且把重复 insert 识别为要排查的已知陷阱而非补救手段"
+    }
+  ]
+}

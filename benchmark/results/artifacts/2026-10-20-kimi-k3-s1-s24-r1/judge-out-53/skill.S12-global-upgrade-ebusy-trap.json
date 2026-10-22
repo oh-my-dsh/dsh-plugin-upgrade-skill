@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "定位 PID 42432 的 dsh web 宿主持有 koffi.node,原生插件加载后文件被 OS 锁定直至进程退出,npm copyfile 报 EBUSY,并引 attempt1-ebusy.log 佐证。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "刷新仅重载 Web SPA、宿主进程与 OS 级锁仍在;有序步骤:外部终端停全部 DSH 进程并确认→钉版安装→重启 dsh web→验证;只停 DSH 相关进程。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸名解析到 latest dist-tag(0.1.1-rc.2,alpha 指向 0.1.2-alpha.5),既非已装版本也非最高预发布,导致静默降级;规则句明确 unpinned 不保留当前预发布线。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "完全停止后提供钉版安装(host@0.1.2-alpha.5 与 dsh-tui 同装,TUI 以 @latest 显式形式、与裸名同解析);验证 dsh --version=0.1.2-alpha.5 后 dsh web 重启;@alpha 仅作移动 tag 说明。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "要求主机包永不裸名、展示确切钉版或明示 @alpha 为移动 tag、说明 latest 可低于当前 alpha 线、停止进程后再升级并做安装后验证,倾向分离有序命令。"
+    }
+  ],
+  "caps": []
+}

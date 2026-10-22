@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Correctly identifies both workspace-files inserts (bundle L110–111 vs profile), locates the failure at EntryGroup.update during Include._apply, explains fail-fast vs last-write-wins, and explicitly rejects the profile comment's redundancy claim as fatal."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes override-by-id (safe), insert of new id (safe), insert of bundle-shipped id (fatal); classifies the maintainer's row as the fatal third case grounded in both excerpts with sibling-row corroboration."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Prescribes deleting only the redundant insert block from the profile cordis.patch.yml, keeps the bundle's row and unrelated rows untouched, and rules out touching bundle/plugin."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains the crash is a composition error before any plugin module loads, so plugin code changes cannot help; separately notes the original runtime service-unavailable symptom remains to be diagnosed and was never fixable by the duplicate row."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Author side: grep/inspect the installed bundle's cordis.patch.yml for the id and prefer config-by-id over insert. Host side: concrete diagnostic naming workspace-files with both declaration origins and prescribing deletion of the profile row, plus an optional lint/doctor."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice is removal of the duplicate; the harmlessness comment is quoted only to be rejected, and no plugin-side cure is proposed."
+    }
+  ]
+}

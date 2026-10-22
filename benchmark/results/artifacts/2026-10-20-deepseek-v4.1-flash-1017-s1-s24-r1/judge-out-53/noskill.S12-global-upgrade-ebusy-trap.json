@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "指认 running-processes.txt 中 PID 42432 的 dsh web host 加载 koffi.node，解释 PE 镜像映射期间写/删/改名被拒、进程退出前 npm copyfile 必报 EBUSY。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "说明刷新只重载前端 SPA、host 进程与镜像锁不变；给出停 host 与 worker、tasklist /m 等验证锁释放、再安装、校验版本、最后重启的有序流程，按 PID/命令行停相关进程而非全杀 node。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸包名等价 @latest，npm-dist-tags 显示 latest/next=0.1.1-rc.2、alpha=0.1.2-alpha.5；逐条驳斥'保留已装'与'自动取最新'，说明 alpha.4 被 rc.2 替换的降级机制。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Phase 2 给出 npm install -g @deepseek-ai/dsh@0.1.2-alpha.5，Phase 4 分步锁版本装 TUI 并给组合锁定形式，停机后执行，dsh --version 须为 alpha.5，dsh web 重启；@alpha 仅作可变替代讨论。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "要求 README 消灭裸包名、core 与插件分别锁版本并给期望输出与回滚模板，明示裸装跟 latest 可能把已装预发布降级。"
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "半填充分支仅发fg，残留bg染透明半区，49m修复并系于边缘症状"
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "尾随空格trim+管线不清行致宽帧残留，全宽输出+ESC[K双修复"
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2漂移23格属实，与渲染伪影区分，excerpt漏检，全帧digest比对"
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "自续timer持活+主机不卸载，unref一行修复，交互端TTY存活已释"
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "清单覆盖重置/定宽擦除/全帧digest/timer，上线前审计+退出回归"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "无否认重置、保留trim、拒源比对、维持ref或怪终端的建议"
+    }
+  ]
+}

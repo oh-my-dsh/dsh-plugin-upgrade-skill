@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "对比两份摘录（bundle L110-111 vs profile L18-20 同插 workspace-files），定位 EntryGroup.update 于 include/compose 层，论证无 last-write-wins、重复插入对本次 boot 致命，并明确反驳注释的“冗余保留”论断。"
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "§2 表完整区分三种操作（按 id 覆盖配置=安全、全新 id 插入=安全、bundle 已有 id 再插入=致命），将维护者行为归为第三类并用两份摘录原文行号佐证。"
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "仅删除 profile 中 L16-20 冗余 insert 块，保留其余外部插件与 bundle 服务，不编辑 bundle/node_modules，需要调整时用按 id 的 override 而非二次插入，并明确排除重命名/删 bundle 行等错误方案。"
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "明确崩溃发生在组合期、任何插件导入之前，插件侧改动无法解决；并诚实指出删除重复仅恢复 boot 可能性，原文件读取失败是另有原因的独立问题，需另行验证，不得重新归因为“缺失”。"
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "给出插入前 grep 已安装各 bundle 的 cordis.patch.yml 查 id、以组合结果而非单文件为准、区分 override 与 insert；主机诊断建议同时给出两个声明来源的绝对路径与行号、include 链及“删除 profile L18-20”的具体处置。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "最终建议是删除重复 insert 块，明确否定“冗余保留”注释和无声合并语义，且明确否定任何插件侧修复，未犯 cap 描述错误。"
+    }
+  ]
+}

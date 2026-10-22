@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "定位三处读取，chat legacy 投影为第一步、useChat+order/nodes.get 与 chat.timeline 为目标读法，未知成员名明示待目标 tag 确认"
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "定位 running，明确它是唯一不动的选择器：生命周期字段不在投影内、留在 useSession 座位并与 useChat 组合，未称须改名"
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "定位两处 dsh-client-runtime 导入与 inject 条目，ClientContext→cordis 的 Context、快照类型→ui-chat 归属，另发现顶层 client 键应为 dsh.client"
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "定位 slots.register，给出 slots.inject 声明级等待并保留服务级 inject，讲明 ui-renderer Context 增强与服务归属，槽名/形状与生命周期保留"
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "全部挂在完整 DSH-0.1.2-A1-03（含四字段可投影、running 例外）并辅以 A1-25/A1-26/R1-02/03，投影暂走与立即项分层清晰"
+    }
+  ],
+  "caps": []
+}

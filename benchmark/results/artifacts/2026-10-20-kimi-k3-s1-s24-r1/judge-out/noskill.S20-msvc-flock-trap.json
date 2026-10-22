@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes the failure to fs-ext@2.1.1 pulled by dsh-session-persistence-jsonl, its node-gyp configure build install script, and missing Visual Studio/MSVC, citing log lines."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Explains that the top-level static flock import forces fs-ext to load on Windows before branch selection, so --ignore-scripts only defers the failure to boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes Windows acquireLockHandleWin32 named kernel semaphore from POSIX flock, notes flock is dead code on Windows so an import-safe stub is permissible, and keeps real flock on POSIX."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Proposes a local fs-ext patch following the node-pty patchedDependencies precedent: no-op install script plus import-safe entry stubs that stay inert until called, registered in pnpm-workspace.yaml, scoped so POSIX keeps the native module, with reinstall/module-load/boot verification."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly avoids installing VS and any upstream edits, using only the repository-managed patch mechanism."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "fail",
+      "reason": "Does not cite the required DSH-0.1.3-A1-03 id; invents a differently-suffixed card id and admits it could not be verified."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Plan explicitly avoids installing Visual Studio/MSVC."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "Rejects --ignore-scripts and makes the statically imported entry loadable via the patch."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Plan uses the existing repository-managed pnpm patch mechanism, no upstream edits."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows semaphore path is preserved; stubs throw rather than no-op, and POSIX keeps real flock."
+    }
+  ]
+}

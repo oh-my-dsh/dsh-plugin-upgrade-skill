@@ -1,0 +1,25 @@
+{
+ "decisions": [
+  {
+   "id": "host-break",
+   "verdict": "partial",
+   "reason": "定位 inject/apiProxy.llm.providers/死依赖并给出停用+移除方向，但未给出 llm 注入与 listProviders 的具体替换（仅称'新 Remote/Services API'）"
+  },
+  {
+   "id": "negative-coverage",
+   "verdict": "partial",
+   "reason": "事件/源码补丁有据清点，session-notes.js 与 cordis.patch.yml（组合而非源码补丁）判定正确；但自拟分类法，漏按正典七类清点 host-FS/通道/子进程等其余类别"
+  },
+  {
+   "id": "inference-boundary",
+   "verdict": "pass",
+   "reason": "完整论证零命中≠兼容：覆盖受限、动态构造/传递依赖/类型级/运行时不可见；并区分决定性 apiProxy 断裂与其余六类净结论"
+  },
+  {
+   "id": "verification-plan",
+   "verdict": "pass",
+   "reason": "提出迁移后 build/typecheck、隔离 profile 冷启动（捕获注入服务名缺失即挂起）与 llm.providers 功能冒烟；明确未在本静态 fixture 执行"
+  }
+ ],
+ "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "PID42432持锁至退出，copyfile致EBUSY"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "刷新不停宿主；停止→确认→安装→验证→重启有序"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸名随latest=rc.2覆盖alpha.4，机制正确"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "@0.1.2-alpha.5精确命令，停止后装并验证重启"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "钉核心与插件版本、防latest覆盖预发布均已覆盖"
+    }
+  ],
+  "caps": []
+}

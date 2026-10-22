@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses the tag listing and the HEAD:main-only sync push to explain v0.9.5 never reached the mirror, explicitly ruling out network/command faults."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explains v0.9.7 was built against the newer 0.1.2-alpha.1 client API (useConversation seat) while the runtime is older 0.1.1-rc.2, and notes install/restart success does not imply compatibility."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "partial",
+      "reason": "Honors the freeze, correctly notices v0.9.3 is absent from the mirror and does not require a DSH upgrade, but pins #v0.9.1 whose rc-line compatibility is only inferred, instead of the rubric's v0.9.3 after tag publication or a verified commit."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit tag pushes (per-tag or --tags) for every mirror plus an ls-remote verification gate; branch-only push alone is not offered as sufficient."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Proposes a published compat matrix with per-runtime install commands (rc.x line vs >=0.1.2-alpha.1), a dsh --version check, and no blanket support for untested future alphas."
+    }
+  ],
+  "caps": []
+}

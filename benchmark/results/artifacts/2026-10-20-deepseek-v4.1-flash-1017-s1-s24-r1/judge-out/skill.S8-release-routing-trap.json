@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses the mirror tag list (v0.9.2–v0.9.6 absent) and the sync script's branch-only HEAD:main push to show v0.9.5 was never distributed; ties to immediate ref-resolution failure and rules out network/quoting by the later successful v0.9.7 install."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explicitly states the direction: v0.9.7 targets the newer 0.1.2-alpha.1 client API whose useConversation seat does not exist on 0.1.1-rc.2, one line behind; explains install success only proves dependency resolution and why restart cannot help a static missing symbol."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Selects v0.9.3 on the rc.1-verified + additive-rc.2 rationale without any host upgrade; flags that v0.9.3 is also absent from the mirror and requires a verified 40-hex commit, an upstream tag verified to exist, or a maintainer tarball — explicitly refusing to invent a SHA."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "T1 pushes refs/tags/vX.Y.Z explicitly in the same loop to every remote (with --follow-tags / refs/tags/* alternatives), grounded in the branch-only script; T2 gates each release on ls-remote --tags verifying the tag exists and dereferences to the same commit per mirror."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "D1/D2 make the compat table a routing table ordered by host line with exact install coordinates and inline host requirements; T7 keeps alpha builds on a prerelease channel and the README default on the stable/rc line with a maintenance branch, not generalized to untested future alphas."
+    }
+  ],
+  "caps": []
+}

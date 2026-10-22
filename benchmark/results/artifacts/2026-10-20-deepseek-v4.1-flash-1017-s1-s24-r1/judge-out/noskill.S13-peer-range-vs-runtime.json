@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates the session.events reads in plugin-source-excerpt.js, traces the crash chain to undefined being iterated in crash-stack.txt, and cites the changelog for removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents replacements."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Explains alpha.5 satisfies ^0.1.2-alpha.2 as a same-tuple prerelease ordering fact while npm only evaluates declared version metadata, never API existence or runtime behavior; peer range is an untested author claim."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Five genuinely distinct classes explained: symbol removal, value-shape/type change, semantic/lifecycle (incl. sync-async), loader/manifest contract change, duplicate-instance identity failure."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires matrix-testing every version the range admits with a startup smoke test, then narrowing the peer range to the tested band and adding a feature-detection guard with correct old (events array) and new (snapshotEvents/seq) paths; clarifies engines covers Node only."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete checks tied to the Session.events incident: throwaway-prefix boot probe, publish-time vs release-timeline comparison, and grepping the plugin source for .events against the installed host's actual API surface."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report explicitly identifies and rejects the satisfied-range-implies-compatibility inference; its final conclusions never claim install success proves runtime compatibility."
+    }
+  ]
+}

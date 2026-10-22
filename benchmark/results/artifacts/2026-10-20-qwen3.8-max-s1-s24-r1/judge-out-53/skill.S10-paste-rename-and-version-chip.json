@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "命名链(首项无后缀、(2)起)、线性探测+批内 taken.add 预留、按 MIME 分类；重命名仅在粘贴获取边界(含 origin:'paste' 门控等效方案)，drop/picker 与 validateItems 语义原样保留。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "以活快照(过滤本插件 occurrences)∪当前批为权威；三条理由说明 records 不可作占用源，核心是订阅在任意瞬时空快照即删除记录(fixture 行30-38)而附件仍存活。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "用 x-cache HIT/age 178/s-maxage 300、列表仅 v0.2.9 且 ls-remote 证明 0.2.10/0.2.11 已存在来解释旧标签；T>R 才显示更新，T==R 显示 R，T<R 显示 R 且绝不把 T 当'最新'。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "A2/A3 顺序与同批去重、A8 records 驱逐后快照仍占用、A6 drop/picker 保名、A7 跨路径占用、B1/B2/B3 旧/等/新 tag、B4 semver 排序与 B7 常量同步等断言齐全。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "package.json 为单一事实源+CI/prepack 门禁(B7)、node --check+无头挂载冒烟+明确'跑 §4 单元套件'、重装(npm/pnpm 于 profile 目录)后重启宿主再硬刷新，并说明无宿主自更新端点。"
+    }
+  ],
+  "caps": []
+}

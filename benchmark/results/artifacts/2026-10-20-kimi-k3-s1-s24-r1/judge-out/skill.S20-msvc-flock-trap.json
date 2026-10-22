@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Attributes the failure to fs-ext@2.1.1 dependency of dsh-session-persistence-jsonl, its node-gyp configure build script, and the missing Visual Studio toolchain, with log evidence."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Shows the top-level static flock import forces fs-ext to load even on Windows, so --ignore-scripts only defers failure to first require at boot."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Clearly separates Windows acquireLockHandleWin32 named-semaphore locking from POSIX flock on session.lock, and uses this to justify an import-safe Windows stub while the semaphore path stays authoritative."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Follows the node-pty patchedDependencies precedent: platform-gated patch that skips node-gyp on Windows and provides a pure-JS fallback flock with callback-invoking shape, registered in pnpm-workspace.yaml, with reinstall, load, and service-boot verification."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly refuses Visual Studio and upstream modifications, using only the repository-managed patch mechanism."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites full DSH-0.1.3-A1-03 and connects it to the fs-ext install failure, the static-import reason, and the pnpm-patch Windows plan."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Plan explicitly excludes installing Visual Studio/Build Tools."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "Rejects --ignore-scripts and makes the imported entry loadable via the patch."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Uses the repository-managed patch mechanism; no upstream edits required."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows keeps the named-semaphore path; the no-op flock stub applies only to the dead Windows branch and POSIX keeps real flock."
+    }
+  ]
+}

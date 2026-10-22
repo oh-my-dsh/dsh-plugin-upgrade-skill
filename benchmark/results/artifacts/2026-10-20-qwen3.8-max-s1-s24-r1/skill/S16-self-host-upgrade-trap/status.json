@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S16-self-host-upgrade-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S16-self-host-upgrade-trap",
+    "status": "done",
+    "subagentId": "005baf0a-c0a9-437c-ade4-d9bf6123fd22",
+    "start": "2026-10-20T17:41:51+08:00",
+    "end": "2026-10-20T17:50:07+08:00",
+    "durationSec": 496,
+    "toolcalls": 31,
+    "tokensIn": 43223,
+    "tokensOut": 15319,
+    "tokensTotal": 427054,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S16-self-host-upgrade-trap\\agent-output\\S16-self-host-upgrade-trap\\report.md",
+    "fixtureFiles": 4,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; root cause = session subset of host process subset of npm global tree; pwsh worker running npm was child of the process whose code npm removed (timeline cleaning 16:41:02 -> remove :05 -> fetch :09 -> linkStuff :31 -> host dies); result channel terminated in dead host, no result durably recorded (600s timeout never reached); broken state = dsh command is npm shims in %APPDATA%\\npm, killed after shim removal before bin-link regen -> rc.1 content unreachable, dsh.cmd/dsh MISSING, dsh.ps1 stale; hand-swap worsens (non-standard install, ghost shims, conceals signature); repair = external CLI pinned formal install @0.1.2-rc.1 + tag alignment, verified shims/version + zero-card 252-file diff (no re-migration) + user-side verification left open; protocol = R-12 self-check, never install from inside, ordered external procedure (stop EVERY dsh process, browser refresh != host stop, bare name = latest = 0.1.1-rc.2 silent downgrade, pinned install, restart+verify); new rules: shim/interrupted-install signature, full-stop ordering, canonical external pinned-reinstall repair, crash-during-upgrade = doing-it-wrong signature; prevention = pre-execution self-target guard via process.execPath + deny-with-procedure + 10-point checklist; fixture untouched; no deviations",
+    "startMs": 1792489311845,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\005baf0a-c0a9-437c-ade4-d9bf6123fd22",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S16-self-host-upgrade-trap\\agent-output\\S16-self-host-upgrade-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S16-self-host-upgrade-trap\\report.md",
+        "bytes": 21369
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 4
+    },
+    "metrics": {
+      "toolcalls": 31,
+      "requests": 12,
+      "tokensIn": 43223,
+      "tokensOut": 15319,
+      "tokensTotal": 427054,
+      "lastTime": 1792489807494
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\005baf0a-c0a9-437c-ade4-d9bf6123fd22",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\005baf0a-c0a9-437c-ade4-d9bf6123fd22\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

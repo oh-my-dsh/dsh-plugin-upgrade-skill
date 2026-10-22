@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "fs-ext@2.1.1/安装脚本/缺VS归因准确，file:line引用全部核对无误"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "静态顶层import在Windows必须加载，--ignore-scripts只换失败时机"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "信号量vs flock分支含义清晰，win32可stub，POSIX保留真锁"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "平台门控install+flock桩+注册+allowBuilds权限+重装/加载/启动三检查齐备"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "不装VS、不改上游，仅用仓库补丁机制并明示边界"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "引用DSH-0.1.3-A1-03并与fs-ext安装失败及补丁方案实质关联"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "方案明确声明不安装Visual Studio"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "明确否定--ignore-scripts，入口桩化后可加载"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "使用仓库managed patch，无上游仓库改动"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows锁仍走信号量，POSIX保留真实flock"
+    }
+  ]
+}

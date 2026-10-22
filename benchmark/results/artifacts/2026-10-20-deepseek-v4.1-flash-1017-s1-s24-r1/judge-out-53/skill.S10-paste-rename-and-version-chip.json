@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "命名表+planPasteName 给出 (2)(3) 前置编号并在 reserved/taken 集中做批内与跨 live 预留，重命名仅限 add() 的 paste origin、先于 validateItems 与 records.set，默认分支不改名。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "以 composer 快照 occurrences 为权威，逐条解释 records 删除启发式在瞬时空快照误删仍可见附件；批内已计划名与 in-flight 预留计入 taken，records 永不回答名字是否被占。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "用捕获响应（HIT/age 178/最高 v0.2.9 且缺 0.2.10、0.2.11）复盘，指认 renderCurrentChip 打印抓取 tag 为第二缺陷；规则表仅 remote>running 显示更新，相等/更旧均显示 running。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "A1/A6 覆盖重复与同批粘贴不同名且不触发重复路径报错，A2 覆盖记录被清退后仍不重发同名，A3 覆盖 drop/picker 原名；B1/B2 矩阵覆盖更旧/相等/更新 tag。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "要求常量/清单/打包清单/tag 四处一致并以 B6 校验，node --check 与从打包产物加载的冒烟测试，说明无更新端点、新 bundle 须宿主重启+页面刷新、chip 仅提示。"
+    }
+  ],
+  "caps": []
+}

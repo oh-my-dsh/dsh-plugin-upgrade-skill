@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "引用 v0.2.10 出厂代码中的确切表达式，busy 为 AttachButton 闭包局部量不可达，双闸(空列表早退、|| 短路)与 plain 相位触发 ReferenceError 解释完整。"
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "组件体内抛错使整个槽项被边界卸载而非单个按钮失效，+按钮为独立槽项，边界捕获仅控制台可见、无用户横幅。"
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "用出厂 v0.2.10 表达式确立 busy 先于 feature，提出 v0.2.10 单独数据在场挂载与 token 级 2x2 回滚/重加隔离，并显式辨析 diff 与基线关于 busy 行的矛盾(E1)、imageItem 越界作用域(E2)及历史首触不可证(E3)。"
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "删 busy 保相位守卫(locked)，(record?.items ?? [])、closest 可选链、imageItem 移入回调内，并给出'正确收窄作用域/共享 store'的替代方案。"
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "给出 plain 相位带 occurrence、断言边界零捕获与芯片/x 按钮在场的挂载测试矩阵，解释空态测试与 node --check 为何无效，预发门槛含每槽数据在场渲染冒烟。"
+    }
+  ],
+  "caps": []
+}

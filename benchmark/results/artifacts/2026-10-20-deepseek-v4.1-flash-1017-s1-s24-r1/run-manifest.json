@@ -1,0 +1,55 @@
+{
+  "run_id": "2026-10-20-deepseek-v4.1-flash-1017-s1-s24-r1",
+  "model": "DeepSeek-V4.1-Flash-1017",
+  "provider": "paratera",
+  "session_id": "session-37bdc51b-4e06-458d-a3ae-42ffc8e996d1",
+  "harness": {
+    "agent_preset": "ptc",
+    "context_window": 262144,
+    "web_url": "http://127.0.0.1:3080"
+  },
+  "round": 1,
+  "started_at": "2026-10-20T06:33:17.647Z",
+  "finished_at": "2026-10-20T08:34:46.240Z",
+  "tasks": "S1..S24 (24 tasks x 2 arms = 48 cells)",
+  "arms": {
+    "noskill": "whitelist = cell dir only; skills/ forbidden",
+    "skill": "whitelist = cell dir + skills/plugin-upgrade (read-only); must read SKILL.md first"
+  },
+  "protocol": {
+    "per_cell": "mkdir <root>/<arm>/<task>/ -> copy benchmark/tasks/<task>/environment/fixture -> sha256 precheck non-empty -> spawn fresh solver subagent (single attempt) -> post checks -> ledger",
+    "order": "S1->S24, noskill then skill per task, concurrency 2, per-cell timeout 30min",
+    "solver": "fresh subagent instance per cell, cwd = cell dir, single attempt",
+    "artifact_layout": "<root>/<arm>/<task>/fixture + agent-output/<task>/<report>",
+    "git": "no git operations executed"
+  },
+  "audit_note": "沿用修正判定 (corrected-verdict rules): regex char classes in grep/rg patterns, quoted path literals appearing as tool arguments, glob with in-cell absolute pattern and no explicit path, and filesystem-free probes (e.g. node --version) are NOT violations; only real reads/writes outside the whitelist are recorded as invalid:roaming.",
+  "token_accounting": "tokens = sum of usage.totalTokens over assistant/message events in each solver session log; toolcalls = count of tool/call events",
+  "totals": {
+    "cells": 48,
+    "done": 48,
+    "tokens": 31701384,
+    "toolcalls": 628,
+    "agent_seconds": 12572
+  },
+  "events": [
+    {
+      "at": "S1-S23 run",
+      "note": "所有格子单次成功，唯 S18-skill 首次尝试在 step 10 因提供方 APIConnectionError 中断（turn/end reason=error，无报告、fixture 完好），按“基础设施中断=一次重试”重排并成功。"
+    },
+    {
+      "at": "audit",
+      "note": "转录审计基于会话日志的 tool/ptc-dispatch 结构化参数 + run_code 体内 fs.* 直读检查；grep/glob 的 pattern 路径字面量、报告正文中的 .git/测试等词按口径不计违规。"
+    }
+  ],
+  "audit_metric": {
+    "noskill": {
+      "withIds": 5,
+      "ids": 30
+    },
+    "skill": {
+      "withIds": 19,
+      "ids": 159
+    }
+  }
+}

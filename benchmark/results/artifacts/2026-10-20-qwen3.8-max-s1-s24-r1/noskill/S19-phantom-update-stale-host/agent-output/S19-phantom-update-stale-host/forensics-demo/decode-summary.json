@@ -1,0 +1,33 @@
+{
+  "frameOffsets": [
+    0,
+    144,
+    1133
+  ],
+  "frameSizes": [
+    144,
+    989,
+    1062
+  ],
+  "oneShotEqualsPerFrame": false,
+  "sha256": {
+    "diskSource": "4ac6188a93a7ac0e16778aa5f86944ff83b1adf0bea9ba4cfde946e6eea962ad",
+    "gen2Payload": "f2ce09209ed3db3e0f213bf99f413a9eed7d7513162f790c3cf5e01dc396e70e",
+    "gen3Reread": "4ac6188a93a7ac0e16778aa5f86944ff83b1adf0bea9ba4cfde946e6eea962ad"
+  },
+  "junction": {
+    "commonPrefixChars": 52,
+    "commonPrefix": "    <circle r=\"98\" fill=\"none\" stroke=\"#dde6ea\" stro",
+    "remainderMatchesLine247At": 35
+  },
+  "oneShotDecoderPitfall": {
+    "finding": "Node 24 zlib.zstdDecompressSync on the whole concatenated buffer returned ONLY frame 0 (206 bytes of 2195); CLI zstdcat/zstd -d would transparently decode all frames.",
+    "consequence": "frame-by-frame magic scanning + slicing is mandatory for complete recovery and per-generation attribution when using library decoders."
+  },
+  "xmlVerdicts": {
+    "source-daigo-bicycle.svg": "well-formed (XmlDocument load: no error)",
+    "decoded-frame1-gen2-read-result.txt": "NOT well-formed - line 232 col 54: ',' is an unexpected token. The expected token is '='.",
+    "decoded-frame2-gen3-read-result.txt": "well-formed (XmlDocument load: no error)"
+  },
+  "fixtureVerdictComparison": "Fixture (libxml dialect): 'Specification mandates value for attribute stro0' at line 233 col 54. Replica (.NET dialect): ',' unexpected, expected '=' at line 232 col 54. Same column, same defect (attribute name tokenizes as 'stro0', comma is not an XML NameChar, parser demands '='); the +1 line offset is consistent with a header line atop the persisted block."
+}

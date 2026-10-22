@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Locates session.events read (~line 734) and iteration failure in prepareReplayEvents (channel.js:623), quotes the changelog for the alpha.4 removal and the seq/eventAt()/snapshotEvents() replacements, and explains undefined → non-iterable TypeError."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Explains same-tuple prerelease ordering makes alpha.5 satisfy ^0.1.2-alpha.2, npm performs only static version-interval arithmetic and never inspects code or APIs; peer range is an author claim, floor ≠ tested across the range."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Names five distinct classes: API removal/rename, branded type/signature change, behavioral change with intact signatures, host composition/default changes, mixed-cohort resolution — each explained, not variants of one removal."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires typecheck plus real cold-start runtime validation against each claimed host version (floor and latest), then a policy: migrate-and-raise or narrow the peer range, plus verified dual-path feature detection; explains engines/metadata cannot encode API presence."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Concrete: npm view peer floor, changelog delta alpha.2→alpha.5 flagging the Session.events removal, static symbol probe of shipped code vs host declarations, publish-date freshness, throwaway smoke — all tied to the compatibility boundary."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Concludes silent npm output carries zero runtime information and changelog-delta/feature checks are the real defense; never claims peer satisfaction proves compatibility."}
+  ]
+}

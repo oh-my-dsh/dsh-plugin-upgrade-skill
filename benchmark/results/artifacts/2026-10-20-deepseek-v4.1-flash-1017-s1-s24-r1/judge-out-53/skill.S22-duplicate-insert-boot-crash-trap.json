@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "两层声明表对比两份摘录（bundle L110-111 与 profile L16-20 同插 workspace-files），定位 EntryGroup.update 于 cordis:include 应用期，论证 insert 无 override/后写覆盖语义、重复插入致命，并指出“冗余”注释前提为真但结论错误。"
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "§2 表完整覆盖三种情形（按 id 改 config=安全且提示整体替换语义、全新 id 插入=安全、bundle 已有 id 插入=致命），维护者行为归第三类并以两份摘录行号及相邻对照组佐证。"
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "仅删 profile 的 L16-20 块（含注释），其余行原样保留，结果对 workspace-files 零声明；明确不该变成 override、需要时用按 id 全量 config 行；排除重命名、改 bundle、改插件等非最小方案。"
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "论证崩溃在 EntryGroup 组合期、任何插件 apply 之前，插件侧无法观察/阻止/修复；恢复 boot 后将原 文件资源服务不可用 作为独立问题给出验证步骤（重启重组 roster、新旧模块对照 200/404、必要时回滚），不宣称已治愈。"
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "插入前按 dsh.profile.bundles 顺序 grep 各已安装 bundle 的 cordis.patch.yml、用 --dump-config 看组合结果并区分 extend/override；主机诊断给出 id、两层声明来源路径行号、责任判定与“删除 profile 块”的精确处置及预检手段。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "最终结论是删除重复块、仅 profile 组合编辑可修复 boot，明确否定保留重复、静默合并与插件侧修复，cap 未触发。"
+    }
+  ]
+}

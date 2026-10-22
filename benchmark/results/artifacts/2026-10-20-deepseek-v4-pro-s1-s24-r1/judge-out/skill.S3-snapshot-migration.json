@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates all three reads with line evidence and correctly routes partial/runningCalls/turnEnds through the temporary views.get('chat')?.legacy projection (dual-host only) with final useChat/ChatSnapshot ordered-node access as target-owned Chat."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates Pet.tsx:19 s.running and explains it is a lifecycle field not in the legacy projection, served by the useSession seat; does not claim the useSession call itself must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates removed runtime imports and the package.json client.inject entry; repoints ClientContext to cordis Context and ConversationSnapshot to ui-chat's ChatSnapshot, with unknown exact symbols explicitly deferred to target exports rather than claiming cordis exports them."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register call at index.ts:38, explains ctx.inject of 'slots' and the ui-renderer-owned Context augmentation needed for the type graph, and preserves the slot name and service lifetime."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties each snapshot/lifecycle/slot change to full DSH-0.1.2-A1-03 with field-note grounding, cleanly separates temporary projection from immediate type/inject/lifecycle changes, and adds DSH-0.1.2-A1-25 as the valid package-removal card; no bare IDs."
+    }
+  ],
+  "caps": []
+}

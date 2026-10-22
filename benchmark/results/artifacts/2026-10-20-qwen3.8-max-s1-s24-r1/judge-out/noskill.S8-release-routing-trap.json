@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Chains ls-remote tag listing and branch-only sync script to conclude v0.9.5 was never distributed to the mirror, ties this to the immediate pnpm ref-resolution failure, and rules out network/typo with evidence (attempt 2 succeeded)."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explicitly states the artifact (v0.9.7, alpha.1 client API with useConversation seat) is newer than the frozen 0.1.1-rc.2 runtime, so the expected host export is missing; explains why install succeeds and restart cannot fix a static mismatch, not just repeating the error."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Freeze honored; selects v0.9.3 via rc.1 verification plus the additive rc.2 note; notices v0.9.3 is also absent from the mirror; gives the #v0.9.3 install command conditioned on maintainer tag publication, and a SHA fallback only after the maintainer publishes/communicates it (no invented SHA, no dsh upgrade)."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit refs/tags push of the release tag to every mirror in the sync script plus a one-off --tags backfill, grounded in the branch-only script, with an ls-remote verification gate that each documented tag resolves."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Routes README installs by consumer DSH version (rc.x → #v0.9.3, alpha.1+ → #v0.9.7) with a published compatibility matrix and machine-checkable runtime gating; rejects newest-tag defaults and keeps a maintained legacy line rather than generalizing to untested alphas."
+    }
+  ],
+  "caps": []
+}

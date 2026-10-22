@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates declaration, patch.yml target/symbol and applier script; explicitly separates real source patching from composition (API-08 discipline) and explains the private session-view path/symbol coupling including export-vs-artifact risk."},
+    {"id": "events", "verdict": "pass", "reason": "Finds producer/consumer with ignorable:true; explains alpha.1 removal folded by A2-01 restoration as omission-safe marker preservation at the envelope/persistence layer, flags the public write-entry gap, and does not claim Session.append supports writing the marker."},
+    {"id": "host-services", "verdict": "pass", "reason": "Locates both apiProxy.invoke sites; correctly distinguishes Host-face domain-service injection (inject llm, ctx.llm.listProviders) from client-only ctx.remote and warns against mechanically substituting remote on the Host face."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates the fixed homedir/.dsh/profiles/default path and its writeFileSync; requires DSH_HOME and current profile from runtime/launcher, with no claim that --profile appeared in alpha.1."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates the /internal SessionView import and the command registration returning the internal instance; requires verification of the public facet/slot owner seam after the split and marks the public seam pending rather than guessed."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the loopback server and states explicitly that loopback binding is not an auth exemption; distinguishes Gateway-managed authenticated channels from raw routes that inherit no auth/fencing."},
+    {"id": "subprocess", "verdict": "pass", "reason": "Locates both subprocess sites and the chunk JSON.parse bug; states stdout was always final assistant text (JSONL assumption already wrong, not an alpha.2 regression), assigns reasoning/progress to stderr, and makes exit code the success criterion."},
+    {"id": "mapping", "verdict": "pass", "reason": "Maps located couplings to exactly A1-01, A1-02 (folded)+A2-01, A1-03, A1-04, A1-08, with A1-05 for stdout, each with substantive site-level justification rather than a bare card list."},
+    {"id": "limits", "verdict": "pass", "reason": "Accounts for all seven hit categories, records scan/runtime limits and per-card exclusions, honestly records skipped build/typecheck with evidence, and requires baseline-plus-target-version verification without demanding execution of the static fixture."}
+  ],
+  "caps": []
+}

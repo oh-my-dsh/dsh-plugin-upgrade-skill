@@ -1,0 +1,75 @@
+{
+  "cell": {
+    "task": "S15-slot-error-boundary-crash",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S15-slot-error-boundary-crash",
+    "status": "done",
+    "fixtureFiles": 4,
+    "fixtureBeforeOk": true,
+    "violations": null,
+    "notes": "solver(rerun): COMPLETE; root cause = dangling free identifier 'busy' in AttachmentChips disabled expr ((props.input?.phase ?? 'plain') !== 'plain' || busy; busy = AttachButton useState local, unreachable from sibling fn) -> ReferenceError at evaluation only when chip renders with occurrences present AND idle 'plain' phase; || short-circuit kept latent through v0.2.10 (locked-phase renders took truthy branch; empty dock returns null before line); slot-level error boundary unmounts WHOLE dock entry console-only -> 'dock vanished' not 'button broken'; paste works (model upstream of render), attach unaffected (separate slot entry, own in-scope busy); blaming v0.2.11 diff wrong: diff base predates v0.2.10 hardening pass (-/+ pair contradicts shipped source at plugin-dock-chips.js:34); correct bisection = minimal data-present render mount on BOTH versions (v0.2.10 throws identically) + rollback/hunk re-add + non-image paste cross-check, evidence table included; fix = remove dangling ||busy (or scope real busy) + hardening (record?.items??[]).find + event.target?.closest?.('.remove'); flagged diff's function-level imageItem placement (free status/record outside map callback) + dropped aria-label; regression = data-present render smoke mounting dock WITH occurrence at phase 'plain' in boundary-replicating harness, positive chip DOM marker + zero boundary captures + clean console (never empty state); node --check parses only - free identifiers are evaluation-time; min viable pre-ship = no-undef lint + data-present render smokes on built artifact + one real host mount core path per card DSH-0.1.7-A1-01; fixture 4/4 sha256 identical; no deviations; NOTE attempt1 died of context exhaustion no-report, this rerun recovered the cell",
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\a9ef6f91-0bd0-4c11-b74f-67b4d6c30f07",
+    "attempt1": {
+      "status": "no-report",
+      "subagentId": "913b55c6-b1ae-40c7-a90f-405995e5783a",
+      "start": "2026-10-20T17:26:37+08:00",
+      "end": "2026-10-20T17:41:27+08:00",
+      "durationSec": 889,
+      "toolcalls": 16,
+      "tokensIn": 15905,
+      "tokensOut": 34158,
+      "tokensTotal": 135055,
+      "reportPath": null,
+      "auditVerdict": "clean-auto",
+      "auditHard": 0,
+      "auditSoft": 0,
+      "fixtureAfterOk": true,
+      "notes": "ANOMALY: subagent ran out of context room before finishing, no closing message; SECOND S15 arm lost to context exhaustion (task-level anomaly pattern); single-attempt protocol - no retry"
+    },
+    "subagentId": "a9ef6f91-0bd0-4c11-b74f-67b4d6c30f07",
+    "start": "2026-10-21T00:58:15+08:00",
+    "startMs": 1792515495696,
+    "end": "2026-10-21T01:19:10+08:00",
+    "durationSec": 1254,
+    "toolcalls": 25,
+    "tokensIn": 68965,
+    "tokensOut": 57146,
+    "tokensTotal": 575903,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S15-slot-error-boundary-crash\\agent-output\\S15-slot-error-boundary-crash\\S15-report.md",
+    "fixtureAfterOk": true,
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S15-slot-error-boundary-crash\\agent-output\\S15-slot-error-boundary-crash\\S15-report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S15-slot-error-boundary-crash\\S15-report.md",
+        "bytes": 25700
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 4
+    },
+    "metrics": {
+      "toolcalls": 25,
+      "requests": 9,
+      "tokensIn": 68965,
+      "tokensOut": 57146,
+      "tokensTotal": 575903,
+      "lastTime": 1792516750025
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\a9ef6f91-0bd0-4c11-b74f-67b4d6c30f07",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\a9ef6f91-0bd0-4c11-b74f-67b4d6c30f07\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Correctly identifies the upper-only/lower-only branches emitting foreground only, sticky SGR background painting the transparent half, ties it to edge cells beside outline/Z/heart, and fixes with explicit default background / ESC[49m."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains the trailing-space trim and lack of downstream erase, and proposes full-width row output plus ESC[K/region clear with SGR state kept controlled."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses the digest report to isolate tail2 as the only mismatch with 23 changed cells, distinguishes data drift from renderer artifacts, notes the different-frame excerpt test missed it, and proposes per-frame digest checks against source art."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Explains never-unmounted hosts with a self-rearming ref'd setTimeout pinning the loop, notes interactive TTY/stdin already keeps the product alive, and unrefs each scheduled tick so animation continues."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Checklist covers per-cell SGR self-sufficiency, full-width plus erase semantics, frame digests; pre-rollout audit covers mount/unmount hosts and a clean-exit/liveness regression."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms background reset, full-width clearing, source-backed frame checks, and unref; no blame on the terminal emulator."
+    }
+  ]
+}

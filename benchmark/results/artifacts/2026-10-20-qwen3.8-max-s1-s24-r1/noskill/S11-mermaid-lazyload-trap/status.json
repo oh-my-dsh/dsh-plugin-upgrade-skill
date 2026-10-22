@@ -1,0 +1,15 @@
+{
+  "task": "S11-mermaid-lazyload-trap",
+  "arm": "noskill",
+  "status": "done",
+  "verdict": "clean-adjudicated",
+  "hard": 1,
+  "soft": 52,
+  "end": "2026-10-20T17:03:07+08:00",
+  "durationSec": 1159,
+  "toolcalls": 23,
+  "tokensTotal": 460161,
+  "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S11-mermaid-lazyload-trap\\agent-output\\S11-mermaid-lazyload-trap\\report.md",
+  "fixtureAfterOk": true,
+  "notes": "solver: COMPLETE; incident1 = bundler default splitting: entry facade + 97 hash-named siblings never shipped; ESM import() instantiates full static graph pre-evaluation so one sibling 404 rejects whole import w/ TypeError naming entry URL; fix = single self-contained chunk (inlineDynamicImports) or ship emitted dir; incident2 = case-sensitive startsWith between 'E:\\' (fileURLToPath load-time) vs 'e:\\' (realpathSync OS-canonical) spellings, NTFS case-insensitive, Linux passed by coincidence; fix = realpath both sides + path.relative + win32 case-fold; JS Content-Type strict MIME must survive rewrite; incident3 = wheel capture->target->bubble through pane subtree, pane window-capture handler beats modal stopPropagation; ownership = top-most active layer owns gesture, pane suspends while modal open, modal passive:false+preventDefault+stopPropagation; T1.1-T3.3 regression incl. npm-pack import-closure; fixture untouched; no deviations | audit adjudicated: sole HARD cand = token 'E:/e:' inside solver's own send_message summary prose ('E:/e: divergence fixtures' describes drive-letter case test data, not a path access) -> PATH_RE false positive on prose; 52 soft = data literals in report/code bodies; not roaming -> done"
+}

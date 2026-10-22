@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Defines paste_image/paste_file stems with (2), (3) suffixes before the extension, first candidate unused name with in-batch taken-set recomputation, and paste-only scoping via a paste-source flag so drop and picker keep real names."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Identifies composer occurrences from input.state.getSnapshot() as the authoritative taken-set, explains the records subscription deletes entries on a transient empty snapshot while the attachment is live, and recomputes the taken-set per batch item to cover in-batch reservations."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses the captured cached response (x-cache HIT, age 178, s-maxage 300, newest tag v0.2.9) and renderCurrentChip(tag) to explain the stale label, and states the semantic rule: remote > local shows the update, remote <= local shows the running PLUGIN_VERSION, never the older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Proposes cross-batch and same-batch paste tests with concrete expected names, a records-retired-but-live test still yielding (2), drop/picker name-preservation, and chip tests for older, equal, and genuinely newer remote tags."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Requires package.json parity with the hand-inlined PLUGIN_VERSION, node --check of the shipped bundle in CI, and explains real delivery: package-manager upgrade, host restart because client bundles are cached at boot, then page refresh — no host-side auto-update."
+    }
+  ],
+  "caps": []
+}

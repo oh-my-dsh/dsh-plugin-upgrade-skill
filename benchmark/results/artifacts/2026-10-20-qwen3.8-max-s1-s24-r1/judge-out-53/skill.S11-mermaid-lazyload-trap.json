@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "按模块自身 URL(import.meta.url)解析相对兄弟、未随包发布使 import() 在图根整体拒绝；单文件 inlineDynamicImports(零相对 specifier)为主案，整输出目录发布+同前缀服务为备选并显式覆盖全部依赖。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "E:/e: 前缀比较误拒实际包含文件、Linux 双侧同源字节恒绿、笔记本为巧合；realpath 输出被表述为'文件系统规范形式/依赖来源'而非'每机恒小写'，并明确否定 Windows 路径不可靠论。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "LIB_REAL 对称 realpath+词法前置守卫+按平台折叠(POSIX 不折叠)的 startsWith 判包含，并给出 path.relative 等价式(r!=='',不 ../,非绝对)；符号链接解析后逃逸仍拒；保留 JS MIME 契约。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "一次手势两处理器、独占规则(模态 capture+非被动+preventDefault/stopPropagation 消费，pane 侧 defaultPrevented/overlay 检查让位)；正确处理 window 捕获阶段先于模态的顺序问题(pane 让位是恒有效解)。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "T1-T9 覆盖 tar 图闭包、守卫大小写/穿越/联接正反例与 Windows CI、手势正反向与监听契约，但缺少'导入失败时代码块回退仍保留'的检查要点。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "修复是加强 containment(对称 realpath、保留 +sep 边界、词法守卫先行)，多块备选也只是服务整个 lib 目录，均在插件资源根内。"
+    }
+  ]
+}

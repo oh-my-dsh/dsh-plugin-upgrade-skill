@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "定位 .events 读取点与 prepareReplayEvents 迭代崩溃，引用 changelog 确证 alpha.4 移除及 seq/eventAt/snapshotEvents 替换，完整解释 undefined→不可迭代的因果链。"
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "用 npm-install-output 解释 alpha.5 经同基座 prerelease 排序满足 ^0.1.2-alpha.2，npm 只做包版本元数据谓词，peer 声明是作者主张而非任何版本被测过的证据。"
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "给出符号移除/改名、值形状与类型变化、语义/生命周期(含同步转异步)、加载/清单契约、重复实例身份五类彼此独立的破坏类别。"
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "要求对范围实际容纳的版本做真实宿主矩阵测试，给出收窄 peer 范围与含新旧路径的能力探测守卫，并说明 engines 只管 Node 不测 dsh API 行为。"
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "给出临时前缀装探针并启动、比对发布时间轴读 floor..head 间 changelog、grep tarball 对照宿主原型导出等多步装前调查，且明确重跑 npm install 无效。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "报告通篇把 peer 满足与无警告界定为'数值区间自洽'而非运行时兼容证据，明确肯定 alpha.4 移除 Session.events，无违规结论。"
+    }
+  ]
+}

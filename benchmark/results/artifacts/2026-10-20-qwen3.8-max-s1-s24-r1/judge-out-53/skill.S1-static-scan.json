@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 patch 声明/目标/脚本，按 API-08 区分源码补丁与普通组合（非文件名误报），并解释 session-view 私有目标耦合。"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位生产/消费者与 ignorable:true；A1-02→A2-01 折叠为保留 omission-safe informational marker、明确非消费者白名单，且未声称 Session.append 可写该 marker。"
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "定位 apiProxy 与 A1-01 移除；区分 host 面 llm 域服务注入（listProviders）与 client 面 ctx.remote（错误切换会挂起），未虚构 Host remote 服务。"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位硬编码路径；按 A1-04 给出运行时 DSH_HOME/目标 profile/官方 launcher 替代，未声称 --profile 为 alpha.1 引入。"
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "定位 /internal 导入与 registerCommand；给出 exact-tag 比对、按 owning module 重建导入、无稳定公开 seam 即 pending confirmation 的核验方法。"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位回环服务器；明确『仅监听回环』不是免认证理由，区分 Connection 托管鉴权通道与裸路由（requestRejection、401/403 核验）。"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处调用与 JSON.parse；讲清 rc.2 起 stdout 本就是最终文本（假设本就错）、alpha.1 变化在 stderr reasoning，未虚构 alpha.2 stdout 变更。"
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "六个耦合精确映射 A1-01/A1-02+A2-01/A1-03/A1-04/A1-08（+A1-05 stdout），均附卡片内容与排除论证，非裸列表。"
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "七类全命中、扫描局限充分（启发式/卡片非全量 diff/静态不能证运行时），并给出依赖解析→build/typecheck→冷启动挂载→行为路径的验证阶梯（仅提议未执行）。"
+    }
+  ],
+  "caps": []
+}

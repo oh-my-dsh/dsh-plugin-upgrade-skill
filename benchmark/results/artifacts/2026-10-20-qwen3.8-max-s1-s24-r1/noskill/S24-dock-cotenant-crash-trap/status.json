@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S24-dock-cotenant-crash-trap",
+    "arm": "noskill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S24-dock-cotenant-crash-trap",
+    "status": "done",
+    "subagentId": "ab93e2a8-201d-4079-9607-cc706eca7478",
+    "start": "2026-10-20T18:56:50+08:00",
+    "end": "2026-10-20T19:05:28+08:00",
+    "durationSec": 518,
+    "toolcalls": 19,
+    "tokensIn": 27591,
+    "tokensOut": 19465,
+    "tokensTotal": 197456,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S24-dock-cotenant-crash-trap\\agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+    "fixtureFiles": 9,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; culprit = plugin A (dsh-ui-progress) SessionProgressBar calling removed standard-kit hook useSessionPendingInteraction (alpha.2 multi-instance refactor folded into useSessionStatus.pendingInteraction; kit gained useSessionRetainInfo) -> TypeError in render; innocent co-tenant B's chip rail vanishes because whole conversation.input.dock list slot shares ONE DrawerErrorBoundary w/ null fallback (DockEntry has no own boundary) unmounting all entries; attach button survives (conversation.input.left separate slot own boundary); disable-experiment proves A necessary cause + B collateral, does NOT prove B bug-free on alpha.2 (only non-crashing on exercised paths; B uses zero kit hooks) nor A's crash the only dock problem (boundary fallback masks other tenants; entries after order 20 never rendered); reinstalling B futile (fresh bytes land in same eviction zone); colleague's both-hit theory contradicted (exactly one A-named error, B zero kit-hook usage, B healed with zero changes to B); fix = feature-detect pending hook (useSessionPendingInteraction -> useSessionStatus adapter -> silent degradation of only data-pending highlight; running/todos/tokens/elapsed/subRunning keep working), hooks unconditional before early return + plugin-owned EntryErrorBoundary at registration; degradation silent because render throw evicts whole slot for whole session; hygiene: tenant ships per-entry boundary, never throws in render, validates kit at register time, CI typechecks vs current host .d.ts; host adds per-entry boundaries + kit versioning/deprecation shims; trade-off containment vs visibility + per-entry overhead; verify without host restart: rebuild A bundle (junction-linked) + hard-refresh, assert no boundary-fallback, both entries in mount log, data-pending via useSessionStatus on real pending state, chips end-to-end; B regression = positive rendered-output assertions (A enabled AND disabled) since B fails silently as collateral; fixture unchanged; no deviations",
+    "startMs": 1792493810119,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ab93e2a8-201d-4079-9607-cc706eca7478",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S24-dock-cotenant-crash-trap\\agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+        "bytes": 27522
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 9
+    },
+    "metrics": {
+      "toolcalls": 19,
+      "requests": 7,
+      "tokensIn": 27591,
+      "tokensOut": 19465,
+      "tokensTotal": 197456,
+      "lastTime": 1792494328524
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ab93e2a8-201d-4079-9607-cc706eca7478",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ab93e2a8-201d-4079-9607-cc706eca7478\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

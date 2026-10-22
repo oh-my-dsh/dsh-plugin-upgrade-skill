@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Junction/Target证同树,拷贝多余且区分拷贝安装"
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "锁属宿主,关标签无效;双层缓存需重启+强刷"
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "改名经junction毁唯一源;.old2恢复原名+检查+激活"
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "停宿主→重启dsh web→强刷→验功能与无错"
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "预检LinkType/标记分两轨,解释通用拷贝致事故"
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "终案仅改repo不拷贝不删.old2,视为同树"
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "明确要求停机重启宿主,非仅浏览器刷新"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 cordis.patch.yml 声明、patch.yml 目标与 apply-patch.mjs，区分源码补丁与普通组合，讲清 SessionView 私有符号耦合"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位生产者/消费者与 ignorable:true，按净态折叠保留标记、不先删后补，未称 Session.append 可写标记或白名单语义"
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "定位 apiProxy 用法与移除，但未区分宿主面域服务注入（llm/listProviders）与 Web Client Remote，笼统改为 Remote 服务"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位固定 ~/.dsh/profiles/default，要求按运行时 DSH_HOME/profile 信息解析，未称 --profile 为 alpha.1 新增"
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "定位 /internal 导入与 registerCommand，讲明能力已迁 Web Client、须走公开入口与 Slot/theme 接缝，重定位而非改名"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位环回服务器，讲明绕过 Gateway 鉴权不被允许、通道须注册并鉴权，区分受管通道与裸路由"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "partial",
+      "reason": "定位两处 stdout JSON.parse 并给出 final-text 契约，但未讲 stderr 推理/进度分流，也未说明 JSONL 假设在 rc.2 本就不成立"
+    },
+    {
+      "id": "mapping",
+      "verdict": "partial",
+      "reason": "七类耦合对应的变更内容与真实卡基本吻合，但卡号全为自拟、仅 A2-01 对上走廊，还编造多张不存在的卡"
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "七类命中与扫描限度交代完整，给出隔离启动与功能探针，但未提出目标版本 build/typecheck 方案"
+    }
+  ],
+  "caps": []
+}

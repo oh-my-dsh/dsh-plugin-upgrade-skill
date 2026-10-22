@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Correctly separates the manifest declaration from the registry reality: alpha.1 never published, alpha.2 published, cohort taken from the brief with package-specific verification (npm view preflight) proposed, no live query required."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Expands ^0.1.2-alpha.1 to >=0.1.2-alpha.1 <0.2.0-0, explains the same-tuple prerelease rule, concludes alpha.2 silently installs without ETARGET, and flags the silent type-baseline mismatch with explicitly unconfirmed compatibility; no false 'all alphas missing' claim."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A exact-pins published 0.1.2-alpha.2 with tradeoffs; Path B builds alpha.1 from verified source into local tarballs as a complete alternative — one coherent plan suffices."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "One manager (npm), committed lockfile with npm ci in CI, tsc --noEmit against alpha.2, explicit exit paths between plans, and an honest Unconfirmed-items section for unverified surface/runtime details."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Never prescribes installing unpublished alpha.1 from npm: Path A targets published alpha.2, Path B uses locally built tarballs, and the report states exact alpha.1 install fails."
+    }
+  ]
+}

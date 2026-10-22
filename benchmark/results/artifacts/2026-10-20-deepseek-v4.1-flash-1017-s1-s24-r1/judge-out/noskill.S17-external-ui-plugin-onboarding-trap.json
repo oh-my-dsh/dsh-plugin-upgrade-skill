@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "Correctly ties top-level ESM import to the classic-script boot combo: one parse error kills the whole unit, 0/53 register, named stock entry is the first awaited victim, and it explicitly notes ESM is only invalid in this classic-script context."
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "Bisects the insert rows, uses vm.Script classic-script parsing as the primary gate (with the package.json type-module caveat on node --check), and fully describes the ModuleLoader.load({id, factory}) bundle: id = package name, host React via require in the factory, inject/apply exports, return module.exports."
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "partial",
+      "reason": "Correctly explains another entry owns the declaration and that apply ordering can race, and bans kind/scope on registrants; but it never gives the required deferred form (ctx.slots.inject(name, () => register(...)) or equivalent) — instead it proposes an invented parent/children-table register API while also forbidding children on registrants."
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "Explains the combo is composed once at boot so edits/refresh cannot rebuild it, prescribes full stop/restart per iteration with port verification, taskkill /PID /T /F for the orphaned tree, and explains EADDRINUSE as the old process holding the port, not a packaging defect."
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "partial",
+      "reason": "Strong host-side per-entry validation, culprit attribution, and a detailed template/checklist covering loader factory, host React, inject/apply, and restart/Windows tree cleanup; but the checklist's slot guidance lacks the required deferred cross-entry registration (only 'register inside apply'), so one of the mandated prevention areas is incomplete."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "Final advice mandates the classic wrapper, forbids kind/scope on registrants, and requires full host restarts; HMR is mentioned only as an optional host-side enhancement, not as a substitute for restarts."
+    }
+  ]
+}

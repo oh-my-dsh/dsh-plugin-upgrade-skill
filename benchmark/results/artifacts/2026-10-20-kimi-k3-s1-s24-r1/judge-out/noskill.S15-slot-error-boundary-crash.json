@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Correctly locates the disabled expression, explains busy is AttachButton-local and unbound in AttachmentChips, the empty-state early return before the map, and the plain-phase falsy guard forcing evaluation of busy with a ReferenceError."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render throw is caught at slot-entry granularity, unmounting the whole dock entry (no partial chip failure), while the separate input.left attach-button slot survives; diagnostic is console-only with no UI banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 source to show busy predates v0.2.11, proposes rollback and re-add bisects plus a data-present baseline mount, flags the diff's misleading hunk and the imageItem-before-status/record inconsistency, and explicitly notes it does not prove when every historical user first hit the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling busy (or properly owned per-chip state) while preserving the phase guard; hardens record?.items ?? [] and event.target?.closest?.(...), and notes imageItem/status/record must be scoped inside the map callback."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a data-present plain-phase render test asserting chip/remove exist and no boundary capture, explains why empty-state-only tests miss the expression and why node --check cannot catch free identifiers, and adds data-present slot smokes to pre-ship checks."
+    }
+  ],
+  "caps": []
+}

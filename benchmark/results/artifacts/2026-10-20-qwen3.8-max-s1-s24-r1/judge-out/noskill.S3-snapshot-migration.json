@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "fail",
+      "reason": "Locates the partial/runningCalls/turnEnds reads at correct lines, but explains them via an invented architecture (projection-keyed snapshot, transient AssistantStreamFrame/StreamChunk, status surfaces, object-valued TurnEndReason) instead of the temporary chat legacy projection and subsequent views/timeline or target ChatSnapshot access; the compat story is unsupported invention."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "fail",
+      "reason": "Locates running at Pet.tsx:19 but claims the flat running field is removed and must be re-read from agent/status / api-session/status surfaces, effectively asserting the existing useSession read path must change — contradicting the rubric that running stays on the useSession lifecycle seat."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "partial",
+      "reason": "Locates the removed ConversationSnapshot import (Pet.tsx:8) and correctly defers unknown symbols (TVC), but repoints to invented ProjectionSnapshot/SessionProjectionMap rather than a target owner, never repoints ClientContext (assesses index.ts:6 as stable), and wrongly assesses the package.json client.inject dsh-client-runtime entry as non-breaking."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "fail",
+      "reason": "Mentions the slots.register call at index.ts:38-43 but only asserts it is 'expected stable'; no slots.inject explanation, no ui-renderer/Context augmentation or service-ownership discussion."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "partial",
+      "reason": "Cleanly separates temporary projection from immediate type/value changes with sound reasoning, but cites fabricated card IDs (A1-01..06, admittedly reconstructed) and never reaches the required DSH-0.1.2-A1-03."
+    }
+  ],
+  "caps": []
+}

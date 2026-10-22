@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet as plugin short name (pluginNames[0] === plugin.name), distinguishes it from package name dsh-greet and coordinate acme/greet, argues unprefixed short name is a valid form with prefixing only a recommendation, explicitly not a compatibility error."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies unprefixed service `search` as maximally generic in a shared service namespace, recommends owner-prefixed naming, classifies it warning/collision-recommendation not error; no strict-mode exit is treated as incompatibility proof."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Treats web-search/ready as a shared channel the plugin participates in rather than owns; informational, not an error; contract alignment is advisory, actual registration/ownership is needs-registry-context, and no uniqueness or conflict is asserted from name matching alone."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Accounts for loader, tool, command, skill, provider, settings and route surfaces (plus cross-file consistency checks); cleanly separates local compatibility verdicts from unqueried registry occupancy, marks all registry-dependent items unknown/not-checked, proposes publisher-side online verification, and records private:true as a test-material publish-mechanics note, not a naming error."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "Report explicitly disclaims 'reserved', 'globally available', and 'safe to publish' claims for every surface and states the plugin must not be declared publish-safe until registry checks run."
+    }
+  ]
+}

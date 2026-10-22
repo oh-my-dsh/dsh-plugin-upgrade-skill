@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S19-phantom-update-stale-host",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S19-phantom-update-stale-host",
+    "status": "done",
+    "subagentId": "5a679720-9459-4482-9aae-a49ae9fead19",
+    "start": "2026-10-20T18:19:17+08:00",
+    "end": "2026-10-20T18:28:44+08:00",
+    "durationSec": 567,
+    "toolcalls": 37,
+    "tokensIn": 51618,
+    "tokensOut": 18554,
+    "tokensTotal": 395676,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S19-phantom-update-stale-host\\agent-output\\S19-phantom-update-stale-host\\report.md",
+    "fixtureFiles": 8,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; phantom self-update = build-time PLUGIN_VERSION 0.3.6 inlined by tsdown before 16:23 bump (build-before-bump order mistake); mirror/tag SHA irrelevant - defect in artifact's frozen comparator operand; corrected order bump->clean->build->grep-gate->commit->tag->push + pre-push bundle grep; client plane re-fetches on refresh vs host lib/index.js loaded once at boot w/ route closures capturing old CONTENT_TYPES whitelist - PNG200+SVG404+disk-whitelists-svg pins ghost host (pre-flight 1.5, ghost-host-check.mjs); only full host restart re-registers route; plugins-hot-update holds only client plane (DSH-0.1.7-A2-04 caveat: client bundles cached at boot since 0.1.7-alpha.2); broken image = upstream session result-text assembly corruption (line 232 spliced w/ line 247 tail at shared prefix 'stro', 15 lines lost; disk well-formed, typed result clean, re-read clean); payload = untrusted render input; repairing file corrupts good data + destroys evidence; defensive chain: disk-bytes route -> DOMParser/parsererror-gated payload -> sandboxed iframe (no allow-scripts, SMIL runs) -> explicit reason-carrying error state; forensics: frame-by-frame concatenated-zstd decode (magic 28 B5 2F FD, work on copy), jq locate, adjudicate disk/payload/re-read, file upstream bug; release checklist adds bump-before-build, artifact grep, per-mirror tag SHA, self-badge smoke, plane-aware restart-before-verify, report-upstream; fixture 8 files unchanged; no deviations",
+    "startMs": 1792491557886,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\5a679720-9459-4482-9aae-a49ae9fead19",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S19-phantom-update-stale-host\\agent-output\\S19-phantom-update-stale-host\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S19-phantom-update-stale-host\\report.md",
+        "bytes": 23705
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 8
+    },
+    "metrics": {
+      "toolcalls": 37,
+      "requests": 9,
+      "tokensIn": 51618,
+      "tokensOut": 18554,
+      "tokensTotal": 395676,
+      "lastTime": 1792492124442
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\5a679720-9459-4482-9aae-a49ae9fead19",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\5a679720-9459-4482-9aae-a49ae9fead19\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

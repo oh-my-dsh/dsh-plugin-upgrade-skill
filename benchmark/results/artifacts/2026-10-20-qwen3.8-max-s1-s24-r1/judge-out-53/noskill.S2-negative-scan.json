@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "partial",
+      "reason": "定位 inject/apiProxy.llm.providers 及 package.json 死依赖并给出正确迁移方向，但用本地占位卡号（未映射 A1-01）且未解释 llm 注入/listProviders 接替。"
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "partial",
+      "reason": "各类目有逐文件证据，session-notes.js 判纯工具、cordis.patch.yml 判组合无误且未按文件名臆造耦合；但类目框架为自行重构，host 目录/自定义通道/子进程三个规范类目未覆盖。"
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "充分论证零命中≠兼容（负扫描逻辑不对称、清单盲点、依赖/配置/运行时需另行证据），并明确 apiProxy 命中已单独否决兼容结论。"
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "列出（未执行）依赖安装解析、build/typecheck、隔离 profile 冷启动（inject 解析、无 unknown-inject 失败）与真实 provider 调用及失败分支。"
+    }
+  ],
+  "caps": []
+}

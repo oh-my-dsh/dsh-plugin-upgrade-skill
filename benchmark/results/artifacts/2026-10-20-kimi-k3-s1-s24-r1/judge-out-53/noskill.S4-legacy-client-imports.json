@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位 index.ts:1 的 ClientContext 旧导入并映射 A1-25,指出包已删、类型导入仍致构建失败,要求删依赖并改从替代入口导入;具体包名按闭卷标 unconfirmed,方向可辩护。"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "对比 'pet-legacy-bundle' 与包名 dsh-pet-session-bench 并映射 A1-26、要求精确对齐,但未要求迁移后验证 client 激活(确认模块实际注册/加载)。"
+    },
+    {
+      "id": "session-content",
+      "verdict": "partial",
+      "reason": "定位 useSession/nodes 并映射 A1-27,选择器/entry 型 API 的迁移方向正确,但未涉及保持顺序(首节点语义),替换 API 细节未落地。"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 ctx.connection.api.agentPresets.list 并映射 A1-30,要求移除已删 face,给出 typed remote(agentPresets/list)等公共接口方向且经本地运行时佐证,缺口已标 unconfirmed。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未主张 apply→setup/activate 替换,也未主张 inject 必须移入 manifest;inject 声明视为不变,无伪造迁移。"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "corridor-net-state",
+   "verdict": "pass",
+   "reason": "rc.2→alpha.1→alpha.2 完整历史表，净态=恢复并按折叠规则应用于 produceExternalEvent（删除防御），引卡与 rollup 论证"
+  },
+  {
+   "id": "remove-marker-stripping",
+   "verdict": "pass",
+   "reason": "定位并拒绝注释陷阱；建议删除防御并论证过时+有害（未标记即 required-on-read）；指出本案字面量使 delete 为 no-op；明确区分剥离代码与标记本身"
+  },
+  {
+   "id": "informational-producer",
+   "verdict": "pass",
+   "reason": "完整解释仅可省略型信息事件可带 ignorable、必需事件不得标记；标记非消费者过滤指令、重载后仍在日志；未知未标记事件 fail-closed；并应用于第三方生产者"
+  },
+  {
+   "id": "public-append-gap",
+   "verdict": "pass",
+   "reason": "明确 Session.append 仅收 type/data/SurfaceIntent 无 ignorable；禁止 cast/伪造参数/手改 JSONL；按能力缺口处理并待上游正式机制；给出持久化→冷加载验证方案"
+  }
+ ],
+ "caps": [
+  {
+   "id": "keep-stripping-marker",
+   "triggered": false,
+   "reason": "结论为删除 delete 行，明确否定注释的保留指令"
+  }
+ ]
+}

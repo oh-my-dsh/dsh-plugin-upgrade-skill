@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "定位 index.js:3/9 与 package.json:17，映射 A1-01 并给出宿主面 inject:['llm']+ctx.llm.listProviders()，死依赖必须删除（R-05/R-08）"
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "按规范七类逐项给扫描模式与证据，session-notes.js 为诱饵纯函数且未被 import，cordis.patch.yml 为组合非源码补丁，未从文件名发明耦合"
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "五条依据+分层表说明零命中不能证明兼容，指出最致命断裂在七类之外的依赖/清单面，并区分唯一命中与六类负结论的证据强度"
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "静态/打包/依赖/组合/运行/行为/负向对照全套清单，含隔离冷启动无 pending 与真实 listProviders() 往返，均为建议未执行"
+    }
+  ],
+  "caps": []
+}

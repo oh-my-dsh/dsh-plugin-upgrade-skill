@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Distinguishes the ^0.1.2-alpha.1 declaration from the brief-supplied published list (alpha.1 never published, alpha.2 published), marks it unconfirmed live, and proposes package-specific registry re-query (npm view versions/dist-tags) without requiring it."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Expands the caret, applies the same-tuple prerelease rule, verifies alpha.2 is selected silently, identifies the alpha.1-vs-alpha.2 type-baseline mismatch with concrete export-drift uncertainty; never claims the caret guarantees alpha.1."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A exact-pins published alpha.2 with tradeoffs; Path C builds the alpha.1 cohort from the verified upstream tag into local file: tarball overrides — complete coherent plans with exit paths."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Consistent pnpm, committed lockfile, typecheck against the intended target (alpha.2 plus CI source-tag lane), explicit override removal/repin exit paths, and a thorough unconfirmed-items section."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "No prescription to install unpublished alpha.1 from npm: Path C uses locally built tarballs from the source tag, and the report explicitly rejects exact-pinning alpha.1 as a standalone fix."
+    }
+  ]
+}

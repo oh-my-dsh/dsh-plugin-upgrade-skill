@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Ties host, tool worker and result recorder to the node process under node_modules/@deepseek-ai/dsh; host dies mid-install, GUI disconnects, result never recorded; explicitly preserves the unknown outcome and avoids a universal must-crash claim."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Explains content-present with dsh/dsh.cmd missing and dsh.ps1 stale as an interrupted bin-link phase; links the hand-swapped tree to the broken state and rejects hand-swaps/shim authoring with concrete reasons."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Grounds the recorded repair in repair-notes.md: external pinned npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerating shims, dsh --version check, separate checkout tag alignment; clearly separates recorded repair from proposed verification."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Agent must refuse execution on its own host and hand off; procedure stops the host fully before the pinned install, restarts, hard-refreshes, verifies; §4.4 distinguishes known stop-first/pin rules from the new self-host refusal rule and rejects backgrounding as non-handoff."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Pre-dispatch target-classification guard relating the upgrade target to its own runtime/worker path; uses the 252-file version-only alpha.5→rc.1 diff to conclude no plugin migration; checks version markers, restart/refresh and actual plugin loading; backup cleanup only after verification."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final advice mandates external execution and explicitly rejects in-session, retried, or backgrounded installs; in-session execution appears only as the analyzed failure."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Hand-swapping and hand-written shims are cited only as the rejected bad repair; the affirmed fix is the formal external pinned registry install."}
+  ]
+}

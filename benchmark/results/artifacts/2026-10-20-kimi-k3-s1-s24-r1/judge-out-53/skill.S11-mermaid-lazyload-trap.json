@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "entry 非自包含、哈希兄弟按 entry URL 相对逐个请求、发布清单未包含致 404、entry 200 仍报'Failed to fetch dynamically imported module';建议 inlineDynamicImports/单 chunk,保留拆分替代方案并要求全量兄弟随包。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "逐 API 对比定位第二守卫跨规范化域的大小写敏感前缀比较(E: vs e:),按 ci-note 矩阵解释 Linux 字节一致、笔记本巧合一致、生产确定性 403;明确否定'Windows 路径不可靠',并说明大小写无保证匹配输入。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "LIB_ROOT 与候选均 realpath 规范化后 path.relative,拒绝空串/'..'/'..'+sep/绝对结果,软链在 realpath 后被拦,保留 application/javascript MIME 并提 CORS。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "解释同一 wheel 事件经 capture+bubble 被 pane 与 modal 双消费;modal 以 capture 阶段非 passive 监听 preventDefault+stopPropagation 独占手势,pane 按 composedPath/closest 让位、关闭时移除监听,并对 window capture 的 pane 场景设专门测试。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "矩阵覆盖打包完整性(尝试一缺 97 兄弟会失败)、单 chunk 形状、E2E 零 404、大小写路径应 200、遍历/绝对/软链逃逸应 403、MIME 断言、modal 独占缩放及反向用例;但未提出导入失败时代码块回退仍保留的检查。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "方案为双 realpath 规范化加 path.relative 包容检查并保留拒绝分支,未禁用包容性或越根服务。"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Correctly narrates alpha.1 removal then alpha.2 restoration with semantics (not just card names) and applies the final alpha.2 state to produceExternalEvent (declare ignorable at construction, delete the defense)."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete with cast, refutes the comment's rationale, recommends deleting the defense, proves the delete is a no-op on the shown literal, and distinguishes removing the stripping code from removing the marker (explicitly rejects ignorable:false as replacement)."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Covers producer-declares/reader-respects, only informational events marked, required events not ignorable, and respects the live-append limitation, but never states that retention across persistence/reload is not a reader-side filtering instruction (marked events remain in the loaded log)."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that public Session.append lacks an ignorable parameter, forbids cast/invented faking, and explicitly defers exact API/persistence integration to unconfirmed-list verification without naming an undocumented successor."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation is to delete the defense; the marker continuation policy is rejected throughout."
+    }
+  ]
+}

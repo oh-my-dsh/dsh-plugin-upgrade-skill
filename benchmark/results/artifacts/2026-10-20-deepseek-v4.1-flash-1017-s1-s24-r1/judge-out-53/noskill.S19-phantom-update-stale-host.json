@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "逐分钟复盘证明 build(16:22)先于 bump(16:23)把 0.3.6 烤进 v0.3.7 产物、newerTag 自比触发 badge，解释 bundle 不在运行时读 package.json，镜像 SHA 一致只证一致不证自洽，并给出 bump 先行+grep 产物常量+保留逐镜像校验的完整清单，未混淆 0.3.8 manifest。"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "用 PNG 200/SVG 404 处理器自有错误串/磁盘白名单已含 svg 的排除法钉死未重启宿主仍跑旧白名单闭包，明确刷新页面无法替换 apply 期注册的路由，并把热更新规则正确限定在客户端平面。"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "由磁盘 well-formed、持久化文本拼接(232前52字节+247第35字节起尾部，算术与解析器列54精确吻合)、重读干净三事实推出非确定性的上游结果文本装配错误，插件消费坏副本、磁盘文件无辜、payload 视为不可信且明确不应修复好文件；残余歧义标注不影响上游归因结论。"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "四级链完整且有理由：磁盘资产路由字节→payload 必先过 DOMParser/parsererror→sandbox 空值无 allow-scripts 而 SMIL 照跑→显式错误态；校验失败直接终止于错误态，同一坏 payload 不会未检进 iframe。"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "逐帧解码 concatenated zstd、按代保留帧序、仅 JSON 反转义取原始记录并与磁盘字节级 diff(52/35)后报上游，接受拼接帧感知解码器等价于手工帧循环；清单含 bump 先行、grep 发布物常量、逐镜像 tag SHA、宿主重启+逐扩展名探针。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "最终建议全部相反：bump 先行、镜像重推无效、须重启宿主而非刷新、不动干净的 SVG、payload 必须过校验、iframe 禁脚本；amend+force-push 仅作为题面事实被批评性讨论而非推荐。"
+    }
+  ]
+}

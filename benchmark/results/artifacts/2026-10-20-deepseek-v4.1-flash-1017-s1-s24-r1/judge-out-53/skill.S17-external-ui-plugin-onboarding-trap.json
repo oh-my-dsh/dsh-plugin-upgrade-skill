@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "ESM import + 单 classic script 组合 + compile error 串联：整段编译失败→0/53 注册；0c013085 是 roster 首个被 await 的条目而非出错 bundle(嵌套 cause 才指向真凶)；区分源码格式与交付物，未泛化 ESM 无效"
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "二分 profile insert 行(停用新行+全重启+行级复现确认)；node --check + import/export grep + 正向形状检查组合使用(宿主侧用 vm.Script 逐条 parse)；完整给出 loader 包装、id=包名、require 宿主 React、inject/apply 导出"
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "讲清声明归 settings shell、跨包 apply 顺序不受约束；给出精确形式 ctx.slots.inject(\"settings.section\", () => ctx.slots.register({name,id,order},C)) 使注册等待声明；注册方可给 name/id/order/label，禁 kind/scope"
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "组合每次启动组装一次、刷新不复组；正确重启流程(停进程→证 3080 释放→启动→强刷新→验证 served bytes 与插件列表)；EADDRINUSE = 孤儿 node 占端口，taskkill /PID /T /F，且不得另起端口绕过"
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "启动前逐条 vm.Script 经典脚本校验+按包名归因(禁止报首个 awaited 条目)；作者模板/清单覆盖 loader factory、宿主 React、inject/apply、ctx.slots.inject 延迟跨条目注册、宿主重启+进程树清理；含宿主退出/活性断言"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "无保留裸 ESM、未省略 inject(明确 Always ctx.slots.inject)、禁 kind/scope、要求全重启而非依赖刷新；无与事件契约相反的最终建议"
+    }
+  ]
+}

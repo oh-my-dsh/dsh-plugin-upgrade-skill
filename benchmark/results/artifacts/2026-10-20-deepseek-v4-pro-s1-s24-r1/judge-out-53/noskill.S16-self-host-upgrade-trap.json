@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "worker属被替换host，断连与无结果按自宿主结构解释，保留未知结局"
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "shim缺失/stale、内容≠完整安装，关联手工换树，拒绝手工修复"
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "外部固定rc.1重装再生shim并校验，源对齐tag，记录与建议分离"
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "识别自身即目标须交接，先停host再装、重启刷新验证，规则分层清楚"
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "守卫比对目标与自身路径，252文件纯版本diff免迁移，验证后才清备份"
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "最终建议交接外部执行，明确拒绝会话内安装或重试"
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "修复为正式registry安装，明确拒绝手工换目录/写shim"
+    }
+  ]
+}

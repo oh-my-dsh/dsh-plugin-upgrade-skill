@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the ClientContext import (index.ts:1) and its consumer at :9, maps A1-25, notes the apply-signature break, and directs re-pointing the import to the 0.1.2 replacement client-runtime type export; exact specifier correctly marked unconfirmed rather than invented."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "Correctly compares pet-legacy-bundle with dsh-pet-session-bench, maps A1-26, and requires exact id==package-name alignment, but gives no client activation verification step (no boot-graph/mount check); verification is limited to the id change."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates useSession/nodes destructuring and nodes[0], maps A1-27, requires migrating off the flat snapshot to the new session shape preserving first-node access, and does not claim the flat nodes API remains; replacement shape correctly marked unconfirmed."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates ctx.connection.api.agentPresets.list (index.ts:11), maps A1-30, requires removing the deleted face and calling agentPresets listing via the sanctioned 0.1.2 plugin→Host service path; exact mechanism correctly marked unconfirmed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "No claim that apply must become setup/activate or that service inject must move into a manifest; inject contract explicitly left unconfirmed, and no deleted-package cleanup is misreported."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "half-cell-background", "verdict": "pass", "reason": "Identifies upper-only/lower-only branches emitting foreground only, stale background painting the transparent half, fixes with ESC[49m in each half-cell's sequence, states row-end reset is too late, and ties to edge symptoms without blaming artwork or emulator."},
+    {"id": "frame-clearing", "verdict": "pass", "reason": "Explains renderer's trailing trim plus downstream whitespace trimming leave surplus columns unwritten; proposes full-canvas-width rows plus per-row EL (ESC[0K) which survives trimming, with SGR state controlled and why padding alone fails."},
+    {"id": "frame-data-integrity", "verdict": "pass", "reason": "Identifies hand-ported tail2 mismatch with 23 changed cells from the digest report, distinguishes data drift from renderer artifacts, explains the different-frame excerpt regression missed it, and requires per-frame sha256 manifest generated from source art for every frame."},
+    {"id": "timer-liveness", "verdict": "pass", "reason": "Uses CI evidence: probe hosts never unmount, planner re-arms ref'd setTimeout chain keeping finished checks alive; prescribes unref on each newly scheduled timeout so animation continues; notes TTY already anchors interactive lifetime; rejects unmount/timeout-extension as sole fix."},
+    {"id": "renderer-and-rollout-prevention", "verdict": "pass", "reason": "Ships a renderer checklist covering state-complete cells, fixed width, erase semantics, and all-frame digest gate; pre-rollout audit covers timers per host, run-to-exit deadlines, mount/unmount lifecycle, and a liveness regression in CI."}
+  ],
+  "caps": [
+    {"id": "contradictory-render-advice", "triggered": false, "reason": "Affirmative advice consistently requires background reset, explicit erasing, source-backed frame digests, and unref; no contradictory conclusions."}
+  ]
+}

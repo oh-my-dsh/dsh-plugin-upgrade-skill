@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Cites session.events reads (channel.js:734, :6685, iteration at :623), the exact TypeError from iterating undefined, the alpha.4 removal, and the seq/eventAt()/snapshotEvents() replacements with a changelog quote."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Explains alpha.5 satisfies ^0.1.2-alpha.2 via same-tuple prerelease ordering, npm's check is static metadata only, guarantees nothing about API existence or runtime behavior, and 0.x semver disclaims stability."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Lists several genuinely distinct classes: API removal/rename, signature/type-shape change (e.g. SessionSeq split, sync-to-async, return-shape changes), behavioral semantics change, transitive drift — each explained, not two names for one removal."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires CI version-matrix smoke/type tests against actual in-range targets, plus an actionable policy: narrow the peer range to exclude breaking releases and add verified runtime feature detection with old/new paths; explains metadata cannot express API presence."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Concrete pre-install steps tied to the incident: changelog diff alpha.2→alpha.5 flagging the Session.events removal, grep plugin code for consumed symbols against target declarations, and a throwaway smoke boot — beyond rerunning npm install."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Final conclusion explicitly states install success never proves runtime compatibility; peer checks are necessary-but-not-sufficient metadata filtering."}
+  ]
+}

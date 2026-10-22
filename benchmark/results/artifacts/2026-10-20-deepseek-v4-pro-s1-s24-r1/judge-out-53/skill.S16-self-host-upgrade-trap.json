@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "worker属被杀host，无结果保留，非网络flake，SKILL/R-12引用准确"
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "shim层未再生致CLI死，内容≠安装，引用记录拒绝手工换树"
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "外部CLI重装固定rc.1再生shim并校验，源对齐tag，记录与建议分离"
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "拒绝会话内执行，全停后外部固定安装、重启刷新验证，规则引用准确"
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "预检比对目标与自身模块路径，纯版本diff免迁移，A5卡引用属实"
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "最终结论为交接外部程序，永不pwsh自升级"
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "修复为外部固定正式重装，拒绝手工复制/写shim"
+    }
+  ]
+}

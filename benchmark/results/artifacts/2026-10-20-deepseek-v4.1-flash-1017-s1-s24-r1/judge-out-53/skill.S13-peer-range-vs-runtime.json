@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "定位 liveAgent.session.events 读取与 prepareReplayEvents 的 TypeError，引用 alpha.4 changelog 移除及 seq/eventAt/snapshotEvents 替换并解释 undefined→不可迭代机制。"
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "用 npm-install-output 解释 ^0.1.2-alpha.2 脱糖后 alpha.5 同基座满足，npm 仅对声明元数据求值、零警告只代表元数据自洽而非代码可运行。"
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "C1 移除/改名、C2 同名改形(含 async 拆分、参数移入 options)、C3 声明未组装、C4 行为/默认变化、C5 组合/清单变化，类别彼此独立。"
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "要求矩阵 CI 冷启动实测 floor/head 版本，peer 范围收窄为已测走廊，能力探测含 legacy 回退路径与可行动报错，且说明 engines 不承载 dsh API 兼容声明。"
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "装前按走廊 changelog grep 已发布 tarball 中被移除的 API、核对作者实测证据、隔离 profile 冷启动验证，并明确 dry-run/npm ls/无警告重评同一谓词无效。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "结论明言 peer 满足通过但绝非运行时兼容的证据，未否认 Session.events 的移除。"
+    }
+  ]
+}

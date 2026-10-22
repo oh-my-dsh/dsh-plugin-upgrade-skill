@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "chat-projection",
+   "verdict": "partial",
+   "reason": "定位三处读取；提出过渡期兼容投影概念并诚实标注为推断，但 partial/turnEnds 被错分入'立即切换'桶，且未给出 views/timeline 或目标 Chat 读取面"
+  },
+  {
+   "id": "session-lifecycle",
+   "verdict": "partial",
+   "reason": "定位 running 且未要求重命名 useSession，但把它归入'投影可用'桶；未说明其属 Session/useSession 生命周期席、在 chat legacy 投影之外"
+  },
+  {
+   "id": "type-and-inject",
+   "verdict": "partial",
+   "reason": "定位 Pet.tsx:8 ConversationSnapshot 并合理延后目标类型名；但漏掉 index.ts:6 ClientContext 与 package.json client.inject，还断言 index.ts 不受影响"
+  },
+  {
+   "id": "slot-registration",
+   "verdict": "fail",
+   "reason": "仅在枚举 API 时顺带提及 scope.slots.register 并断言 index.ts 不受本迁移影响；未解释注册外层 inject、renderer 所有权/Context 增强或 slot 名与生命周期保留"
+  },
+  {
+   "id": "mapping-and-plan",
+   "verdict": "partial",
+   "reason": "将快照变化系于走廊读面迁移并尝试投影/立即分桶（有实质），但三处分桶有误、缺少即时类型/注入/生命周期层，且无任何卡片语义映射"
+  }
+ ],
+ "caps": []
+}

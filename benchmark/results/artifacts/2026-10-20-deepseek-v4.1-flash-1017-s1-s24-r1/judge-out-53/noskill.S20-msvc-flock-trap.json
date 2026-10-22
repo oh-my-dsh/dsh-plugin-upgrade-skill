@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "准确归因：fs-ext@2.1.1 由 dsh-session-persistence-jsonl@0.1.3-alpha.1 精确 pin 引入，install 脚本 node-gyp configure build 因无 VS/MSVC 在 configure 阶段失败，逐行引证日志并明确排除 pnpm/网络因素"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "指出 lease.ts 顶部静态 import flock 使 Windows 也必须加载 fs-ext，--ignore-scripts 只把安装失败转成启动时模块加载失败，无法达成服务可启动"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "区分 Windows acquireLockHandleWin32 命名内核信号量与 POSIX flock(2)，说明分支含义：win32 下 fs-ext 不可达故 stub 安全、Windows 锁仍走信号量、非 Windows 保留真实 flock"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "遵循 node-pty/pnpm patchedDependencies 先例：win32 平台感知跳过 node-gyp + 入口惰性解析/静态命名导出 stub 使其可加载，非 Windows 保留原生构建，注册 pnpm-workspace.yaml，交代 allow-list 构建权限，提出 reinstall/module-load/boot 三层验证"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "明确不装 VS、不改 upstream/插件源码，使用仓库管理的 pnpm patch，并正确把删除依赖识别为禁止的 upstream 修改"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "引用完整 DSH-0.1.3-A1-03 并阐明卡片内容（安装期原生 addon 阻塞、静态导入仍需加载、平台上从不调用）及其与本次失败和补丁方案的对应"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "方案全文明确不安装任何 VS/MSVC 组件，以 pnpm patch 完成修复"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "明确拒绝 --ignore-scripts 作为修复；补丁在跳过构建的同时使静态导入的入口可加载"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "使用仓库本地 pnpm patchedDependencies 补丁，声明 upstream 与插件源码均不改动"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "命名信号量不动，POSIX 保留真实 flock；win32 stub 平台限定且被调用时抛出命名错误而非 no-op"
+    }
+  ]
+}

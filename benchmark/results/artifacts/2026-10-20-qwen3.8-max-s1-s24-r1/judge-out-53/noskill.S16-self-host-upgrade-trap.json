@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Session log ties host+tool worker to the exact tree npm replaces; host dies mid-replacement, GUI drops, tool result preserved as 'outcome unknown'; framed as structural self-host hazard, not a network flake, with no universal every-platform-crash overclaim."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Explains content-present + dsh/dsh.cmd missing + stale dsh.ps1 (shims only written in bin-link phase); hand-swapped non-standard tree tied to the broken shim state; file surgery and hand-written shims rejected in favor of a real installer run."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Repair-notes-grounded: external CLI re-ran pinned npm install -g @deepseek-ai/dsh@0.1.2-rc.1, shims regenerated, dsh --version=rc.1, source checkout tag aligned without unrelated edits; recorded repair vs user-side verification kept separate; report itself read-only."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "partial",
+      "reason": "Refuses in-session execution and hands off stop-host → pinned external install → restart/refresh/verify; refusal-to-execute correctly identified as the new self-host rule and pinning as established, but stop-host-first is misclassified into the 'new' rule list where the rubric requires it as an established rule."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Guard evaluates commands against session-start self-identity (install root/shim dir/paths, not just the string 'dsh'); alpha.5→rc.1 version-only diff → no re-migration; version markers + plugin loading checked after restart/refresh; backups cleaned only after verification; specific to these tags."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "Final plan is refusal + external procedure with the host fully stopped first; even the automation escape-hatch script is to be written for others, never executed by the agent."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Final fix is the formal external pinned registry install; directory swaps and hand-written shims explicitly rejected."
+    }
+  ]
+}

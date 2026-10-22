@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "Locates the ClientContext import (index.ts:1, used at :9), maps A1-25, gives a concrete supported direction — import Context from the owning package with the needed type augmentations per owning package — consistent with the rubric's sufficient direction; no reliance on type erasure."
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "Compares 'pet-legacy-bundle' against package.json name dsh-pet-session-bench, maps A1-26, and requires the exact name alignment (entry id == package name == loader id) with the activation contract stated."
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "Locates useSession/nodes (index.ts:12-13), maps A1-27, replaces the removed flat access with a supported content-reading surface (useChat keyed store iterated via order and nodes.get, plus a durable-window alternative), preserving ordering, and does not claim the old flat API remains; names are consistent with the rubric's examples and the residual uncertainty is flagged."
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "Locates connection.api.agentPresets.list (index.ts:11), maps A1-30, and replaces the deleted face with a verified public remote domain interface for the same operation, including result-shape handling; remote/public domain APIs are a rubric-supported direction."
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "No unsupported lifecycle replacement is asserted and the report does not claim service inject must generally move into a manifest; it explicitly finds nothing to remove in the inject export."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Correctly credits the brief's registry snapshot (alpha.1 absent, alpha.2 published) and proposes npm view/dist-tag verification; the extra 'skill measurement' layer is explicitly marked unconfirmed and does not contradict the supplied facts."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Expands the caret with the same-tuple prerelease gate, shows alpha.2 satisfies the range under the snapshot, identifies the silent type-baseline mismatch and time-dependent uncertainty, and refutes the 'all alphas missing' misreading."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "A1 is a complete exact-pin-to-alpha.2 plan with tradeoffs; B/C cover obtaining a verified alpha.1 via tag checkout/tarballs; explicitly acknowledges the pin does not validate alpha.1's surface."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Single package manager with committed lockfile and npm ci, tsc --noEmit against the pinned target, CI drift assertion, exit paths for A2/C overrides and future upgrades, and an explicit unconfirmed register."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Exact alpha.1 install appears only as a failing anti-pattern; the alpha.1 path uses a git-tag checkout or locally built tarballs, never an npm install of the unpublished version."
+    }
+  ]
+}

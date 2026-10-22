@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S18-terminal-sprite-render-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S18-terminal-sprite-render-trap",
+    "status": "done",
+    "subagentId": "aec88024-3e43-4180-865c-f4bde256c9fc",
+    "start": "2026-10-20T18:09:15+08:00",
+    "end": "2026-10-20T18:19:13+08:00",
+    "durationSec": 598,
+    "toolcalls": 24,
+    "tokensIn": 37082,
+    "tokensOut": 21426,
+    "tokensTotal": 264588,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S18-terminal-sprite-render-trap\\agent-output\\S18-terminal-sprite-render-trap\\report.md",
+    "fixtureFiles": 5,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; phantom pixels = relative/partial SGR, half-filled cells emit fg-only seqs so left full cell's 48;2 bg persists through glyph's empty half at right edges (outline/Z/heart); fix = absolute SGR w/ explicit default bg (fg+ESC[49m or RESET before each changed seq); verified via verbatim replication simulation of shipped renderer (3 phantom cells as-shipped -> 0 fixed); ghost frames = trailing-cell trim (replace L41) + text pipeline strips trailing whitespace + writes never clear uncovered cells -> narrow rows leave wide-frame surplus columns; fix = end rows ESC[0m ESC[K + fixed-width canvas/union(old,new) coverage; drift = hand-copied tail2, 23 differing cells upper-right spout/tail-tip (1-col left shift, extras row3 col25 & cols36-37); regression was excerpt-based for a different frame; gate = mechanical conversion + checked-in golden sha256 over ALL frames (normalized 25x40 pre-render), fail-closed per-cell diff; hang = planner re-arms setTimeout per tick while mounted, channel-ui headless hosts mount header w/o unmounting -> self-renewing Timeout chain pins event loop, job PASSes then idles (19 min observed) until runner kill; interactive terminal unaffected (TTY/stdin); fix = .unref(); prevention 8-point contract + 6-point rollout audit (mount-without-unmount host inventory, flag-on CI dry run asserting natural exit + live-handle inspection, duration baseline, ANSI golden snapshots + wide->narrow test, flag-off inertness, ship-flip-alone w/ revert); Mode A read-only, corridor cards N/A; fixture 5/5 SHA before+after; no deviations",
+    "startMs": 1792490955606,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\aec88024-3e43-4180-865c-f4bde256c9fc",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S18-terminal-sprite-render-trap\\agent-output\\S18-terminal-sprite-render-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S18-terminal-sprite-render-trap\\report.md",
+        "bytes": 17215
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 5
+    },
+    "metrics": {
+      "toolcalls": 24,
+      "requests": 7,
+      "tokensIn": 37082,
+      "tokensOut": 21426,
+      "tokensTotal": 264588,
+      "lastTime": 1792491553353
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\aec88024-3e43-4180-865c-f4bde256c9fc",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\aec88024-3e43-4180-865c-f4bde256c9fc\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

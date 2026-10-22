@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "published-version-evidence",
+   "verdict": "pass",
+   "reason": "依package.json与brief区分：alpha.1未发布、alpha.2在列，并提npm view包级核验"
+  },
+  {
+   "id": "caret-resolution",
+   "verdict": "pass",
+   "reason": "同tuple预发布门控解释^alpha.1可选alpha.2，点明静默漂移与面不确定"
+  },
+  {
+   "id": "workable-baseline-plan",
+   "verdict": "pass",
+   "reason": "路径B精确锁已发布alpha.2附权衡；§1/§3明示不验证alpha.1"
+  },
+  {
+   "id": "reproducibility-and-exit",
+   "verdict": "partial",
+   "reason": "npm单一与诚实标注有；lockfile/冻结安装与目标typecheck仅提及未成步骤"
+  }
+ ],
+ "caps": [
+  {
+   "id": "install-unpublished-registry-version",
+   "triggered": false,
+   "reason": "精确锁alpha.1仅作ETARGET反例，未处方安装"
+  }
+ ]
+}
