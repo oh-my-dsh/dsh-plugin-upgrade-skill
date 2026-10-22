@@ -1,0 +1,16 @@
+{
+  "decisions": [
+    {"id": "native-install-failure", "verdict": "pass", "reason": "Correctly attributes the failure to fs-ext@2.1.1 pulled by dsh-session-persistence-jsonl, its node-gyp configure build install script, and missing VS/MSVC, citing install-error.log and manifest-excerpt.json."},
+    {"id": "static-import-trap", "verdict": "pass", "reason": "Explains the top-level static flock import forces fs-ext to load on Windows before branch selection, so --ignore-scripts only moves the failure to boot time."},
+    {"id": "platform-lock-contract", "verdict": "pass", "reason": "Distinguishes Windows acquireLockHandleWin32/named-semaphore path from POSIX flock, notes fs-ext is dead code on Windows permitting an import-safe stub, and requires non-Windows to keep the real native build."},
+    {"id": "reproducible-local-patch", "verdict": "pass", "reason": "Follows the node-pty patchedDependencies precedent: platform-aware install script (win32 no-op, others keep node-gyp), pure-JS dispatching entry shim with callable stubs, pnpm-workspace.yaml registration, plus reinstall/module-load/boot/CI verification steps."},
+    {"id": "machine-and-upstream-boundaries", "verdict": "pass", "reason": "Explicitly respects the no-Visual-Studio constraint and uses only the repository-managed pnpm patch; correctly states no upstream repo or published dependency change."},
+    {"id": "corridor-mapping", "verdict": "fail", "reason": "Declares the full card id unreadable from its whitelist, refuses to cite DSH-0.1.3-A1-03, and offers only an explicitly invented candidate id, so the required card connection is not established."}
+  ],
+  "caps": [
+    {"id": "requires-visual-studio", "triggered": false, "reason": "Visual Studio install is listed only as a rejected alternative; the plan requires no compiler."},
+    {"id": "ignore-scripts-only", "triggered": false, "reason": "--ignore-scripts is analyzed and explicitly rejected; the plan makes the entry loadable via a JS shim."},
+    {"id": "upstream-edit-required", "triggered": false, "reason": "Plan uses the in-repo pnpm patch mechanism; upstream edits are explicitly out of scope."},
+    {"id": "lock-bypass", "triggered": false, "reason": "Windows locking stays on the named semaphore; the flock stub is load-time only and POSIX keeps the native module."}
+  ]
+}

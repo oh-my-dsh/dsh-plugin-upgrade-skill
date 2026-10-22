@@ -1,0 +1,118 @@
+{
+  "task": "S1-static-scan",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "startedAt": "2026-10-21T04:18:43.374Z",
+  "endedAt": "2026-10-21T04:39:22.004Z",
+  "durationMs": 1238630,
+  "durationSec": 1239,
+  "subagentId": "4875cebb-f1dc-47b5-9a5c-785535dee85e",
+  "sessionIds": [
+    "4875cebb-f1dc-47b5-9a5c-785535dee85e"
+  ],
+  "toolCalls": 65,
+  "toolCounts": {
+    "run_code": 64,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 160065,
+    "outputTokens": 118435,
+    "cacheReadTokens": 5619818,
+    "cacheWriteTokens": 0,
+    "total": 5898318
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 65,
+      "llmMs": 1211045,
+      "toolMs": 22427
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S1-static-scan/S1-touchpoint-scan.md",
+      "chars": 51835,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 65,
+      "toolCounts": {
+        "run_code": 64,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/event/i.test",
+          "resolved": "E:\\event\\i.test",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "p://localhost:43121/api/legacy\\`",
+          "resolved": "p:\\localhost:43121\\api\\legacy\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "g:\\`",
+          "resolved": "g:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/.dsh/profiles/default",
+          "resolved": "E:\\.dsh\\profiles\\default",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/api/legacy",
+          "resolved": "E:\\api\\legacy",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/api/remote.mux",
+          "resolved": "E:\\api\\remote.mux",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "p://localhost:43121/api/legacy%%BT%%",
+          "resolved": "p:\\localhost:43121\\api\\legacy%%BT%%",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "p://localhost:43121/api/legacy",
+          "resolved": "p:\\localhost:43121\\api\\legacy",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 8,
+      "pass": true
+    }
+  },
+  "error": null
+}

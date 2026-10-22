@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Shows v0.9.5 absent from the ls-remote tag inventory while the sync script pushes only HEAD:main per mirror; ties the absent ref to attempt 1's immediate resolution failure and rules out network, typo, and registry causes."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Reads v0.9.7 targeting 0.1.2-alpha.1 against the consumer's 0.1.1-rc.2, states the plugin-newer-than-host direction, explains why install succeeded (no peer enforcement at that host version) and why restart cannot change a wrong-target artifact."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "R2 selects the documented v0.9.3 using its rc.1 verification and the additive rc.2 note, notes v0.9.3 is also mirror-missing, gives the #v0.9.3 install command contingent on maintainer tag publication, and conditions any SHA pin on verification rather than inventing one; the extra v0.9.1 primary is hedged as inferred and does not displace the v0.9.3 remedy."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Proposes tag-inclusive push to every mirror in the sync loop plus per-mirror ls-remote verification gates, README-ref lint, and origin-vs-mirror tag-set reconciliation, grounded in the branch-only script."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "Requires a per-host-version README table routing rc.1/rc.2 hosts to the verified v0.9.3 build and alpha-line hosts to an alpha-cohort artifact, enforced by machine-checked lint and peer ranges rather than a newest-tag default."}
+  ],
+  "caps": []
+}

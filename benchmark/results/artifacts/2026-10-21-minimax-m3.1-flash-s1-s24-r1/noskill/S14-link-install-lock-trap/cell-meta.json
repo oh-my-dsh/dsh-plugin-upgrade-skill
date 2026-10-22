@@ -1,0 +1,116 @@
+{
+  "task": "S14-link-install-lock-trap",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:20:46.253Z",
+  "endedAt": "2026-10-21T06:27:03.603Z",
+  "durationMs": 377350,
+  "durationSec": 377,
+  "subagentId": "07cc4bed-f8df-4ed7-b7d7-c9d12bd89bd6",
+  "sessionIds": [
+    "07cc4bed-f8df-4ed7-b7d7-c9d12bd89bd6"
+  ],
+  "toolCalls": 24,
+  "toolCounts": {
+    "run_code": 11,
+    "pwsh": 1,
+    "read": 10,
+    "write": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 36613,
+    "outputTokens": 22572,
+    "cacheReadTokens": 284160,
+    "cacheWriteTokens": 0,
+    "total": 343345
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 12,
+      "llmMs": 370177,
+      "toolMs": 5756
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S14-link-install-lock-trap/S14-link-install-lock-trap-report.md",
+      "chars": 31202,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 24,
+      "toolCounts": {
+        "run_code": 11,
+        "pwsh": 1,
+        "read": 10,
+        "write": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "E:\\\\dev\\\\dsh-attach-input}",
+          "resolved": "E:\\dev\\dsh-attach-input}",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "E:\\\\dev\\\\dsh-attach-input",
+          "resolved": "E:\\dev\\dsh-attach-input",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js",
+          "resolved": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 3,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 10,
+      "uniqueOperands": 10,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 1,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:20:46.253Z",
+    "endedAt": "2026-10-21T06:27:03.603Z",
+    "durationSec": 377,
+    "flushWaitMs": 4131,
+    "complete": true
+  }
+}

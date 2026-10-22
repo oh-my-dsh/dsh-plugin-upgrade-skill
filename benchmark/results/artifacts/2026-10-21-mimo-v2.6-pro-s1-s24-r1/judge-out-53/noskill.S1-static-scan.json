@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates patch.yml target/replacements, patch: composition key, apply-patch.mjs and package.json script; distinguishes source patch from ordinary composition and explains the SessionView/renderSessionView private coupling."},
+{"id":"events","verdict":"pass","reason":"Finds producer/consumer and ignorable:true, explains alpha.1 removal vs alpha.2 restoration with corridor folding to net state and notes the restored producer/persistence contract still governs; no Session.append claim."},
+{"id":"host-services","verdict":"partial","reason":"Locates apiProxy usage and invoke namespaces but never confirms apiProxy was removed in the corridor, and does not distinguish Host domain-service injection from the Web Client Remote path."},
+{"id":"host-path","verdict":"partial","reason":"Locates the hardcoded homedir/.dsh/profiles/default literal, but only vaguely suggests managed-path APIs; does not explain using runtime DSH_HOME/profile information. No false --profile-origin claim."},
+{"id":"ui","verdict":"partial","reason":"Locates both the private /internal SessionView import and registerCommand, notes the private path was removed and must migrate, but gives no public owner/seam verification after the split."},
+{"id":"channel","verdict":"pass","reason":"Locates the loopback server on 127.0.0.1:43121, states it violates the Gateway auth model and must be registered/authenticated; notes dormant-but-triggerable."},
+{"id":"subprocess","verdict":"partial","reason":"Locates both dsh subprocess sites and stdout JSON.parse, correctly says stdout is final text not JSONL and the assumption was wrong; but never addresses stderr progress/reasoning."},
+{"id":"mapping","verdict":"partial","reason":"Coupling-to-change content mapping is substantively correct for all seven hits, but card IDs are all placeholder A?-?? (skills/ forbidden), so required IDs A1-01/A1-02+A2-01/A1-03/A1-04/A1-08/A1-05 are not actually matched."},
+{"id":"limits","verdict":"partial","reason":"Accounts for all seven hit categories, states scan limits and no-hit reasoning well, but only defers to 'dynamic verification' without proposing target-version build/typecheck, isolated boot, or a functional path."}
+],"caps":[]}

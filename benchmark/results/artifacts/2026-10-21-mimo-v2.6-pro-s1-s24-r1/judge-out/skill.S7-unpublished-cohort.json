@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "published-version-evidence", "verdict": "pass", "reason": "Registry fact separated from the declaration (alpha.1 never published, alpha.2 published), with the conflicting card snapshot recorded and package-specific verification proposed."},
+    {"id": "caret-resolution", "verdict": "pass", "reason": "Semver derivation shows the caret resolves to alpha.2, identifying the silent substitution, R-11 type drift and prerelease uncertainty without false claims."},
+    {"id": "workable-baseline-plan", "verdict": "pass", "reason": "Path A exact published pin acknowledging alpha.1 stays unvalidated, plus a verify-only source-tag plan and a locally-built-tarball cohort plan, each with tradeoffs and exits."},
+    {"id": "reproducibility-and-exit", "verdict": "pass", "reason": "One manager, committed lockfile/frozen installs, proposed typecheck, override-removal exit when the cohort publishes, and honest unconfirmed marking."}
+  ],
+  "caps": [
+    {"id": "install-unpublished-registry-version", "triggered": false, "reason": "Exact alpha.1 install is explicitly the failing case; local tarballs come from verified alpha.1 source."}
+  ]
+}

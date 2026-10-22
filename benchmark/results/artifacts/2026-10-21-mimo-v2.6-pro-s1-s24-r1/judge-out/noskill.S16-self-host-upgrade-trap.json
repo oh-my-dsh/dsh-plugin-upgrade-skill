@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Connects the session/tool worker to the host installation npm is replacing, explains the host dies at remove/linkStuff so no tool result can be recorded, and treats it as a structural self-host hazard while preserving the unknown final tool outcome."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Explains env-state.txt: package content present but dsh/dsh.cmd missing and dsh.ps1 stale, so content presence does not prove a complete install; relates the manually swapped tree to broken shims and rejects hand-repair."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Grounds the remedy in repair-notes.md: rerun npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from outside the stopped host so npm regenerates shims, verify rc.1, align the source checkout to the tag; keeps recorded repair separate from proposed verification."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Requires the agent to recognize it runs on the upgrade target and hand off: fully stop the host first, exact-version pinned install from a genuinely external context, restart, refresh, verify; distinguishes existing stop/pin rules from the new refuse-inside-the-target rule."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Describes a self-mutation guard comparing the install target with its own runtime/worker paths; uses the version-only alpha.5→rc.1 diff to skip plugin migration; checks shims, version markers and real plugin loading, with backup cleanup only after verification."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final plan explicitly refuses to execute the upgrade from inside the target host and requires a fully stopped host plus external execution."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Manual directory swaps and handmade shims are explicitly rejected in favor of the formal external pinned reinstall."}
+  ]
+}

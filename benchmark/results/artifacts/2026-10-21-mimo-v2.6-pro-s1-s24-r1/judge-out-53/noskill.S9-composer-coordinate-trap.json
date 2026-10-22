@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"Clearly distinguishes clipboard-text projection (draft/Occurrence, chip = full clipboardText) from detect projection (TokenSpan, chip = one U+FFFC), grounded in contract and facade docs; spaces/text keep normal width."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"Locates snapshot.draft.length in add; explains empty-composer coincidence then deterministic overshoot (gap = length−1 per chip); insertReference false becomes toast; rejects concurrent-edit explanation and inconsistent counts."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Traces unconverted offset/length to consumeToken, ignored false, unconditional records.delete; occurrence/chip persist while missing record renders 'unavailable'; both symptoms tied to the same coordinate mismatch, not upload failure."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Gives detect(p) = p − Σ(o.length−1) over preceding chips applied at both call sites; removal uses one-detect-char span; revision guard kept; records retired only on true (or verified fallback)."},
+{"id":"regression-sequences","verdict":"pass","reason":"Two successive pastes with both chips, removal with preceding chip asserting occurrence/dock chip/record removed together and other chip survives, plus declined-consumption, first/last-chip and empty variants with concrete spans."}
+],"caps":[]}

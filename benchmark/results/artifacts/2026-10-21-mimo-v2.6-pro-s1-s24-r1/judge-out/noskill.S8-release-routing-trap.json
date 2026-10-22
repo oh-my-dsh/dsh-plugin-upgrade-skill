@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Uses ls-remote-tags.txt (v0.9.2-v0.9.6 hole incl. v0.9.5) and sync-script.sh (only HEAD:main, no tag refspec) to explain attempt 1's immediate resolution failure, explicitly ruling out network/typo causes."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Explains the direction: v0.9.7 is built for the alpha.1 client API (useConversation seat) while the runtime 0.1.1-rc.2 is older; clean install and restart prove nothing, API absence causes the TypeError."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Selects v0.9.3 via rc.1 verification plus additive rc.2 note; notices v0.9.3 tag is also absent; gives conditional install command after maintainer tag push and a conditional SHA fallback with reachability pre-check; no invented SHA, explicitly rejects upgrading DSH."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Proposes explicit refs/tags/*:refs/tags/* push to every remote grounded in the branch-only script, plus a per-mirror ls-remote verification gate that fails the release."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "Routes README commands by runtime generation with a compatibility matrix (rc.x to v0.9.3, alpha.1 to v0.9.7), rejects newest-tag defaults, and does not generalize support to untested future alphas."}
+  ],
+  "caps": []
+}

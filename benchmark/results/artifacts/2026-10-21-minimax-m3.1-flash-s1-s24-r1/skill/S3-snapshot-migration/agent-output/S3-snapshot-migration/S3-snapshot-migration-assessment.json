@@ -1,0 +1,230 @@
+{
+  "task": "S3-snapshot-migration",
+  "mode": "A · inspect (read-only)",
+  "plugin": {
+    "name": "@demo/dsh-bench-pet",
+    "version": "0.1.0",
+    "plane": "Web Client (browser)",
+    "style": "0.1.1-rc.1"
+  },
+  "target": {
+    "host": "dsh-v0.1.2-alpha.2",
+    "corridor": [
+      "dsh-v0.1.1-rc.1",
+      "dsh-v0.1.1-rc.2",
+      "dsh-v0.1.2-alpha.1",
+      "dsh-v0.1.2-alpha.2"
+    ]
+  },
+  "fixtureModified": false,
+  "fixtureHashCheck": "6/6 files match fixture-seal.pre.json (re-verified after scan)",
+  "toolsRun": [
+    {
+      "tool": "skills/plugin-upgrade/scripts/plan-migration.mjs",
+      "args": "--root <fixture> --from dsh-v0.1.1-rc.1 --to dsh-v0.1.2-alpha.2",
+      "result": "3 hits, class #5 only; cards over-inclusive"
+    },
+    {
+      "tool": "skills/plugin-upgrade/scripts/inject-lint.mjs",
+      "args": "<fixture>",
+      "result": "verdict FIX-REQUIRED; runtimeRefsLeft=index.ts,Pet.tsx; cordisPeer=null; declaredInject=[]; peersMissingForImports=[dsh-client-locale,dsh-client-ui-conversation,dsh-client-ui-slots]"
+    }
+  ],
+  "breakingSurfaces": [
+    {
+      "id": "B1",
+      "location": "package.json:8",
+      "issue": "dsh-client-runtime in dsh.client.inject",
+      "card": "DSH-0.1.2-A1-25",
+      "target": "remove from inject; recompose by capability"
+    },
+    {
+      "id": "B2",
+      "location": "package.json:6-10",
+      "issue": "legacy top-level 'client' manifest key",
+      "card": "DSH-0.1.1-R1-02 + DSH-0.1.1-R1-03",
+      "target": "dsh.client { platform: web, inject: [...] }"
+    },
+    {
+      "id": "B3",
+      "location": "package.json:8",
+      "issue": "unscoped inject ids",
+      "card": "DSH-0.1.2-A1-26",
+      "target": "module ids = package names"
+    },
+    {
+      "id": "B4",
+      "location": "package.json",
+      "issue": "no peerDependencies; cordis peer absent",
+      "card": "DSH-0.1.2-A2-03",
+      "target": "@deepseek-ai/cordis ^4.0.1 + cohort floors ^0.1.2-alpha.2"
+    },
+    {
+      "id": "B5",
+      "location": "package.json",
+      "issue": "no @deepseek-ai/dsh-llm peer for ContentBlock-family values",
+      "card": "DSH-0.1.2-A2-03",
+      "target": "add dsh-llm peer"
+    },
+    {
+      "id": "B6",
+      "location": "src/client/index.ts:6",
+      "issue": "import ClientContext from deleted dsh-client-runtime/client",
+      "card": "DSH-0.1.2-A1-25",
+      "target": "import type { Context as ClientContext } from '@deepseek-ai/cordis'"
+    },
+    {
+      "id": "B7",
+      "location": "src/client/index.ts:38-43",
+      "issue": "bare ctx.slots.register into a slot declared by another entry (apply-order race)",
+      "card": "DSH-0.1.2-A1-25 / DSH-0.1.2-A1-26",
+      "target": "ctx.slots.inject('conversation.session.header.actions', () => ctx.slots.register(...))"
+    },
+    {
+      "id": "B8",
+      "location": "src/client/index.ts:14-19",
+      "issue": "LocaleNamespaceMap augmented in a module that may not own it",
+      "card": "DSH-0.1.2-A1-25 + precision checklist",
+      "target": "augment the owning locale module; keep runtime ctx.locale.register"
+    },
+    {
+      "id": "B9",
+      "location": "src/client/index.ts:29",
+      "issue": "service-level inject includes 'conversation'",
+      "card": "DSH-0.1.1-R1-04 / R-02",
+      "target": "keep only real service keys; weak ctx.get for optional"
+    },
+    {
+      "id": "B10",
+      "location": "src/client/index.ts",
+      "issue": "missing renderer-owned ctx.slots type augmentation",
+      "card": "DSH-0.1.2-A1-25",
+      "target": "import type {} from '@deepseek-ai/dsh-client-ui-renderer/client' (peer, not inject)"
+    },
+    {
+      "id": "B11",
+      "location": "src/client/index.ts",
+      "issue": "missing ui-chat declaration dependency",
+      "card": "DSH-0.1.2-A2-03",
+      "target": "add dsh-client-ui-chat direct dev/peer dep"
+    },
+    {
+      "id": "B12",
+      "location": "src/client/Pet.tsx:8",
+      "issue": "import ConversationSnapshot from deleted package",
+      "card": "DSH-0.1.2-A1-25",
+      "target": "import type { ChatSnapshot } from '@deepseek-ai/dsh-client-ui-chat/client'"
+    },
+    {
+      "id": "B13",
+      "location": "src/client/Pet.tsx:19-23",
+      "issue": "flat ConversationSnapshot selector via useSession",
+      "card": "DSH-0.1.2-A1-03",
+      "target": "useChat selector; order + nodes.get(id)"
+    },
+    {
+      "id": "B14",
+      "location": "src/client/Pet.tsx:19",
+      "issue": "running is a lifecycle field, absent from the compat projection",
+      "card": "DSH-0.1.2-A1-03",
+      "target": "keep on the useSession lifecycle seat"
+    },
+    {
+      "id": "B15",
+      "location": "src/client/Pet.tsx:23",
+      "issue": "turnEnds moved to the chat view timeline",
+      "card": "DSH-0.1.2-A1-03",
+      "target": "read last turn reason from chat.timeline"
+    },
+    {
+      "id": "B16",
+      "location": "src/client/Pet.tsx:14",
+      "issue": "partial.blocks discriminator + ContentBlock owner",
+      "card": "DSH-0.1.2-A1-03 + DSH-0.1.2-A2-03",
+      "target": "read via chat.legacy.partial first; re-check block discriminator at alpha.2 dsh-llm types"
+    },
+    {
+      "id": "B17",
+      "location": "src/client/Pet.tsx:21",
+      "issue": "runningCalls read",
+      "card": "DSH-0.1.2-A1-03",
+      "target": "chat.legacy.runningCalls (staged) then typed chat view"
+    },
+    {
+      "id": "B18",
+      "location": "package.json:3",
+      "issue": "plugin's own SemVer bump is a separate step",
+      "card": "SKILL Mode C step 6",
+      "target": "bump plugin version after compatibility changes; verify packed manifest"
+    },
+    {
+      "id": "B19",
+      "location": "cordis.patch.yml:1-3",
+      "issue": "composition row (not a source patch); row name must equal bare package name",
+      "card": "DSH-0.1.2-A1-26 + API-08",
+      "target": "keep name '@demo/dsh-bench-pet'; client registration id must equal package name"
+    }
+  ],
+  "requirement4": {
+    "compatibilityProjectionFirst": [
+      {
+        "field": "partial (isThinking)",
+        "class": "content",
+        "via": "views.get('chat')?.legacy.partial"
+      },
+      {
+        "field": "runningCalls (toolRunning)",
+        "class": "content",
+        "via": "views.get('chat')?.legacy.runningCalls"
+      },
+      {
+        "field": "nodes (not read today)",
+        "class": "content",
+        "via": "legacy mirror exists but alpha.2 canonical is order + nodes.get(id)"
+      }
+    ],
+    "immediateSwitch": [
+      {
+        "field": "running",
+        "class": "lifecycle",
+        "why": "not present in the compatibility projection; lifecycle seat only"
+      },
+      {
+        "field": "turnEnds / last end reason",
+        "class": "turn timeline",
+        "why": "moved to chat.timeline; legacy mirror is a stopgap"
+      },
+      {
+        "field": "ConversationSnapshot type + flat selector shape",
+        "class": "type surface",
+        "why": "exporting package deleted — compile-time break"
+      }
+    ]
+  },
+  "notHit": [
+    "DSH-0.1.2-A1-27",
+    "DSH-0.1.2-A1-30",
+    "DSH-0.1.2-A1-01",
+    "DSH-0.1.2-A2-02",
+    "DSH-0.1.2-A2-06",
+    "DSH-0.1.2-A1-32",
+    "DSH-0.1.2-A1-28",
+    "DSH-0.1.2-A1-29",
+    "DSH-0.1.2-A1-06",
+    "DSH-0.1.2-A1-11",
+    "DSH-0.1.2-A1-09",
+    "DSH-0.1.2-A1-10",
+    "DSH-0.1.2-A1-12",
+    "DSH-0.1.2-A1-23",
+    "DSH-0.1.2-A1-14",
+    "DSH-0.1.2-A1-24",
+    "DSH-0.1.2-A2-05",
+    "DSH-0.1.2-A2-08",
+    "DSH-0.1.2-A2-10",
+    "DSH-0.1.2-A1-02 + DSH-0.1.2-A2-01",
+    "DSH-0.1.1-R2-01/02/03",
+    "DSH-0.1.1-R1-06/07/08/09"
+  ],
+  "openItems": 8,
+  "report": "agent-output/S3-snapshot-migration/S3-snapshot-migration-assessment.md"
+}

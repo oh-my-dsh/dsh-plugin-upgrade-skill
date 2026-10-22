@@ -1,0 +1,9 @@
+1. run_code>glob pattern=**/* path=...\S7-unpublished-cohort\fixture
+2. run_code>working_directory （cwd 探针，无文件系统读写）
+3. run_code>read ...\fixture\README.md
+4. run_code>read ...\fixture\package.json
+5. run_code>write ...\agent-output\S7-unpublished-cohort\report.md （主报告，含 run-stats）
+6. run_code>write ...\agent-output\report.md （同内容副本）
+7. run_code>write ...\agent-output\tool-transcript.txt
+8. run_code>write ...\agent-output\transcript-manifest.txt
+9. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e （向父 agent 回传自包含结果）

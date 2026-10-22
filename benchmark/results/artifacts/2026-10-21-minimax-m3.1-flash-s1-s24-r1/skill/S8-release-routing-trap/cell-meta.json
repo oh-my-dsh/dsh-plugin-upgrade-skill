@@ -1,0 +1,131 @@
+{
+  "task": "S8-release-routing-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:02:25.622Z",
+  "endedAt": "2026-10-21T06:18:49.912Z",
+  "durationMs": 984290,
+  "durationSec": 984,
+  "subagentId": "aef9a2fe-482d-4f88-b2b0-0abd9005d4c7",
+  "sessionIds": [
+    "aef9a2fe-482d-4f88-b2b0-0abd9005d4c7"
+  ],
+  "toolCalls": 32,
+  "toolCounts": {
+    "run_code": 31,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 65517,
+    "outputTokens": 125780,
+    "cacheReadTokens": 1079610,
+    "cacheWriteTokens": 0,
+    "total": 1270907
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 24,
+      "llmMs": 971108,
+      "toolMs": 11102
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S8-release-routing-trap/S8-release-routing-trap-report.md",
+      "chars": 30743,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 32,
+      "toolCounts": {
+        "run_code": 31,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/useConversation/i",
+          "resolved": "E:\\useConversation\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/peer/i",
+          "resolved": "E:\\peer\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/useConversation/.test",
+          "resolved": "E:\\useConversation\\.test",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "s://github.com/public-org/dsh-ui-progress.git\\`",
+          "resolved": "s:\\github.com\\public-org\\dsh-ui-progress.git\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "b:\\`",
+          "resolved": "b:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "s://github.com/public-org/dsh-ui-progress.git@@",
+          "resolved": "s:\\github.com\\public-org\\dsh-ui-progress.git@@",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 6,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 3,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:02:25.622Z",
+    "endedAt": "2026-10-21T06:18:49.912Z",
+    "durationSec": 984,
+    "flushWaitMs": 25,
+    "complete": true
+  }
+}

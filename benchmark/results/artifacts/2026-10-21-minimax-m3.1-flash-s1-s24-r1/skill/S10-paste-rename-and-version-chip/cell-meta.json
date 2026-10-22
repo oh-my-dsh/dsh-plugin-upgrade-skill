@@ -1,0 +1,104 @@
+{
+  "task": "S10-paste-rename-and-version-chip",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:08:48.473Z",
+  "endedAt": "2026-10-21T06:21:11.578Z",
+  "durationMs": 743105,
+  "durationSec": 743,
+  "subagentId": "c21e73e7-39db-4978-9c85-b477c34482c5",
+  "sessionIds": [
+    "c21e73e7-39db-4978-9c85-b477c34482c5"
+  ],
+  "toolCalls": 86,
+  "toolCounts": {
+    "run_code": 26,
+    "pwsh": 7,
+    "read": 20,
+    "grep": 31,
+    "write": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 66423,
+    "outputTokens": 75896,
+    "cacheReadTokens": 1517517,
+    "cacheWriteTokens": 0,
+    "total": 1659836
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 27,
+      "llmMs": 706101,
+      "toolMs": 33612
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S10-paste-rename-and-version-chip/S10-report.md",
+      "chars": 34790,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 86,
+      "toolCounts": {
+        "run_code": 26,
+        "pwsh": 7,
+        "read": 20,
+        "grep": 31,
+        "write": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/app/fixture",
+          "resolved": "E:\\app\\fixture",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 1,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 20,
+      "uniqueOperands": 20,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:08:48.473Z",
+    "endedAt": "2026-10-21T06:21:11.578Z",
+    "durationSec": 743,
+    "flushWaitMs": 12780,
+    "complete": true
+  }
+}

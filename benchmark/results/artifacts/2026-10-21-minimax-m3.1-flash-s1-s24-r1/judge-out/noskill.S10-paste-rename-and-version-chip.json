@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "paste-names-and-scope", "verdict": "pass", "reason": "Designs paste_image/paste_file names with (2),(3)… before the extension until a free name is found, reserves names in a per-call set plus live composer state, scopes renaming to source==='paste' inside add before validateItems and record creation, and keeps drop/picker names untouched."},
+    {"id": "live-conflict-state", "verdict": "pass", "reason": "Names input.state.getSnapshot().occurrences as the authoritative taken-set and explains the records subscription's transient-empty deletion while the attachment stays live, covering in-flight batch reservations via the reserved set; records demoted to a rendering cache."},
+    {"id": "stale-tag-display", "verdict": "pass", "reason": "Uses the captured x-cache HIT/age 178 response topping out at v0.2.9 and renderCurrentChip(tag) printing the fetched value; the display rule shows the remote tag only when newer and otherwise the running PLUGIN_VERSION, with an older read treated as unverifiable, never displayed."},
+    {"id": "regressions", "verdict": "pass", "reason": "Covers repeated and same-batch pastes keeping distinct names (A2/A3), a live occurrence blocking a name with an emptied records cache (A5), unchanged drop/picker names (A4), and older/equal versus genuinely newer remote tags against the running build (B1–B3)."},
+    {"id": "release-hygiene", "verdict": "pass", "reason": "Requires machine-checked PLUGIN_VERSION ↔ package.json sync, node --check on shipped bytes plus behavioral regressions, and explains update delivery through the plugin install path followed by client reload/hard refresh, noting the chip cannot install and no host-side endpoint exists."}
+  ],
+  "caps": []
+}

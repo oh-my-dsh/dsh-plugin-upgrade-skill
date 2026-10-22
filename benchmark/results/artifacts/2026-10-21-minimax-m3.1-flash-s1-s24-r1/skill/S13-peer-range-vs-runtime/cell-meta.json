@@ -1,0 +1,98 @@
+{
+  "task": "S13-peer-range-vs-runtime",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:19:29.434Z",
+  "endedAt": "2026-10-21T06:24:56.850Z",
+  "durationMs": 327416,
+  "durationSec": 327,
+  "subagentId": "9602f6ed-ae81-42bd-a464-e2855d37f61c",
+  "sessionIds": [
+    "9602f6ed-ae81-42bd-a464-e2855d37f61c"
+  ],
+  "toolCalls": 47,
+  "toolCounts": {
+    "run_code": 18,
+    "glob": 2,
+    "read": 20,
+    "grep": 3,
+    "write": 2,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 65058,
+    "outputTokens": 32614,
+    "cacheReadTokens": 935415,
+    "cacheWriteTokens": 0,
+    "total": 1033087
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 19,
+      "llmMs": 318411,
+      "toolMs": 6715
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 2,
+      "path": "agent-output/S13-peer-range-vs-runtime/report.md",
+      "chars": 33892,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 47,
+      "toolCounts": {
+        "run_code": 18,
+        "glob": 2,
+        "read": 20,
+        "grep": 3,
+        "write": 2,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 20,
+      "uniqueOperands": 20,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:19:29.434Z",
+    "endedAt": "2026-10-21T06:24:56.850Z",
+    "durationSec": 327,
+    "flushWaitMs": 1065,
+    "complete": true
+  }
+}

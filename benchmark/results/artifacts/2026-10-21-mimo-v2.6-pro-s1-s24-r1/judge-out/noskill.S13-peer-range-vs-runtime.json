@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Locates session.events reads, ties undefined to the 'events is not iterable' crash frame, cites the changelog removal at 0.1.2-alpha.4 and the seq/eventAt/snapshotEvents replacements."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Shows alpha.5 sorts inside ^0.1.2-alpha.2 and explains npm only checks declared version-range metadata, not API existence or runtime behavior; a peer range is an author claim."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Gives genuinely distinct classes: API removal/rename, semantic change behind an unchanged name (SessionSeq/SessionLogOffset), contract/shape change (array to undefined, sync to async), and transitive drift."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires testing actual target versions (CI matrix + startup smoke and type-checking) AND a compatibility policy: narrow the peer range to the tested band plus runtime feature detection with actionable errors; explains metadata versus runtime guards."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Concrete tarball download and scan of session.events usage cross-referenced against the changelog between floor and target, tied to this incident; correctly dismisses dry-run/metadata-only checks."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Final conclusion explicitly states peer satisfaction proves nothing about runtime compatibility; no denial of the documented removal."}
+  ]
+}

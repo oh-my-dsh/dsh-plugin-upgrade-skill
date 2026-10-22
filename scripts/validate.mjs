@@ -45,7 +45,12 @@ function parseFrontmatter(text, file, required = true) {
 }
 
 const allFiles = await walk(root)
-const markdownFiles = allFiles.filter((file) => file.endsWith('.md'))
+// Benchmark result artifacts (candidate agent reports under
+// benchmark/results/artifacts/) are untrusted solver output, not repository
+// documentation: card references inside them must not resolve against the
+// card catalog. Exclude them from the markdown card-reference sweep.
+const markdownFiles = allFiles.filter((file) => file.endsWith('.md')
+  && !file.includes(join('benchmark', 'results', 'artifacts')))
 
 // Skill frontmatter and directory ownership.
 const skillsRoot = join(root, 'skills')

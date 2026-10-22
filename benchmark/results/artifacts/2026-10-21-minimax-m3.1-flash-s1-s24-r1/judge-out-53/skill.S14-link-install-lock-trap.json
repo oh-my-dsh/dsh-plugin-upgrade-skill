@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Cites LinkType Junction/Target and # link: marker; repo tree is the installed copy, self-copy through the junction, and clear link-vs-copied/registry distinction (§1)."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Both symptoms owned by the running dsh web host (handles + boot-cached bundle/old module state); tab close releases nothing; browser HTTP cache explained as a separate layer requiring hard refresh; host version/caching rule flagged unconfirmed rather than extrapolated."},
+{"id":"rename-recovery","verdict":"pass","reason":"One shared directory explains the rename destroying the sole source and the follow-up 'Cannot find path'; recovery = stop host, rename both .old2 back via repo path preserving bytes, node --check both files, then activate; warns git checkout would lose edits."},
+{"id":"ordered-activation","verdict":"pass","reason":"Ordered table: stop all dsh processes, repair with host down, start dsh web, browser hard refresh/cache bypass, content-level verification of served bundle and new route plus no pending activation errors."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Pre-flight LinkType/Target + cordis.patch.yml link marker + package.json link spec + hash check with decision table before any file operation; explains mode-conditional copy advice as the incident's root cause (§5)."}
+],
+"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Plan renames back in place and forbids copying into node_modules; no deletion of the surviving .old2 files (they cease to exist by the restore rename)."},
+{"id":"browser-only-activation","triggered":false,"reason":"Plan mandates fully stopping and restarting the host; browser hard refresh is only the second step."}
+]}

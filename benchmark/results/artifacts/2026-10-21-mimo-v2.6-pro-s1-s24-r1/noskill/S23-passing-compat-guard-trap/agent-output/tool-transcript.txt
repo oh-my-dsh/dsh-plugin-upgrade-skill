@@ -1,0 +1,16 @@
+# S23 tool transcript — one line per tool call (filesystem calls issued via run_code; run_code invoked 5 times at top level, one of which failed on a quoting error before any file write)
+1. glob pattern=**/* path=<cell>\fixture   (enumerate sealed evidence pack)
+2. read <cell>\fixture\symptom-report.md
+3. read <cell>\fixture\plugin\src-client-index.ts
+4. read <cell>\fixture\host-types\session-list-alpha1.d.ts
+5. read <cell>\fixture\host-types\session-list-alpha2.d.ts
+6. read <cell>\fixture\host-types\ui-session-service-alpha2.d.ts
+7. read <cell>\fixture\upgrade-notes.txt
+8. read <cell>\fixture\README.md
+9. write <cell>\agent-output\report.md   (main report)
+10. write <cell>\agent-output\S23-passing-compat-guard-trap\report.md   (same report, second permitted destination)
+11. read <cell>\agent-output\report.md   (verify non-empty)
+12. write <cell>\agent-output\tool-transcript.txt   (this file)
+13. write <cell>\agent-output\transcript-manifest.txt
+14. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e   (result to parent)
+# <cell> = E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\noskill\S23-passing-compat-guard-trap

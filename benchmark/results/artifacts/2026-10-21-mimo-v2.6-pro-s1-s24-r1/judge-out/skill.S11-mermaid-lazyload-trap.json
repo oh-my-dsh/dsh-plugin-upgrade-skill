@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Explains sibling imports resolve against the chunk's own URL, siblings were never shipped, so the 200 entry still rejects the whole dynamic import; proposes a self-contained single-file chunk with splitting off plus a graph-completeness assertion."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Attributes the 403 to a case-sensitive startsWith across two pipelines (E: from import.meta.url vs e: from realpathSync); explains Linux byte-identical and laptop coincidental passes; explicitly rejects 'Windows paths unreliable' folklore and hedges the lowercase-drive generalization in residual risk."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "Proposes canonicalizing both sides via realpathSync and path.relative containment rejecting .., absolute/different-volume and post-resolution symlink escapes, with platform-appropriate case folding; keeps the JavaScript MIME serving requirement."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Explains both handlers sit on one wheel event path; gives the open modal exclusive ownership with capture-phase preventDefault + stopPropagation and requires the pane handler to yield (ownership flag/composedPath or deregistration), noting capture-order limits."},
+    {"id": "incident-regressions", "verdict": "pass", "reason": "T1–T3 cover chunk-graph completeness/deployability with rendered fallback assertion, case-mismatch allow vs traversal/symlink/escape refuse (Windows CI), and modal zoom without pane font change; framed as planned checks."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "Final fix strengthens containment on canonicalized paths; no advice to disable containment or serve outside the resource root."}
+  ]
+}

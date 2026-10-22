@@ -1,0 +1,868 @@
+{
+  "run": "2026-10-21-mimo-v2.6-pro-s1-s24-r1",
+  "model": "MiMo-V2.6-Pro",
+  "kind": "cost-summary (post-run addendum)",
+  "generatedAt": "2026-10-22T11:55:27.339Z",
+  "scope": "48 cells = 24 tasks x 2 arms (noskill / skill); one solver subagent per cell, single attempt",
+  "tokens": {
+    "source": "DSH host session logs under C:/Users/lhh/.dsh/sessions/--E-deepseek-harness-test-lhh010--/<subagent-session-id>/session.v4.jsonl.zstd (multi-frame zstd JSONL). Each assistant/message event carries data.usage. 49 solver sessions belong to this run (filtered by header parentSession = session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e); 452 usage events in total, all of type assistant/message (no other event type carries usage, so no double counting).",
+    "accounting": "inputTokens = non-cached prompt tokens; cacheReadTokens = cached prompt tokens served from cache; outputTokens = completion tokens; totalTokens = inputTokens + cacheReadTokens + outputTokens (verified per event and on every aggregate).",
+    "ledgerNote": "The cell ledger's tokens column was recorded as n/a during the run because solver sessions expose no usage metering to the solver; these figures were extracted post-hoc from the host-side session logs.",
+    "byArm": {
+      "noskill": {
+        "cells": 24,
+        "steps": 194,
+        "inputTokens": 1307649,
+        "cacheReadTokens": 4260480,
+        "outputTokens": 672572,
+        "totalTokens": 6240701
+      },
+      "skill": {
+        "cells": 24,
+        "steps": 256,
+        "inputTokens": 2170515,
+        "cacheReadTokens": 9865600,
+        "outputTokens": 694963,
+        "totalTokens": 12731078
+      }
+    },
+    "total48Cells": {
+      "steps": 450,
+      "inputTokens": 3478164,
+      "cacheReadTokens": 14126080,
+      "outputTokens": 1367535,
+      "totalTokens": 18971779
+    },
+    "excluded": {
+      "crashedSolverInstance": {
+        "sessionId": "fe94d13e-17ad-4e53-9bb5-6f0ed09a2ab8",
+        "cell": "S15-slot-error-boundary-crash/noskill",
+        "reason": "infrastructure crash before any deliverable; zero tool output",
+        "tokens": {
+          "steps": 2,
+          "inputTokens": 2887,
+          "cacheReadTokens": 24960,
+          "outputTokens": 336,
+          "totalTokens": 28183
+        }
+      }
+    },
+    "supplementary": {
+      "orchestratorSession": {
+        "sessionId": "session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e",
+        "window": "up to 2026-10-21T16:28:13+08:00 (last cell closeout)",
+        "note": "parent/orchestrator turns of this same run (spawn + closeout + reporting); not part of the 48-cell figures",
+        "tokens": {
+          "steps": 128,
+          "inputTokens": 768504,
+          "cacheReadTokens": 14775936,
+          "outputTokens": 132934,
+          "totalTokens": 15677374
+        }
+      }
+    }
+  },
+  "toolcalls": {
+    "source": "cell ledger (solver self-reported totals, convention: sum of top-level + nested when only a split was given)",
+    "byArm": {
+      "noskill": 513,
+      "skill": 622
+    },
+    "total": 1135,
+    "note": "S3-snapshot-migration/skill was interrupted at the 30-minute limit and reported no toolcalls (n/a), so the skill-arm sum covers 23 of 24 cells."
+  },
+  "durations": {
+    "source": "cell ledger (HH:MM:SS local +08:00 start/end per cell)",
+    "byArm": {
+      "noskill": "274m17s",
+      "skill": "320m57s",
+      "noskillSeconds": 16457,
+      "skillSeconds": 19257
+    },
+    "cellDurationSum": "595m14s",
+    "wallClock": {
+      "runStart": "2026-10-21T11:59:22+08:00",
+      "lastCellEnd": "2026-10-21T16:28:08+08:00",
+      "span": "4h28m46s",
+      "firstSpawn": "2026-10-21T12:06:56+08:00",
+      "activeSpan": "4h21m12s",
+      "concurrency": "2 slots until 14:3x, then 4 (user-raised)"
+    }
+  },
+  "perCell": [
+    {
+      "task": "S2-negative-scan",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "10m43s",
+      "durationSeconds": 643,
+      "toolcalls": 33,
+      "tokens": {
+        "inputTokens": 61346,
+        "cacheReadTokens": 189824,
+        "outputTokens": 29762,
+        "totalTokens": 280932
+      },
+      "steps": 9,
+      "sessionId": "12ca5c76-114e-462b-9055-98cd1bb3207a"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "13m51s",
+      "durationSeconds": 831,
+      "toolcalls": 24,
+      "tokens": {
+        "inputTokens": 88724,
+        "cacheReadTokens": 336256,
+        "outputTokens": 44000,
+        "totalTokens": 468980
+      },
+      "steps": 12,
+      "sessionId": "8c06fff1-aaed-4c58-b15c-b35faac69a6a"
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "status": "done",
+      "duration": "8m46s",
+      "durationSeconds": 526,
+      "toolcalls": 33,
+      "tokens": {
+        "inputTokens": 88381,
+        "cacheReadTokens": 716160,
+        "outputTokens": 35022,
+        "totalTokens": 839563
+      },
+      "steps": 14,
+      "sessionId": "05d85f09-fb16-4c19-af82-148dedab4845"
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "status": "done",
+      "duration": "16m45s",
+      "durationSeconds": 1005,
+      "toolcalls": 30,
+      "tokens": {
+        "inputTokens": 115571,
+        "cacheReadTokens": 869504,
+        "outputTokens": 26514,
+        "totalTokens": 1011589
+      },
+      "steps": 20,
+      "sessionId": "d97458af-fcd9-4b61-a085-131ce8d9729c"
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "6m47s",
+      "durationSeconds": 407,
+      "toolcalls": 23,
+      "tokens": {
+        "inputTokens": 72748,
+        "cacheReadTokens": 83200,
+        "outputTokens": 18002,
+        "totalTokens": 173950
+      },
+      "steps": 7,
+      "sessionId": "555dffdd-bc87-4231-b5db-99db144578ef"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "5m24s",
+      "durationSeconds": 324,
+      "toolcalls": 15,
+      "tokens": {
+        "inputTokens": 16295,
+        "cacheReadTokens": 102016,
+        "outputTokens": 12131,
+        "totalTokens": 130442
+      },
+      "steps": 6,
+      "sessionId": "b9449c24-df66-4981-8910-559d3d5b29bc"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "8m26s",
+      "durationSeconds": 506,
+      "toolcalls": 24,
+      "tokens": {
+        "inputTokens": 22942,
+        "cacheReadTokens": 157568,
+        "outputTokens": 17804,
+        "totalTokens": 198314
+      },
+      "steps": 8,
+      "sessionId": "3af46f9a-5c78-4580-93d4-2abb193dc441"
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "skill",
+      "status": "done",
+      "duration": "15m54s",
+      "durationSeconds": 954,
+      "toolcalls": 54,
+      "tokens": {
+        "inputTokens": 139041,
+        "cacheReadTokens": 1210240,
+        "outputTokens": 30443,
+        "totalTokens": 1379724
+      },
+      "steps": 21,
+      "sessionId": "7613fabf-fafd-43c5-8db2-dcd26f124ad3"
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "skill",
+      "status": "done",
+      "duration": "11m06s",
+      "durationSeconds": 666,
+      "toolcalls": 34,
+      "tokens": {
+        "inputTokens": 47716,
+        "cacheReadTokens": 302464,
+        "outputTokens": 24884,
+        "totalTokens": 375064
+      },
+      "steps": 9,
+      "sessionId": "a5c06a8e-6e88-467c-ba97-d79efa4e0178"
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "28m29s",
+      "durationSeconds": 1709,
+      "toolcalls": 33,
+      "tokens": {
+        "inputTokens": 213060,
+        "cacheReadTokens": 418176,
+        "outputTokens": 63058,
+        "totalTokens": 694294
+      },
+      "steps": 15,
+      "sessionId": "f2cef599-5014-4a54-bebd-e9b6caea5d16"
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "skill",
+      "status": "done",
+      "duration": "10m35s",
+      "durationSeconds": 635,
+      "toolcalls": 34,
+      "tokens": {
+        "inputTokens": 58978,
+        "cacheReadTokens": 367104,
+        "outputTokens": 27751,
+        "totalTokens": 453833
+      },
+      "steps": 10,
+      "sessionId": "33ed037d-241b-4a9b-a135-519fca502c27"
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "6m28s",
+      "durationSeconds": 388,
+      "toolcalls": 9,
+      "tokens": {
+        "inputTokens": 37664,
+        "cacheReadTokens": 64128,
+        "outputTokens": 15981,
+        "totalTokens": 117773
+      },
+      "steps": 5,
+      "sessionId": "6c3010f2-0fab-4147-a712-95374a5ed1e0"
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "8m54s",
+      "durationSeconds": 534,
+      "toolcalls": 12,
+      "tokens": {
+        "inputTokens": 26720,
+        "cacheReadTokens": 154112,
+        "outputTokens": 23221,
+        "totalTokens": 204053
+      },
+      "steps": 7,
+      "sessionId": "e1d14970-e1b3-456b-90c7-08aa5066df95"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "14m42s",
+      "durationSeconds": 882,
+      "toolcalls": 21,
+      "tokens": {
+        "inputTokens": 78655,
+        "cacheReadTokens": 212864,
+        "outputTokens": 34805,
+        "totalTokens": 326324
+      },
+      "steps": 9,
+      "sessionId": "f8ad893c-39f9-447c-a8a1-2c36b29756e9"
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "skill",
+      "status": "done",
+      "duration": "12m18s",
+      "durationSeconds": 738,
+      "toolcalls": 13,
+      "tokens": {
+        "inputTokens": 70841,
+        "cacheReadTokens": 307584,
+        "outputTokens": 27096,
+        "totalTokens": 405521
+      },
+      "steps": 8,
+      "sessionId": "e79e1899-6f1b-4237-80fe-2456808cb7ff"
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "13m04s",
+      "durationSeconds": 784,
+      "toolcalls": 37,
+      "tokens": {
+        "inputTokens": 112703,
+        "cacheReadTokens": 412672,
+        "outputTokens": 31570,
+        "totalTokens": 556945
+      },
+      "steps": 13,
+      "sessionId": "f98a2388-1a45-49d2-b458-8b4bb00c4f5f"
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "9m42s",
+      "durationSeconds": 582,
+      "toolcalls": 21,
+      "tokens": {
+        "inputTokens": 80976,
+        "cacheReadTokens": 93952,
+        "outputTokens": 23278,
+        "totalTokens": 198206
+      },
+      "steps": 7,
+      "sessionId": "e92c267e-9ffa-4537-835a-7814c0ae69c4"
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "12m13s",
+      "durationSeconds": 733,
+      "toolcalls": 12,
+      "tokens": {
+        "inputTokens": 90938,
+        "cacheReadTokens": 120704,
+        "outputTokens": 27615,
+        "totalTokens": 239257
+      },
+      "steps": 6,
+      "sessionId": "7c7e7ac0-a072-4350-a941-7800aa1cf8ac"
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "skill",
+      "status": "timeout",
+      "duration": "30m51s",
+      "durationSeconds": 1851,
+      "toolcalls": null,
+      "tokens": {
+        "inputTokens": 335993,
+        "cacheReadTokens": 1178880,
+        "outputTokens": 43576,
+        "totalTokens": 1558449
+      },
+      "steps": 18,
+      "sessionId": "7c52c9c0-c15d-4e18-ae22-0192c46cb97a"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "6m20s",
+      "durationSeconds": 380,
+      "toolcalls": 26,
+      "tokens": {
+        "inputTokens": 27459,
+        "cacheReadTokens": 170368,
+        "outputTokens": 11521,
+        "totalTokens": 209348
+      },
+      "steps": 10,
+      "sessionId": "8ba76b7b-8d13-4cfc-87fe-7203ebf6eb00"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "3m46s",
+      "durationSeconds": 226,
+      "toolcalls": 17,
+      "tokens": {
+        "inputTokens": 13320,
+        "cacheReadTokens": 99712,
+        "outputTokens": 9153,
+        "totalTokens": 122185
+      },
+      "steps": 6,
+      "sessionId": "e6252ae4-154a-40c5-b023-eb3a108ae4d5"
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "skill",
+      "status": "done",
+      "duration": "11m23s",
+      "durationSeconds": 683,
+      "toolcalls": 25,
+      "tokens": {
+        "inputTokens": 41640,
+        "cacheReadTokens": 226304,
+        "outputTokens": 24164,
+        "totalTokens": 292108
+      },
+      "steps": 8,
+      "sessionId": "6c0eed22-f8c3-4f62-b497-fb6da712c119"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "20m00s",
+      "durationSeconds": 1200,
+      "toolcalls": 20,
+      "tokens": {
+        "inputTokens": 54618,
+        "cacheReadTokens": 202624,
+        "outputTokens": 48955,
+        "totalTokens": 306197
+      },
+      "steps": 7,
+      "sessionId": "6b4d98fc-3a27-485f-8bce-a1c89117315a"
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "6m24s",
+      "durationSeconds": 384,
+      "toolcalls": 17,
+      "tokens": {
+        "inputTokens": 49244,
+        "cacheReadTokens": 245888,
+        "outputTokens": 16098,
+        "totalTokens": 311230
+      },
+      "steps": 9,
+      "sessionId": "65f13a91-2c24-4565-9585-9d2a4fa26b17"
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "skill",
+      "status": "done",
+      "duration": "6m24s",
+      "durationSeconds": 384,
+      "toolcalls": 21,
+      "tokens": {
+        "inputTokens": 40463,
+        "cacheReadTokens": 363264,
+        "outputTokens": 19356,
+        "totalTokens": 423083
+      },
+      "steps": 11,
+      "sessionId": "e45e6ec6-85e1-4138-942e-370ebc97dcf7"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "8m51s",
+      "durationSeconds": 531,
+      "toolcalls": 24,
+      "tokens": {
+        "inputTokens": 81276,
+        "cacheReadTokens": 197120,
+        "outputTokens": 31510,
+        "totalTokens": 309906
+      },
+      "steps": 9,
+      "sessionId": "f8fe4348-fc91-413c-8148-4b9c6f16f495"
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "8m41s",
+      "durationSeconds": 521,
+      "toolcalls": 16,
+      "tokens": {
+        "inputTokens": 26895,
+        "cacheReadTokens": 157184,
+        "outputTokens": 22306,
+        "totalTokens": 206385
+      },
+      "steps": 7,
+      "sessionId": "1444d986-9795-40bd-b82c-bc3b18b2cdc4"
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "10m29s",
+      "durationSeconds": 629,
+      "toolcalls": 20,
+      "tokens": {
+        "inputTokens": 56444,
+        "cacheReadTokens": 236928,
+        "outputTokens": 27030,
+        "totalTokens": 320402
+      },
+      "steps": 8,
+      "sessionId": "6f0d369e-3984-4bc6-9162-28ab81ff5433"
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "9m51s",
+      "durationSeconds": 591,
+      "toolcalls": 14,
+      "tokens": {
+        "inputTokens": 131102,
+        "cacheReadTokens": 238976,
+        "outputTokens": 25950,
+        "totalTokens": 396028
+      },
+      "steps": 10,
+      "sessionId": "37155bd9-77b7-4765-b981-a35e81052adf"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "5m45s",
+      "durationSeconds": 345,
+      "toolcalls": 21,
+      "tokens": {
+        "inputTokens": 46040,
+        "cacheReadTokens": 193664,
+        "outputTokens": 22792,
+        "totalTokens": 262496
+      },
+      "steps": 9,
+      "sessionId": "11e1404a-f12d-48ea-8ad8-83af6b202ed8"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "4m10s",
+      "durationSeconds": 250,
+      "toolcalls": 13,
+      "tokens": {
+        "inputTokens": 64731,
+        "cacheReadTokens": 294016,
+        "outputTokens": 28324,
+        "totalTokens": 387071
+      },
+      "steps": 12,
+      "sessionId": "531890e9-56de-4376-94a5-1e38a0cd500d"
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "9m13s",
+      "durationSeconds": 553,
+      "toolcalls": 25,
+      "tokens": {
+        "inputTokens": 55682,
+        "cacheReadTokens": 165504,
+        "outputTokens": 25887,
+        "totalTokens": 247073
+      },
+      "steps": 6,
+      "sessionId": "88ae011d-7c99-4bff-92d9-e049930ef1e3"
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "23m28s",
+      "durationSeconds": 1408,
+      "toolcalls": 37,
+      "tokens": {
+        "inputTokens": 60757,
+        "cacheReadTokens": 338304,
+        "outputTokens": 22238,
+        "totalTokens": 421299
+      },
+      "steps": 9,
+      "sessionId": "63ed5cb5-f4f3-4175-8d48-90d675c1cecd"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "34m38s",
+      "durationSeconds": 2078,
+      "toolcalls": 34,
+      "tokens": {
+        "inputTokens": 72473,
+        "cacheReadTokens": 272896,
+        "outputTokens": 67667,
+        "totalTokens": 413036
+      },
+      "steps": 8,
+      "sessionId": "e22fab2f-c65b-425f-bae6-366e1d7863d3"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "21m48s",
+      "durationSeconds": 1308,
+      "toolcalls": 25,
+      "tokens": {
+        "inputTokens": 68723,
+        "cacheReadTokens": 217344,
+        "outputTokens": 28306,
+        "totalTokens": 314373
+      },
+      "steps": 10,
+      "sessionId": "bb3bc801-d710-47f5-8c8b-11f1a684155d"
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "22m45s",
+      "durationSeconds": 1365,
+      "toolcalls": 11,
+      "tokens": {
+        "inputTokens": 55754,
+        "cacheReadTokens": 158848,
+        "outputTokens": 30074,
+        "totalTokens": 244676
+      },
+      "steps": 6,
+      "sessionId": "862e341e-1929-4329-8dd7-b559ba6334a7"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "7m35s",
+      "durationSeconds": 455,
+      "toolcalls": 16,
+      "tokens": {
+        "inputTokens": 35897,
+        "cacheReadTokens": 71936,
+        "outputTokens": 18221,
+        "totalTokens": 126054
+      },
+      "steps": 5,
+      "sessionId": "2ee92c9e-6da1-43ed-8fdd-00325366fd7f"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "7m25s",
+      "durationSeconds": 445,
+      "toolcalls": 21,
+      "tokens": {
+        "inputTokens": 24028,
+        "cacheReadTokens": 105984,
+        "outputTokens": 18378,
+        "totalTokens": 148390
+      },
+      "steps": 5,
+      "sessionId": "ff52f565-0aa9-499e-a0fe-afb502b3fe4f"
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "skill",
+      "status": "done",
+      "duration": "10m07s",
+      "durationSeconds": 607,
+      "toolcalls": 31,
+      "tokens": {
+        "inputTokens": 58506,
+        "cacheReadTokens": 287872,
+        "outputTokens": 23202,
+        "totalTokens": 369580
+      },
+      "steps": 10,
+      "sessionId": "8846923f-9d12-47eb-b3b8-9a9778c467f0"
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "7m53s",
+      "durationSeconds": 473,
+      "toolcalls": 31,
+      "tokens": {
+        "inputTokens": 77961,
+        "cacheReadTokens": 298368,
+        "outputTokens": 22039,
+        "totalTokens": 398368
+      },
+      "steps": 9,
+      "sessionId": "743e7c73-8df9-4fb4-ad90-20977be7a9fd"
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "skill",
+      "status": "done",
+      "duration": "18m25s",
+      "durationSeconds": 1105,
+      "toolcalls": 28,
+      "tokens": {
+        "inputTokens": 131531,
+        "cacheReadTokens": 282752,
+        "outputTokens": 45719,
+        "totalTokens": 460002
+      },
+      "steps": 9,
+      "sessionId": "c4625b64-2ac8-40ea-84ce-e911e18b11c0"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "7m47s",
+      "durationSeconds": 467,
+      "toolcalls": 18,
+      "tokens": {
+        "inputTokens": 20314,
+        "cacheReadTokens": 155648,
+        "outputTokens": 22414,
+        "totalTokens": 198376
+      },
+      "steps": 7,
+      "sessionId": "0d505701-f18a-43b8-871a-cda283bf3899"
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "12m07s",
+      "durationSeconds": 727,
+      "toolcalls": 28,
+      "tokens": {
+        "inputTokens": 87033,
+        "cacheReadTokens": 316544,
+        "outputTokens": 33550,
+        "totalTokens": 437127
+      },
+      "steps": 11,
+      "sessionId": "7169bb99-e6c6-40cc-b3dd-8d855acd5dda"
+    },
+    {
+      "task": "S23-passing-compat-guard-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "11m48s",
+      "durationSeconds": 708,
+      "toolcalls": 19,
+      "tokens": {
+        "inputTokens": 39310,
+        "cacheReadTokens": 100480,
+        "outputTokens": 33559,
+        "totalTokens": 173349
+      },
+      "steps": 5,
+      "sessionId": "5dcd5d98-7922-4b5f-8647-6708d47c0ef9"
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "7m55s",
+      "durationSeconds": 475,
+      "toolcalls": 30,
+      "tokens": {
+        "inputTokens": 113644,
+        "cacheReadTokens": 357248,
+        "outputTokens": 18877,
+        "totalTokens": 489769
+      },
+      "steps": 11,
+      "sessionId": "f808f892-0efd-412d-bbe6-7ee4be4513c5"
+    },
+    {
+      "task": "S24-dock-cotenant-crash-trap",
+      "arm": "noskill",
+      "status": "done",
+      "duration": "12m17s",
+      "durationSeconds": 737,
+      "toolcalls": 28,
+      "tokens": {
+        "inputTokens": 33435,
+        "cacheReadTokens": 209408,
+        "outputTokens": 27424,
+        "totalTokens": 270267
+      },
+      "steps": 9,
+      "sessionId": "c732b039-104f-4781-9800-bf8a5b9c27be"
+    },
+    {
+      "task": "S24-dock-cotenant-crash-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "9m34s",
+      "durationSeconds": 574,
+      "toolcalls": 19,
+      "tokens": {
+        "inputTokens": 72336,
+        "cacheReadTokens": 251008,
+        "outputTokens": 30961,
+        "totalTokens": 354305
+      },
+      "steps": 8,
+      "sessionId": "d57d7147-36ca-4b76-ada6-b24f2af3d813"
+    },
+    {
+      "task": "S23-passing-compat-guard-trap",
+      "arm": "skill",
+      "status": "done",
+      "duration": "23m27s",
+      "durationSeconds": 1407,
+      "toolcalls": 38,
+      "tokens": {
+        "inputTokens": 78256,
+        "cacheReadTokens": 612480,
+        "outputTokens": 55347,
+        "totalTokens": 746083
+      },
+      "steps": 12,
+      "sessionId": "67fc5191-38ab-4e21-887f-135f9cd3343f"
+    }
+  ],
+  "notes": [
+    "run-manifest.json, cell-ledger.md and _audit/ are no longer present in this artifact root (removed/moved after the judging session; not found elsewhere on disk). This run-summary.json is a new file; nothing was overwritten.",
+    "Token figures are host-side telemetry, not solver self-reports; they were unavailable at run time and are now exact.",
+    "Per-cell token figures include every LLM step of that cell's solver session (including steps that produced no deliverable, e.g. the S3-skill timeout cell).",
+    "S15-slot-error-boundary-crash/noskill tokens belong to the retry instance (e22fab2f); the crashed instance's 28,183 tokens are listed under tokens.excluded."
+  ]
+}

@@ -1,0 +1,26 @@
+'use strict';
+const S=require('./semver-core.cjs');
+const {parse,rangeTest,maxSatisfying}=S;
+let fails=0;
+function chk(label,got,want){ const ok=(got===want); if(!ok) fails++; console.log((ok?'  PASS  ':'  FAIL  ')+label.padEnd(30)+' got='+String(got).padEnd(24)+' want='+want); }
+console.log('=== tilde reference values (node-semver replaceTilde) ===');
+chk('~1.2.3',S.tilde('1.2.3'),'>=1.2.3 <1.3.0-0');
+chk('~1.2.3-beta.2',S.tilde('1.2.3-beta.2'),'>=1.2.3-beta.2 <1.3.0-0');
+chk('~0.1.2',S.tilde('0.1.2'),'>=0.1.2 <0.2.0-0');
+chk('~0.0.3',S.tilde('0.0.3'),'>=0.0.3 <0.0.4-0');
+chk('~0.1.2-alpha.1',S.tilde('0.1.2-alpha.1'),'>=0.1.2-alpha.1 <0.2.0-0');
+console.log('');
+console.log('=== caret reference values (node-semver replaceCaret) ===');
+chk('^1.2.3',S.caret('1.2.3'),'>=1.2.3 <2.0.0-0');
+chk('^0.1.2',S.caret('0.1.2'),'>=0.1.2 <0.2.0-0');
+chk('^0.0.3',S.caret('0.0.3'),'>=0.0.3 <0.0.4-0');
+chk('^0.1.2-alpha.1',S.caret('0.1.2-alpha.1'),'>=0.1.2-alpha.1 <0.2.0-0');
+chk('^0.1.2-alpha.2',S.caret('0.1.2-alpha.2'),'>=0.1.2-alpha.2 <0.2.0-0');
+console.log('  failures: '+fails);
+console.log('');
+console.log('=== KEY RESULT (0.1.x line, unaffected by the tilde fix) ===');
+const PUBLISHED=['0.1.1-rc.1','0.1.1-rc.2','0.1.2-alpha.2'];
+console.log('  ^0.1.2-alpha.1  ->  '+S.caret('0.1.2-alpha.1')+'  => resolves to '+(maxSatisfying(PUBLISHED,'^0.1.2-alpha.1')??'ETARGET'));
+console.log('  ~0.1.2-alpha.1  ->  '+S.tilde('0.1.2-alpha.1')+'  => resolves to '+(maxSatisfying(PUBLISHED,'~0.1.2-alpha.1')??'ETARGET'));
+console.log('  ^ and ~ are IDENTICAL on the 0.1.x line: '+(S.caret('0.1.2-alpha.1')===S.tilde('0.1.2-alpha.1')));
+console.log('  exact 0.1.2-alpha.1 -> '+(maxSatisfying(PUBLISHED,'0.1.2-alpha.1')??'ETARGET (install fails)'));

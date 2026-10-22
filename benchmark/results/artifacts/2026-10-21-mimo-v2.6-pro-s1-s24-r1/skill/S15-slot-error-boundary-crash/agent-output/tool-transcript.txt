@@ -1,0 +1,28 @@
+1. run_code 并行执行 pwsh + read（列证据包/技能目录、读 SKILL.md）
+2. pwsh Get-ChildItem -Recurse <cell>\fixture; Get-ChildItem E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade
+3. run_code 读取技能定义（内部 read）
+4. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+5. run_code 读取证据包 README 与 diff（内部 read x2）
+6. read <cell>\fixture\README.md
+7. read <cell>\fixture\feature.diff
+8. run_code 读取组件摘录与用户反馈（内部 read x2）
+9. read <cell>\fixture\plugin-dock-chips.js
+10. read <cell>\fixture\user-thread.md
+11. run_code 枚举 fixture 文件清单（内部 glob）
+12. glob pattern=**/* path=<cell>\fixture
+13. run_code 读 SKILL.md 后半（内部 read）
+14. read E:\...\skills\plugin-upgrade\SKILL.md offset=100 limit=60
+15. run_code 检索 references 槽位/error-boundary 线索（内部 grep）
+16. grep pattern=error boundary|unmount|vanish|slot entry|ReferenceError|no-undef|render smoke path=...\skills\plugin-upgrade\references
+17. run_code 检索 troubleshooting.md 渲染/挂载口径（内部 grep）
+18. grep pattern=render|mount|smoke|console path=...\skills\plugin-upgrade\references\troubleshooting.md
+19. run_code 定位整槽消失卡片 ID（内部 grep）
+20. grep pattern=DSH-0.1.7-A1-0|React #130|whole slot|slot entry path=...\skills\plugin-upgrade\references\v0.1.7-alpha.1.md
+21. run_code 取完成时间并写报告（内部 pwsh + write）
+22. pwsh Get-Date -Format o（workdir=<cell>）
+23. write <cell>\agent-output\S15-slot-error-boundary-crash\report.md
+24. run_code 写收尾自报文件（内部 write x2）
+25. write <cell>\agent-output\tool-transcript.txt
+26. write <cell>\agent-output\transcript-manifest.txt
+27. run_code 向父代理回报结果（内部 send_message）
+28. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（自包含结论摘要）

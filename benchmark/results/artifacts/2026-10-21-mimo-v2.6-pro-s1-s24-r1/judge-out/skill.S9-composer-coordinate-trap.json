@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Explicitly contrasts clipboard projection (draft/Occurrence, chip = full clipboardText) with detect coordinates (TokenSpan/detectText, chip = one U+FFFC), quoting contract and facade docs."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Locates the draft.length anchor, shows 29-vs-2 overshoot and splice failure returning false, explains the first-paste coincidence and deterministic growth, and rules out a stale-revision race."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces [0,28) unconverted span, guard passing, ignored false, unconditional records.delete, remaining chip, and unavailable label tied to the same coordinate misread."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives detect(d)=d−Σ(length−1), applies at both call sites with a one-detect-char removal span, keeps draftRev CAS, and gates bookkeeping on the verbs' boolean returns."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "Sequences include successive pastes with chips present, removing a chip with another preceding chip while the other survives, declined-consumption bookkeeping, and surrounding-text offset checks."}
+  ],
+  "caps": []
+}

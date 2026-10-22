@@ -1,0 +1,21 @@
+1. run_code>pwsh  Get-ChildItem -Recurse -File  (workdir: ..\fixture) — enumerate evidence pack
+2. run_code>read  ..\fixture\README.md
+3. run_code>read  ..\fixture\browser-error.txt
+4. run_code>read  ..\fixture\host-boot-log.txt
+5. run_code>read  ..\fixture\plugin-apply-error.txt
+6. run_code>read  ..\fixture\restart-notes.txt
+7. run_code>read  ..\fixture\working-plugin-excerpt.txt
+8. run_code>read  ..\fixture\plugin\lib\client.js
+9. run_code>read  ..\fixture\profile\cordis.patch.yml
+10. run_code>pwsh  Select-String -Path 'plugin\lib\client.js' -Pattern '^\s*(import|export)\s' (workdir: ..\fixture) — cheap static ESM scan (flags L1/L2/L23)
+11. run_code>pwsh  node --check 'plugin\lib\client.js' (workdir: ..\fixture) — exits 0; Node module-syntax detection masks the failure
+12. run_code>pwsh  node -e "new Function(fs.readFileSync('plugin\\lib\\client.js','utf8'))" (workdir: ..\fixture) — classic-script compile → SyntaxError: Cannot use import statement outside a module
+13. run_code>pwsh  Get-Date -Format 'yyyy-MM-ddTHH:mm:sszzz' — completion timestamp probe
+14. run_code>write agent-output\report.md — full S17 incident report (5 required sections + run-stats)
+15. run_code>write agent-output\tool-transcript.txt — tool transcript (first draft)
+16. run_code>write agent-output\transcript-manifest.txt — fs access manifest
+17. run_code>edit  agent-output\report.md — run-stats toolcalls 16 → 18
+18. run_code>read  agent-output\report.md — verify report non-empty (265 lines) and run-stats present
+19. run_code>pwsh  Get-Item agent-output\{report.md,tool-transcript.txt,transcript-manifest.txt} + Select-String run-stats — verify outputs non-empty
+20. run_code>write agent-output\tool-transcript.txt — final transcript (this file, 21 entries)
+21. run_code>edit  agent-output\report.md — run-stats toolcalls 18 → 21 (final)

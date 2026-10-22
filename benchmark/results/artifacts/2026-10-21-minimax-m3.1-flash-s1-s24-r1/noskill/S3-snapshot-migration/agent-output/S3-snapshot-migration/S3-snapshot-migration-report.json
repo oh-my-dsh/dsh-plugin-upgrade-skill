@@ -1,0 +1,500 @@
+{
+  "task": "S3-snapshot-migration",
+  "plugin": {
+    "id": "bench-pet",
+    "name": "@demo/dsh-bench-pet",
+    "fixtureEra": "0.1.1-rc.1",
+    "targetHost": "0.1.2-alpha.2"
+  },
+  "readOnly": true,
+  "fixtureModified": false,
+  "cardProvenance": {
+    "cataloguePresentInCell": false,
+    "note": "No skills/ directory, no card file and no release-notes file exist under the read whitelist; host probing is out of scope. Card IDs carry the correct format and topic->surface mapping; the numeric suffix is reconstructed from the A1 wave ordering and is numbering-unverified. Re-validate suffixes against the shipped card list before editing.",
+    "formatVerified": "DSH-0.1.2-A1-xx",
+    "suffixesReconstructed": true
+  },
+  "breakClasses": {
+    "C": "compile-time (type error)",
+    "R": "runtime (throw or silent wrong value)",
+    "W": "wiring (service/slot/plugin-id)"
+  },
+  "surfaces": [
+    {
+      "id": "S1",
+      "kind": "snapshot-read",
+      "title": "Flat ConversationSnapshot root type",
+      "locations": [
+        "src/client/Pet.tsx:8",
+        "src/client/Pet.tsx:13"
+      ],
+      "impact": [
+        "C"
+      ],
+      "card": "DSH-0.1.2-A1-01",
+      "projection": "n/a",
+      "current": "import type { ConversationSnapshot } from '@deepseek-ai/dsh-client-runtime/client'; function isThinking(snapshot: ConversationSnapshot)",
+      "postMigration": "Use the grouped 0.1.2 root: { state: { phase, busy, activeCalls }, turns: TurnSummary[], compat?: {...} }. Flat members running/runningCalls/turnEnds/partial are no longer root-level.",
+      "openQuestions": [
+        "U-4"
+      ]
+    },
+    {
+      "id": "S2",
+      "kind": "snapshot-read",
+      "title": "useSession(selector) read hook",
+      "locations": [
+        "src/client/Pet.tsx:10",
+        "src/client/Pet.tsx:18",
+        "src/client/Pet.tsx:19",
+        "src/client/Pet.tsx:21",
+        "src/client/Pet.tsx:23"
+      ],
+      "impact": [
+        "C",
+        "R"
+      ],
+      "card": "DSH-0.1.2-A1-02",
+      "projection": "n/a",
+      "current": "const { useSession, t } = props; useSession(s => s.running) etc. (4 call sites)",
+      "postMigration": "Slot runtime props expose the new snapshot hook (symbol name per card) plus a separate stream hook: useSnapshot(s => s.state.busy), useSnapshot(s => s.state.activeCalls.length > 0), useSnapshot(s => s.turns.at(-1)?.endReason), useStream(stream => isThinking(stream.partial?.blocks ?? [])).",
+      "note": "If shipped untyped, the destructured useSession is undefined and the first call throws TypeError on the first render: the pet never appears at all.",
+      "openQuestions": [
+        "U-6"
+      ]
+    },
+    {
+      "id": "S3",
+      "kind": "snapshot-read",
+      "title": "snapshot.running lifecycle flag",
+      "locations": [
+        "src/client/Pet.tsx:19"
+      ],
+      "impact": [
+        "C",
+        "R-silent"
+      ],
+      "card": "DSH-0.1.2-A1-03",
+      "projection": "ELIGIBLE - defer",
+      "current": "const running = useSession(s => s.running)  // discarded at :26 via void running",
+      "postMigration": "Native: useSnapshot(s => s.state.busy). Deferred: useSnapshot(s => s.compat.running) (or root alias s.running; placement unconfirmed U-3).",
+      "note": "Silent break: a missing property yields undefined rather than throwing; the read is currently dead code.",
+      "openQuestions": [
+        "U-3",
+        "U-5"
+      ]
+    },
+    {
+      "id": "S4",
+      "kind": "snapshot-read",
+      "title": "snapshot.runningCalls in-flight calls",
+      "locations": [
+        "src/client/Pet.tsx:21"
+      ],
+      "impact": [
+        "C",
+        "R-throw"
+      ],
+      "card": "DSH-0.1.2-A1-03",
+      "projection": "ELIGIBLE - defer",
+      "current": "const toolRunning = useSession(s => s.runningCalls.length > 0)",
+      "postMigration": "Native: useSnapshot(s => s.state.activeCalls.length > 0). Deferred: useSnapshot(s => s.compat.runningCalls.length > 0) - the projection keeps the array shape, not just a count.",
+      "note": "Largest blast radius of the four selectors: a dereference on a missing field throws inside the selector during render and can take the whole header down.",
+      "openQuestions": [
+        "U-3",
+        "U-5"
+      ]
+    },
+    {
+      "id": "S5",
+      "kind": "snapshot-read",
+      "title": "snapshot.turnEnds[].reason turn history",
+      "locations": [
+        "src/client/Pet.tsx:23"
+      ],
+      "impact": [
+        "C",
+        "R-throw",
+        "R-wrong-value"
+      ],
+      "card": "DSH-0.1.2-A1-04",
+      "projection": "NOT ELIGIBLE - switch immediately",
+      "current": "const lastTurnEnd = useSession(s => s.turnEnds[s.turnEnds.length - 1]?.reason)",
+      "postMigration": "const lastTurnEnd = useSnapshot(s => s.turns.at(-1)?.endReason); then remap the vocabulary explicitly (e.g. lastTurnEnd === 'completed').",
+      "note": "Optional chaining is on the element, not the array access, so s.turnEnds.length throws. Separately the end-reason VALUE domain changed: a rename-only migration compiles and then silently never matches - a wrong-pose bug with no error.",
+      "openQuestions": [
+        "U-1"
+      ]
+    },
+    {
+      "id": "S6",
+      "kind": "snapshot-read",
+      "title": "snapshot.partial.blocks streaming reasoning detection",
+      "locations": [
+        "src/client/Pet.tsx:13-15",
+        "src/client/Pet.tsx:20"
+      ],
+      "impact": [
+        "C",
+        "R-silent"
+      ],
+      "card": "DSH-0.1.2-A1-05",
+      "projection": "NOT ELIGIBLE - switch immediately",
+      "current": "function isThinking(snapshot: ConversationSnapshot) { return snapshot.partial?.blocks.some(block => block.kind === 'reasoning') ?? false } ; const thinking = useSession(isThinking)",
+      "postMigration": "function isThinking(blocks: readonly ContentBlock[]) { return blocks.some(block => block.kind === 'thinking') } ; const thinking = useStream(stream => isThinking(stream.partial?.blocks ?? []))",
+      "note": "Null-safe expression: when the field disappears it quietly returns false instead of throwing, so the pet silently sits in the idle frame for a whole model turn. The block discriminant also changed. isThinking can no longer be a snapshot selector - it must become a stream selector.",
+      "openQuestions": [
+        "U-1",
+        "U-6"
+      ]
+    },
+    {
+      "id": "S7",
+      "kind": "type-surface",
+      "title": "LocaleNamespaceMap module-augmentation target",
+      "locations": [
+        "src/client/index.ts:14-19"
+      ],
+      "impact": [
+        "C-silent"
+      ],
+      "card": "DSH-0.1.2-A1-07",
+      "projection": "n/a",
+      "current": "declare module '@deepseek-ai/dsh-client-ui-slots' { interface LocaleNamespaceMap { pet: PetKey } }",
+      "postMigration": "declare module '@deepseek-ai/dsh-client-locale/client' { interface LocaleNamespaceMap { pet: PetKey } } - keep the type-only side-effect import at index.ts:8 so the augmentation is loaded.",
+      "note": "Augmenting a module that no longer declares the interface compiles without error but creates a dead interface; PropsLocale<'pet'> then fails to typecheck.",
+      "openQuestions": [
+        "U-2"
+      ]
+    },
+    {
+      "id": "S8",
+      "kind": "wiring",
+      "title": "Slot key + runtime props typing",
+      "locations": [
+        "src/client/Pet.tsx:10",
+        "src/client/index.ts:40"
+      ],
+      "impact": [
+        "C",
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-08",
+      "projection": "n/a",
+      "current": "PropsRuntime<'conversation.session.header.actions'> and slots.register({ name: 'conversation.session.header.actions', id: 'pet', order: 10 }, Pet)",
+      "postMigration": "Derive both from one shared constant: export const PET_SLOT = 'conversation.session.header.actions' as const; export type PetProps = PropsRuntime<typeof PET_SLOT> & PropsLocale<'pet'>",
+      "note": "The slot key is a string literal duplicated in two files; drift yields a silent no-op registration.",
+      "openQuestions": [
+        "U-8"
+      ]
+    },
+    {
+      "id": "S9",
+      "kind": "wiring",
+      "title": "Required-service injection list",
+      "locations": [
+        "src/client/index.ts:29",
+        "src/client/index.ts:38"
+      ],
+      "impact": [
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-08",
+      "projection": "n/a",
+      "current": "export const inject = ['slots', 'conversation', 'locale'] ; ctx.inject(['slots', 'conversation'], ...)",
+      "postMigration": "Re-derive the 0.1.2 service names from the runtime service list; 'conversation' may be renamed (session / conversationSnapshot).",
+      "note": "Highest impact / lowest visibility: an unresolved REQUIRED service means apply() never runs - no pet and no error, just a silently absent feature.",
+      "openQuestions": [
+        "U-7"
+      ]
+    },
+    {
+      "id": "S10",
+      "kind": "wiring",
+      "title": "ctx.locale.register dictionary shape",
+      "locations": [
+        "src/client/index.ts:36"
+      ],
+      "impact": [
+        "C",
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-07",
+      "projection": "n/a",
+      "current": "ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'pet: dictionaries')",
+      "postMigration": "Re-check the 0.1.2 registration contract (per-locale registration or a Dictionary wrapper). The zh/en records in locales.ts are plain and unlikely to change.",
+      "openQuestions": []
+    },
+    {
+      "id": "S11",
+      "kind": "wiring",
+      "title": "slots.register entry shape",
+      "locations": [
+        "src/client/index.ts:38-43"
+      ],
+      "impact": [
+        "C",
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-08",
+      "projection": "n/a",
+      "current": "scope.slots.register({ name, id, order }, Pet)",
+      "postMigration": "Match the 0.1.2 slot descriptor (name/id/order plus any new placement field).",
+      "note": "The fixture itself records the hard ordering edge at index.ts:25-28 - registering into an undeclared slot throws, so a renamed slot makes this call throw.",
+      "openQuestions": [
+        "U-8"
+      ]
+    },
+    {
+      "id": "S12",
+      "kind": "wiring",
+      "title": "package.json client wiring / missing peerDependencies",
+      "locations": [
+        "package.json:6-9"
+      ],
+      "impact": [
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-08",
+      "projection": "n/a",
+      "current": "\"client\": { \"platform\": \"web\", \"inject\": [\"dsh-client-runtime\", \"dsh-client-ui-conversation\", \"dsh-client-locale\"] } with no @deepseek-ai/dsh-client-* dependency declared",
+      "postMigration": "Update the inject list to the 0.1.2 client plugin inventory and add explicit peerDependencies on the four imported @deepseek-ai/dsh-client-* packages with a 0.1.2-alpha.2-compatible range.",
+      "note": "If the ui-conversation client plugin was split, the slot-map merge from index.ts:10 is missing, the header.actions slot is never declared and slots.register throws.",
+      "openQuestions": [
+        "U-7"
+      ]
+    },
+    {
+      "id": "S13",
+      "kind": "wiring",
+      "title": "cordis.patch.yml insert record",
+      "locations": [
+        "cordis.patch.yml:1-3"
+      ],
+      "impact": [
+        "W"
+      ],
+      "card": "DSH-0.1.2-A1-08",
+      "projection": "n/a",
+      "current": "- insert: - id: bench-pet / name: '@demo/dsh-bench-pet'  (no platform marker)",
+      "postMigration": "Declare the client/platform scope in the patch record if 0.1.2 requires it, so the plugin is not registered in the wrong scope.",
+      "note": "Low impact, one-line fix, cheap to verify.",
+      "openQuestions": [
+        "U-7"
+      ]
+    }
+  ],
+  "projection": {
+    "rule": [
+      "A field may ride the compatibility projection only if it is (1) derivable from the new state model with no second source of truth, (2) its VALUE DOMAIN is unchanged (a renamed field is fine, a renamed value is not), and (3) it lives on the same channel as the new snapshot.",
+      "Criterion 2 is the trap: a projection that restores a field NAME but not its VALUE VOCABULARY turns a loud break into a silent wrong answer."
+    ],
+    "canProjectFirst": [
+      {
+        "field": "running",
+        "from": "snapshot.running",
+        "to": "state.busy",
+        "card": "DSH-0.1.2-A1-03",
+        "surface": "S3"
+      },
+      {
+        "field": "runningCalls",
+        "from": "snapshot.runningCalls",
+        "to": "state.activeCalls",
+        "card": "DSH-0.1.2-A1-03",
+        "surface": "S4"
+      }
+    ],
+    "mustSwitchImmediately": [
+      {
+        "field": "turnEnds[].reason",
+        "to": "turns[].endReason",
+        "card": "DSH-0.1.2-A1-04",
+        "surface": "S5",
+        "reason": "Value domain changed - a same-named alias would silently never match, so the settled-turn frame never fires."
+      },
+      {
+        "field": "partial.blocks",
+        "to": "stream read path",
+        "card": "DSH-0.1.2-A1-05",
+        "surface": "S6",
+        "reason": "Different channel (streaming content is not part of the snapshot projection) AND the block discriminant changed; the null-safe expression silently returns false."
+      }
+    ],
+    "sequencing": [
+      "Release N (the 0.1.2-alpha.2 bump): hook rename (S2) + native read paths for S5 and S6 + projection reads for S3 and S4.",
+      "Release N+1 (after the projection window closes): move to state.busy / state.activeCalls and drop the projection dependency, tracked against card DSH-0.1.2-A1-06.",
+      "If the projection is off by default in the host config, S3/S4 are immediate switches too - the projection is a host-side feature and must not be assumed (U-5)."
+    ]
+  },
+  "cardIndex": [
+    {
+      "card": "DSH-0.1.2-A1-01",
+      "topic": "Conversation snapshot root restructure (flat -> grouped); ConversationSnapshot type",
+      "surfaces": [
+        "S1"
+      ],
+      "projection": "n/a"
+    },
+    {
+      "card": "DSH-0.1.2-A1-02",
+      "topic": "Read-hook replacement on slot runtime props; snapshot vs. stream read paths",
+      "surfaces": [
+        "S2",
+        "S6"
+      ],
+      "projection": "n/a"
+    },
+    {
+      "card": "DSH-0.1.2-A1-03",
+      "topic": "running / runningCalls -> state.busy / state.activeCalls, with compatibility projection",
+      "surfaces": [
+        "S3",
+        "S4"
+      ],
+      "projection": "projected - deferrable"
+    },
+    {
+      "card": "DSH-0.1.2-A1-04",
+      "topic": "Turn history turnEnds[] -> turns[]; end-reason field and vocabulary change",
+      "surfaces": [
+        "S5"
+      ],
+      "projection": "not projected - switch now"
+    },
+    {
+      "card": "DSH-0.1.2-A1-05",
+      "topic": "Streaming/partial content read path; content-block discriminant change",
+      "surfaces": [
+        "S6"
+      ],
+      "projection": "not projected - switch now"
+    },
+    {
+      "card": "DSH-0.1.2-A1-06",
+      "topic": "Compatibility-projection scope, opt-in flag, removal timeline",
+      "surfaces": [
+        "projection sequencing"
+      ],
+      "projection": "cross-cutting"
+    },
+    {
+      "card": "DSH-0.1.2-A1-07",
+      "topic": "Locale namespace-map ownership; PropsLocale augmentation target",
+      "surfaces": [
+        "S7",
+        "S10"
+      ],
+      "projection": "n/a"
+    },
+    {
+      "card": "DSH-0.1.2-A1-08",
+      "topic": "Slot keys, runtime props typing, slot registration descriptor, client plugin inventory",
+      "surfaces": [
+        "S8",
+        "S9",
+        "S11",
+        "S12",
+        "S13"
+      ],
+      "projection": "n/a"
+    }
+  ],
+  "unconfirmed": [
+    {
+      "id": "U-1",
+      "point": "Exact 0.1.2 end-reason member names and content-block discriminant",
+      "surfaces": [
+        "S5",
+        "S6"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-04 / A1-05"
+    },
+    {
+      "id": "U-2",
+      "point": "Module owning LocaleNamespaceMap in 0.1.2",
+      "surfaces": [
+        "S7"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-07"
+    },
+    {
+      "id": "U-3",
+      "point": "Projection placement: deprecated root aliases vs. compat namespace",
+      "surfaces": [
+        "S3",
+        "S4"
+      ],
+      "closeWith": "cards DSH-0.1.2-A1-03 / A1-06"
+    },
+    {
+      "id": "U-4",
+      "point": "Whether @deepseek-ai/dsh-client-runtime/client still exports ConversationSnapshot at that path",
+      "surfaces": [
+        "S1"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-01"
+    },
+    {
+      "id": "U-5",
+      "point": "Whether the projection is on by default / needs a host flag",
+      "surfaces": [
+        "S3",
+        "S4"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-06"
+    },
+    {
+      "id": "U-6",
+      "point": "New read-hook and stream-hook symbol names",
+      "surfaces": [
+        "S2",
+        "S6"
+      ],
+      "closeWith": "cards DSH-0.1.2-A1-02 / A1-05"
+    },
+    {
+      "id": "U-7",
+      "point": "0.1.2 service names and client plugin inventory",
+      "surfaces": [
+        "S9",
+        "S12",
+        "S13"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-08"
+    },
+    {
+      "id": "U-8",
+      "point": "Exact slot key in 0.1.2",
+      "surfaces": [
+        "S8",
+        "S11"
+      ],
+      "closeWith": "card DSH-0.1.2-A1-08"
+    }
+  ],
+  "fixtureSealVerification": {
+    "README.md": "c1114413138587e985b76c1fd8e43e91c9cd0e06f43b19c17b09bcca2a8b72d8",
+    "cordis.patch.yml": "73d74cf519c91984daef5148cf17a4ab7275dc36b0a3f4c98c755e93ff218f0a",
+    "package.json": "154e9fd5f8e1b9006571b0d842f7670476411b793b291e6938ade40701f1f903",
+    "src/client/Pet.tsx": "777a963ffa454f0ba340babb7269f378d6daca8f0f2aacbfd2c08187345b3ec3",
+    "src/client/index.ts": "94533a879790cdcbbe47624c4409352ea0b2f7a637284cda0e88db1f18d0dd05",
+    "src/client/locales.ts": "d56aa3aaff649bdd3aad777d4272e8e690b2918fb168e573953102dfddeec5ff"
+  },
+  "readOnlyDiscipline": {
+    "fixtureModified": false,
+    "filesWritten": [
+      "agent-output/S3-snapshot-migration/S3-snapshot-migration-report.md",
+      "agent-output/S3-snapshot-migration/S3-snapshot-migration-report.json"
+    ],
+    "migrationsExecuted": false,
+    "hostIntrospectionRun": false,
+    "networkAccess": false,
+    "pathsReadOutsideWhitelist": false,
+    "skillsConsulted": false
+  },
+  "incidental": [
+    "Pet.tsx:24,28-31 mutates frame.current in useEffect but reads it during render and never triggers a re-render, so data-frame lags by one render (pre-existing, not a 0.1.2 break).",
+    "running (:19) and lastTurnEnd (:23) are read then discarded (:26-27), so the 'settled turn -> celebration frame' behaviour described at :5 is not implemented; S5 and S6 are exactly the surfaces that would implement it."
+  ]
+}

@@ -1,0 +1,129 @@
+=== TASK SEGMENT (task brief) ===
+
+The task brief below is your assignment. It is reproduced verbatim from the sealed task material.
+
+# S17 · The External UI Plugin Onboarding Trap (Read-Only)
+
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
+
+This is an unattended evaluation running in a disposable, isolated container; there will be
+no follow-up user messages. This task brief is itself the user's explicit authorization and
+confirmation for the approach and execution needed to complete the task: complete the
+necessary analysis and planning on your own, and keep executing as soon as the plan is
+formed — do not pause to wait for "confirmation", and do not ask the user follow-up
+questions. That confirmation continues to apply to the concrete plans you produce under the
+applicable skill, but only within this scope:
+
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
+
+A user hand-wrote a new external web UI plugin (`@lhh010/dsh-profiles`) and installed it
+the usual community way: the plugin directory linked into the web profile's
+`node_modules`, plus one `insert` row in the profile's `cordis.patch.yml`. Everything
+about the plugin looked ordinary — it imports React, renders a settings section, and
+registers a slot. The result was a chain of three failures, captured in the evidence pack
+under `/app/fixture/` (read-only — do not modify it):
+
+1. the browser refused to load plugins AT ALL, with an error naming
+   `@deepseek-ai/dsh-typert-registry` — a stock entry the user never touched;
+2. after the user repackaged the plugin, a second, different error appeared at apply time
+   about a slot named `settings.section`;
+3. across the whole session, every plugin edit required restarting the host, and one
+   restart died with EADDRINUSE until the old process tree was force-killed.
+
+**Your report** (write to `/app/agent-output/S17-external-ui-plugin-onboarding-trap/`, any filename):
+
+1. Failure 1 root cause: why ONE plugin's client bundle — containing a top-level ESM
+   `import` — took down EVERY plugin's registration, what the host actually assembles
+   from the bundles and in what form it reaches the browser, and why the error named
+   `dsh-typert-registry` even though that entry is innocent;
+2. Diagnosis discipline: how the culprit should have been located from the misleading
+   error (what to bisect, what cheap static check flags the offending bundle), and the
+   client-bundle format an external plugin must ship instead of bare ESM — what wraps
+   the code, how React is obtained, and what the wrapper must export;
+3. Failure 2: what `slot "settings.section" is not declared (a parent entry's children
+   table must declare it)` means — who declares slots, why a bare registration of
+   another entry's slot fails at apply time, the exact wrapping form the registration
+   must use, and which fields a registrant may pass and which it must not;
+4. Dev-loop discipline: why the client bundle combo is not rebuilt when plugin files
+   change (what the host does at boot), what the correct restart procedure is, and why
+   the Windows restart died with EADDRINUSE until the process tree was force-killed;
+5. Prevention: what the HOST could do at startup or at combo-failure time to name the
+   offending plugin instead of the first awaited entry, and what an external-plugin
+   authoring template or checklist should contain so the next onboarding does not repeat
+   any of the three failures.
+
+What is tested: attributing a whole-combo client-bundle failure to the real culprit
+despite a misleading error, knowing the external client-bundle packaging contract,
+resolving cross-entry slot declaration ordering with the correct registration wrapper,
+the boot-assembled dev loop and its Windows restart discipline, and converting the
+incident into host-side and authoring-side prevention.
+
+=== END TASK SEGMENT ===
+
+The brief above is written for a container where /app/fixture is the sealed fixture and
+/app/agent-output is the report directory. In THIS environment those paths are mapped to your cell
+directory:
+
+  /app/fixture        ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/fixture
+  /app/agent-output   ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/agent-output
+
+Your report must be written under:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/agent-output/S17-external-ui-plugin-onboarding-trap/
+
+(Any filename ending in .md or .txt is acceptable, as the brief states.)
+
+=== BOUNDARY SEGMENT (read whitelist / write scope) ===
+
+Your READ whitelist is exactly:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/
+
+Within that whitelist, skills/plugin-upgrade/ is provided as reference material for you to use.
+
+HARD RULES:
+
+- You MUST NOT read, list, search, or open anything outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/.
+- You MUST NOT read tests/, solution/, benchmark/results/, or any other directory of this repository.
+- You MUST NOT write to ANY path outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/ - including system TEMP, /tmp, the user home,
+  the repository, or the fixture source tree. Any temporary file you need must be written under
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/agent-output/ (a scratch subdirectory there is fine).
+- Do not modify, move, or delete anything under E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S17-external-ui-plugin-onboarding-trap/fixture/ unless the brief explicitly authorizes it.
+- Do not modify the skill, any evaluator, or any reference answer.
+- Do not publish, push, or contact external services.
+- Do NOT probe the live host environment for facts the fixture does not contain: no `dsh --version`,
+  `dsh --help`, `dsh --dump-config`, `dsh --dump-config-schema`,
+  `dsh plugin --help`, `dsh headless --help`, and no `cordis_inspect_*` runtime
+  introspection. The installed host runs a DIFFERENT version than the version this task is about, so
+  anything you learn from it is out of scope and wrong. Work from the task brief and the fixture only.
+- Do not re-read the same file repeatedly. Read each fixture file once, take your notes, and move on;
+  a repeated read cycle wastes the run and invalidates the cell.
+- If you cannot verify something from the brief and the fixture, mark it as unconfirmed in the report
+  instead of guessing or going outside the whitelist to find out.
+- When your report cites a card or a reference document, write ONLY the key points and the card ID.
+  Do NOT paste the full text of a card or reference into your report or into your reply.
+  (Context budget is 256k; full-text pasting is a protocol violation.)
+
+=== END BOUNDARY SEGMENT ===
+
+=== ARM CLAUSE (skill available) ===
+
+Before you start the analysis, read skills/plugin-upgrade/SKILL.md in your cell directory.
+Consult its references/ files as needed for the change cards and API details.
+Follow the workflow that skill prescribes. Its bundled scripts under skills/plugin-upgrade/scripts/
+are yours to run - run them from the cell-local copy, never from another location.
+
+=== END ARM CLAUSE ===
+
+=== DELIVERY ===
+
+This is an unattended run. Do not ask questions; do not wait for confirmation.
+
+Budget: you have 25 minutes of wall clock. Plan for that. A good run reads the fixture files once
+or twice, writes the report, and finishes. If you find yourself re-reading files or repeating a
+probe, stop and write what you have.
+
+When the report file is written, finish with exactly: DONE

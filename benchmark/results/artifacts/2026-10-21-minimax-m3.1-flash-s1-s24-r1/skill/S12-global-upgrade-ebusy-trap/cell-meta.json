@@ -1,0 +1,124 @@
+{
+  "task": "S12-global-upgrade-ebusy-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:12:51.454Z",
+  "endedAt": "2026-10-21T06:22:15.660Z",
+  "durationMs": 564206,
+  "durationSec": 564,
+  "subagentId": "65f187d2-d83a-4f5e-9066-23d2102e4094",
+  "sessionIds": [
+    "65f187d2-d83a-4f5e-9066-23d2102e4094"
+  ],
+  "toolCalls": 26,
+  "toolCounts": {
+    "run_code": 25,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 75051,
+    "outputTokens": 51596,
+    "cacheReadTokens": 1372127,
+    "cacheWriteTokens": 0,
+    "total": 1498774
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 26,
+      "llmMs": 551869,
+      "toolMs": 9992
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S12-global-upgrade-ebusy-trap/S12-global-upgrade-ebusy-trap-report.md",
+      "chars": 27060,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 26,
+      "toolCounts": {
+        "run_code": 25,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\\\...\\\\@koromix\\\\koffi-win32-x64\\\\win32_x64\\\\koffi.node",
+          "resolved": "C:\\...\\@koromix\\koffi-win32-x64\\win32_x64\\koffi.node",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\\\...\\\\@deepseek-ai\\\\.dsh-TMPDIR\\\\...\\\\koffi.node",
+          "resolved": "C:\\...\\@deepseek-ai\\.dsh-TMPDIR\\...\\koffi.node",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "s://registry.npmjs.org\\`",
+          "resolved": "s:\\registry.npmjs.org\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/Remote/preset/client-UI",
+          "resolved": "E:\\Remote\\preset\\client-UI",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/EBUSY/.test",
+          "resolved": "E:\\EBUSY\\.test",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 5,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 2,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:12:51.454Z",
+    "endedAt": "2026-10-21T06:22:15.660Z",
+    "durationSec": 564,
+    "flushWaitMs": 18,
+    "complete": true
+  }
+}

@@ -1,0 +1,111 @@
+=== TASK SEGMENT (task brief) ===
+
+The task brief below is your assignment. It is reproduced verbatim from the sealed task material.
+
+# S8 · Release Routing Trap (Read-Only)
+
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
+
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for "confirmation", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
+
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
+
+I maintain a community plugin published to two public GitHub mirrors. A consumer reported a
+two-stage failure and I need a release-engineering diagnosis (static evidence pack in
+`/app/fixture/`; read-only — do not modify it). The consumer cannot upgrade their dsh runtime
+right now (production freeze), so remedies must work on their current runtime.
+
+**What the consumer did and saw:**
+
+1. They followed the plugin README's default install command, which pins
+   `#v0.9.5`:
+   ```
+   dsh plugin --profile web add '@org/dsh-ui-progress@github:public-org/dsh-ui-progress#v0.9.5'
+   ```
+   → pnpm failed immediately.
+2. I bumped the README to the newest tag `#v0.9.7`. The consumer retried, the install
+   succeeded this time, and then the plugin's slot entry crashed in the browser:
+   `TypeError: useConversation is not a function`. Restarting dsh did not help.
+
+**Your report** (write to `/app/agent-output/S8-release-routing-trap/`, any filename):
+
+1. Attempt-1 root cause: why `#v0.9.5` could not resolve — identify the release-engineering
+   defect from the evidence, not a guess about the consumer's network or command;
+2. Attempt-2 root cause: why the newest tag installed but the plugin crashes — identify the
+   compatibility direction (which artifact targets which DSH version) and tie it to the
+   consumer's actual runtime;
+3. The exact remedy for the consumer right now (a concrete install command, if applicable);
+4. The maintainer-side fix so both defects cannot recur (release tooling + docs).
+
+What is tested: connecting the two failures to their distinct root causes (tag distribution
+vs version routing), and giving a remedy that works under the consumer's constraint.
+
+=== END TASK SEGMENT ===
+
+The brief above is written for a container where /app/fixture is the sealed fixture and
+/app/agent-output is the report directory. In THIS environment those paths are mapped to your cell
+directory:
+
+  /app/fixture        ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/fixture
+  /app/agent-output   ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/agent-output
+
+Your report must be written under:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/agent-output/S8-release-routing-trap/
+
+(Any filename ending in .md or .txt is acceptable, as the brief states.)
+
+=== BOUNDARY SEGMENT (read whitelist / write scope) ===
+
+Your READ whitelist is exactly:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/
+
+Within that whitelist, skills/plugin-upgrade/ is provided as reference material for you to use.
+
+HARD RULES:
+
+- You MUST NOT read, list, search, or open anything outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/.
+- You MUST NOT read tests/, solution/, benchmark/results/, or any other directory of this repository.
+- You MUST NOT write to ANY path outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/ - including system TEMP, /tmp, the user home,
+  the repository, or the fixture source tree. Any temporary file you need must be written under
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/agent-output/ (a scratch subdirectory there is fine).
+- Do not modify, move, or delete anything under E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S8-release-routing-trap/fixture/ unless the brief explicitly authorizes it.
+- Do not modify the skill, any evaluator, or any reference answer.
+- Do not publish, push, or contact external services.
+- Do NOT probe the live host environment for facts the fixture does not contain: no `dsh --version`,
+  `dsh --help`, `dsh --dump-config`, `dsh --dump-config-schema`,
+  `dsh plugin --help`, `dsh headless --help`, and no `cordis_inspect_*` runtime
+  introspection. The installed host runs a DIFFERENT version than the version this task is about, so
+  anything you learn from it is out of scope and wrong. Work from the task brief and the fixture only.
+- Do not re-read the same file repeatedly. Read each fixture file once, take your notes, and move on;
+  a repeated read cycle wastes the run and invalidates the cell.
+- If you cannot verify something from the brief and the fixture, mark it as unconfirmed in the report
+  instead of guessing or going outside the whitelist to find out.
+- When your report cites a card or a reference document, write ONLY the key points and the card ID.
+  Do NOT paste the full text of a card or reference into your report or into your reply.
+  (Context budget is 256k; full-text pasting is a protocol violation.)
+
+=== END BOUNDARY SEGMENT ===
+
+=== ARM CLAUSE (skill available) ===
+
+Before you start the analysis, read skills/plugin-upgrade/SKILL.md in your cell directory.
+Consult its references/ files as needed for the change cards and API details.
+Follow the workflow that skill prescribes. Its bundled scripts under skills/plugin-upgrade/scripts/
+are yours to run - run them from the cell-local copy, never from another location.
+
+=== END ARM CLAUSE ===
+
+=== DELIVERY ===
+
+This is an unattended run. Do not ask questions; do not wait for confirmation.
+
+Budget: you have 25 minutes of wall clock. Plan for that. A good run reads the fixture files once
+or twice, writes the report, and finishes. If you find yourself re-reading files or repeating a
+probe, stop and write what you have.
+
+When the report file is written, finish with exactly: DONE

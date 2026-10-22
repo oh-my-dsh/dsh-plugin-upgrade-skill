@@ -1,0 +1,15 @@
+# S16-self-host-upgrade-trap · tool transcript
+# 格式：序号. 工具名 关键参数（全部经 run_code 程序内部调用；共 11 次内部工具调用 / 5 次 run_code 程序）
+# CELL = E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\noskill\S16-self-host-upgrade-trap
+
+1. glob pattern=**/* path=CELL
+2. read file_path=CELL\fixture\README.md
+3. read file_path=CELL\fixture\agent-session-log.txt
+4. read file_path=CELL\fixture\env-state.txt
+5. read file_path=CELL\fixture\repair-notes.md
+6. pwsh New-Item -ItemType Directory -Force -Path 'CELL\agent-output','CELL\agent-output\S16-self-host-upgrade-trap'; Get-Date -Format o
+7. write file_path=CELL\agent-output\report.md （S16 报告正文：根因/破损状态/修复/协议/预防/run-stats）
+8. write file_path=CELL\agent-output\S16-self-host-upgrade-trap\report.md （同内容副本，覆盖题面指定子目录）
+9. write file_path=CELL\agent-output\tool-transcript.txt （本文件：全部工具调用清单）
+10. write file_path=CELL\agent-output\transcript-manifest.txt （文件系统读写清单）
+11. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e message=<自包含结果汇报：报告路径 + 五点结论 + run-stats>

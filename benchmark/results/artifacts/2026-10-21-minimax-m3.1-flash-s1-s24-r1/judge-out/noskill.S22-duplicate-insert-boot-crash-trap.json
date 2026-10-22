@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "duplicate-loader-attribution", "verdict": "pass", "reason": "Compares both excerpts showing the same id/name inserted twice, locates the rejection at EntryGroup.update during include/compose via the stack, explains fatal whole-boot abort rather than merge, and rejects the harmless-redundancy comment."},
+    {"id": "three-layering-cases", "verdict": "pass", "reason": "Distinguishes config-by-id (safe), inserting a genuinely new id (safe, with the profile's own file-trace/profiles rows as examples), and inserting a bundle-provided id (fatal); classifies the maintainer's row as the third case grounded in both excerpts."},
+    {"id": "minimal-profile-fix", "verdict": "pass", "reason": "Removes only the hand-added workspace-files insert block from the profile patch, preserves the bundle row and unrelated plugins/config, and points to a config-by-id override if tuning is needed."},
+    {"id": "plugin-and-failure-boundary", "verdict": "pass", "reason": "Shows the crash is pre-plugin-execution composition (no plugin frame in the stack), so no plugin change can fix it; explicitly notes removing the duplicate restores boot only and leaves the original read failure a separate unverified problem."},
+    {"id": "author-and-host-prevention", "verdict": "pass", "reason": "Prescribes grepping the installed bundle's cordis.patch.yml (and other composing bundles) for the id and override-vs-insert before inserting; proposes a host diagnostic naming workspace-files, both declaration origins, and the removal remedy."}
+  ],
+  "caps": [
+    {"id": "retain-or-add-duplicate", "triggered": false, "reason": "Final advice deletes the duplicate; the warning-downgrade idea is a hypothetical host-diagnostic option, not a plan to keep or add the row, and plugin editing is explicitly rejected as a cure."}
+  ]
+}

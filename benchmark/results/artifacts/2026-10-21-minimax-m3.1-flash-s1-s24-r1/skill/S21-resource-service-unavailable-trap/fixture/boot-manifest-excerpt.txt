@@ -1,0 +1,23 @@
+# Boot manifest excerpt (__DSH_BOOT__, fetched same-origin after the restart)
+# Total entries: 60. Relevant rows verbatim:
+
+{"id":"@deepseek-ai/dsh-api-workspace-files","url":"/plugins/??@deepseek-ai/dsh-api-workspace-files/client.js&rev=234716e8f7370214-3","inject":["@deepseek-ai/dsh-api-gateway","@deepseek-ai/dsh-client-resources"]}
+
+{"id":"@deepseek-ai/dsh-client-ui-sidebar-right","url":"/plugins/??@deepseek-ai/dsh-client-ui-sidebar-right/client.js&rev=234716e8f7370214-N"}
+
+# Sidebar package census (plain substring counts over the whole HTML):
+#   ui-sidebar-right        -> present
+#   ui-sidebar-textpreview  -> ABSENT (0 mentions)
+#   ui-sidebar-documentpreview -> the 0.1.5-alpha.2 tree REPLACED
+#       packages/client/ui-sidebar-textpreview with
+#       packages/client/ui-sidebar-documentpreview
+#       (packages/bundle/web-app/cordis.patch.yml carries the
+#        ui-sidebar-documentpreview row; the old ui-sidebar-textpreview row is gone)
+#   dsh-file-trace   -> present (all six external plugins present)
+#   dsh-profiles     -> present
+#   dsh-brand-version -> present
+
+# Note: the text tab type ("text", claiming dsh-resource://file/**) was registered by
+# ui-sidebar-textpreview in 0.1.5-alpha.1. In 0.1.5-alpha.2 the replacement package
+# ui-sidebar-documentpreview registers a document tab whose canOpen accepts
+# parseFileAddress(address)?.scope === 'session' only.

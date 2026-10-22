@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Explains via console-split-chunks.txt that sibling imports resolve relative to the fetched chunk URL but were never shipped, so a 200 entry still fails the dynamic import; proposes a self-contained single-file bundle with code splitting disabled plus a closure-shipment check."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Compares chunk-route.ts and ci-note.md: case-sensitive startsWith over E: (import.meta.url) vs e: (realpathSync) rejects a contained file; explains Linux byte-identical paths and the laptop's coincidental case agreement; explicitly rejects the 'Windows paths unreliable' takeaway."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "Proposes path.relative containment with both sides canonicalized through realpathSync, rejecting .., absolute, sibling-prefix and post-resolution symlink escapes; preserves a JavaScript MIME type with real 404s; more than merely naming path.relative."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Explains both handlers act on one Ctrl+wheel event; gives the modal exclusive ownership via preventDefault + stopPropagation with {passive:false} and requires the pane handler to stand down via composedPath, noting the capture-phase limitation."},
+    {"id": "incident-regressions", "verdict": "pass", "reason": "T1–T6 cover all three incidents with expected outcomes: chunk closure/deployability with fallback, case-mismatch allow vs traversal/symlink refuse, and modal zoom without pane font change; presented as planned checks."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "Final fix strengthens containment (dual realpath + path.relative); no advice to disable containment or serve outside the resource root."}
+  ]
+}

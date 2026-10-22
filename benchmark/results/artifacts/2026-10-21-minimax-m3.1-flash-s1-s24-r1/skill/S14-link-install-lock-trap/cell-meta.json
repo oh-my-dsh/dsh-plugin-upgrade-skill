@@ -1,0 +1,106 @@
+{
+  "task": "S14-link-install-lock-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:21:40.780Z",
+  "endedAt": "2026-10-21T06:31:42.062Z",
+  "durationMs": 601282,
+  "durationSec": 601,
+  "subagentId": "b6496955-394f-4674-b31f-c728e3940008",
+  "sessionIds": [
+    "b6496955-394f-4674-b31f-c728e3940008"
+  ],
+  "toolCalls": 46,
+  "toolCounts": {
+    "run_code": 21,
+    "glob": 1,
+    "read": 18,
+    "grep": 3,
+    "write": 1,
+    "present": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 71992,
+    "outputTokens": 65420,
+    "cacheReadTokens": 1111159,
+    "cacheWriteTokens": 0,
+    "total": 1248571
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 22,
+      "llmMs": 591566,
+      "toolMs": 7370
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S14-link-install-lock-trap/S14-link-install-lock-trap.md",
+      "chars": 34625,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 46,
+      "toolCounts": {
+        "run_code": 21,
+        "glob": 1,
+        "read": 18,
+        "grep": 3,
+        "write": 1,
+        "present": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "S:\\n",
+          "resolved": "S:\\n",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 1,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 18,
+      "uniqueOperands": 18,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 5,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:21:40.780Z",
+    "endedAt": "2026-10-21T06:31:42.062Z",
+    "durationSec": 601,
+    "flushWaitMs": 22,
+    "complete": true
+  }
+}

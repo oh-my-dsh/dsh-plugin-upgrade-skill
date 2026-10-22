@@ -1,0 +1,98 @@
+{
+  "task": "S15-slot-error-boundary-crash",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:22:25.646Z",
+  "endedAt": "2026-10-21T06:32:54.934Z",
+  "durationMs": 629288,
+  "durationSec": 629,
+  "subagentId": "b6250dd5-b3d4-44f3-9746-8ca9df7fd8fb",
+  "sessionIds": [
+    "b6250dd5-b3d4-44f3-9746-8ca9df7fd8fb"
+  ],
+  "toolCalls": 10,
+  "toolCounts": {
+    "run_code": 8,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 47465,
+    "outputTokens": 43872,
+    "cacheReadTokens": 163107,
+    "cacheWriteTokens": 0,
+    "total": 254444
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 9,
+      "llmMs": 608574,
+      "toolMs": 20016
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S15-slot-error-boundary-crash/S15-report.md",
+      "chars": 28497,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 10,
+      "toolCounts": {
+        "run_code": 8,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "d:\\`",
+          "resolved": "d:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 1,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:22:25.646Z",
+    "endedAt": "2026-10-21T06:32:54.934Z",
+    "durationSec": 629,
+    "flushWaitMs": 12,
+    "complete": true
+  }
+}

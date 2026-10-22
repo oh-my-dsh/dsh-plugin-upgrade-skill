@@ -1,0 +1,23 @@
+1. run_code 探查格目录：working_directory({}) + glob({pattern:"**/*",path:<cell>})
+2. working_directory {}（读取当前工作目录，无文件系统访问）
+3. glob pattern="**/*" path=<cell>（列举格目录全部文件）
+4. run_code 顺序读取 fixture 全部 4 个文件（read × 4）
+5. read file_path=<cell>\fixture\README.md
+6. read file_path=<cell>\fixture\package.json
+7. read file_path=<cell>\fixture\src\client\index.ts
+8. read file_path=<cell>\fixture\src\client\Pet.tsx
+9. run_code 用 pwsh 校验格目录含隐藏文件的完整清单
+10. pwsh command="Get-ChildItem -Force -Recurse | Select-Object FullName,Length …" workdir=<cell>
+11. run_code 写报告与收尾文件（write × 4，主报告+副本+transcript+manifest）
+12. write file_path=<cell>\agent-output\S4-legacy-client-imports\report.md（迁移触点报告，主产物，8985 字节）
+13. write file_path=<cell>\agent-output\report.md（同内容副本，兼容收尾自报默认路径）
+14. write file_path=<cell>\agent-output\tool-transcript.txt（工具调用清单，初版）
+15. write file_path=<cell>\agent-output\transcript-manifest.txt（文件系统访问清单）
+16. run_code 收尾校验并向父代理通报（read × 1 + send_message × 1，合并为一次）
+17. read file_path=<cell>\agent-output\report.md limit=12（校验报告非空，totalLines=74）
+18. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e message=<S4 结果摘要>
+19. run_code 修正 run-stats/tool-transcript 计数并补发更正（edit × 2 + write × 1 + send_message × 1）
+20. edit file_path=<cell>\agent-output\S4-legacy-client-imports\report.md（run-stats 计数 19→23）
+21. edit file_path=<cell>\agent-output\report.md（run-stats 计数 19→23）
+22. write file_path=<cell>\agent-output\tool-transcript.txt（重写为最终 23 行清单）
+23. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e message=<toolcalls 计数更正>

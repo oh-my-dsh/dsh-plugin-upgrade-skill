@@ -1,0 +1,96 @@
+{
+  "task": "S5-negative-naming",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T05:51:14.869Z",
+  "endedAt": "2026-10-21T05:54:06.646Z",
+  "durationMs": 171777,
+  "durationSec": 172,
+  "subagentId": "7e9927cb-35c4-41f4-b535-4f9c310a3b94",
+  "sessionIds": [
+    "7e9927cb-35c4-41f4-b535-4f9c310a3b94"
+  ],
+  "toolCalls": 21,
+  "toolCounts": {
+    "run_code": 8,
+    "glob": 1,
+    "read": 8,
+    "pwsh": 2,
+    "write": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 14732,
+    "outputTokens": 17721,
+    "cacheReadTokens": 161208,
+    "cacheWriteTokens": 0,
+    "total": 193661
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 9,
+      "llmMs": 162037,
+      "toolMs": 8177
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S5-negative-naming/S5-naming-judgment.md",
+      "chars": 12875,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 21,
+      "toolCounts": {
+        "run_code": 8,
+        "glob": 1,
+        "read": 8,
+        "pwsh": 2,
+        "write": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 8,
+      "uniqueOperands": 8,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T05:51:14.869Z",
+    "endedAt": "2026-10-21T05:54:06.646Z",
+    "durationSec": 172,
+    "flushWaitMs": 8,
+    "complete": true
+  }
+}

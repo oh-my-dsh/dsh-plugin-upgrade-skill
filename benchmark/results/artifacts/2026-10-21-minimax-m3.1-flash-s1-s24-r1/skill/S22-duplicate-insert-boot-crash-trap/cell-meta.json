@@ -1,0 +1,161 @@
+{
+  "task": "S22-duplicate-insert-boot-crash-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:43:19.276Z",
+  "endedAt": "2026-10-21T06:50:07.221Z",
+  "durationMs": 407945,
+  "durationSec": 408,
+  "subagentId": "b3b460fb-7b4a-4c8e-a01a-a9826fd346ba",
+  "sessionIds": [
+    "b3b460fb-7b4a-4c8e-a01a-a9826fd346ba"
+  ],
+  "toolCalls": 28,
+  "toolCounts": {
+    "run_code": 26,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 71550,
+    "outputTokens": 44618,
+    "cacheReadTokens": 1245370,
+    "cacheWriteTokens": 0,
+    "total": 1361538
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 21,
+      "llmMs": 397414,
+      "toolMs": 8818
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S22-duplicate-insert-boot-crash-trap/S22-report.md",
+      "chars": 20573,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 28,
+      "toolCounts": {
+        "run_code": 26,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "t:/i",
+          "resolved": "t:\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/duplicate/i",
+          "resolved": "E:\\duplicate\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/workspace-files/i",
+          "resolved": "E:\\workspace-files\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\\\Users\\\\lhh\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml\\`",
+          "resolved": "C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "t:\\`",
+          "resolved": "t:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "g:\\`",
+          "resolved": "g:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "d:\\\\s*workspace-files",
+          "resolved": "d:\\s*workspace-files",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml:NN",
+          "resolved": "C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml:NN",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\\\Users\\\\lhh\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml@@",
+          "resolved": "C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml@@",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "C:\\\\Users\\\\lhh\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml:NN",
+          "resolved": "C:\\Users\\lhh\\.dsh\\profiles\\web\\cordis.patch.yml:NN",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 10,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 5,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:43:19.276Z",
+    "endedAt": "2026-10-21T06:50:07.221Z",
+    "durationSec": 408,
+    "flushWaitMs": 18333,
+    "complete": true
+  }
+}

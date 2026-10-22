@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates patch.yml surface/target/replacements, patch: composition, apply script and package.json entry; explicitly separates source patch from profile composition (API-08) and explains the SessionView symbol coupling."},
+{"id":"events","verdict":"pass","reason":"Producer/observer and ignorable:true located; alpha.1 removal vs alpha.2 restoration folded to A2-01 net state; explicitly notes Session.append does not accept ignorable (API-05) rather than claiming it supports the marker."},
+{"id":"host-services","verdict":"pass","reason":"apiProxy usage and alpha.1 removal located; host-plane migration to injected domain services (llm/listProviders) distinguished from client-face ctx.remote, explicitly warning remote does not exist on host."},
+{"id":"host-path","verdict":"pass","reason":"Locates hardcoded ~/.dsh/profiles/default, prescribes runtime DSH_HOME/profile and official launcher; explicitly states --profile existed in rc.2 (not introduced in alpha.1)."},
+{"id":"ui","verdict":"pass","reason":"Both /internal SessionView import and registerCommand located; explains rebuilding imports via owning module, public facet/service preference, and pending-confirmation for unstable seams after the A1-03 split."},
+{"id":"channel","verdict":"pass","reason":"Loopback server located; states loopback is not an auth exemption, custom routes don't inherit auth/Host-Origin fencing, and contrasts host-managed authenticated channels vs raw routes with concrete verification expectations."},
+{"id":"subprocess","verdict":"pass","reason":"Both subprocess sites and stdout JSON.parse located; explains stdout was always final text (not JSONL), stderr gained the dsh: reasoning: segment (A1-05), exit-code based success, no invented alpha.2 stdout change."},
+{"id":"mapping","verdict":"pass","reason":"Maps located couplings to A1-01, A1-02 folded with A2-01, A1-03, A1-04, A1-08, plus valid A1-05/A1-04 stdout mapping, each tied to actual located hit lines with rationale."},
+{"id":"limits","verdict":"pass","reason":"Accounts for all seven hit categories, states pattern-heuristic/data-flow/compile limits, and proposes target-version build/typecheck, --dump-config, cold-boot mount, functional smoke and stub subprocess matrix — without executing the fixture."}
+],"caps":[]}

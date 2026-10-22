@@ -1,0 +1,36 @@
+S22-duplicate-insert-boot-crash-trap · tool-transcript（每行一次工具调用，按发生顺序）
+1. todo_write todos=6项任务（读SKILL→读fixture→分析→写报告→写转录→回传父代理）
+2. run_code 读取技能文件（内嵌 read）
+3. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+4. run_code 列 fixture 文件清单（内嵌 pwsh Get-ChildItem）
+5. pwsh Get-ChildItem -Recurse -File  workdir=...\S22-duplicate-insert-boot-crash-trap\fixture
+6. run_code 读取 fixture 四个证据文件（内嵌 read ×4）
+7. read ...\fixture\README.md
+8. read ...\fixture\boot-crash-log.txt
+9. read ...\fixture\profile-patch-excerpt.txt
+10. read ...\fixture\web-app-patch-excerpt.txt
+11. run_code 在 references 目录做两次 grep（duplicate / cordis\.patch）
+12. grep pattern=duplicate path=...\skills\plugin-upgrade\references include=*.md
+13. grep pattern=cordis\.patch path=...\skills\plugin-upgrade\references include=*.md
+14. run_code 读 references\troubleshooting.md（内嵌 read）
+15. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\troubleshooting.md
+16. run_code 读 references\v0.1.5-alpha.1.md L540-660（内嵌 read）
+17. read ...\references\v0.1.5-alpha.1.md offset=540 limit=120
+18. run_code grep 定位 DSH-0.1.5-A1-20（内嵌 grep）
+19. grep pattern=A1-20|combo|roster path=...\references\v0.1.5-alpha.1.md
+20. run_code 读 references\api-migration-0.1.2-alpha.2.md L530-575（内嵌 read）
+21. read ...\references\api-migration-0.1.2-alpha.2.md offset=530 limit=45
+22. run_code 写诊断报告（内嵌 write）
+23. write ...\agent-output\report.md（7209 字节，create）
+24. run_code 写转录/清单并取时间戳（内嵌 write ×2、pwsh Get-Date、edit）
+25. write ...\agent-output\tool-transcript.txt
+26. write ...\agent-output\transcript-manifest.txt
+27. pwsh Get-Date -Format o
+28. edit ...\agent-output\report.md（修正 run-stats 统计口径）
+29. todo_write 更新任务状态（全部 completed）
+30. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（回传自包含结果，messageId 5bba0a33）
+31. todo_write（顶层直调，失败：unknown tool "todo_write"，须经 run_code 调用）
+32. run_code 修正任务状态与统计口径（内嵌 todo_write / edit ×2）
+33. todo_write（run_code 内调用，六项全部 completed）
+34. edit ...\agent-output\tool-transcript.txt（追加 31-35 行）
+35. edit ...\agent-output\report.md（更新 run-stats 计数）

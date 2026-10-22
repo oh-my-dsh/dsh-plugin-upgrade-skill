@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Uses ls-remote listing (v0.9.5 absent, list jumps v0.9.1→v0.9.7) and the sync script's HEAD:main-only push; ties to attempt 1's immediate pnpm ref-resolution failure and explicitly rules out network, consumer typo, and npm package causes."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Combines dsh-version 0.1.1-rc.2 with compat-table v0.9.7→0.1.2-alpha.1; explains the artifact-targets-newer-host direction, why install succeeded (no API enforcement) and restart cannot help, beyond repeating the error."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Selects v0.9.3 via its rc.1 real-boot verification plus the additive rc.2 note, explicitly flags v0.9.3 as also absent from the mirror, gives the #v0.9.3 install command conditioned on maintainer tag publication, and refuses to invent the missing SHA."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Grounds the repair in the branch-only script, adds explicit per-mirror git push of refs/tags/<tag> (non-forced), and verifies each tag resolves via ls-remote with release-failing gates."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "Replaces the single pin with a per-DSH-line compatibility matrix routing rc.x users to the verified v0.9.3 and alpha.1 users to v0.9.7, plus a machine-readable source of truth; no blanket newest-tag default."}
+  ],
+  "caps": []
+}

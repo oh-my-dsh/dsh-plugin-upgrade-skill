@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "Locates patch.yml target (src/session/view/SessionView.ts, renderSessionView) and apply-patch.mjs driver; correctly classifies cordis.patch.yml as composition (negative control), and explains the private session-view coupling to the alpha.1 UI split."
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "Locates producer/observer of session/event with ignorable:true, explains alpha.1 removal and alpha.2 restoration, folds the corridor to keep the marker (A1-02 superseded by A2-01), and explicitly does not claim Session.append can write the marker — noting it lacks an ignorable parameter."
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "Locates both ctx.get('apiProxy') call sites and their removal in alpha.1; distinguishes Host domain-service injection (session/rename, llm listProviders split) from the Web Client Remote facade and explicitly rejects prescribing inject:['remote'] on the Host plane."
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "Locates the hard-coded join(homedir(),'.dsh','profiles','default') write and prescribes runtime DSH_HOME/profile resolution per A1-04; never claims --profile was introduced in alpha.1 (only the headless profile is attributed to alpha.1)."
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "Locates the /internal SessionView import and ctx.contributes.registerCommand; explains post-split verification: re-home by owning package, mark uncarded seams pending confirmation, and check exports plus packed artifact (API-07) rather than guessing paths."
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "Locates the raw loopback HTTP server on 127.0.0.1:43121; explains loopback does not exempt custom routes from auth requirements (requestRejection gate, no inherited Host/Origin fence/CORS/TLS) and distinguishes host-managed authenticated channels from raw routes; notes dormancy."
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "Locates both dsh subprocess sites with stdout JSON.parse; explains stdout is final text vs stderr reasoning/diagnostics and exit-code-based success, and correctly states the JSONL assumption was already wrong at the rc.2 baseline, not an alpha.2 stdout change."
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "Maps A1-03 to #1+#5, A1-01 to #3 (indirectly #1), A1-02+A2-01 to #2 with corridor folding, A1-04 to #4+#7, A1-08 to #6, and A1-05 as the valid additional #7 mapping — all grounded in located hits, not a bare card list."
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "Accounts for all seven hit categories, states heuristic/no-data-flow/curated-card/non-executable limits extensively, and proposes target-version build/typecheck baseline, real-profile cold boot, and functional paths (persist→cold-load, channel auth, headless matrix) without executing the static fixture."
+    }
+  ],
+  "caps": []
+}

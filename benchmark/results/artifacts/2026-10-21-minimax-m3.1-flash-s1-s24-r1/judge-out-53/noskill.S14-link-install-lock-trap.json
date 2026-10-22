@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Uses LinkType/Target and cordis.patch.yml link marker to show the profile path is one directory with the repo; explains no deploy/copy needed and contrasts with a copied install (§1, §5.2)."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Attributes EBUSY and stale serving to the running dsh host holding handles/old module state; browser tab close releases nothing; browser HTTP cache treated as a separate second-order staleness needing cache-bypass reload; serving-mechanism details flagged unconfirmed, not generalized."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains the rename through the junction renamed the sole source files making the copy fail; recovery renames .old2 back preserving content, node --check both files, host stopped before restoration; no delete/recreate required."},
+{"id":"ordered-activation","verdict":"pass","reason":"Semantic order: stop host fully, save edits, syntax check, restart dsh web, hard-refresh/clear cache, verify new route + preview + no load errors; explicitly rejects browser-only refresh as insufficient."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Gives pre-flight Get-Item LinkType/Target + link marker + fsutil file-id before any file operation, with a link-vs-copied decision table, and explains why generic copy-into-node_modules advice caused the incident (§5)."}
+],
+"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final plan is rename-back in place; the only copies go to an external backup outside the repo; .old2 cleanup happens only after successful restore with backup retained."},
+{"id":"browser-only-activation","triggered":false,"reason":"Plan repeatedly requires fully stopping and restarting the host; browser refresh is explicitly stated not to substitute."}
+]}

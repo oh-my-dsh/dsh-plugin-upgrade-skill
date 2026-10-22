@@ -1,0 +1,163 @@
+{
+  "task": "S3-snapshot-migration",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T05:51:00.536Z",
+  "endedAt": "2026-10-21T06:00:46.763Z",
+  "durationMs": 586227,
+  "durationSec": 586,
+  "subagentId": "d886d93c-a715-45df-9f9c-800ff7e24736",
+  "sessionIds": [
+    "d886d93c-a715-45df-9f9c-800ff7e24736"
+  ],
+  "toolCalls": 36,
+  "toolCounts": {
+    "run_code": 13,
+    "pwsh": 6,
+    "read": 12,
+    "write": 4,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 49103,
+    "outputTokens": 52935,
+    "cacheReadTokens": 394881,
+    "cacheWriteTokens": 0,
+    "total": 496919
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 14,
+      "llmMs": 565472,
+      "toolMs": 18628
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S3-snapshot-migration/S3-snapshot-migration-report.md",
+      "chars": 31523,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 36,
+      "toolCounts": {
+        "run_code": 13,
+        "pwsh": 6,
+        "read": 12,
+        "write": 4,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 12,
+      "uniqueOperands": 12,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 3,
+      "pass": true
+    },
+    "cardEvidence": {
+      "cardCatalogueInWhitelist": false,
+      "cardIdsCited": 8,
+      "distinctRealCardIds": 8,
+      "suffixesExistInCatalogue": true,
+      "subjectMappingCorrect": 0,
+      "subjectMappingPlausible": 0,
+      "subjectMappingWrong": 8,
+      "selfDisclosed": true,
+      "note": "The solver disclosed that it reconstructed card subjects from wave ordering and flagged the numbering unverified. Verified against the cell-local catalogue: all 8 cited IDs exist, but the subjects it assigned to them do not match the real card subjects. A1-02/A1-04/A1-05/A1-06/A1-07/A1-08 are assigned snapshot/slot/locale topics; the real cards are about SessionEvent.ignorable, ACP/SDK example removal, headless stderr, PTC mode renaming, WebFetch defaults, and bootstrap tokens. The real snapshot-split card is A1-03 (cited correctly); the real client-runtime card is A1-25 (not cited).",
+      "subjectComparison": [
+        {
+          "id": "DSH-0.1.2-A1-01",
+          "claim": "Conversation snapshot root restructure (flat -> grouped); ConversationSnapshot type",
+          "truth": "APIRoxy removed, Host/Web Client calls moved to @Remote",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-02",
+          "claim": "Read-hook replacement on slot runtime props (useSession -> new hook)",
+          "truth": "SessionEvent.ignorable temporarily removed",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-03",
+          "claim": "Lifecycle flags running/runningCalls -> state.busy/state.activeCalls, with compat projection",
+          "truth": "Session view internals split up extensively",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-04",
+          "claim": "Turn history turnEnds[] -> turns[]; end-reason field + vocabulary change",
+          "truth": "ACP/SDK examples merged into the dsh profile, standalone demo bins and packages removed",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-05",
+          "claim": "Streaming/partial content read path; content-block discriminant change",
+          "truth": "Headless: stderr gains a 'dsh: reasoning:' segment; stdout remains the final text",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-06",
+          "claim": "Compatibility-projection scope, opt-in flag, removal timeline",
+          "truth": "Code Mode renamed precisely to PTC mode",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-07",
+          "claim": "Locale namespace-map ownership + PropsLocale augmentation target",
+          "truth": "Public WebFetch enabled by default, per-request approval removed",
+          "overlap": 0,
+          "ok": false
+        },
+        {
+          "id": "DSH-0.1.2-A1-08",
+          "claim": "Slot keys, runtime props typing, slot registration descriptor, client plugin inventory",
+          "truth": "Web/API channels use process-scoped bootstrap tokens and signed cookies",
+          "overlap": 0,
+          "ok": false
+        }
+      ]
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T05:51:00.536Z",
+    "endedAt": "2026-10-21T06:00:46.763Z",
+    "durationSec": 586,
+    "flushWaitMs": 24,
+    "complete": true
+  }
+}

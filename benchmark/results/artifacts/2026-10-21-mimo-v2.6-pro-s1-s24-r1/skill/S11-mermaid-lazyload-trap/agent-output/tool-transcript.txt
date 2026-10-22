@@ -1,0 +1,15 @@
+# tool-transcript.txt — S11 solver. All read/glob/write calls issued through run_code wrappers (6 run_code invocations in total, incl. the send_message call); 14 logical tool calls total.
+1. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+2. glob pattern=**/* path=<cell-dir> (list evidence pack + agent-output)
+3. read <cell-dir>\fixture\README.md
+4. read <cell-dir>\fixture\chunk-route.ts
+5. read <cell-dir>\fixture\ci-note.md
+6. read <cell-dir>\fixture\console-403-windows.txt
+7. read <cell-dir>\fixture\console-split-chunks.txt
+8. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\pre-flight.md
+9. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\troubleshooting.md
+10. write <cell-dir>\agent-output\report.md (root-cause report: incidents 1-3, fixes, regression tests, run-stats)
+11. write <cell-dir>\agent-output\tool-transcript.txt (this file)
+12. write <cell-dir>\agent-output\transcript-manifest.txt (R/W filesystem manifest)
+13. read <cell-dir>\agent-output\report.md (verify non-empty)
+14. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e (deliver self-contained result summary)

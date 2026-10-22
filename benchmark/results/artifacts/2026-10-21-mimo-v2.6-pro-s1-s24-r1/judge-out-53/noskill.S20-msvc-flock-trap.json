@@ -1,0 +1,12 @@
+{"decisions":[
+{"id":"native-install-failure","verdict":"pass","reason":"Correctly attributes failure to fs-ext@2.1.1 pulled by dsh-session-persistence-jsonl, node-gyp configure build install script, missing VS/MSVC toolchain; not pnpm/network."},
+{"id":"static-import-trap","verdict":"pass","reason":"Static top-level flock import means --ignore-scripts moves failure from install time to module-load/boot time; no compiled binding means service cannot boot."},
+{"id":"platform-lock-contract","verdict":"pass","reason":"Distinguishes Windows named-kernel-semaphore (acquireLockHandleWin32, CreateSemaphoreW) from POSIX flock via fs-ext; stub import-safe on Windows only; semaphore and real flock preserved."},
+{"id":"reproducible-local-patch","verdict":"pass","reason":"Follows node-pty patchedDependencies precedent: win32 skips node-gyp, entry exports pure-JS stub with callable/callback shape, non-Windows keeps native; registers in pnpm-workspace.yaml; reinstall/module-load/service-boot checks proposed."},
+{"id":"machine-and-upstream-boundaries","verdict":"pass","reason":"Respects no-Visual-Studio constraint; repo-managed pnpm patch only; explicitly rejects upstream/registry modification."},
+{"id":"corridor-mapping","verdict":"partial","reason":"Connects the corridor step and its content correctly, but cites only DSH-0.1.3-A1 without the required full card id suffix -03 (declines to guess it)."}],
+"caps":[
+{"id":"requires-visual-studio","triggered":false,"reason":"Plan requires no VS; installing VS explicitly rejected."},
+{"id":"ignore-scripts-only","triggered":false,"reason":"--ignore-scripts explicitly rejected; patch makes entry loadable."},
+{"id":"upstream-edit-required","triggered":false,"reason":"Uses repo-local pnpm patch; upstream untouched."},
+{"id":"lock-bypass","triggered":false,"reason":"Semaphore path and POSIX flock preserved unchanged; stub only for never-called Windows path."}]}
