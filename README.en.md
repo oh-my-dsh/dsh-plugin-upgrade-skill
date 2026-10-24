@@ -1,8 +1,14 @@
-# DSH Plugin Upgrade Skill
+# DSH Plugin Fast Adapt (dsh-plugin-fast-adapt)
 
 [简体中文](README.md) | **English**
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-195-blue) ![Benchmark](https://img.shields.io/badge/benchmark-63%20tasks-blue)
+> **Independent Derived Project**: A major architectural evolution from the legacy `dsh-plugin-upgrade-skill`. Replaces heavyweight manual prose card corridors with an automated pipeline: "Environment Hygiene Healing + AST Symbol Contract Diffing + Sub-100ms In-Memory Sandbox Smoke Test + MECE 4D Industrial Quality Audit". Eliminates context-bloat negative transfer on lighter models (-3.07 pp), profile overlay taint (Issue #263), and 3,600s cold-boot timeouts (Issue #171).
+>
+> Main Skill Path: [`skills/plugin-fast-adapt`](skills/plugin-fast-adapt/) | Quick Test: `npm run test:fast-adapt`
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Performance](https://img.shields.io/badge/smoke--latency-2ms-brightgreen) ![Architecture](https://img.shields.io/badge/context--budget-<1000tokens-blue) ![Self-Healing](https://img.shields.io/badge/self--healing-supported-success)
+
+---
 
 **Agent skills that teach AI to upgrade your DSH plugins.** Community-built.
 
