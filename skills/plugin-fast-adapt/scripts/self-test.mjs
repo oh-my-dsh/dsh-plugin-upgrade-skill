@@ -426,6 +426,29 @@ test('完整点链优先于短链', () => {
   assert.ok(a.members.includes('ctx.tools.presentAs'), `应抽出完整链: ${JSON.stringify(a.members)}`)
 })
 
+// ── 文档引用完整性 ──────────────────────────────────────────────────────────
+// SOP 和 SKILL.md 里链接的原版文件必须真实存在，防止走廊卡片改名后出现死链。
+
+test('SOP 与 SKILL 引用的原版文件不漂移', () => {
+  const skillDir = path.resolve(import.meta.dirname, '..')
+  const docs = [
+    path.join(skillDir, 'SKILL.md'),
+    path.join(skillDir, 'references', 'legacy-migration-sop.md'),
+  ]
+  const linkRe = /(\.\.\/(?:\.\.\/plugin-upgrade|references)\/[\w/.-]+)|\((references\/[\w/.-]+)\)/g
+  let checked = 0
+  for (const doc of docs) {
+    const text = fs.readFileSync(doc, 'utf8')
+    for (const m of text.matchAll(linkRe)) {
+      const rel = m[1] || m[2]
+      const target = path.resolve(path.dirname(doc), rel)
+      assert.ok(fs.existsSync(target), `${path.basename(doc)} 引用的 ${rel} 不存在（死链）`)
+      checked++
+    }
+  }
+  assert.ok(checked >= 8, `应至少核对 8 处引用，实际 ${checked} 处——SOP 可能被清空了`)
+})
+
 // ── 汇总 ────────────────────────────────────────────────────────────────────
 
 let passed = 0

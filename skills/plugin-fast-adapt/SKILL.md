@@ -1,6 +1,6 @@
 ---
 name: plugin-fast-adapt
-description: DSH 插件适配与破坏性变更核查。查 DeepSeek 官方最新版本，取该版本的官方升级指南，扫描本机插件代码，报出哪些地方踩了破坏性变更并给出官方修法；同时巡检本机 DSH 环境（profiles 覆盖层旧包残留、已装插件、运行中宿主）。当需要把 DSH 插件适配到新版本、排查升级后插件报错、核查插件是否用了已移除的包或 API、检查 ~/.dsh 覆盖层有无旧包残留时使用。触发词：适配 DSH 插件、升级插件、插件不兼容、dsh 升级后报错、插件用了废弃 API、检查覆盖层旧包。
+description: DSH 插件适配与破坏性变更核查。查 DeepSeek 官方最新版本，取该版本的官方升级指南，扫描本机插件代码，报出哪些地方踩了破坏性变更并给出官方修法；同时巡检本机 DSH 环境（profiles 覆盖层旧包残留、已装插件、运行中宿主）。老版本插件（官方指南覆盖不到 v0.1.7-rc.2 之前的走廊）转迁移 SOP，对照姊妹 skill 的人工卡片走廊走七阶段流程。当需要把 DSH 插件适配到新版本或老版本、排查升级后插件报错、核查插件是否用了已移除的包或 API、检查 ~/.dsh 覆盖层有无旧包残留时使用。触发词：适配 DSH 插件、升级插件、插件不兼容、dsh 升级后报错、插件用了废弃 API、检查覆盖层旧包、老版本 DSH 适配、历史走廊迁移。
 ---
 
 # plugin-fast-adapt
@@ -81,6 +81,10 @@ node scripts/code-scan.mjs <插件目录> <upgrade-guide 目录> <本机版本> 
 
 命中分三类：`package`（import 了已移除或已改名的包）、`member`（调用了已移除的方法或字段）、`code`（字符串里出现已变更的错误码或事件名）。
 
+## 老插件：官方指南覆盖不到时
+
+官方 upgrade-guide 最早只到 dsh-v0.1.7-rc.2。插件更老、目标版本更老，或跨大段历史走廊时，`code-scan` 会报 `guidesConsidered = 0`——这时转 [老插件迁移 SOP](references/legacy-migration-sop.md)：用姊妹 skill plugin-upgrade 的人工卡片走廊（dsh-v0.1.0-rc.8 起 19 条边 + 跳版卡）当差异来源，按七阶段 checklist 走：定模式 → 只读准备 → 幽灵宿主检查 → 组装走廊 → 七类触点 → 计划确认 → 六层验证。两套工具的分工速查也在 SOP 里：有 guide 的段用本 skill 的 `code-scan`，没 guide 的段用原版的 `plan-migration.mjs` 和卡片，运行时验证用原版的 `verify-runtime.mjs`。
+
 ## 怎么读结果
 
 **命中为零不代表没问题，代表「在官方指南覆盖的范围内没踩到」。** 指南只记录官方认为需要通知的破坏性变更，不覆盖所有可能性。
@@ -103,7 +107,7 @@ node scripts/code-scan.mjs <插件目录> <upgrade-guide 目录> <本机版本> 
 npm run test:fast-adapt
 ```
 
-33 项断言，覆盖扫描器不误报（注释和字符串里的同名词不算命中）、不漏报、版本启发式、替换对识别、端到端命中。零网络、零外部依赖，任何机器上都能跑。
+34 项断言，覆盖扫描器不误报（注释和字符串里的同名词不算命中）、不漏报、版本启发式、替换对识别、端到端命中、SOP 引用完整性。零网络、零外部依赖，任何机器上都能跑。
 
 ## 脚本清单
 
@@ -116,3 +120,4 @@ npm run test:fast-adapt
 | `scripts/self-test.mjs` | 自检 |
 | `scripts/lib/scanner.mjs` | 词法扫描器与版本比较（零依赖） |
 | `scripts/lib/guide-parser.mjs` | 官方指南解析与锚点抽取 |
+| `references/legacy-migration-sop.md` | 老插件迁移 SOP（官方指南覆盖不到时的对照手册） |

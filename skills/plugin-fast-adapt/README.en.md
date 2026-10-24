@@ -56,7 +56,7 @@ The rules and the measurements behind them are in [references/heuristics.md](ref
 - Constant anchors come only from the `Change` section; example values in `Migration` do not count
 - Matching requires the object parts to be mutual suffixes, so `engines.dsh` never collides with `result.dsh`
 
-The self-test covers these rules with 33 assertions:
+The self-test covers these rules with 34 assertions (including SOP link integrity):
 
 ```sh
 npm run test:fast-adapt
@@ -81,6 +81,10 @@ npm run test:fast-adapt
 - Never modifies DSH itself, nor config or profile declarations under `~/.dsh`
 - Never edits plugin code automatically; it reports findings and vendor fixes only
 - Network is used only with `--clone`, always with a timeout, and failures are reported explicitly
+
+## Legacy plugins
+
+The official upgrade guide only goes back to dsh-v0.1.7-rc.2. For older plugins, follow the [legacy migration SOP](references/legacy-migration-sop.md): use the sibling skill plugin-upgrade's hand-curated card corridor (from dsh-v0.1.0-rc.8 on) as the difference source and walk a seven-stage checklist (mode → read-only prep → ghost-host check → corridor assembly → seven touchpoint classes → plan & confirm → six-layer validation). The SOP references rather than copies the cards, so renamed cards are caught by the self-test's dead-link assertion.
 
 ## Known limitations
 

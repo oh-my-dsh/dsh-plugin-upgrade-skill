@@ -56,7 +56,7 @@ node scripts/env-heal.mjs --apply   # 移动到 ~/.dsh/.trash/<日期>/，不删
 - 常量锚点只从 `Change` 段抽，`Migration` 段里的示例值不算
 - 匹配时要求对象部分互为后缀，`engines.dsh` 不会撞 `result.dsh`
 
-自检覆盖这些规则，33 项断言：
+自检覆盖这些规则，34 项断言（含 SOP 引用完整性）：
 
 ```sh
 npm run test:fast-adapt
@@ -81,6 +81,10 @@ npm run test:fast-adapt
 - 不改 DSH 本体，不动 `~/.dsh` 下的配置和 profile 声明
 - 不自动改插件代码，只报命中和官方修法
 - 网络只在 `--clone` 时用，都有超时，失败明确报错
+
+## 老插件怎么办
+
+官方升级指南最早只到 dsh-v0.1.7-rc.2，更老的插件走 [老插件迁移 SOP](references/legacy-migration-sop.md)：姊妹 skill plugin-upgrade 的人工卡片走廊（dsh-v0.1.0-rc.8 起）当差异来源，七阶段 checklist 对照执行（定模式 → 只读准备 → 幽灵宿主检查 → 组装走廊 → 七类触点 → 计划确认 → 六层验证），文档只做引用不复制，卡片改名会被自检的死链断言拦住。
 
 ## 已知局限
 
