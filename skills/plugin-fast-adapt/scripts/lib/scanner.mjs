@@ -157,13 +157,31 @@ function unquote(buffer) {
   return buffer
 }
 
-// 行号：把字符下标换算成 1-based 行号
-export function lineAt(source, index) {
-  let line = 1
-  for (let i = 0; i < index && i < source.length; i++) {
-    if (source[i] === '\n') line++
+// 行号：把字符下标换算成 1-based 行号。
+// scanSource 里每个触点命中都要查一次行号，逐字符从头扫是 O(index)，
+// 大文件×密集触点会平方级放大（598 文件实测 23s）。这里预计算行起点
+// 数组，查询走二分；导出的 lineAt 保持纯函数语义，单次调用自建数组。
+function buildLineStarts(source) {
+  const starts = [0]
+  for (let i = 0; i < source.length; i++) {
+    if (source[i] === '\n') starts.push(i + 1)
   }
-  return line
+  return starts
+}
+
+function lineAtStarts(starts, index) {
+  let lo = 0
+  let hi = starts.length - 1
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1
+    if (starts[mid] <= index) lo = mid
+    else hi = mid - 1
+  }
+  return lo + 1
+}
+
+export function lineAt(source, index) {
+  return lineAtStarts(buildLineStarts(source), index)
 }
 
 const IMPORT_RE = /\b(?:import|export)\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]|\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)/g
@@ -180,6 +198,8 @@ const CALL_RE = /\b([A-Za-z_$][\w$]*)\s*\(/g
 export function scanSource(source, { stripTypes = false } = {}) {
   const prepared = stripTypes ? safeStrip(source) : source
   const { code, strings, mask } = splitSource(prepared)
+  const lineStarts = buildLineStarts(prepared)
+  const lineOf = (index) => lineAtStarts(lineStarts, index)
 
   // 匹配起点必须落在代码区：字符串里的 `installBundle()` 不算调用，
   // 但 import 的模块路径本身在字符串里，所以 import 只看关键字位置。
@@ -195,7 +215,7 @@ export function scanSource(source, { stripTypes = false } = {}) {
     if (!inCode(match.index)) continue
     const modulePath = match[1] || match[2]
     if (!modulePath) continue
-    imports.push({ source: modulePath, line: lineAt(prepared, match.index) })
+    imports.push({ source: modulePath, line: lineOf(match.index) })
   }
 
   MEMBER_RE.lastIndex = 0
@@ -208,7 +228,7 @@ export function scanSource(source, { stripTypes = false } = {}) {
     const object = parts.slice(0, -1).join('.')
     if (seenMember.has(chain)) continue
     seenMember.add(chain)
-    memberAccess.push({ object, member, chain, line: lineAt(prepared, match.index) })
+    memberAccess.push({ object, member, chain, line: lineOf(match.index) })
   }
 
   CALL_RE.lastIndex = 0
@@ -218,14 +238,14 @@ export function scanSource(source, { stripTypes = false } = {}) {
     const name = match[1]
     if (seenCall.has(name)) continue
     seenCall.add(name)
-    calls.push({ name, line: lineAt(prepared, match.index) })
+    calls.push({ name, line: lineOf(match.index) })
   }
 
   return {
     imports,
     memberAccess,
     calls,
-    strings: strings.map((s) => ({ value: s.value, line: lineAt(prepared, s.index) })),
+    strings: strings.map((s) => ({ value: s.value, line: lineOf(s.index) })),
   }
 }
 

@@ -12,8 +12,11 @@ import os from 'node:os'
 import path from 'node:path'
 import { scanSource, compareVersions, parseVersion } from './lib/scanner.mjs'
 import { parseGuideMarkdown, extractAnchors, listGuideVersions } from './lib/guide-parser.mjs'
-import { resolveTargetVersion } from './guide-sync.mjs'
+import { resolveTargetVersion, fetchNpmMetadata } from './guide-sync.mjs'
 import { anchorMatches } from './code-scan.mjs'
+import { runQuickSmoke } from './quick-smoke.mjs'
+import { auditPlugin } from './plugin-audit.mjs'
+import { extractInjects, diagnoseActivation } from './env-doctor.mjs'
 
 const tests = []
 function test(name, fn) {
@@ -447,6 +450,210 @@ test('SOP 与 SKILL 引用的原版文件不漂移', () => {
     }
   }
   assert.ok(checked >= 8, `应至少核对 8 处引用，实际 ${checked} 处——SOP 可能被清空了`)
+})
+
+// ── guide-sync dist-tags 缓存 ────────────────────────────────────────────────
+// 本机网络查 npm registry 曾实测 15s 超时失败；缓存命中应为 0 网络依赖。
+
+function tmpPluginDir(name) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), `fast-adapt-${name}-`))
+  return dir
+}
+
+test('dist-tags TTL 内读缓存不打网络', async () => {
+  const cache = path.join(tmpPluginDir('cache1'), 'npm-metadata.json')
+  fs.writeFileSync(cache, JSON.stringify({ fetchedAt: Date.now(), data: { 'dist-tags': { latest: '0.2.1-rc.3' } } }))
+  let fetchCalls = 0
+  const meta = await fetchNpmMetadata({ fetcher: async () => { fetchCalls++; throw new Error('不该打网络') }, cachePath: cache })
+  assert.strictEqual(fetchCalls, 0, 'TTL 内不应打网络')
+  assert.strictEqual(meta._metadataSource, 'cache')
+  assert.strictEqual(meta['dist-tags'].latest, '0.2.1-rc.3')
+})
+
+test('网络失败降级用过期缓存并标 stale', async () => {
+  const cache = path.join(tmpPluginDir('cache2'), 'npm-metadata.json')
+  fs.writeFileSync(cache, JSON.stringify({ fetchedAt: Date.now() - 10 * 60 * 60 * 1000, data: { 'dist-tags': { latest: '0.2.0' } } }))
+  const meta = await fetchNpmMetadata({ fetcher: async () => { throw new Error('network down') }, cachePath: cache })
+  assert.strictEqual(meta._metadataSource, 'stale-cache', '应降级为 stale-cache')
+  assert.strictEqual(meta['dist-tags'].latest, '0.2.0')
+})
+
+test('无缓存且网络失败要明确抛错', async () => {
+  const cache = path.join(tmpPluginDir('cache3'), 'npm-metadata.json')
+  await assert.rejects(
+    () => fetchNpmMetadata({ fetcher: async () => { throw new Error('network down') }, cachePath: cache }),
+    /network down/,
+    '无缓存时网络失败不该静默'
+  )
+})
+
+test('缓存过期后重新拉网络并落盘', async () => {
+  const dir = tmpPluginDir('cache4')
+  const cache = path.join(dir, 'npm-metadata.json')
+  fs.writeFileSync(cache, JSON.stringify({ fetchedAt: Date.now() - 2 * 60 * 60 * 1000, data: { 'dist-tags': { latest: '0.2.0' } } }))
+  let fetchCalls = 0
+  const meta = await fetchNpmMetadata({
+    fetcher: async () => { fetchCalls++; return { ok: true, json: async () => ({ 'dist-tags': { latest: '0.2.1-rc.3', next: '0.2.1-rc.4' } }) } },
+    cachePath: cache,
+  })
+  assert.strictEqual(fetchCalls, 1, '过期后应重新拉一次')
+  assert.strictEqual(meta._metadataSource, 'network')
+  assert.strictEqual(meta['dist-tags'].latest, '0.2.1-rc.3')
+  const onDisk = JSON.parse(fs.readFileSync(cache, 'utf8'))
+  assert.strictEqual(onDisk.data['dist-tags'].latest, '0.2.1-rc.3', '新数据应写回缓存')
+})
+
+// ── quick-smoke：修完秒验 ────────────────────────────────────────────────────
+
+test('quick-smoke 端到端：最小插件通过并注册工具', async () => {
+  const dir = tmpPluginDir('smoke')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-smoke', version: '1.0.0', main: 'lib/index.js', type: 'module' }))
+  fs.mkdirSync(path.join(dir, 'lib'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'lib', 'index.js'),
+    `export const inject = ['tools']\nexport function apply(ctx) { ctx.tools.register({ name: 't_tool' }) }\n`)
+  const result = await runQuickSmoke(dir)
+  assert.ok(result.success, `最小插件应通过: ${result.error || ''}`)
+  assert.deepStrictEqual(result.registeredTools, ['t_tool'])
+  assert.deepStrictEqual(result.injectedServices, ['tools'])
+})
+
+test('quick-smoke：入口缺失报 entry_resolution 且建议构建', async () => {
+  const dir = tmpPluginDir('noentry')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-noentry', version: '1.0.0', main: 'lib/index.js', type: 'module' }))
+  const result = await runQuickSmoke(dir)
+  assert.ok(!result.success)
+  assert.strictEqual(result.stage, 'entry_resolution')
+  assert.match(result.error, /构建/)
+})
+
+test('quick-smoke：Mock 没有的属性走兜底并被披露', async () => {
+  const dir = tmpPluginDir('fallback')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-fb', version: '1.0.0', main: 'lib/index.js', type: 'module' }))
+  fs.mkdirSync(path.join(dir, 'lib'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'lib', 'index.js'),
+    `export function apply(ctx) { ctx.mysteryService.doThing() }\n`)
+  const result = await runQuickSmoke(dir)
+  assert.ok(result.success)
+  assert.ok(result.mockFallbacks.includes('mysteryService'), `兜底属性应被披露: ${JSON.stringify(result.mockFallbacks)}`)
+})
+
+// ── plugin-audit：四维体检 + 新版本感知 ──────────────────────────────────────
+
+test('audit：注释里的同步 I/O 不报（状态机纪律）', () => {
+  const dir = tmpPluginDir('audit-comment')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a1', version: '1.0.0' }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'),
+    `// 旧的实现里有 readFileSync，现在没有了\nexport function apply() {}\n`)
+  const report = auditPlugin(dir)
+  const syncFindings = report.findings.filter((f) => /同步 I\/O/.test(f.title))
+  assert.strictEqual(syncFindings.length, 0, '注释里的 readFileSync 不该报')
+})
+
+test('audit：真实同步 I/O 报 MEDIUM 并扣性能分', () => {
+  const dir = tmpPluginDir('audit-sync')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a2', version: '1.0.0' }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'),
+    `import { readFileSync } from 'node:fs'\nexport function load() { return readFileSync('x') }\n`)
+  const report = auditPlugin(dir)
+  const f = report.findings.find((x) => /同步 I\/O/.test(x.title))
+  assert.ok(f, '真实 readFileSync 应报')
+  assert.strictEqual(f.severity, 'MEDIUM')
+  assert.ok(report.scores.performance < 100, '性能分应被扣')
+})
+
+test('audit：peer 范围无 -0 放行报 HIGH，有 -0 不报', () => {
+  const dir = tmpPluginDir('audit-peer')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a3', version: '1.0.0', peerDependencies: { '@deepseek-ai/dsh': '>=0.1.0-0 <0.3.0' } }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'), 'export function apply() {}\n')
+  let report = auditPlugin(dir)
+  assert.ok(!report.findings.some((f) => /prerelease 宿主/.test(f.title)), '含 -0 放行不该报')
+
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a3', version: '1.0.0', peerDependencies: { '@deepseek-ai/dsh': '^0.2.0' } }))
+  report = auditPlugin(dir)
+  const f = report.findings.find((x) => /prerelease 宿主/.test(x.title))
+  assert.ok(f, '^0.2.0 拒绝 prerelease 应报')
+  assert.strictEqual(f.severity, 'HIGH')
+})
+
+test('audit：注释里的 ctx.effect 不豁免真实的无清理监听', () => {
+  const dir = tmpPluginDir('audit-life2')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a4b', version: '1.0.0' }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'a.js'), `// 旧版用 ctx.effect(() => emitter.on('x', f))，现在重写了\nexport function setup(emitter) { emitter.on('x', () => {}) }\n`)
+  const report = auditPlugin(dir)
+  assert.ok(report.findings.some((f) => /清理逻辑/.test(f.title)), '注释里的 ctx.effect 不该豁免真实监听')
+})
+
+test('audit：生命周期命中与豁免', () => {
+  const dir = tmpPluginDir('audit-life')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a4', version: '1.0.0' }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'a.js'), `export function setup(emitter) { emitter.on('x', () => {}) }\n`)
+  fs.writeFileSync(path.join(dir, 'src', 'b.js'), `export function setup(ctx, emitter) { ctx.effect(() => emitter.on('x', () => {})) }\n`)
+  const report = auditPlugin(dir)
+  const titles = report.findings.filter((f) => /清理逻辑/.test(f.title)).map((f) => f.file)
+  assert.ok(titles.some((f) => f.endsWith('a.js')), '无清理的监听应报')
+  assert.ok(!titles.some((f) => f.endsWith('b.js')), 'ctx.effect 包裹的不该报')
+})
+
+test('audit：guide 交叉把已移除包 import 映射成弹性建议', () => {
+  const dir = tmpPluginDir('audit-guide')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-a5', version: '1.0.0' }))
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'), `import { x } from '@deepseek-ai/dsh-client-runtime'\nexport function apply() { void x }\n`)
+  const scanResult = {
+    findingCount: 1,
+    window: { localVersion: '0.2.0-rc.2', targetVersion: '0.2.1-alpha.4' },
+    findings: [{ file: 'src/index.js', line: 1, symbol: '@deepseek-ai/dsh-client-runtime', kind: 'package', guide: 'v0.2.1-alpha.1/x', title: 't', migration: ['步骤 1: 换新包'] }],
+  }
+  const report = auditPlugin(dir, { scanResult })
+  assert.ok(report.versionAdvice, '应有 versionAdvice 段')
+  assert.strictEqual(report.versionAdvice.findingCount, 1)
+  assert.ok(report.findings.some((f) => /已移除的包仍在 import/.test(f.title)), 'package 命中应映射成弹性建议')
+  assert.ok(report.scores.resilience < 100)
+})
+
+// ── activation 诊断（防「装了但没生效」） ────────────────────────────────────
+
+test('extractInjects：注释里的 inject 声明不算', () => {
+  const dir = tmpPluginDir('inj')
+  fs.writeFileSync(path.join(dir, 'index.js'), `// export const inject = ['tools', 'ghost']\nexport const inject = ['tools']\nexport function apply() {}\n`)
+  const injects = extractInjects(dir, 'index.js')
+  assert.deepStrictEqual(injects, ['tools'], '只认代码区的 inject')
+})
+
+test('diagnoseActivation：产物缺失 → ERROR，挂载缺失 → WARN', () => {
+  const dir = tmpPluginDir('act')
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 't-act', version: '1.0.0', main: 'lib/index.js' }))
+  const none = diagnoseActivation(dir, [])
+  assert.strictEqual(none.verdict, 'ERROR', '入口产物缺失应为 ERROR')
+
+  fs.mkdirSync(path.join(dir, 'lib'), { recursive: true })
+  fs.writeFileSync(path.join(dir, 'lib', 'index.js'), 'export function apply() {}\n')
+  const unmounted = diagnoseActivation(dir, [{ profile: 'web', patchFile: '/nonexistent', patchEntries: [] }])
+  assert.strictEqual(unmounted.verdict, 'WARN', '无 profile 挂载应为 WARN')
+
+  const mounted = diagnoseActivation(dir, [{ profile: 'web', patchFile: '/nonexistent', patchEntries: [`{ id: 't-act', name: 't-act' }`] }])
+  assert.strictEqual(mounted.verdict, 'OK')
+  assert.strictEqual(mounted.perProfile[0].registered, true)
+})
+
+// ── 性能回归门（防 lineAt 平方级退化） ───────────────────────────────────────
+// 触点密集的大文件曾把 code-scan 拖到 23s（598 文件）；单文件合成压测守住线性。
+
+test('扫描器对触点密集大文件保持线性（性能回归门）', () => {
+  const lines = []
+  for (let i = 0; i < 2000; i++) lines.push(`const v${i} = obj${i % 50}.member${i}; call${i}(v${i});`)
+  const source = lines.join('\n')
+  const start = Date.now()
+  const scanned = scanSource(source)
+  const elapsed = Date.now() - start
+  assert.ok(scanned.memberAccess.length >= 1000, '应抓到成员访问')
+  assert.strictEqual(scanned.memberAccess[1999].line, 2000, '行号要准')
+  assert.ok(elapsed < 500, `2000 行触点密集文件扫描应在 500ms 内，实际 ${elapsed}ms`)
 })
 
 // ── 汇总 ────────────────────────────────────────────────────────────────────

@@ -22,10 +22,45 @@ const CACHE_ROOT = path.join(os.homedir(), '.cache', 'dsh-plugin-fast-adapt')
 
 // ── A. 版本解析 ────────────────────────────────────────────────────────────
 
-async function fetchNpmMetadata() {
-  const res = await fetch(NPM_REGISTRY, { signal: AbortSignal.timeout(15000) })
-  if (!res.ok) throw new Error(`npm registry 返回 ${res.status}`)
-  return res.json()
+// dist-tags 数天才变一次，没必要每次都打网络。缓存 1 小时；
+// 网络失败时有过期缓存也降级用，明确标 stale，绝不静默装作新鲜。
+const METADATA_CACHE = path.join(CACHE_ROOT, 'npm-metadata.json')
+const METADATA_TTL_MS = 60 * 60 * 1000
+
+export async function fetchNpmMetadata({ fetcher = null, maxAgeMs = METADATA_TTL_MS, cachePath = METADATA_CACHE } = {}) {
+  const cached = readCachedMetadata(cachePath)
+  if (cached && Date.now() - cached.fetchedAt < maxAgeMs) {
+    return { ...cached.data, _metadataSource: 'cache' }
+  }
+
+  const doFetch = fetcher || ((url, init) => fetch(url, init))
+  try {
+    const res = await doFetch(NPM_REGISTRY, { signal: AbortSignal.timeout(15000) })
+    if (!res.ok) throw new Error(`npm registry 返回 ${res.status}`)
+    const data = await res.json()
+    writeCachedMetadata(cachePath, { fetchedAt: Date.now(), data })
+    return { ...data, _metadataSource: 'network' }
+  } catch (err) {
+    if (cached) return { ...cached.data, _metadataSource: 'stale-cache' }
+    throw err
+  }
+}
+
+function readCachedMetadata(cachePath = METADATA_CACHE) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(cachePath, 'utf8'))
+    if (typeof raw.fetchedAt === 'number' && raw.data?.['dist-tags']) return raw
+  } catch {}
+  return null
+}
+
+function writeCachedMetadata(cachePath, entry) {
+  try {
+    fs.mkdirSync(path.dirname(cachePath), { recursive: true })
+    fs.writeFileSync(cachePath, JSON.stringify(entry))
+  } catch {
+    // 缓存写不进去不影响主流程，下次再试
+  }
 }
 
 // 本机版本 → 官方通道位置 → 建议目标
@@ -171,7 +206,7 @@ export async function runGuideSync(localVersion, { clone = false } = {}) {
     }
   }
 
-  return { resolution, guides }
+  return { resolution, guides, metadataSource: metadata._metadataSource || 'network' }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.meta.filename)) {
@@ -185,6 +220,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
       process.stderr.write(`\n本机版本: ${r.localVersion || '未检测到'}\n`)
       process.stderr.write(`判定: ${r.verdict}\n`)
       process.stderr.write(`理由: ${r.reason}\n`)
+      process.stderr.write(`版本数据来源: ${result.metadataSource}${result.metadataSource === 'stale-cache' ? '（网络失败，降级用过期缓存）' : ''}\n`)
       if (result.guides.root) {
         process.stderr.write(`指南来源: ${result.guides.source} (${result.guides.versions.length} 个版本)\n`)
       } else if (result.guides.error) {

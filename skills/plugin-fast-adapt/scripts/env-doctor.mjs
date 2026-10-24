@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
-import { printJson, isDshPackage, packageBase, parseVersion, compareVersions, peerFloor } from './lib/scanner.mjs'
+import { printJson, isDshPackage, packageBase, parseVersion, compareVersions, peerFloor, maskSource, CODE } from './lib/scanner.mjs'
 
 const HOME = os.homedir()
 const DSH_DIR = path.join(HOME, '.dsh')
@@ -174,6 +174,94 @@ function listInstalledPlugins() {
   return plugins
 }
 
+// ── 插件启用就绪度（防「装了但没生效」） ──────────────────────────────────
+// 三件事：构建产物在不在、各 profile 有没有挂载、声明的 inject 服务
+// 在 profile 里有没有提供方特征。最后一条是 Cordis 的静默陷阱：
+// 强 inject 一个不存在的服务，插件不报错，只是永远 pending。
+
+export function extractInjects(root, entryFile) {
+  const candidates = [entryFile, 'src/index.ts', 'src/index.js', 'src/index.mjs'].map((f) => path.join(root, f))
+  for (const file of candidates) {
+    if (!fs.existsSync(file)) continue
+    const text = fs.readFileSync(file, 'utf8')
+    const mask = maskSource(text)
+    // 只认代码区的 inject 声明；注释里的不算
+    for (const m of text.matchAll(/inject\s*=\s*\[([^\]]*)\]/g)) {
+      if (mask[m.index] !== CODE) continue
+      const list = m[1].split(',').map((s) => s.trim().replace(/['"]/g, '')).filter(Boolean)
+      if (list.length) return list
+    }
+  }
+  return []
+}
+
+// profile 里常见宿主服务的文本特征。这是特征级推断，不是服务解析器：
+// 报「有风险」让人去确认，不报「一定挂」。
+const SERVICE_SIGNATURES = [
+  { name: 'sessionQuery', pattern: /dsh-session-query/ },
+  { name: 'llm', pattern: /dsh-llm/ },
+  { name: 'tools', pattern: /dsh-tool|\btools\b/ },
+  { name: 'webServer', pattern: /web|server/ },
+]
+
+export function diagnoseActivation(targetDir, installedPlugins) {
+  const root = path.resolve(targetDir)
+  const pkg = readPackageJson(targetDir)
+  if (!pkg) return { checked: false, reason: '目标目录没有 package.json' }
+
+  const main = pkg.main || 'lib/index.js'
+  const entryReady = fs.existsSync(path.join(root, main))
+  const injects = extractInjects(root, main)
+
+  const perProfile = installedPlugins.map(({ profile, patchFile, patchEntries }) => {
+    let disabled = false
+    try {
+      const text = fs.readFileSync(patchFile, 'utf8')
+      const nameEsc = pkg.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      disabled = new RegExp(`name:\\s*['"]?${nameEsc}['"]?[\\s\\S]*?disabled:\\s*true`).test(text)
+    } catch {}
+    const registered = patchEntries.some((e) => e.includes(pkg.name))
+    return { profile, registered, disabled }
+  })
+
+  const pendingRisks = []
+  if (injects.length && perProfile.some((p) => p.registered && !p.disabled)) {
+    for (const { profile, registered, disabled } of perProfile) {
+      if (!registered || disabled) continue
+      let patchText = ''
+      try {
+        patchText = fs.readFileSync(path.join(DSH_DIR, 'profiles', profile, 'cordis.patch.yml'), 'utf8')
+      } catch {}
+      const available = SERVICE_SIGNATURES.filter((s) => s.pattern.test(patchText)).map((s) => s.name)
+      for (const inj of injects) {
+        const known = SERVICE_SIGNATURES.find((s) => s.name === inj)
+        if (known && !available.includes(inj)) {
+          pendingRisks.push({
+            profile,
+            service: inj,
+            reason: `插件声明强制注入 "${inj}"，但该 profile 的组合里没有它的提供方特征`,
+            solution: `确认宿主确实提供该服务，或改用弱依赖 ctx.get('${inj}') 探测降级`,
+          })
+        }
+      }
+    }
+  }
+
+  let verdict = 'OK'
+  if (!entryReady) verdict = 'ERROR'
+  else if (pendingRisks.length || perProfile.every((p) => !p.registered)) verdict = 'WARN'
+
+  return {
+    checked: true,
+    package: pkg.name,
+    entry: { file: main, ready: entryReady },
+    injects,
+    perProfile,
+    pendingRisks,
+    verdict,
+  }
+}
+
 // ── 主流程 ──────────────────────────────────────────────────────────────────
 
 export function probeEnvironment(targetDir = process.cwd()) {
@@ -183,6 +271,8 @@ export function probeEnvironment(targetDir = process.cwd()) {
   for (const profile of profiles) {
     overlay.push(...scanOverlay(profile, globalDsh?.version))
   }
+
+  const installedPlugins = listInstalledPlugins()
 
   const running = []
   try {
@@ -202,13 +292,16 @@ export function probeEnvironment(targetDir = process.cwd()) {
     .filter(([name]) => isDshPackage(name))
     .map(([name, range]) => ({ package: name, range, floor: peerFloor(range) }))
 
+  const activation = diagnoseActivation(targetDir, installedPlugins)
+
   return {
     timestamp: new Date().toISOString(),
     globalDsh,
     profiles,
     overlayFindings: overlay,
     runningProcesses: running,
-    installedPlugins: listInstalledPlugins(),
+    installedPlugins,
+    activation,
     target: {
       dir: path.resolve(targetDir),
       package: pluginPkg?.name || null,
@@ -230,6 +323,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
     `\n全局 DSH: ${report.globalDsh?.version || '未检测到'} (${report.globalDsh?.source || 'n/a'})\n` +
     `profiles: ${report.profiles.join(', ') || '无'}\n` +
     `覆盖层问题: ${overlayCount} 处\n` +
-    `运行中宿主进程: ${report.runningProcesses.length} 个\n`
+    `运行中宿主进程: ${report.runningProcesses.length} 个\n` +
+    (report.activation?.checked
+      ? `目标插件启用就绪: ${report.activation.verdict}${report.activation.pendingRisks.length ? `（Silent Pending 风险 ${report.activation.pendingRisks.length} 处）` : ''}\n`
+      : '')
   )
 }

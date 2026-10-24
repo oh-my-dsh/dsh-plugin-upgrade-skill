@@ -41,7 +41,7 @@ node scripts/env-heal.mjs --apply   # move to ~/.dsh/.trash/<date>/, never delet
 
 Zero external dependencies. Only Node built-ins (`node:fs`, `node:path`, `node:os`, `node:child_process`) plus the `git` and `npm` commands.
 
-No TypeScript, no AST library, no HTTP client. Runs on Node 18+ (type stripping is an optional path, off by default).
+No TypeScript, no AST library, no HTTP client. Runs on Node 22.13+ (`import.meta.dirname` needs 20.11+, the optional type stripping needs 22.13+; type stripping is off by default).
 
 ## Scan accuracy
 
@@ -56,7 +56,7 @@ The rules and the measurements behind them are in [references/heuristics.md](ref
 - Constant anchors come only from the `Change` section; example values in `Migration` do not count
 - Matching requires the object parts to be mutual suffixes, so `engines.dsh` never collides with `result.dsh`
 
-The self-test covers these rules with 34 assertions (including SOP link integrity):
+The self-test covers these rules with 49 assertions (including cache states, smoke, audit, activation, and a scanner performance gate):
 
 ```sh
 npm run test:fast-adapt
@@ -70,6 +70,8 @@ npm run test:fast-adapt
 | `scripts/env-heal.mjs` | Heal stale overlay packages (dry-run by default) |
 | `scripts/guide-sync.mjs` | Resolve the target version and fetch the official guide |
 | `scripts/code-scan.mjs` | Scan plugin code against official change anchors |
+| `scripts/quick-smoke.mjs` | Post-fix smoke verification (in-memory Cordis mock, discloses fallbacks) |
+| `scripts/plugin-audit.mjs` | Four-dimension performance & architecture audit, optional `--guide` cross-check |
 | `scripts/self-test.mjs` | Self-test |
 | `scripts/lib/scanner.mjs` | Lexical scanner and version comparison |
 | `scripts/lib/guide-parser.mjs` | Official guide parsing and anchor extraction |

@@ -41,7 +41,7 @@ node scripts/env-heal.mjs --apply   # 移动到 ~/.dsh/.trash/<日期>/，不删
 
 零外部依赖。只用 Node 内置模块（`node:fs`、`node:path`、`node:os`、`node:child_process`），加 `git` 和 `npm` 命令。
 
-没有 TypeScript、没有 AST 库、没有网络请求库。Node 18+ 即可运行（类型剥离是可选路径，默认关闭）。
+没有 TypeScript、没有 AST 库、没有网络请求库。Node 22.13+ 可运行（`import.meta.dirname` 需 20.11+，可选的类型剥离需 22.13+；类型剥离默认关闭）。
 
 ## 扫描精度
 
@@ -56,7 +56,7 @@ node scripts/env-heal.mjs --apply   # 移动到 ~/.dsh/.trash/<日期>/，不删
 - 常量锚点只从 `Change` 段抽，`Migration` 段里的示例值不算
 - 匹配时要求对象部分互为后缀，`engines.dsh` 不会撞 `result.dsh`
 
-自检覆盖这些规则，34 项断言（含 SOP 引用完整性）：
+自检覆盖这些规则，49 项断言（含缓存三态、冒烟、审计、启用诊断与性能回归门）：
 
 ```sh
 npm run test:fast-adapt
@@ -70,6 +70,8 @@ npm run test:fast-adapt
 | `scripts/env-heal.mjs` | 覆盖层旧包自愈（默认 dry-run） |
 | `scripts/guide-sync.mjs` | 定目标版本 + 取官方升级指南 |
 | `scripts/code-scan.mjs` | 扫描插件代码，匹配官方变更锚点 |
+| `scripts/quick-smoke.mjs` | 修完秒验（内存级 Cordis 冒烟，Mock 兜底会披露） |
+| `scripts/plugin-audit.mjs` | 四维性能架构体检，可叠加 `--guide` 交叉 |
 | `scripts/self-test.mjs` | 自检 |
 | `scripts/lib/scanner.mjs` | 词法扫描器与版本比较 |
 | `scripts/lib/guide-parser.mjs` | 官方指南解析与锚点抽取 |

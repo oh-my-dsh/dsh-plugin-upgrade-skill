@@ -35,7 +35,7 @@ dsh-v0.1.7-rc.2。插件或目标版本更老时，本 skill 的扫描器没有�
 | dsh-v0.2.0-rc.2 → v0.2.1.x | 官方 guide 已有；上游卡片在陆续补 | 优先官方 guide；上游 `references/README.md` 用前先看有没有新边 |
 
 卡片走廊总表（含每条边的 from/to 与卡数）：
-[../../plugin-upgrade/references/README.md](../../plugin-upgrade/references/README.md)
+`../../plugin-upgrade/references/README.md`
 上游在持续补新边，动手前先拉最新 main 再读这张表。
 
 ## 阶段 0 · 定模式
@@ -86,20 +86,20 @@ in-place 升级过源码 checkout（`git pull` / 切 tag）之后，已运行的
 ## 阶段 3 · 组装走廊并算净状态
 
 1. 用精确 tag/commit 定 from/to，不用 `latest`，不凭记忆；
-2. 按 [../../plugin-upgrade/references/README.md](../../plugin-upgrade/references/README.md)
+2. 按 `../../plugin-upgrade/references/README.md`
    的 `from → to` 有向边连接走廊——永远不用文件名字典序（字典序下 `alpha.10` 排在
    `alpha.2` 前面）；
 3. 先读完整走廊，折叠净变化：字段在 alpha.1 删除、alpha.2 恢复的，不要删了再加；
 4. 某条边没有卡片时标记 unsupported gap，从精确 tag 的源码、类型与测试推导，
    不凭记忆改插件。跨大段历史优先看跳版卡
-   [../../plugin-upgrade/references/jump-0.1.5-rc.2-to-0.1.7-rc.1.md](../../plugin-upgrade/references/jump-0.1.5-rc.2-to-0.1.7-rc.1.md)
+   `../../plugin-upgrade/references/jump-0.1.5-rc.2-to-0.1.7-rc.1.md`
    （34 张，0.1.5-rc.2 → 0.1.7-rc.1 的净变化视图），再下钻单边卡补细节。
 
 ## 阶段 4 · 七类触点自查
 
 对每个触点类做一遍源码扫描，命中记文件与行号、对应卡片、置信度备注。
 `rg` 模板与逐类展开见
-[../../plugin-upgrade/references/pre-flight.md](../../plugin-upgrade/references/pre-flight.md)，
+`../../plugin-upgrade/references/pre-flight.md`，
 扫描模板的真源是同目录的 `pre-flight-patterns.json`：
 
 | # | 触点类 | 一句要点 |
@@ -127,11 +127,11 @@ in-place 升级过源码 checkout（`git pull` / 切 tag）之后，已运行的
 
 - Mode C 先跑 baseline：在仓库自己的依赖状态（不钉目标版本）下跑机械套件
   （build / typecheck / tests），把既有失败记成豁免清单。迁移不许新增或加重失败；
-  详见 [../../plugin-upgrade/references/rollup-0.1.2.md](../../plugin-upgrade/references/rollup-0.1.2.md) 的 R-06。
+  详见 `../../plugin-upgrade/references/rollup-0.1.2.md` 的 R-06。
 - 只动本任务拥有的路径；配置按路径打点，保留未知字段。
 - 兼容性改动通过后，插件自己的 SemVer 单独决定，不许顺手把宿主版本号当成插件版本发出去。
 - 静态精查（peer 下限、运行时组成 vs 类型声明、locale 配对、通道鉴权与协议保持）用
-  [../../plugin-upgrade/references/precision-checklist.md](../../plugin-upgrade/references/precision-checklist.md)。
+  `../../plugin-upgrade/references/precision-checklist.md`。
 
 ## 阶段 7 · 六层验证与报告
 
@@ -154,12 +154,14 @@ Skipped（未命中项及证据）/ Pending 与残余风险 / Rollback（基线�
 
 | 阶段 | 用什么 |
 | --- | --- |
-| 环境巡检、覆盖层旧包 | 本 skill `env-doctor.mjs` / `env-heal.mjs` |
+| 环境巡检、覆盖层旧包、启用就绪度 | 本 skill `env-doctor.mjs` / `env-heal.mjs` |
 | 定目标版本与通道位置 | 本 skill `guide-sync.mjs` |
 | 有官方 guide 的版本段 | 本 skill `code-scan.mjs`（自动锚点核查） |
+| 改完秒验（模块加载 / apply / 工具注册） | 本 skill `quick-smoke.mjs` |
+| 升级时顺带做插件性能与架构体检 | 本 skill `plugin-audit.mjs`（可叠加 `--guide` 交叉） |
 | 无 guide 的老版本段 | 原版 `plan-migration.mjs`（读卡片走廊出候选，结果仍是启发式） |
 | 幽灵宿主判定 | 原版 `ghost-host-check.mjs` |
-| 运行时验证 | 原版 `verify-runtime.mjs` |
+| 运行时验证 | 原版 `verify-runtime.mjs`（quick-smoke 只保「不崩」，真宿主验证用这个） |
 | 残留 / peer 复查 | 原版 `inject-lint.mjs` |
 
 ## 底线
