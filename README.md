@@ -2,9 +2,9 @@
 
 **简体中文** | [English](README.en.md)
 
-> **本项目为独立衍生项目**：基于原 `dsh-plugin-upgrade-skill` 进行重大架构革新，脱离繁重的「人工卡片走廊」模式，采用「环境卫生自愈 + AST 符号级契约差分 + 毫秒级内存沙箱冒烟 + MECE 四维工业级审计」全自动化工作流，彻底解决原项目在弱模型上的长上下文负迁移（-3.07 pp）、profiles 覆盖层旧包毒化（Issue #263）及真机冷启动 3600 秒超时（Issue #171）四大难题。
+> **本项目为独立衍生项目**：基于原 `dsh-plugin-upgrade-skill` 进行重大架构革新，脱离繁重的「人工卡片走廊」模式，采用「环境卫生自愈 + AST 符号级契约差分 + 毫秒级内存沙箱冒烟 + MECE 四维工业级审计」全自动化工作流，彻底解决原项目在弱模型上的长上下文负迁移（-3.07 pp）、profiles 覆盖层旧包毒化（Issue #263）及真机冷启动 3600 秒超时（Issue #171）三类难题。
 >
-> 独立 Skill 主路径：[`skills/plugin-fast-adapt`](skills/plugin-fast-adapt/) | 快速测试：`npm run test:fast-adapt`
+> 独立 Skill 主路径：[`skills/plugin-fast-adapt`](skills/plugin-fast-adapt/)（**已拆分独立演进，唯一真源：[taxueseek/plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt)，本目录是拆分时的快照，不再更新**；独立 Release：[v0.0.1](https://github.com/taxueseek/plugin-fast-adapt/releases/tag/v0.0.1)） | 快速测试：`npm run test:fast-adapt`
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Performance](https://img.shields.io/badge/smoke--latency-2ms-brightgreen) ![Architecture](https://img.shields.io/badge/context--budget-<1000tokens-blue) ![Self-Healing](https://img.shields.io/badge/self--healing-supported-success)
 

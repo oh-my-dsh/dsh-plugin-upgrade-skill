@@ -4,7 +4,7 @@
 
 > **Independent Derived Project**: A major architectural evolution from the legacy `dsh-plugin-upgrade-skill`. Replaces heavyweight manual prose card corridors with an automated pipeline: "Environment Hygiene Healing + AST Symbol Contract Diffing + Sub-100ms In-Memory Sandbox Smoke Test + MECE 4D Industrial Quality Audit". Eliminates context-bloat negative transfer on lighter models (-3.07 pp), profile overlay taint (Issue #263), and 3,600s cold-boot timeouts (Issue #171).
 >
-> Main Skill Path: [`skills/plugin-fast-adapt`](skills/plugin-fast-adapt/) | Quick Test: `npm run test:fast-adapt`
+> Main Skill Path: [`skills/plugin-fast-adapt`](skills/plugin-fast-adapt/) (**now evolved independently** — sole source of truth: [taxueseek/plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt); this directory is a snapshot from the split and is no longer updated. Independent release: [v0.0.1](https://github.com/taxueseek/plugin-fast-adapt/releases/tag/v0.0.1)) | Quick Test: `npm run test:fast-adapt`
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Performance](https://img.shields.io/badge/smoke--latency-2ms-brightgreen) ![Architecture](https://img.shields.io/badge/context--budget-<1000tokens-blue) ![Self-Healing](https://img.shields.io/badge/self--healing-supported-success)
 
