@@ -1,111 +1,118 @@
 ---
 name: plugin-fast-adapt
-description: 高性能 DSH 插件快速适配与破坏性更新自愈系统。通过本地确定性 CLI 实施环境覆盖层巡检与自愈、插件启用诊断、AST 符号级破坏性契约扫描、秒级沙箱冒烟测试与深度质量审计。当需要对 DSH 插件进行快速版本适配、排查升级后崩溃、消除 profiles 覆盖层旧包残留、排查插件安装未生效或验证插件运行时兼容性时触发。
+description: DSH 插件适配与破坏性变更核查。查 DeepSeek 官方最新版本，取该版本的官方升级指南，扫描本机插件代码，报出哪些地方踩了破坏性变更并给出官方修法；同时巡检本机 DSH 环境（profiles 覆盖层旧包残留、已装插件、运行中宿主）。当需要把 DSH 插件适配到新版本、排查升级后插件报错、核查插件是否用了已移除的包或 API、检查 ~/.dsh 覆盖层有无旧包残留时使用。触发词：适配 DSH 插件、升级插件、插件不兼容、dsh 升级后报错、插件用了废弃 API、检查覆盖层旧包。
 ---
 
-# plugin-fast-adapt · DSH 插件高性能快速适配与自愈系统
+# plugin-fast-adapt
 
-基于确定性工程与轻量沙箱的高性能 DSH 插件适配系统。本技能放弃「阅读海量历史散文卡片」的臃肿模式，采用「本地 CLI 提取精确证据 → 符号级原子修补 → 毫秒级沙箱闭环 → 工业级质量审计」架构，彻底消除长上下文干扰与弱模型超时负迁移。
+## 这个技能只做事
 
-## 核心设计与四大防线 (遵循 MECE 原则)
+把「插件适配到新版 DSH」拆成四步，每步一个脚本，每步都能单独跑：
 
-1. **环境自愈与覆盖层防线（Host Environment & Overlay Gate）**：
-   - 解决 issue #263 典型事故：DSH 宿主升级后，`~/.dsh/profiles/<profile>/node_modules/@deepseek-ai/*` 残留旧包引发运行时消息写面崩溃。
-   - 一键体检与自愈：自动识别覆盖层毒化包并安全移至回收站，清理幽灵进程与临时残留。
-2. **插件启用与依赖就绪防线（Activation & Resolution Gate）**：
-   - 解决「插件已安装/已声明，但运行时未正确启用」：检查 `inject` 依赖是否在当前 profile 中被满足（防止 Cordis 永久静默 pending）；检查 `cordis.patch.yml` 挂载状态；检查构建产物是否存在。
-3. **符号级契约防线（Symbol Contract Gate）**：
-   - 毫秒级扫描 AST 语法树与依赖配置，精准提取 Settings 废弃、Client-Runtime 移除、Message v4 格式、peerDependencies 严格锁定等高频破坏性断点。
-   - 仅向模型输出当前插件实际命中的微卡片（Micro-Recipe），单次上下文消耗控制在 1000 tokens 以内。
-4. **秒级沙箱闭环与自举审核防线（Quick-Smoke & Audit Gate）**：
-   - 纯内存模拟 Cordis 运行时上下文，100ms 内完成插件模块动态导入、依赖注入、`apply()` 执行与工具注册断言，解决传统冷启动超时 3600 秒痛点（issue #171）。
-   - 四维度（性能内存安全、契约弹性弱耦合、上下文常驻预算、生命周期清理）深度审计。
+| 步 | 脚本 | 回答什么 |
+| --- | --- | --- |
+| 1 探测环境 | `scripts/env-doctor.mjs` | 本机装的 DSH 是哪个版本？覆盖层有没有旧包？装了哪些插件？ |
+| 2 定版本 | `scripts/guide-sync.mjs` | 官方最新版本是什么？本机该不该跟？跟哪个？ |
+| 3 取差异 | `scripts/guide-sync.mjs --clone` | 本机到目标版本之间，官方列了哪些破坏性变更？ |
+| 4 查命中 | `scripts/code-scan.mjs` | 本机插件代码踩了其中哪几条？官方给的修法是什么？ |
 
----
+**不依赖任何人工维护的知识卡片。** 权威来源只有两处：npm registry 的版本信息，和 deepseek-harness 仓库的 `docs/upgrade-guide/`。所以上游发新版的那一刻，这个技能就自动跟上了，不存在「卡片滞后」的问题。
 
-## 适配执行标准流程
+## 怎么用
 
-### 第一步：环境卫生体检与旧包自愈 (Stage 0)
-
-在开始任何代码改动前，必须先确认宿主环境处于健康状态：
+### 第一步：看清本机环境
 
 ```sh
-# 体检环境与覆盖层
-node skills/plugin-fast-adapt/scripts/dsh-hygiene-doctor.mjs /path/to/plugin
-
-# 一键自愈：安全隔离覆盖层旧包并清理陈旧快照
-node skills/plugin-fast-adapt/scripts/dsh-env-healer.mjs
+node scripts/env-doctor.mjs <插件目录>
 ```
 
-- 若发现覆盖层旧包残留：自愈脚本会自动将其安全转移至 `~/.dsh/.trash/` 对应日期目录下，使系统回落到全局宿主干净安装；
-- 若发现运行中的 DSH 宿主进程：记录其 PID。若修改涉及 Host 服务侧代码，后续必须重启该进程。
+输出 JSON，重点看四段：
 
-### 第二步：插件启用就绪度排查 (Stage 1)
+- `globalDsh`：全局安装的 DSH 版本和位置
+- `overlayFindings`：profiles 覆盖层里与主安装脱节的包，带 severity 和原因
+- `runningProcesses`：正在跑的 DSH 宿主进程（改 Host 侧代码后必须重启它）
+- `target.peerWindows`：待查插件自己声明的 peer 版本窗口
 
-排查插件是否已在目标 Profile（默认 web）中正确配置与就绪：
+`overlayFindings` 非空时，先处理覆盖层再谈适配。这是 issue #263 那一类事故：宿主升级后覆盖层里残留旧包，旧包优先解析导致运行时装载冲突，而且只换文件不重启宿主还会复现。
 
 ```sh
-node skills/plugin-fast-adapt/scripts/dsh-activation-doctor.mjs /path/to/plugin web
+node scripts/env-heal.mjs           # dry-run，只报告
+node scripts/env-heal.mjs --apply   # 真的移动（移到 ~/.dsh/.trash/<日期>/，不删除）
 ```
 
-- 若提示产物缺失：先运行 `pnpm run build`；
-- 若提示未挂载：在 `~/.dsh/profiles/web/cordis.patch.yml` 补全插入条目；
-- 若提示服务缺失风险（Silent Pending 隐患）：按照提示改用弱依赖 `ctx.get()` 探测。
-
-### 第三步：精准提取破坏性契约触点 (Stage 2)
-
-执行静态符号扫描，提取具体文件和行号：
+### 第二步：定目标版本
 
 ```sh
-node skills/plugin-fast-adapt/scripts/dsh-contract-diff.mjs /path/to/plugin
+node scripts/guide-sync.mjs <本机版本>
 ```
 
-根据输出的微卡片，按需执行代码修正。对于常规的 `peerDependencies` prerelease 拦截以及构建缓存，可运行自动修复器：
+它读 npm 的 `dist-tags`（`latest` / `next` / `alpha`），然后判断本机在官方通道里的位置：
+
+| 判定 | 含义 | 下一步 |
+| --- | --- | --- |
+| `upgrade-available` | 官方有更高版本 | 取 `target` 继续 |
+| `up-to-date-on-channel` | 本机已是某通道的最新版 | 无需适配，收工 |
+| `ahead-of-upstream` | 本机比官方所有通道都新 | 无需适配，收工 |
+| `unknown-local` | 没检测到本机版本 | 默认跟 `latest`，但要人工确认 |
+
+**不要盲目取 `latest`。** 本机完全可能跑在 `next` 线上，比 `latest` 还新一版；这时候报「建议升级到 latest」是倒退。
+
+有 `target` 时，取该版本的官方升级指南：
 
 ```sh
-node skills/plugin-fast-adapt/scripts/auto-fixer.mjs /path/to/plugin
+node scripts/guide-sync.mjs <本机版本> --clone
 ```
 
-### 第四步：常见破坏性契约自愈指南 (Stage 3)
+优先复用本机已有的 harness clone（自动发现 `~/Documents/*/deepseek-harness`，或用 `DSH_HARNESS_CLONE` 指定），没有才 sparse clone 到 `~/.cache/dsh-plugin-fast-adapt/`。
 
-遇到以下触点时，按标准自愈模式重构代码：
-
-1. **Settings 模块废弃**：
-   - 现象：引入了 `@deepseek-ai/dsh-settings` 或调用 `settings.register`。
-   - 修复：直接移除该依赖；导出 Cordis 原生 `Config` Schema（`export const Config = ...`），设置项将由宿主 `configEditor` 自动渲染。
-2. **peerDependencies 预发布版本拒绝**：
-   - 现象：声明了 `^0.2.0` 或 `>=0.2.0 <0.3.0`，在遇到 `0.2.1-alpha.1` 或 `0.1.0-rc.8` 等宿主时安装报错。
-   - 修复：规范为含 `-0` 放行的宽容范围，如 `">=0.1.0-0 <0.3.0"`。
-3. **服务弱契约解耦与降级**：
-   - 现象：强 `import` 宿主非核心包（如 session-query）。
-   - 修复：改用 `ctx.get('serviceName')` 动态探测 + 鸭子类型判断，未检测到服务时安全静默降级，不阻塞核心工具。
-4. **提交与构建产物（Vendor 纪律）**：
-   - 现象：配置了 `prepare` 脚本导致 pnpm 10+ 拦截 git 依赖构建。
-   - 修复：移除 `prepare` 脚本，在提交代码时确保 `lib/` 编译产物已入库。
-
-### 第五步：极速沙箱冒烟验证 (Stage 4)
-
-代码修改后，先完成基础构建，再运行毫秒级沙箱冒烟：
+### 第三步：查插件踩了哪些变更
 
 ```sh
-cd /path/to/plugin && pnpm run clean && pnpm run build
-node skills/plugin-fast-adapt/scripts/quick-smoke.mjs /path/to/plugin
+node scripts/code-scan.mjs <插件目录> <upgrade-guide 目录> <本机版本> <目标版本>
 ```
 
-沙箱将自动断言模块能够顺利被 Cordis 加载并成功激活，且正确暴露所声明的工具名与命令。
+`<upgrade-guide 目录>` 是官方指南根目录，例如 `~/layerfs-lab/deepseek-harness/docs/upgrade-guide`，或者上一步 clone 出来的 `~/.cache/dsh-plugin-fast-adapt/harness-dsh-v<version>/docs/upgrade-guide`。
 
-### 第六步：工业级质量与性能深度审计 (Stage 5)
+输出三段：
 
-运行深度审计器，对内存防护、I/O 阻塞、上下文预算与生命周期清理进行全量扫描：
+- `findingsByGuide`：按官方变更条目分组的命中，每条带 `guide`、`title`、`migration`
+- `migration`：官方给的修法原文（从该指南的 Migration 段抽出来的相关步骤）
+- `findingCount` / `guidesConsidered`：命中数与参考的指南条数
+
+命中分三类：`package`（import 了已移除或已改名的包）、`member`（调用了已移除的方法或字段）、`code`（字符串里出现已变更的错误码或事件名）。
+
+## 怎么读结果
+
+**命中为零不代表没问题，代表「在官方指南覆盖的范围内没踩到」。** 指南只记录官方认为需要通知的破坏性变更，不覆盖所有可能性。
+
+**命中要多看一眼是不是误报。** 这个技能的锚点匹配做了几层降噪（见 `references/heuristics.md`），但同名符号仍然可能撞车，比如插件里的 `path.resolve()` 和 guide 里的 `runtime.resolve()`。判断方法：看命中位置的代码上下文，确认那个符号是不是真的来自宿主 API。
+
+**`member` 命中里，如果符号是 guide 的「迁移目标」就不会出现。** 插件用了新 API 说明已经适配过，报了只是噪音。
+
+## 安全边界
+
+- **只读为主**。`env-doctor` 和 `code-scan` 完全不写文件。
+- **自愈默认 dry-run**。`env-heal` 不加 `--apply` 只报告；加了也是「移动」而不是删除，进 `~/.dsh/.trash/<日期>/`。
+- **不改 DSH 本体**。只读环境信息，不动 `~/.dsh` 下的配置和 profile 声明。
+- **不自动改插件代码**。只报命中和官方修法，改不改、怎么改由人决定。
+- **网络只在 `--clone` 时用**。npm registry 和 git clone 都有超时，失败会明确报错而不是静默跳过。
+
+## 自检
 
 ```sh
-node skills/plugin-fast-adapt/scripts/dsh-plugin-auditor.mjs /path/to/plugin
+npm run test:fast-adapt
 ```
 
-根据评分报告消除残留隐患，确保插件达到工业级生产标准。
+33 项断言，覆盖扫描器不误报（注释和字符串里的同名词不算命中）、不漏报、版本启发式、替换对识别、端到端命中。零网络、零外部依赖，任何机器上都能跑。
 
-### 第七步：双平面生效核验 (Stage 6)
+## 脚本清单
 
-依据改动所属平面，执行对应的生效操作：
-- **Web Client 侧改动**（`src/client/*`, `lib/client.js`）：通知用户在浏览器中执行硬刷新（Cmd+Shift+R 或 Ctrl+F5）即可；
-- **Host 侧改动**（`src/index.*`, `lib/index.js`）：必须在外部终端完全终止先前的 DSH 进程并重新启动 `dsh web`。
+| 脚本 | 职责 |
+| --- | --- |
+| `scripts/env-doctor.mjs` | 探测本机 DSH 环境（版本、覆盖层、插件、进程） |
+| `scripts/env-heal.mjs` | 覆盖层旧包自愈（默认 dry-run） |
+| `scripts/guide-sync.mjs` | 定目标版本 + 取官方升级指南 |
+| `scripts/code-scan.mjs` | 扫描插件代码，匹配官方变更锚点 |
+| `scripts/self-test.mjs` | 自检 |
+| `scripts/lib/scanner.mjs` | 词法扫描器与版本比较（零依赖） |
+| `scripts/lib/guide-parser.mjs` | 官方指南解析与锚点抽取 |

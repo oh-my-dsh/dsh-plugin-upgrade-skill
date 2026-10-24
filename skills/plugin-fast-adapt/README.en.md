@@ -1,58 +1,87 @@
 # plugin-fast-adapt
 
-English | [简体中文](README.md)
+[简体中文](README.md) | English
 
-**plugin-fast-adapt** is a high-performance fast adaptation and breaking-update self-healing suite for the DeepSeek Harness (DSH) plugin ecosystem.
+DSH plugin adaptation and breaking-change detection. Checks DeepSeek's latest release, pulls that version's official upgrade guide, scans local plugin code, and reports which breaking changes the plugin hits together with the vendor's own fix instructions.
 
-## Motivation
+## How this differs from a migration card library
 
-In traditional `plugin-upgrade` practices and benchmark suites (e.g. Harbor S/M/H tasks):
-1. **Manual card-set maintenance bottleneck**: As upstream leaps thousands of commits (e.g. `0.2.0-rc.2 → 0.2.1-alpha.5` with 8,000+ files changed), manual cards fall behind, hitting `unsupported corridor gap`.
-2. **Context bloat & negative transfer on lighter models**: Pumping tens of thousands of tokens of prose cards induces severe cognitive overhead on models like DeepSeek V4 Flash and Qwen 27B, leading to timeouts and score regressions.
-3. **Dirty runtime environments & heavy cold-boot timeouts**: Issue #263 shows overlay package taint breaks message sinks without touching plugin source; Issue #171 shows cold-boot verifiers timing out after 3,600s.
+The usual approach is a hand-maintained migration knowledge base: dozens of cards per version range, each describing what broke and how to fix it. The inevitable outcome is **lag** — a single upstream DSH jump can touch thousands of files, so cards are stale the moment they are written, with coverage gaps in between.
 
-**Core design of fast-adapt**:
-- **Deterministic CLI-driven collection**: Hygiene check, activation diagnosis, and AST contract diffing complete in milliseconds;
-- **Micro-context budget**: Keeps prompt overhead under 1,000 tokens;
-- **In-memory sandbox smoke test**: Asserts Cordis module loading, dependency injection, and tool registrations in under 20ms using a MockContext;
-- **Industrial quality audit**: Four-dimensional deep audit across memory safety, contract resilience, context token budget, and lifecycle teardown.
+This skill takes a different approach: **maintain the method of obtaining knowledge, not the knowledge itself.**
 
-## Script Toolbox
+The authoritative description of breaking changes lives in the DeepSeek harness repository at `docs/upgrade-guide/<version>/<topic>/guide.md`. It is updated in the same release, has a fixed format with `## Change` (what changed) and `## Migration` (how to fix it). Version information lives in the npm registry's `dist-tags`.
 
-| Script | Responsibility | Latency |
-|---|---|---|
-| `scripts/dsh-hygiene-doctor.mjs` | **Hygiene gate (Read-only)**: Audits `~/.dsh/profiles/` overlay packages (prevents issue #263 message sink rejections), detects active ghost hosts, checks `tsbuildinfo` cache pollution and `prepare` script traps. | < 50ms |
-| `scripts/dsh-env-healer.mjs` | **Environment self-healing (Write)**: Isolates tainted overlay packages into `~/.dsh/.trash/` safely, cleans stale snapshots and locks. | < 30ms |
-| `scripts/dsh-activation-doctor.mjs` | **Activation doctor (Read-only)**: Checks `inject` dependency satisfaction (prevents silent pending trap), `cordis.patch.yml` registration, and build artifacts. | < 40ms |
-| `scripts/dsh-contract-diff.mjs` | **AST contract diff (Read-only)**: Pinpoints deprecated `@deepseek-ai/dsh-settings`, `client-runtime`, Message v4 formats, and provides dual-plane reload guidance. | < 80ms |
-| `scripts/auto-fixer.mjs` | **Mechanical auto-fixer (Write)**: Normalizes `peerDependencies` for prereleases, strips intercepted `prepare` scripts, purges build caches. | < 20ms |
-| `scripts/quick-smoke.mjs` | **In-memory sandbox smoke (Executes plugin apply)**: Mocks Cordis/DSH core context, asserts module activation and tool registration in 15ms. | 2~20ms |
-| `scripts/dsh-plugin-auditor.mjs` | **Deep quality & resilience auditor (Read-only)**: Audits memory safety, contract resilience, context token budgets, and lifecycle teardown. | < 60ms |
+Both are vendor sources, so **the skill catches up the moment upstream ships** — there is no card lag.
 
-## Workflow
+## Four steps
 
 ```sh
-# 1. Environment hygiene audit & healing
-npm run doctor
-npm run env:heal
+# 1. Inspect the local environment: installed version, stale overlay packages, installed plugins
+node scripts/env-doctor.mjs <plugin-dir>
 
-# 2. Plugin activation readiness diagnosis
-node skills/plugin-fast-adapt/scripts/dsh-activation-doctor.mjs /path/to/plugin web
+# 2. Resolve the target version: what is upstream's latest, should this machine follow it
+node scripts/guide-sync.mjs <local-version>
 
-# 3. Scan contract breaking points and auto-fix
-node skills/plugin-fast-adapt/scripts/dsh-contract-diff.mjs /path/to/plugin
-node skills/plugin-fast-adapt/scripts/auto-fixer.mjs /path/to/plugin
+# 3. Fetch that version's official upgrade guide (reuses a local clone when present)
+node scripts/guide-sync.mjs <local-version> --clone
 
-# 4. Clean build and instant in-memory smoke test
-cd /path/to/plugin && pnpm run clean && pnpm run build
-node skills/plugin-fast-adapt/scripts/quick-smoke.mjs /path/to/plugin
-
-# 5. Deep quality & resilience audit
-node skills/plugin-fast-adapt/scripts/dsh-plugin-auditor.mjs /path/to/plugin
+# 4. Find which changes the plugin hits
+node scripts/code-scan.mjs <plugin-dir> <upgrade-guide-dir> <local-version> <target-version>
 ```
 
-## Verification
+Heal stale overlay packages first when any are reported (dry-run by default):
+
+```sh
+node scripts/env-heal.mjs           # report only
+node scripts/env-heal.mjs --apply   # move to ~/.dsh/.trash/<date>/, never delete
+```
+
+## Dependencies
+
+Zero external dependencies. Only Node built-ins (`node:fs`, `node:path`, `node:os`, `node:child_process`) plus the `git` and `npm` commands.
+
+No TypeScript, no AST library, no HTTP client. Runs on Node 18+ (type stripping is an optional path, off by default).
+
+## Scan accuracy
+
+A naive first version reported 12 findings on a real plugin; on inspection **all 12 were false positives**. The current version applies four layers of noise reduction, and the same plugin reports 0.
+
+The rules and the measurements behind them are in [references/heuristics.md](references/heuristics.md). Summary:
+
+- The scanner uses a state machine to skip comments and strings, so a name mentioned in a comment is not a hit
+- Full member chains win; overly generic parent chains like `ctx.tools` are dropped
+- Generic words (`register`, `resolve`, `readFile`) and short names never become anchors
+- "Old → new" replacement pairs are recognized, so a plugin already using the new symbol is not reported
+- Constant anchors come only from the `Change` section; example values in `Migration` do not count
+- Matching requires the object parts to be mutual suffixes, so `engines.dsh` never collides with `result.dsh`
+
+The self-test covers these rules with 33 assertions:
 
 ```sh
 npm run test:fast-adapt
 ```
+
+## Scripts
+
+| Script | Responsibility |
+| --- | --- |
+| `scripts/env-doctor.mjs` | Probe the local DSH environment |
+| `scripts/env-heal.mjs` | Heal stale overlay packages (dry-run by default) |
+| `scripts/guide-sync.mjs` | Resolve the target version and fetch the official guide |
+| `scripts/code-scan.mjs` | Scan plugin code against official change anchors |
+| `scripts/self-test.mjs` | Self-test |
+| `scripts/lib/scanner.mjs` | Lexical scanner and version comparison |
+| `scripts/lib/guide-parser.mjs` | Official guide parsing and anchor extraction |
+
+## Safety posture
+
+- `env-doctor` and `code-scan` are strictly read-only
+- `env-heal` is dry-run by default and moves rather than deletes when applied
+- Never modifies DSH itself, nor config or profile declarations under `~/.dsh`
+- Never edits plugin code automatically; it reports findings and vendor fixes only
+- Network is used only with `--clone`, always with a timeout, and failures are reported explicitly
+
+## Known limitations
+
+The official upgrade guide does not cover every breaking change (package retirement is one class that is not documented there); the `env-doctor` overlay inspection covers that case. Same-named symbols can still collide and require human judgment of the surrounding code. This skill performs static matching only and does not verify runtime behaviour.

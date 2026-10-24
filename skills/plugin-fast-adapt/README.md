@@ -1,58 +1,87 @@
 # plugin-fast-adapt
 
-[English](README.en.md) | 简体中文
+**简体中文** | [English](README.en.md)
 
-**plugin-fast-adapt** 是针对 DeepSeek Harness（DSH）生态的高性能快速插件适配与破坏性更新自愈衍生套件。
+DSH 插件适配与破坏性变更核查。查官方最新版本，取该版本的官方升级指南，扫描本机插件代码，报出踩了哪些破坏性变更、官方给的修法是什么。
 
-## 为什么需要 fast-adapt？
+## 它和「升级卡片库」的区别
 
-在传统的 `plugin-upgrade` 实践与基准测试（如 Harbor S/M/H 考题）中，存在三大系统性问题：
-1. **人工卡片维护地狱**：面对上游动辄数千 commit 的跃迁（如 `0.2.0-rc.2 → 0.2.1-alpha.5`，8000+ 文件变动），卡片更新严重滞后，极易触发 `unsupported corridor gap`；
-2. **上下文过载引发弱模型负迁移**：向 Agent 注入成千上万字的历史卡片散文，不仅消耗大量 token，更使弱模型（DeepSeek V4 Flash、Qwen 27B 等）产生信息竞争、超时频发并在基准中出现净退化；
-3. **环境脏状态与重型启动超时**：Issue #263 揭示的覆盖层旧包毒化无法通过读代码解决；Issue #171 揭示的串行宿主冷启超过 3600 秒超时。
+常见的做法是人工维护一份版本迁移知识库：每个版本区间手写几十张卡，写清什么坏了、怎么修。这种做法的宿命是**滞后**——DSH 上游一次跃迁可以改动数千个文件，卡片写完就已经过时，中间还会出现「走廊缺口」。
 
-**fast-adapt 方案的核心取向**：
-- **CLI 确定性收集**：环境体检、激活诊断与 AST 符号扫描由本地 Node 脚本毫秒级搞定，仅输出命中微卡片；
-- **微上下文预算**：首轮上下文消耗压至 1000 tokens 内，模型聚焦做「精准代码手术」；
-- **纯内存沙箱秒级冒烟**：使用 MockContext 在 15ms 内完成动态模块载入、依赖注入与工具注册校验。
-- **工业级自举审计**：按 MECE 原则四维度（性能内存、契约弹性、上下文常驻、生命周期）深度体检插件质量。
+这个技能换了个思路：**不维护知识，只维护取知识的方法**。
 
-## 核心脚本工具箱
+破坏性变更的权威描述在 DeepSeek 官方仓库的 `docs/upgrade-guide/<版本>/<主题>/guide.md` 里。官方发版时同步更新，格式固定，有 `## Change`（什么变了）和 `## Migration`（怎么改）。版本信息在 npm registry 的 `dist-tags` 里。
 
-| 脚本 | 职责与安全姿态 | 耗时 |
-|---|---|---|
-| `scripts/dsh-hygiene-doctor.mjs` | **环境卫生门禁（只读）**：巡检 `~/.dsh/profiles/` 覆盖层残留旧包（防 issue #263 消息写面拒收）、探测运行中的 DSH 幽灵进程、检查 `tsbuildinfo` 污染与 `prepare` 脚本陷阱。 | < 50ms |
-| `scripts/dsh-env-healer.mjs` | **环境自愈与旧包隔离（写操作）**：自动将覆盖层滞后/废弃旧包安全移至 `~/.dsh/.trash/` 回收站，清理陈旧会话快照与锁文件。 | < 30ms |
-| `scripts/dsh-activation-doctor.mjs` | **插件启用专项诊断（只读）**：检查 `inject` 依赖是否在目标 profile 中真正可用（防 Cordis 静默 pending 挂起）、检查 `cordis.patch.yml` 挂载状态与构建产物。 | < 40ms |
-| `scripts/dsh-contract-diff.mjs` | **AST 符号契约扫描（只读）**：基于语法树精准定位废弃的 `@deepseek-ai/dsh-settings`、`client-runtime`、Message v4 格式等触点，输出修复微卡片与双平面重载指示。 | < 80ms |
-| `scripts/auto-fixer.mjs` | **机械性自愈修复器（写操作）**：自动规范 `package.json` 中的 `peerDependencies`（放行 prerelease）、剥离易受拦截的 `prepare` 脚本、清空构建缓存。 | < 20ms |
-| `scripts/quick-smoke.mjs` | **内存沙箱秒级冒烟（只执行目标插件 apply）**：模拟 Cordis/DSH 核心上下文环境，快速断言插件载入、`apply()` 执行与 10+ 工具注册。 | 2~20ms |
-| `scripts/dsh-plugin-auditor.mjs` | **深度质量与性能审计器（只读）**：按 MECE 原则四维度全量评估插件内存安全、契约弹性、上下文预算与生命周期清理并打分。 | < 60ms |
+两处都是官方源，所以**上游发新版的那一刻，这个技能就自动跟上了**。
 
-## 使用工作流
+## 四步流程
 
 ```sh
-# 1. 环境卫生体检与旧包自愈
-npm run doctor
-npm run env:heal
+# 1. 看清本机环境：装的哪个版本、覆盖层有没有旧包、装了哪些插件
+node scripts/env-doctor.mjs <插件目录>
 
-# 2. 插件启用就绪度排查
-node skills/plugin-fast-adapt/scripts/dsh-activation-doctor.mjs /path/to/plugin web
+# 2. 定目标版本：官方最新是什么、本机该不该跟
+node scripts/guide-sync.mjs <本机版本>
 
-# 3. 扫描破坏性契约触点并自愈
-node skills/plugin-fast-adapt/scripts/dsh-contract-diff.mjs /path/to/plugin
-node skills/plugin-fast-adapt/scripts/auto-fixer.mjs /path/to/plugin
+# 3. 取该版本的官方升级指南（优先复用本机 clone，没有才拉取）
+node scripts/guide-sync.mjs <本机版本> --clone
 
-# 4. 构建与极速沙箱冒烟断言
-cd /path/to/plugin && pnpm run clean && pnpm run build
-node skills/plugin-fast-adapt/scripts/quick-smoke.mjs /path/to/plugin
-
-# 5. 深度质量与自举审计
-node skills/plugin-fast-adapt/scripts/dsh-plugin-auditor.mjs /path/to/plugin
+# 4. 查插件踩了哪些变更
+node scripts/code-scan.mjs <插件目录> <upgrade-guide 目录> <本机版本> <目标版本>
 ```
 
-## 测试与自检
+覆盖层有旧包残留时先自愈（默认 dry-run）：
+
+```sh
+node scripts/env-heal.mjs           # 只报告
+node scripts/env-heal.mjs --apply   # 移动到 ~/.dsh/.trash/<日期>/，不删除
+```
+
+## 依赖
+
+零外部依赖。只用 Node 内置模块（`node:fs`、`node:path`、`node:os`、`node:child_process`），加 `git` 和 `npm` 命令。
+
+没有 TypeScript、没有 AST 库、没有网络请求库。Node 18+ 即可运行（类型剥离是可选路径，默认关闭）。
+
+## 扫描精度
+
+初版用朴素正则，扫一个真实插件报了 12 处命中，逐一核对后**12 处全是误报**。现在的版本做了四层降噪，同一个插件的命中是 0。
+
+规则和实测依据见 [references/heuristics.md](references/heuristics.md)，要点：
+
+- 扫描器用状态机跳过注释和字符串，注释里的同名词不算命中
+- 完整点链优先，丢掉 `ctx.tools` 这种过于通用的父链
+- 通用词（`register`、`resolve`、`readFile`）和短名不进锚点表
+- 识别「旧 → 新」替换对，插件用了新符号说明已适配，不再报
+- 常量锚点只从 `Change` 段抽，`Migration` 段里的示例值不算
+- 匹配时要求对象部分互为后缀，`engines.dsh` 不会撞 `result.dsh`
+
+自检覆盖这些规则，33 项断言：
 
 ```sh
 npm run test:fast-adapt
 ```
+
+## 脚本
+
+| 脚本 | 职责 |
+| --- | --- |
+| `scripts/env-doctor.mjs` | 探测本机 DSH 环境 |
+| `scripts/env-heal.mjs` | 覆盖层旧包自愈（默认 dry-run） |
+| `scripts/guide-sync.mjs` | 定目标版本 + 取官方升级指南 |
+| `scripts/code-scan.mjs` | 扫描插件代码，匹配官方变更锚点 |
+| `scripts/self-test.mjs` | 自检 |
+| `scripts/lib/scanner.mjs` | 词法扫描器与版本比较 |
+| `scripts/lib/guide-parser.mjs` | 官方指南解析与锚点抽取 |
+
+## 安全姿态
+
+- `env-doctor` 和 `code-scan` 完全只读
+- `env-heal` 默认 dry-run，真动手也是移动不删除
+- 不改 DSH 本体，不动 `~/.dsh` 下的配置和 profile 声明
+- 不自动改插件代码，只报命中和官方修法
+- 网络只在 `--clone` 时用，都有超时，失败明确报错
+
+## 已知局限
+
+官方升级指南不覆盖所有破坏性变更（包废弃一类实测查不到），那一类靠 `env-doctor` 的覆盖层巡检兜。同名符号仍可能撞车，只能靠人看上下文判断。这个技能只做静态匹配，不验证运行时行为。
