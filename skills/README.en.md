@@ -38,6 +38,7 @@ Requirements:
 |---|---|---|
 | [plugin-workflow](plugin-workflow/) | Select and coordinate inspection, upgrades, tests, naming registration, release, and rollback with one phase ledger and separate confirmation boundaries | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-upgrade](plugin-upgrade/) | Read-only inspection, installed-plugin upgrades, host compatibility migration; seven touchpoints + version cards + safe rollback | [@oh-my-dsh](https://github.com/oh-my-dsh) |
+| [plugin-fast-adapt](plugin-fast-adapt/) | High-performance fast adaptation & breaking update self-healing: profile overlay audit + AST contract diff + sub-100ms smoke test + dual-plane reload | [@taxueseek](https://github.com/taxueseek) |
 | [plugin-write](plugin-write/) | Write DSH plugins, choose the extension form for the target Harness version, and distinguish official single-repo rules from external plugin rules | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-test](plugin-test/) | Choose the test level for DSH plugin changes, covering real combinations, release artifacts, and target-version product entry points | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-release](plugin-release/) | Package, publish, and distribute DSH plugins: release track selection, unpublished-cohort installation, CI gates, and rollback | [@omdsh-dev](https://github.com/omdsh-dev) |
