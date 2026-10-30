@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "native-module-owner", "verdict": "pass", "reason": "Identifies PID 42432 dsh web host as koffi.node holder; explains LoadLibrary image mapping keeps the file locked until that process exits, so npm's copyfile fails with EBUSY."},
+    {"id": "browser-versus-host-sequence", "verdict": "pass", "reason": "Explains refresh only replaces the renderer document while the host keeps its PID and mapped images; gives ordered stop/verify-lock, external install, verify, restart procedure."},
+    {"id": "unpinned-dist-tag-resolution", "verdict": "pass", "reason": "Explains bare spec equals @latest=0.1.1-rc.2 while alpha=0.1.2-alpha.5, a silent downgrade over alpha.4; explicitly refutes 'keep current' and 'newest' misconceptions."},
+    {"id": "safe-exact-commands", "verdict": "pass", "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 and pinned separate TUI install after stopping host, verifies dsh --version, restarts; tags discussed only as inferior alternatives."},
+    {"id": "readme-prevention", "verdict": "pass", "reason": "Rules tell README authors to pin the exact tested core version, never bundle unpinned host+plugin installs, and state that latest may be older than the installed prerelease."}
+  ],
+  "caps": []
+}

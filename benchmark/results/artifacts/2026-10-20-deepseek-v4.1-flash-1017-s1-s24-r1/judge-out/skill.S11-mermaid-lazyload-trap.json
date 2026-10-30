@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Correctly derives sibling static imports resolved against the chunk URL, unshipped siblings causing failed import despite entry 200, and proposes a separate inlineDynamicImports single-file build (plus fully-accounted ship-whole-graph alternative with manualChunks caveat)."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Precisely attributes 403 to case-sensitive startsWith between lexical LIB_DIR (E:) and OS-canonical realpath (e:), identifies the post-realpath branch, explains Linux case-preserving canonicalization and coincidental C: casing; rejects the 'Windows unreliable' folklore."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Canonicalizes both sides with realpathSync, uses path.relative rejecting '', '..', '..'+sep and absolute results, covers symlink-out escapes, keeps JS MIME type and no-HTML-fallback requirement."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains one gesture reaches both handlers, preventDefault is not a propagation barrier, capture-phase ancestor handler cannot be undone by modal stops, and gives modal exclusive ownership with ambient handler yielding via composedPath owner marker and defaultPrevented."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Complete planned matrix T1-T9 with expected outcomes: graph closure and packed-artifact e2e with code-block fallback observable, incident-exact case pair serving 200 while traversal/symlink escapes 403/404 on Windows+Linux, and modal Ctrl+wheel zooming diagram once with font size unchanged plus negative control."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "Proposed guard strengthens containment; blanket lowercasing and guard removal are explicitly rejected."
+    }
+  ]
+}

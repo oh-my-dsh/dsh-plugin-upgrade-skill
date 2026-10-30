@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    { "id": "silent-break-attribution", "verdict": "pass", "reason": "Walks resolve(): snapshot read succeeds, current absent → undefined → return null every keystroke, onKeyDown returns before preventDefault; explains both silences (all four member probes survive because only a payload field vanished; undefined aliases the designed no-session branch) without claiming the service or guard was removed." },
+    { "id": "evidence-mapping", "verdict": "pass", "reason": "Type walk across both d.ts: SessionListState.current gone, navigation moved to view owners per doc comment; uiSession.adapter.current yields SessionBindingValue with key replacing current and ctx replacing sessions.scope(id); hooks/keyedHooks/props noted. Card cited in addition to the type walk." },
+    { "id": "dual-host-migration", "verdict": "pass", "reason": "Corrected resolveSession reads uiSession.adapter.current.getSnapshot() when present, falls back to legacy current + sessions.scope, one build via structural types; inject gains uiSession (optional form with justified alternative); conversation resolves via binding ctx and input.for receives that scope." },
+    { "id": "guard-hardening", "verdict": "pass", "reason": "Names field-level removal behind service-level stability and activation-once vs per-use recurrence; hardened guard probes actual snapshot fields ('key'/'current' presence) and feature-detects uiSession, with first-use re-probe on null resolve in addition to activation." },
+    { "id": "verification-and-prevention", "verdict": "pass", "reason": "Verifies via live probe of adapter.current keys with a session open, chord behavior asserted on both hosts, and per-host tsc --noEmit against alpha.2 types as pre-ship gate; prevention is a throwing removed-field accessor plus runtime snapshot-shape contracts." }
+  ],
+  "caps": [
+    { "id": "slot-reregistration-misdiagnosis", "triggered": false, "reason": "Report explicitly calls the inject-only and slot theories inert/wrong and provides the resolution-code fix; no affirmative advice relies on re-registration alone." }
+  ]
+}

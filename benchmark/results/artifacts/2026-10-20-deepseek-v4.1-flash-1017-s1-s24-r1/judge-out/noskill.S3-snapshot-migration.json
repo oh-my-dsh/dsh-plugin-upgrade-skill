@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "partial",
+      "reason": "Locates all three Pet.tsx reads correctly and separates a temporary compatibility projection from immediate switches, but the projection and target APIs (SessionView, stream.parts, toolCalls, runtime/compat entry) are unsupported inventions contradicting the chat-view legacy projection and Chat/timeline targets."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "fail",
+      "reason": "Locates the running read but claims it must change to a status enum via useSession, directly contradicting the requirement that the existing useSession call stays and running sits outside chat legacy."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "fail",
+      "reason": "Never repoints Context as ClientContext to scoped cordis; claims package.json inject is unchanged and imports snapshot types from the removed dsh-client-runtime under an invented SessionView export."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "Locates the scoped slots.register in index.ts, preserves slot name/lifetime, and explains service-level inject ordering, but omits slots.inject around registration and the ui-renderer/client Context augmentation, asserting the surface is already clean."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "partial",
+      "reason": "Ties changes to card IDs with substantive explanations and splits temporary vs immediate work, but cites A1-01..A1-06 with invented subjects instead of the actual A1-03 snapshot split, and misses A1-25 as the package-removal card."
+    }
+  ],
+  "caps": []
+}

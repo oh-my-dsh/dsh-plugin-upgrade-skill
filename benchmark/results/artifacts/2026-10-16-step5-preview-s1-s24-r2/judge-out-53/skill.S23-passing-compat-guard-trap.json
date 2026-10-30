@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"silent-break-attribution","verdict":"pass","reason":"Walks the four-step resolve(): snapshot call succeeds but current is absent so id undefined -> null before preventDefault on every keystroke; four member-presence probes all survive (only contents reshaped) and null is a designed silent no-op; guard/service never claimed removed or throwing."},
+{"id":"evidence-mapping","verdict":"pass","reason":"Direct .d.ts comparison: current removed in SessionListSnapshot, ISessions.list doc quoted (navigation to view owners); uiSession.adapter.current -> SessionBindingValue {key, ctx, hooks, keyedHooks, props}, key replaces current, ctx replaces sessions.scope(id), absent-binding semantics noted."},
+{"id":"dual-host-migration","verdict":"pass","reason":"resolveCurrent feature-detects uiSession.binding value, falls back to legacy current + scope(id) in one build; inject gains uiSession (with alpha.1 tolerance caveat); conversation resolved via bindingValue.ctx.get('conversation') and input.for(actx)."},
+{"id":"guard-hardening","verdict":"pass","reason":"Names field-level removal inside a still-present member plus once-at-activation checking; hardened guard shape-checks the live snapshot ('current' in snap, key/ctx in binding) at activation and re-probes at effect time / first emission, not presence-list expansion."},
+{"id":"verification-and-prevention","verdict":"pass","reason":"Smoke tests on both hosts with a session open plus branch instrumentation, tsc --noEmit against both alpha type sets, guard simulation; prevention via deprecated throwing getter or machine-readable snapshot-schema contract validated at activation."}],
+"caps":[
+{"id":"slot-reregistration-misdiagnosis","triggered":false,"reason":"Remedy centers the rewritten resolution code; colleague's inject-only suggestion explicitly rejected as not a fix."}
+]}

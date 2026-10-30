@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Correctly contrasts clipboard-text draft/Occurrence offsets with detect-coordinate TokenSpan verbs, chip = full clipboardText vs one U+FFFC, normal text/space width unchanged, citing both fixture files."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Locates snapshot.draft.length in add, shows empty-composer coincidence then 29-vs-2 overshoot making the detect splice fail so insertReference returns false and the generic toast fires; explicitly rules out a real concurrent edit and a failing rev guard."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces remove: unconverted clipboard span [0,28) to consumeToken, ignored false, unconditional records.delete; occurrence remains, record-missing renders unavailable, both tied to the same coordinate mismatch."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives detectOffset = offset − Σ(len−1); insert uses detect end over all preceding occurrences, removal maps offset then a 1-detect-char span; keeps draftRev guard and gates records.delete on the verb's true return, with correct pseudocode."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "Proposes double paste with both chips present (T2/T3) and removal of first/second chip with the other surviving (T8/T9), asserting composer occurrence, dock chip and record removed together plus declined-consumption bookkeeping variants (T10)."}
+  ],
+  "caps": []
+}

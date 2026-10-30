@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Correctly walks resolve(): snapshot succeeds, current missing, id undefined, null per keystroke; onKeyDown exits before preventDefault; explains both silences (four presence probes survive since only a snapshot field is gone; undefined is a legitimate no-session state quietly ignored) without claiming removal/throw."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Type walk shows SessionListState.current removed, navigation moved to view owners per ISessions doc; maps uiSession.adapter.current (ObservableSnapshot<SessionBindingValue>) with key replacing current and ctx replacing sessions.scope(id), full shape given."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "Single build reads uiSession.adapter.current.getSnapshot() when available with legacy current+scope fallback; conversation via binding.ctx and input.for(actx); inject gains uiSession, with sound handling of hard-inject semantics on alpha.1."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "partial",
+      "reason": "Correctly names field-level removal behind service-level stability and specifies capability probes (assert current / feature-detect uiSession), but insists the probe runs at activation (one tick deferred) and rejects per-use/lazy checking the rubric requires."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "partial",
+      "reason": "Covers adapter.current key probe, chord behavior on both hosts, and loud deprecated getter/warn prevention, but omits typecheck against alpha.2 published types as a pre-ship gate (only mentions @deprecated types in passing)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Final remedy is the resolve() code rewrite plus uiSession injection; slot re-registration is explicitly rejected as a misdiagnosis."
+    }
+  ]
+}

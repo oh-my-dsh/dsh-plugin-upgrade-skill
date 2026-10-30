@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Connects the session/tool worker to the host installation npm replaces, explains the host dies between remove and linkStuff so the result path is destroyed, treats it as a structural hazard, and preserves the unknown tool outcome instead of calling it a network failure."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Explains content present but dsh/dsh.cmd missing and dsh.ps1 stale pointing at the old tree — the interrupted-install signature — and rejects hand-swapped directories or handmade shims as repair."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Grounds the remedy in repair-notes.md: pinned npm install -g @deepseek-ai/dsh@0.1.2-rc.1 from outside the dead host regenerating shims, version verified, source checkout aligned to the tag; separates the recorded repair from proposed runtime verification."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Requires recognizing the session runs on the upgrade target and handing off: fully stop the host, pinned external install, restart, hard refresh, verify; distinguishes existing stop/pin rules from the new refuse-inside-the-target discipline and the no-result-means-unknown semantics."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Describes a host-self detection preflight comparing the install target with the running host tree plus a command-class guard; uses the version-only alpha.5→rc.1 diff to rule out plugin migration; checks shims, version markers, ghost hosts and plugin loading, with backup cleanup only after confirmation."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final protocol refuses any in-session or while-live execution and hands the user an external procedure after a full host stop."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Manual directory swaps and hand-written shims are explicitly rejected in favor of the formal external pinned reinstall."}
+  ]
+}

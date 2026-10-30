@@ -1,0 +1,135 @@
+{
+  "task": "S5-negative-naming",
+  "mode": "read-only judgment, no registry queried",
+  "negativeCapability": {
+    "registryQueried": false,
+    "claimsMadeAboutReserved": [],
+    "claimsMadeAboutAvailability": [],
+    "note": "No name is asserted reserved, taken, free, or globally available."
+  },
+  "verdictStates": [
+    "compatibility error",
+    "collision recommendation",
+    "needs registry context",
+    "unknown",
+    "informational / no local defect"
+  ],
+  "surfaces": [
+    {
+      "surface": "plugin name",
+      "value": "greet",
+      "verdict": "informational / no local defect + collision recommendation",
+      "reason": "Well-formed bare short name; unprefixed English word is collision-prone, which is a recommendation not an error."
+    },
+    {
+      "surface": "plugin namespace",
+      "value": "acme",
+      "verdict": "unknown",
+      "reason": "Placeholder-style vendor id; registration status not checkable offline."
+    },
+    {
+      "surface": "plugin coordinate",
+      "value": "acme/greet",
+      "verdict": "informational",
+      "reason": "Well-formed <namespace>/<name>, consistent with name and namespace."
+    },
+    {
+      "surface": "package name",
+      "value": "dsh-greet",
+      "verdict": "needs registry context",
+      "reason": "Matches package.json exactly but drops the namespace; whether the policy derives package names from the coordinate is unverified. Highest-priority unknown."
+    },
+    {
+      "surface": "loader id",
+      "value": "acme-greet",
+      "verdict": "informational",
+      "reason": "Consistent <namespace>-<name>; three-way agreement with settings namespace and route segment."
+    },
+    {
+      "surface": "service name",
+      "value": "search",
+      "verdict": "collision recommendation",
+      "reason": "Unprefixed generic word in a plugin named greet; highest collision exposure. Not claimed reserved or free."
+    },
+    {
+      "surface": "tool name",
+      "value": "acme_greet_hi",
+      "verdict": "informational",
+      "reason": "Namespaced snake_case, coherent with the kebab-case command twin."
+    },
+    {
+      "surface": "command name",
+      "value": "acme-greet-hi",
+      "verdict": "informational",
+      "reason": "Namespaced kebab-case, consistent with tool name."
+    },
+    {
+      "surface": "skill name",
+      "value": "greet",
+      "verdict": "collision recommendation",
+      "reason": "Same bare-word exposure as the plugin name."
+    },
+    {
+      "surface": "skill provider id",
+      "value": "acme-greet-filesystem",
+      "verdict": "informational + advisory",
+      "reason": "Fully qualified, but generic tail token 'filesystem' is cross-domain for a greet plugin."
+    },
+    {
+      "surface": "event name",
+      "value": "web-search/ready",
+      "verdict": "informational (shared channel); ownership unknown",
+      "reason": "Channel namespace web-search differs from plugin namespace acme; publish-vs-subscribe direction not declared."
+    },
+    {
+      "surface": "settings namespace",
+      "value": "acme-greet",
+      "verdict": "informational",
+      "reason": "Identical to loader id; internally consistent."
+    },
+    {
+      "surface": "route",
+      "value": "exact /api/plugins/acme-greet/hi",
+      "verdict": "needs registry context",
+      "reason": "Path segment correctly namespaced, but exact-route collision with host routes and permission to register under /api/plugins/ are unverifiable offline."
+    },
+    {
+      "surface": "manifest header",
+      "value": "schemaVersion 1 / dsh-plugin-naming/v1",
+      "verdict": "unknown",
+      "reason": "Currency and acceptance of this policy id and schema version unverified."
+    },
+    {
+      "surface": "surface coverage",
+      "value": "10 surfaces declared",
+      "verdict": "unknown",
+      "reason": "Whether the policy requires additional surfaces is unverified."
+    }
+  ],
+  "provenCompatibilityErrors": [],
+  "provenRegistryCollisions": [],
+  "strongestProvableFinding": "Cross-domain drift: identity is consistently 'greet' while the service is 'search' and the event channel is 'web-search/ready'.",
+  "mustCheckOnlineBeforePublishing": [
+    "DSH plugin registry for every declared name",
+    "npm registry for dsh-greet",
+    "host route table for /api/plugins/acme-greet/hi",
+    "policy id and schema version currency"
+  ],
+  "fixtureIntegrity": {
+    "algorithm": "sha256",
+    "files": {
+      "package.json": {
+        "bytes": 67,
+        "sha256": "71cd34926a4686d2098c582b93f86305c772f1e7d0bee5be9f1ca64d26ec99bc"
+      },
+      "dsh-plugin.naming.json": {
+        "bytes": 573,
+        "sha256": "2863bfaf22ab7c9ff69a03b06af2cc1808cec2054987fcf5c6d4c55df61cb6b0"
+      },
+      "README.md": {
+        "bytes": 641,
+        "sha256": "f27373bc472e94e859b37407eaf5332fcda747a7f55110a4ea9d430644862645"
+      }
+    }
+  }
+}

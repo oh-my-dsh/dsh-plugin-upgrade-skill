@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "culprit-attribution",
+      "verdict": "pass",
+      "reason": "Attributes the sole crash to plugin A's unconditional useSessionPendingInteraction call, explains alpha.2 replaced it with useSessionStatus while useSessions stays, and clears plugin B of standard-kit hook usage."
+    },
+    {
+      "id": "cotenant-mechanism",
+      "verdict": "pass",
+      "reason": "Cites dock-render-tree and console: one shared input.dock DrawerErrorBoundary whose null fallback unmounts the whole slot; attach button survives in the separately-bounded conversation.input.left slot."
+    },
+    {
+      "id": "experiment-reading",
+      "verdict": "pass",
+      "reason": "Correctly limits the disable test to proving A caused the unmount; states it neither proves B's general alpha.2 compatibility nor that A's crash is the only dock defect; explains reinstalling B is useless and refutes the both-plugins theory since B uses no kit hooks."
+    },
+    {
+      "id": "degradation-fix",
+      "verdict": "pass",
+      "reason": "Corrected code reads pending via useSessionStatus(...).pendingInteraction with feature detection and stable empty-map fallbacks, never calling a missing hook; explains silent degradation is required because a throw unmounts co-tenants; non-pending features keep working."
+    },
+    {
+      "id": "verification-and-hygiene",
+      "verdict": "pass",
+      "reason": "Verification without host restart via client bundle reload, both entries mounted together, and B regression covering paste/add/remove with A active. Hygiene covers defensive destructuring, local boundary per entry, and host per-entry boundaries with the observability-vs-isolation trade-off."
+    }
+  ],
+  "caps": [
+    {
+      "id": "innocent-plugin-fix",
+      "triggered": false,
+      "reason": "Final remedy fixes plugin A's component; B is explicitly identified as never broken and reinstalling B is rejected."
+    }
+  ]
+}

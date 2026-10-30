@@ -1,0 +1,98 @@
+{
+  "task": "S18-terminal-sprite-render-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:31:32.946Z",
+  "endedAt": "2026-10-21T06:48:25.124Z",
+  "durationMs": 1012178,
+  "durationSec": 1012,
+  "subagentId": "e04b94e7-246f-4a04-b369-80d9f873f1e3",
+  "sessionIds": [
+    "e04b94e7-246f-4a04-b369-80d9f873f1e3"
+  ],
+  "toolCalls": 20,
+  "toolCounts": {
+    "run_code": 18,
+    "present": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 42013,
+    "outputTokens": 90291,
+    "cacheReadTokens": 726156,
+    "cacheWriteTokens": 0,
+    "total": 858460
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 19,
+      "llmMs": 1004693,
+      "toolMs": 5900
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S18-terminal-sprite-render-trap/S18-terminal-sprite-render-trap-report.md",
+      "chars": 31645,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 20,
+      "toolCounts": {
+        "run_code": 18,
+        "present": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "e:\\n",
+          "resolved": "e:\\n",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 1,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 2,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:31:32.946Z",
+    "endedAt": "2026-10-21T06:48:25.124Z",
+    "durationSec": 1012,
+    "flushWaitMs": 22,
+    "complete": true
+  }
+}

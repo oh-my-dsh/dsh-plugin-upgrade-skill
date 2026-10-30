@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Explains the alpha.1 removal then alpha.2 restoration as a remove-then-restore pair with net-zero meaning (not bare card names), and applies the final alpha.2 state to produceExternalEvent by recommending deletion of the defense, grounded in the fixture README."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete line, rejects the comment's keep-for-alpha.2 prescription, recommends removing the defense and correcting the obsolete rationale, distinguishes removing the code from removing the marker (never set, never delete), and notes the delete is a no-op on the marker-less literal."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Correctly treats ignorable as a host-managed marker a producer must neither set nor strip, but never explains that only omittable informational events may carry it, that required events must not, or that marked events remain in the loaded log; it marks those semantics unconfirmed and omits them."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "Flags that Session.append may lack an ignorable parameter and says a plugin must not set or strip the marker, but hedges the gap as unconfirmed, never states the no-cast/no-invented-API rule explicitly, and does not explicitly defer producer/persistence integration pending target API verification."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation is to delete the defense; the stripping policy is rejected, not kept."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "半填充仅fg，残留bg染空半区，49m修复，症状定位与dedup分析准确"
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "行41 trim+管线不写尾随空白，定宽不裁+区域擦除/ESC[K双修复"
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2逐行23格属实，数据/渲染区分，他帧excerpt漏检，全帧digest"
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "tick链持活+host不卸载，unref修复并释语义，TTY/stdin已释"
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "清单覆盖重置/定宽/擦除/digest/timer，上线审计与退出回归齐备"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "修复建议与渲染契约一致，无矛盾终端归因"
+    }
+  ]
+}

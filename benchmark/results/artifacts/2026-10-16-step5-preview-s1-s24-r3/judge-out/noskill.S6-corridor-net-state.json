@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Explains alpha.1 temporary removal then alpha.2 restoration of ignorable retention as a remove-then-restore round trip and applies the restored state to produceExternalEvent; history is reasoned, not just card names."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete line, rejects the comment's keep-it instruction with evidence, recommends removing defense and comment, distinguishes stripping code from the marker, and correctly notes the literal has no marker so the delete is a no-op."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Identifies the third-party/informational event as marker-eligible and says to set the flag explicitly if appropriate, but does not state that only omission-safe informational events may carry ignorable:true, that required events must not, or that marked events remain in the loaded log (retention is not reader-side filtering)."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that public append may not expose an ignorable parameter, warns an ordinary plugin must not hand-delete marker fields or fake the entry, and defers exact API details as unconfirmed pending target verification."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation is to delete the defense and never mutate/delete the marker; the kept code shown is quoted only for diagnosis and is removed in the rewrite."
+    }
+  ]
+}

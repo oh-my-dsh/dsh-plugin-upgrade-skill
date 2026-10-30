@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "准确识别 fs-ext@2.1.1 为 session-persistence 插件的精确 pin 运行时依赖，install 生命周期脚本 node-gyp configure build 因宿主无 VS/C++ workload 失败，明确排除 pnpm/网络因素"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "引用顶部静态 import，论证 Windows 上模块解析/求值先于平台分支，--ignore-scripts 留下无可加载 .node 导致启动失败，至多算诊断探针"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Windows=acquireLockHandleWin32 命名内核信号量（CreateSemaphoreW/WaitForSingleObject/ReleaseSemaphore/CloseHandle），POSIX=flock(2)；说明 win32 纯 JS stub 语义等价、真实互斥由未触碰的信号量承担、POSIX 必须保留真实原生构建且补丁平台限定"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "遵循 node-pty 先例：install 脚本 win32 守卫跳过构建、入口 try/catch + win32 shape-compatible 纯 JS stub（warn 一次、回调无错），非 Windows 原样 node-gyp，注册 pnpm-workspace.yaml 并以 allowBuilds/onlyBuiltDependencies 处理构建权限，提出 reinstall/模块加载/服务启动三层验证"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "明确拒绝安装 VS（owner refuses），不 fork/重发布/override upstream pin，仅新增仓库本地补丁，正确区分本地 pnpm patch 与禁止的 upstream 修改"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "引用完整 DSH-0.1.3-A1-03，展开卡片症状、静态导入原因、命名信号量路径与 pnpm-patch 配方，并与本 fixture（0.1.3-alpha.1）直接对应"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "方案标题即 no Visual Studio，拒绝项表格明确排除 VS Build Tools"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "明确拒绝 --ignore-scripts；补丁使静态导入的入口可加载，而非仅跳过构建"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "使用仓库管理的 pnpm patchedDependencies 补丁，无 upstream 编辑/发布"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "命名信号量保留且验证并发写者仍经其序列化，POSIX 保留真实 flock；win32 no-op stub 平台限定而非 universal"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+ "decisions": [
+  {
+   "id": "source-patch",
+   "verdict": "pass",
+   "reason": "定位三构件；明确区分 profile 组合与 patch: 键下的真实源码补丁表面；解释 SessionView 内部拆分使补丁目标路径/符号失效"
+  },
+  {
+   "id": "events",
+   "verdict": "pass",
+   "reason": "定位生产者/观察者与 ignorable:true；A1-02 折叠 A2-01 净态保留标记；明确 Session.append 无 ignorable 参数，不虚构公共写入口"
+  },
+  {
+   "id": "host-services",
+   "verdict": "pass",
+   "reason": "定位 apiProxy 用法；明确 Host 面须直接注入域服务（inject ['llm']→ctx.llm.listProviders()），ctx.remote 仅为客户端面，不虚构 Host remote"
+  },
+  {
+   "id": "host-path",
+   "verdict": "pass",
+   "reason": "定位硬编码路径；要求以运行时 DSH_HOME+profile+launcher 为准；明确 --profile 在 rc.2 已存在而非 alpha.1 引入"
+  },
+  {
+   "id": "ui",
+   "verdict": "pass",
+   "reason": "定位私有 import 与命令注册；要求对照目标 tag 核验归属模块/公共 seam，无稳定 seam 则标 pending confirmation"
+  },
+  {
+   "id": "channel",
+   "verdict": "pass",
+   "reason": "定位回环服务器；明确 loopback 不豁免鉴权、原始 WebServer 路由不继承鉴权，须 requestRejection 或 Connection-owned carrier"
+  },
+  {
+   "id": "subprocess",
+   "verdict": "pass",
+   "reason": "定位两处调用；stdout=final text、stderr=reasoning/诊断、退出码权威；明确 stdout 从来不是 JSONL（rc.2 已然），未虚构 alpha.2 输出变更"
+  },
+  {
+   "id": "mapping",
+   "verdict": "pass",
+   "reason": "完整映射表：#1/#5→A1-03、#2→A1-02+A2-01 折叠、#3→A1-01(+A2-02)、#4→A1-04、#6→A1-08、#7→A1-05；有实质论证非裸卡列表"
+  },
+  {
+   "id": "limits",
+   "verdict": "pass",
+   "reason": "七类全命中 accounted；启发式扫描局限明确；提出目标 cohort build/typecheck、真实 profile 挂载与功能冒烟；不要求执行本静态 fixture"
+  }
+ ],
+ "caps": []
+}

@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Cites the ls-remote tag list showing v0.9.2–v0.9.6 absent and the sync script's tagless HEAD:main push; classifies attempt 1 as ref non-resolution, not network/auth/typo."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Derives the direction from compat table and dsh-version: v0.9.7 consumes the alpha.1 useConversation seat the older rc.2 host lacks, so the crash is deterministic and restart/reinstall cannot help."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Selects v0.9.3 (rc.1 verified, additive rc.2 note), flags its absence from the mirror, offers mirror path after maintainer push or canonical-repo install with a pre-flight ls-remote check; no invented SHA, freeze explicitly honored."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Explicit refs/tags push to every mirror in the sync loop plus a release gate that ls-remote-verifies each mirror's tag (and SHA); branch-only sync named as the defect."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "dsh --version step plus per-cohort pin table (0.1.1-rc.x to v0.9.3, 0.1.2-alpha.x to v0.9.7), full matrix shipped beside commands, cohort channel tags and maintenance-track releases instead of a newest-tag default."}
+  ],
+  "caps": []
+}

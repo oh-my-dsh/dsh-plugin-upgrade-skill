@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "runtime-removal", "verdict": "pass", "reason": "Locates the import, maps A1-25, removes the deleted package and repoints ClientContext to cordis Context with per-package type augmentation; type-erasure risk covered via A2-03."},
+    {"id": "registration-id", "verdict": "pass", "reason": "Id/package-name mismatch mapped to A1-26 with exact alignment and boot-graph/activation verification including entries-did-not-activate checks."},
+    {"id": "session-content", "verdict": "pass", "reason": "Flat nodes access mapped to A1-27 with a supported useChat order + nodes.get replacement preserving ordering; the old flat API is not claimed supported and the empty Pet.tsx is correctly excluded."},
+    {"id": "connection-face", "verdict": "pass", "reason": "connection.api.agentPresets.list mapped to A1-30 (plus A1-01/A2-02), face removed and replaced by ctx.remote.agentPresets.list with error handling and verification."}
+  ],
+  "caps": [
+    {"id": "invented-migration", "triggered": false, "reason": "Only card-supported inject declarations and dead-connection cleanup; no lifecycle-replacement or manifest-move assertion."}
+  ]
+}

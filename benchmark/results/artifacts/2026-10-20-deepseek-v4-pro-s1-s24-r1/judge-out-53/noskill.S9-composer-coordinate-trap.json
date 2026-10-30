@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "引契约原文：draft/Occurrence为clipboard投影，span为detect坐标(chip=U+FFFC)"
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "定位draft.length入span；空时两坐标重合，二次29越界detect长2→false+toast"
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "remove未换算传offset/28，忽略false仍删records→unavailable且chip残留，同根因"
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "toDetect按前缀chip减Σ(length-1)用于两处；移除span=1字符；成功才删记录"
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "pass",
+   "reason": "双粘贴双chip、移除第二chip留第一、拒绝消费不删记录、末chip清空等齐备"
+  }
+ ],
+ "caps": []
+}

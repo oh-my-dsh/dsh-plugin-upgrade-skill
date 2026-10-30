@@ -1,0 +1,117 @@
+=== TASK SEGMENT (task brief) ===
+
+The task brief below is your assignment. It is reproduced verbatim from the sealed task material.
+
+# S9 · Composer Coordinate Trap (Read-Only)
+
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
+
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for "confirmation", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
+
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
+
+I maintain a community Web plugin (`@org/dsh-attach-input`) that turns pasted clipboard
+files into composer attachments. Two users reported bugs on DSH `0.1.2-alpha.3` and I
+cannot reproduce the failure logic by reading my own code alone — the evidence pack in
+`/app/fixture/` (read-only — do not modify it) contains my plugin's relevant client-code
+excerpt, a captured browser session log, and the two host source files my code calls into.
+
+**What the users did and saw:**
+
+1. Paste a screenshot → an attachment chip appears above the input box and one inside the
+   composer. Works fine.
+2. Paste a second screenshot → a toast: `The DSH composer changed before the attachment
+   could be inserted`. The second chip never appears.
+3. Click the × on the chip above the input box → the chip does not go away; its size label
+   changes to `unavailable`, and the chip inside the composer stays too.
+
+**Your report** (write to `/app/agent-output/S9-composer-coordinate-trap/`, any filename):
+
+1. Why the FIRST paste succeeds and every later paste fails with that toast — name the exact
+   mismatch between what my code computes and what the host verb's guard compares against,
+   and explain why "first works, later fails" is the signature of that mismatch;
+2. Why the × click turns the chip into `unavailable` instead of removing it — trace the
+   removal path and the plugin-side bookkeeping around it;
+3. The fix direction: which values must be converted, by what rule (derive it from the host
+   source excerpts, not guesswork), and at which call sites — both the insert path and the
+   removal path;
+4. A regression test plan: the exact interaction sequences that must be asserted so both
+   bugs cannot silently return;
+5. What I should routinely check in the host source before calling input-machine verbs, so
+   this class of defect is caught before release.
+
+What is tested: tying both symptoms to one underlying contract misread (not two unrelated
+bugs), deriving the correction rule from the host source rather than trial and error, and a
+regression plan that covers the repeat-interaction and removal sequences. Report items 1–4 are
+scored; item 5 (the maintainer's routine source-reading discipline) is guidance for
+completeness and is not scored.
+
+=== END TASK SEGMENT ===
+
+The brief above is written for a container where /app/fixture is the sealed fixture and
+/app/agent-output is the report directory. In THIS environment those paths are mapped to your cell
+directory:
+
+  /app/fixture        ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/fixture
+  /app/agent-output   ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/agent-output
+
+Your report must be written under:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/agent-output/S9-composer-coordinate-trap/
+
+(Any filename ending in .md or .txt is acceptable, as the brief states.)
+
+=== BOUNDARY SEGMENT (read whitelist / write scope) ===
+
+Your READ whitelist is exactly:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/
+
+Within that whitelist, skills/plugin-upgrade/ is provided as reference material for you to use.
+
+HARD RULES:
+
+- You MUST NOT read, list, search, or open anything outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/.
+- You MUST NOT read tests/, solution/, benchmark/results/, or any other directory of this repository.
+- You MUST NOT write to ANY path outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/ - including system TEMP, /tmp, the user home,
+  the repository, or the fixture source tree. Any temporary file you need must be written under
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/agent-output/ (a scratch subdirectory there is fine).
+- Do not modify, move, or delete anything under E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S9-composer-coordinate-trap/fixture/ unless the brief explicitly authorizes it.
+- Do not modify the skill, any evaluator, or any reference answer.
+- Do not publish, push, or contact external services.
+- Do NOT probe the live host environment for facts the fixture does not contain: no `dsh --version`,
+  `dsh --help`, `dsh --dump-config`, `dsh --dump-config-schema`,
+  `dsh plugin --help`, `dsh headless --help`, and no `cordis_inspect_*` runtime
+  introspection. The installed host runs a DIFFERENT version than the version this task is about, so
+  anything you learn from it is out of scope and wrong. Work from the task brief and the fixture only.
+- Do not re-read the same file repeatedly. Read each fixture file once, take your notes, and move on;
+  a repeated read cycle wastes the run and invalidates the cell.
+- If you cannot verify something from the brief and the fixture, mark it as unconfirmed in the report
+  instead of guessing or going outside the whitelist to find out.
+- When your report cites a card or a reference document, write ONLY the key points and the card ID.
+  Do NOT paste the full text of a card or reference into your report or into your reply.
+  (Context budget is 256k; full-text pasting is a protocol violation.)
+
+=== END BOUNDARY SEGMENT ===
+
+=== ARM CLAUSE (skill available) ===
+
+Before you start the analysis, read skills/plugin-upgrade/SKILL.md in your cell directory.
+Consult its references/ files as needed for the change cards and API details.
+Follow the workflow that skill prescribes. Its bundled scripts under skills/plugin-upgrade/scripts/
+are yours to run - run them from the cell-local copy, never from another location.
+
+=== END ARM CLAUSE ===
+
+=== DELIVERY ===
+
+This is an unattended run. Do not ask questions; do not wait for confirmation.
+
+Budget: you have 25 minutes of wall clock. Plan for that. A good run reads the fixture files once
+or twice, writes the report, and finishes. If you find yourself re-reading files or repeating a
+probe, stop and write what you have.
+
+When the report file is written, finish with exactly: DONE

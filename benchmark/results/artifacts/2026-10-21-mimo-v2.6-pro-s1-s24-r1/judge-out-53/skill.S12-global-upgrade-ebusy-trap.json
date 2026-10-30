@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"Pins PID 42432 dsh web host as koffi.node holder; native binary locked until that process exits → EBUSY on npm copyfile."},
+{"id":"browser-versus-host-sequence","verdict":"pass","reason":"Browser is only the SPA over WebSocket; refresh/closing tabs does not stop the host; ordered procedure stop host → verify exit (tasklist/taskkill) → external pinned install → restart → hard refresh."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Bare name resolves to latest=0.1.1-rc.2 while alpha=0.1.2-alpha.5; explains overwrite of installed alpha.4 as silent downgrade and that unpinned install does not preserve the installed version."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"Exact npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 (or combined pinned one-liner) after stopping host; dsh --version must print 0.1.2-alpha.5; dsh web restart; TUI pinned after dist-tags/peer check; @alpha only as mutable option."},
+{"id":"readme-prevention","verdict":"pass","reason":"README guidance: never bare @deepseek-ai/dsh in combined command, pin exact tested host+plugin versions, warn latest silently downgrades prerelease users, add verify line, keep snippets release-synced."}
+],"caps":[]}

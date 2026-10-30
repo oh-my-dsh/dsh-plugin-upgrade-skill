@@ -1,0 +1,55 @@
+# DSH plugin migration plan (read-only)
+
+- Corridor: `dsh-v0.1.1-rc.1` → `dsh-v0.1.2-alpha.2`
+- Target: `E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-20-qwen3.8-max-s1-s24-r1\skill\S3-snapshot-migration\fixture`
+- Scanned files: 5
+- This is a heuristic plan, not compatibility proof. No target file was modified.
+- Scanned code and config files only (no Markdown); hits list src/ code first, other code next, config last.
+
+## Touchpoints
+
+| ID | Name | Source | Hits (shown/total) |
+|---:|---|---|---:|
+| #1 | source patch / monkey patch | none | 0/0 |
+| #2 | internal event names and persistent events | none | 0/0 |
+| #3 | internal service probes / Remote | none | 0/0 |
+| #4 | direct host directory reads/writes | none | 0/0 |
+| #5 | internal UI / commands / tool registration | detected | 3/3 |
+| #6 | custom HTTP / WS / RPC / DOM / CSS channels | none | 0/0 |
+| #7 | subprocess / stdout / stderr parsing | none | 0/0 |
+
+## Hit locations
+
+- #5 `src/client/index.ts:6` (pattern 2)
+- #5 `src/client/Pet.tsx:7` (pattern 2)
+- #5 `package.json:8` (pattern 2)
+
+## Corridor card sets
+
+- `dsh-v0.1.1-rc.1` → `dsh-v0.1.1-rc.2`: `v0.1.1-rc.2.md` (curated)
+- `dsh-v0.1.1-rc.2` → `dsh-v0.1.2-alpha.1`: `v0.1.2-alpha.1.md` (curated)
+- `dsh-v0.1.2-alpha.1` → `dsh-v0.1.2-alpha.2`: `v0.1.2-alpha.2.md` (curated)
+
+## Applicable cards
+
+- **DSH-0.1.1-R2-01** (behavior/conditional, `v0.1.1-rc.2.md`) — Image attachment refs gain original dimensions
+- **DSH-0.1.1-R2-02** (behavior/conditional, `v0.1.1-rc.2.md`) — `read_image` output exposes scaling facts and changes prompt text
+- **DSH-0.1.1-R2-03** (behavior/conditional, `v0.1.1-rc.2.md`) — DeepSeek image requests prefer the Files API and keep a fallback path
+- **DSH-0.1.2-A1-03** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — Session view internals split up extensively
+- **DSH-0.1.2-A1-06** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — Code Mode renamed precisely to PTC mode
+- **DSH-0.1.2-A1-09** (capability/optional, `v0.1.2-alpha.1.md`) — New capability: model settings page can integrate provider login configuration
+- **DSH-0.1.2-A1-10** (capability/optional, `v0.1.2-alpha.1.md`) — New capability: support for registering third-party languages
+- **DSH-0.1.2-A1-11** (capability/optional, `v0.1.2-alpha.1.md`) — New capability: subagents can select provider/model/reasoning effort/output cap
+- **DSH-0.1.2-A1-25** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — `@deepseek-ai/dsh-client-runtime` package removed, client symbols migrated by domain
+- **DSH-0.1.2-A1-26** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — client-modules scan contract: registration id must equal the package.json name
+- **DSH-0.1.2-A1-28** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — composer edit surface changed from `<textarea>` to a contenteditable DIV
+- **DSH-0.1.2-A1-29** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — `MarkdownText` labels changed to a required nested shape (ui-primitives)
+- **DSH-0.1.2-A1-32** (breaking/required-if-hit, `v0.1.2-alpha.1.md`) — `IWorkspaces` navigation methods moved to `ctx.uiWorkspace`
+- **DSH-0.1.2-A2-05** (behavior/conditional, `v0.1.2-alpha.2.md`) — Plugin inventory returns optional Agent Preset grouping
+
+## Manual review cards
+
+- **DSH-0.1.2-A1-12** (privacy/informational) — Official DeepSeek adapter attaches plugin package name and version by default
+- **DSH-0.1.2-A1-23** (privacy/conditional) — base composition: two default changes — session telemetry defaults to `FEEDBACK_ONLY`, plus a new plugin package-name reporting row
+- **DSH-0.1.2-A1-24** (behavior/required-if-hit) — `dsh-llm-pi-ai` bumps `@earendil-works/pi-ai` from 0.82 to 0.84; plugins that depend on it directly get a second instance
+- **DSH-0.1.2-A2-03** (behavior/conditional) — NPM packages trim unneeded peer dependencies

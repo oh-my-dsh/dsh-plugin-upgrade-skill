@@ -1,0 +1,24 @@
+1. pwsh Get-ChildItem -Force | Select-Object Mode,Length,Name（列单元格目录 E:\...\S1-static-scan）
+2. pwsh Get-ChildItem -Recurse -Force fixture | Select-Object FullName,Length（列 fixture 树）
+3. pwsh Get-ChildItem -Recurse -Force agent-output | Select-Object FullName,Length（列输出目录，当时为空）
+4. pwsh Get-ChildItem -Recurse -Force fixture | ForEach-Object { 相对路径 + Length }（fixture 相对路径清单）
+5. read E:\...\S1-static-scan\fixture\README.md（全 16 行）
+6. read E:\...\S1-static-scan\fixture\package.json（全 9 行）
+7. read E:\...\S1-static-scan\fixture\cordis.patch.yml（全 6 行）
+8. read E:\...\S1-static-scan\fixture\patch.yml（全 7 行）
+9. read E:\...\S1-static-scan\fixture\scripts\apply-patch.mjs（全 19 行）
+10. read E:\...\S1-static-scan\fixture\src\index.ts（全 68 行）
+11. todo_write 六项任务清单（直接调用失败：unknown tool，仅 run_code 可直接调用）
+12. todo_write 六项任务清单（经 run_code 调用，成功）
+13. grep pattern="patch|surface|replacements|apply-patch|DSH_HARNESS_SOURCE_ROOT|execFileSync|spawn|JSON\.parse|headless|stdout" path=fixture
+14. grep pattern="session/event|ignorable|apiProxy|invoke|registerCommand|SessionView|contributes|internal" path=fixture
+15. grep pattern="homedir|\.dsh|profiles|createServer|listen\(|43121|localhost|127\.0\.0\.1|WebSocket|socket|fetch\(|net\.|http" path=fixture
+16. glob pattern="**/*" path=E:\...\S1-static-scan（确认仅 fixture 下 6 个文件）
+17. pwsh Get-ChildItem -Recurse -File fixture | Get-FileHash -Algorithm SHA256; Get-Date -Format o（fixture 完整性基线 + 时间）
+18. pwsh New-Item -ItemType Directory -Force -Path agent-output\S1-static-scan; Get-Date -Format o
+19. write E:\...\S1-static-scan\agent-output\S1-static-scan\report.md（触点扫描报告，12756 字符）
+20. write E:\...\S1-static-scan\agent-output\report.md（同内容镜像副本）
+21. write E:\...\S1-static-scan\agent-output\tool-transcript.txt
+22. write E:\...\S1-static-scan\agent-output\transcript-manifest.txt
+23. pwsh Get-FileHash -Algorithm SHA256 fixture 6 文件对比 + Get-Item 报告大小校验 + Get-Date -Format o（收尾校验）
+24. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e <结果摘要：七类全命中/折叠判定/卡序号 blocker/报告路径>

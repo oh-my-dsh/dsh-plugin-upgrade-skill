@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Clearly distinguishes clipboardText/InputState.draft offsets (chip expands to clipboard form) from detect-coordinate TokenSpan for insertReference/consumeToken (chip = one U+FFFC), grounded in contract/facade line citations with the drift formula."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Identifies snapshot.draft.length (29) vs 2-unit detect text, empty-composer coincidence for paste #1, splice failure returning false and the mislabelled changed-composer toast; explicitly shows rev/phase guards pass so no real concurrent edit is inferred."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove step by line: [0,28) clipboard span fed to detect-space consumeToken, boolean discarded, records.delete runs anyway; occurrence survives, dock renders unavailable from missing record; ties both to the same misread, not a separate failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Provides concrete toDetect subtracting Σ(length-1) for preceding chips, applies it at both call sites (insert at detect end per loop iteration; removal maps offset and uses start+1 one-char span), keeps draftRev unconverted, and deletes records only on success or host-verified removal."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "T2/T3 cover two successive pastes with both chips present; T7 removes a chip with a preceding chip asserting span [2,3), grouped removal of occurrence/dock chip/record and the other chip intact; adds declined-consumption (T9), first/last-chip and empty-again (T6/T10) variants."
+    }
+  ],
+  "caps": []
+}

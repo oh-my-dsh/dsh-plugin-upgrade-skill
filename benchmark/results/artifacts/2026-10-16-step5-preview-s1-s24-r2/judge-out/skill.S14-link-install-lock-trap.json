@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "junction-deployment", "verdict": "pass", "reason": "Proves junction install via LinkType/Target and the # link: marker; repo tree is the installed copy, copying is a self-copy and harmful; explicitly contrasts copied-dependency installs."},
+    {"id": "host-lock-and-client-cache", "verdict": "pass", "reason": "Locks owned by the running dsh web host (loaded module, cached bundle, manifest reads); tab closure releases nothing; browser HTTP caching explained separately with host restart plus cache-bypassing hard refresh; version-scoped claims (0.1.7+) are not extrapolated to all DSH versions."},
+    {"id": "rename-recovery", "verdict": "pass", "reason": "Junction makes both paths one directory, so the rename hit the sole source files and the subsequent copy failed on a missing source; recovery renames .old2 back preserving contents, node --check both, then activates; host-stop-first fallback given as valid precaution."},
+    {"id": "ordered-activation", "verdict": "pass", "reason": "Ordered steps: stop host fully, restart dsh web, hard-refresh bypassing cache, verify served bundle bytes/mounted feature; node --check is only a pre-gate, browser-only restart rejected."},
+    {"id": "install-mode-preflight", "verdict": "pass", "reason": "Pre-flight checks LinkType/Target and cordis.patch.yml marker before touching files, branches linked vs copied, and explains why generic copy advice is redundant, manufactures EBUSY, and invited the rename-aside disaster."}
+  ],
+  "caps": [
+    {"id": "copy-through-junction", "triggered": false, "reason": "Final plan contains no copy onto the junction, keeps .old2 files by renaming back, and treats the two paths as one directory; copies appear only as explicitly rejected bad advice."},
+    {"id": "browser-only-activation", "triggered": false, "reason": "Host stop and restart is mandatory in the final plan; browser refresh alone is explicitly called insufficient."}
+  ]
+}

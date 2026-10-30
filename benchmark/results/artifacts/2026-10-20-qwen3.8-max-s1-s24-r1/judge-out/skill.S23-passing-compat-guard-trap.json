@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    { "id": "silent-break-attribution", "verdict": "pass", "reason": "Line-cited walk: getSnapshot().current → undefined each keystroke → null → bare return before preventDefault; explains guard passing (four members survive, break one layer down) and the deliberate silent no-session branch; never claims the service or guard was removed." },
+    { "id": "evidence-mapping", "verdict": "pass", "reason": "Full type walk of both session-list excerpts (current removed, navigation to view owners) and the ui-session excerpt (adapter.current, key replaces current, ctx replaces sessions.scope, hooks/keyedHooks/props), with card DSH-0.1.6-A2-01 as supporting context rather than substitute." },
+    { "id": "dual-host-migration", "verdict": "pass", "reason": "Corrected resolution reads uiSession.adapter.current.getSnapshot() with legacy current+scope fallback from one build (equivalent guard order, legacy-first falls through on alpha.2); inject gains uiSession; conversation resolved via binding ctx and input.for(actx) receives the same scope." },
+    { "id": "guard-hardening", "verdict": "pass", "reason": "Names field-level removal behind member stability, checked at activation while break recurs per use; hardened guard classifies snapshot shape with positive markers and capability-probes uiSession/legacy paths, plus a deferred first-live-session probe of the real resolve()." },
+    { "id": "verification-and-prevention", "verdict": "pass", "reason": "Verification covers synthetic-shape tests, dual typecheck against both hosts' declarations as static gate, and dual-host runtime chord triads including the adapter path; prevention is a runtime throwing deprecation accessor on the removed field." }
+  ],
+  "caps": [
+    { "id": "slot-reregistration-misdiagnosis", "triggered": false, "reason": "Report states adding the inject alone is inert and delivers the rewritten resolution; the colleague theory is explicitly rejected." }
+  ]
+}

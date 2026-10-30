@@ -1,0 +1,21 @@
+1. run_code glob pattern=**/* path=...S10...\fixture（列出证据包文件清单）
+2. glob pattern=**/* path=...S10...\fixture
+3. run_code working_directory（读取当前工作目录）
+4. working_directory 无参数（读当前目录）
+5. run_code read README.md + tags-api-response.txt
+6. read ...S10...\fixture\README.md
+7. read ...S10...\fixture\tags-api-response.txt
+8. run_code read user-threads.md
+9. read ...S10...\fixture\user-threads.md
+10. run_code read plugin-attachment-flow.js
+11. read ...S10...\fixture\plugin-attachment-flow.js（45 行，add()/validateItems/records 订阅/dock chip）
+12. run_code read plugin-version-chip.js
+13. read ...S10...\fixture\plugin-version-chip.js（28 行，latestFromTags/startUpdateChip/renderCurrentChip）
+14. run_code write agent-output\report.md 并回读校验非空
+15. write ...S10...\agent-output\report.md（15688 字节 / 128 行）
+16. read ...S10...\agent-output\report.md（回读校验）
+17. run_code write tool-transcript.txt + transcript-manifest.txt
+18. write ...S10...\agent-output\tool-transcript.txt
+19. write ...S10...\agent-output\transcript-manifest.txt
+20. run_code send_message 汇报父 agent（session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e）
+21. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（S10 结果自包含汇报）

@@ -1,0 +1,126 @@
+{
+  "task": "S4-legacy-client-imports",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T05:51:14.863Z",
+  "endedAt": "2026-10-21T05:58:13.078Z",
+  "durationMs": 418215,
+  "durationSec": 418,
+  "subagentId": "4223db0f-329b-4816-84d6-c5e06e7694de",
+  "sessionIds": [
+    "4223db0f-329b-4816-84d6-c5e06e7694de"
+  ],
+  "toolCalls": 18,
+  "toolCounts": {
+    "run_code": 16,
+    "write": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 39949,
+    "outputTokens": 29406,
+    "cacheReadTokens": 448821,
+    "cacheWriteTokens": 0,
+    "total": 518176
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 18,
+      "llmMs": 394959,
+      "toolMs": 21343
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S4-legacy-client-imports/migration-touchpoints.md",
+      "chars": 18268,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 18,
+      "toolCounts": {
+        "run_code": 16,
+        "write": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/app/fixture",
+          "resolved": "E:\\app\\fixture",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/noskill/S4-legacy-client-imports",
+          "resolved": "E:\\noskill\\S4-legacy-client-imports",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/unconfirmed/gi",
+          "resolved": "E:\\unconfirmed\\gi",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "w:\\n",
+          "resolved": "w:\\n",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "c:\\",
+          "resolved": "c:\\",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 5,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 1,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T05:51:14.863Z",
+    "endedAt": "2026-10-21T05:58:13.078Z",
+    "durationSec": 418,
+    "flushWaitMs": 12,
+    "complete": true
+  }
+}

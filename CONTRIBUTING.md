@@ -71,6 +71,14 @@ npm test
 
 该入口包含原有的两个结构校验器：`node scripts/validate.mjs` 与
 `node scripts/validate-manifests.mjs`，并补跑 release、audit 和 DSH case 定义自检。
+`scripts/validate.mjs` 还会把根 `README.md` / `README.en.md` 的徽章数字、"这个仓库里有什么"
+条目以及覆盖表里每一条卡片行，对齐到版本卡 frontmatter 的 `cardCount` 与
+`benchmark/tasks/` 的真实目录数；改了卡数或题数就同步改根 README，否则自检失败。
+
+自检需要**完整 git 历史**：执行契约与评测快照校验器要用本地 git 对象解析 `task.toml` 里
+pin 住的 commit。浅克隆（`git clone --depth 1`）下会报 `cannot resolve … skill snapshot tree`
+（例如 H11 / H21），这是克隆方式导致的，不是仓库缺陷；改用完整克隆，或对已有浅克隆执行
+`git fetch --unshallow`，再按 `npm run prepare:ci` 补齐快照 commit。
 
 修改 Skill、命令、manifest、版本卡或示例时运行快速校验。若改动
 `plugin-upgrade`、`plugin-test`、`dsh-upgrade-audit` 或 `benchmark/runtime/` 中的运行时迁移事实，

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "culprit-attribution",
+      "verdict": "pass",
+      "reason": "Correctly pins the only crash on plugin A's unconditional useSessionPendingInteraction call, cites the alpha.1→alpha.2 kit reduction (useSessionStatus/useSessionRetainInfo in, useSessions unchanged), and notes B uses no standard-kit hooks."
+    },
+    {
+      "id": "cotenant-mechanism",
+      "verdict": "pass",
+      "reason": "Explains the whole input.dock list unmounts under the single shared DrawerErrorBoundary with null fallback, backed by the console unmounted-entries line, and that the attach button survives in the separately-bounded input.left slot."
+    },
+    {
+      "id": "experiment-reading",
+      "verdict": "pass",
+      "reason": "States the disable test proves A's throw caused the coupled unmount but not B's general alpha.2 compatibility nor absence of other dock defects; reinstalling B cannot help since B was never broken; refutes the both-plugins theory because B touches no kit prop."
+    },
+    {
+      "id": "degradation-fix",
+      "verdict": "pass",
+      "reason": "Fix reads pending via useSessionStatus(...)?.pendingInteraction with typeof feature detection and silent empty fallback for a host supplying neither hook; identifies the pending highlight as the only degraded feature and explains a throw would re-null the shared dock."
+    },
+    {
+      "id": "verification-and-hygiene",
+      "verdict": "partial",
+      "reason": "No-restart verification, both entries co-rendering, hygiene (defensive destructuring, local boundary, per-entry host boundaries with trade-off) are all present, but the B regression omits chip removal — it covers paste/re-paste attribution and the no-session case, not remove/re-paste of chips with A enabled."
+    }
+  ],
+  "caps": [
+    {
+      "id": "innocent-plugin-fix",
+      "triggered": false,
+      "reason": "Final remedy rewrites plugin A; B is declared the wrong plugin to fix and reinstalling it is explicitly rejected."
+    }
+  ]
+}

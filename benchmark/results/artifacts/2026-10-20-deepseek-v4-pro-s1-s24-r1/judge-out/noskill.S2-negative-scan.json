@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "partial",
+      "reason": "Correctly locates inject=[\"apiProxy\"] and ctx.apiProxy.llm.providers(), explains the injection/listProviders surface and the dead apiproxy dependency with the replacement mechanism, but cannot map to the A1-01 card (card ID withheld due to no-skill access), so the explicit card mapping requirement is unmet."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six other categories covered with grep/read evidence; session-notes.js correctly identified as a pure string/array utility, and the patch-name file is handled as registration/composition without inventing host-source coupling."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly explains zero hits are only evidence of absence limited by scan coverage and that dependency/config/runtime behavior needs separate checks, and keeps the decisive apiProxy break separate from the six clean categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies post-migration build/typecheck, an isolated-profile cold boot, and a functional smoke of the providers() path, clearly framed as proposed checks not executed in the read-only fixture."
+    }
+  ],
+  "caps": []
+}

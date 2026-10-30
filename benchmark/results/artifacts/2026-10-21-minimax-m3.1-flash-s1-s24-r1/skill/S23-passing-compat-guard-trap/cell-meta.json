@@ -1,0 +1,104 @@
+{
+  "task": "S23-passing-compat-guard-trap",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:49:10.276Z",
+  "endedAt": "2026-10-21T07:07:58.530Z",
+  "durationMs": 1128254,
+  "durationSec": 1128,
+  "subagentId": "4428a3db-e3dc-495f-9457-6d176d9962d4",
+  "sessionIds": [
+    "4428a3db-e3dc-495f-9457-6d176d9962d4"
+  ],
+  "toolCalls": 57,
+  "toolCounts": {
+    "run_code": 34,
+    "pwsh": 3,
+    "read": 15,
+    "grep": 3,
+    "write": 1,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 106578,
+    "outputTokens": 95855,
+    "cacheReadTokens": 2441549,
+    "cacheWriteTokens": 0,
+    "total": 2643982
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 35,
+      "llmMs": 1107814,
+      "toolMs": 17247
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S23-passing-compat-guard-trap/S23-report.md",
+      "chars": 41310,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 57,
+      "toolCounts": {
+        "run_code": 34,
+        "pwsh": 3,
+        "read": 15,
+        "grep": 3,
+        "write": 1,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/app/fixture",
+          "resolved": "E:\\app\\fixture",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 1,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 15,
+      "uniqueOperands": 15,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 2,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:49:10.276Z",
+    "endedAt": "2026-10-21T07:07:58.530Z",
+    "durationSec": 1128,
+    "flushWaitMs": 14402,
+    "complete": true
+  }
+}

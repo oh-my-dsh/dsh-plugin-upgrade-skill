@@ -1,0 +1,415 @@
+{
+  "generatedAt": "2026-10-20T17:26:37+08:00",
+  "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\d6bf4807-cc13-408b-a790-82c0bd217389\\session.v4.jsonl.zstd",
+  "events": 107,
+  "metrics": {
+    "toolcalls": 27,
+    "requests": 10,
+    "tokensIn": 45572,
+    "tokensOut": 15756,
+    "tokensTotal": 396816,
+    "lastTime": 1792488383075
+  },
+  "hardCandidates": 0,
+  "softCandidates": 44,
+  "infraSkipped": 0,
+  "verdict": "soft-review",
+  "candidates": [
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\",
+      "snippet": "step; shipped files \\`lib/client.js\\` + \\`lib/index.js\\`) **Repo**: \\`E:\\\\dev\\\\dsh-attach-input\\` · **Profile**: \\`C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnos",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\",
+      "snippet": "/index.js\\`) **Repo**: \\`E:\\\\dev\\\\dsh-attach-input\\` · **Profile**: \\`C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnose). Evidence: fixture \\`copy-session.txt\\`, \\",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\*.js",
+      "snippet": "this as \"the profile must run an installed COPY\" and runs \\`Copy-Item E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\*.js → <profile>\\\\node_modules\\\\@org\\\\dsh-attach-input\\\\lib\\\\ -Force\\` → **EBUSY** (\"being used by another p",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js",
+      "snippet": "** path), then copy from the repo path fails with **\"Cannot find path E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js — it does not exist\"**. Both listings now show only the two \\`.old2\\` files. Root cause: the renam",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input",
+      "snippet": "ion evidence \\`fixture/profile-introspection.txt\\`: \\`\\`\\` Get-Item C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input | Select FullName, LinkType, Target LinkType : Junction Target ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input",
+      "snippet": "Select FullName, LinkType, Target LinkType : Junction Target : {E:\\\\dev\\\\dsh-attach-input} Get-Item E:\\\\dev\\\\dsh-attach-input | Select FullName, LinkType, Target LinkType : (empty) Target ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml",
+      "snippet": "mpty) \\`\\`\\` and the profile composition marker: \\`\\`\\` Get-Content C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\cordis.patch.yml | Select-String dsh-attach-input - node_modules/@org/dsh-attach-input # link:E:\\\\dev",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input\\\\…\\",
+      "snippet": "a junction install means for deployment Every filesystem access to \\`C:\\\\Users\\\\me\\\\.dsh\\\\profiles\\\\web\\\\node_modules\\\\@org\\\\dsh-attach-input\\\\…\\` is redirected by the reparse point to \\`E:\\\\dev\\\\dsh-attach-in",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\…\\",
+      "snippet": "\\\\@org\\\\dsh-attach-input\\\\…\\` is redirected by the reparse point to \\`E:\\\\dev\\\\dsh-attach-input\\\\…\\`. There is **one physical directory, two path names**. Consequences: - **The repo tree IS the installed copy.",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\",
+      "snippet": "b\\\\node_modules\\\\@org\\\\dsh-attach-input\\\\lib\\` — but that path *is* \\`E:\\\\dev\\\\dsh-attach-input\\\\lib\\` through the junction (§1.2). The rename therefore moved the **one physical file** that both views share. Im",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js.old2",
+      "snippet": ". **Restore the original names**: \\`\\`\\`powershell Rename-Item 'E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js.old2' 'client.js' Rename-Item 'E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\index.js.old2' 'index.js' \\`",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\index.js.old2",
+      "snippet": "v\\\\dsh-attach-input\\\\lib\\\\client.js.old2' 'client.js' Rename-Item 'E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\index.js.old2' 'index.js' \\`\\`\\` 3. **Verify the directory is whole**: \\`Get-ChildItem E:\\\\dev\\\\dsh-atta",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\index.js",
+      "snippet": "try would now fail at host boot): \\`\\`\\`powershell node --check E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\index.js node --check E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\client.js \\`\\`\\` (If either file is ESM and \\",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\…\\",
+      "snippet": "s + cache bypass, in this order.** 1. **Edit & save in the repo** (\\`E:\\\\dev\\\\dsh-attach-input\\\\lib\\\\…\\`). This *is* the deployment. Do not copy anything anywhere. Optionally run \\`node --check\\` on both files",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\",
+      "snippet": "step; shipped files \\`lib/client.js\\` + \\`lib/index.js\\`) **Repo**: \\`E:\\dev\\dsh-attach-input\\` · **Profile**: \\`C:\\Users\\me\\.dsh\\profiles\\web\\` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnose). Evi",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\",
+      "snippet": "ib/index.js\\`) **Repo**: \\`E:\\dev\\dsh-attach-input\\` · **Profile**: \\`C:\\Users\\me\\.dsh\\profiles\\web\\` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnose). Evidence: fixture \\`copy-session.txt\\`, \\`prof",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\*.js",
+      "snippet": "this as \"the profile must run an installed COPY\" and runs \\`Copy-Item E:\\dev\\dsh-attach-input\\lib\\*.js → <profile>\\node_modules\\@org\\dsh-attach-input\\lib\\ -Force\\` → **EBUSY** (\"being used by another process\") ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+      "snippet": "** path), then copy from the repo path fails with **\"Cannot find path E:\\dev\\dsh-attach-input\\lib\\client.js — it does not exist\"**. Both listings now show only the two \\`.old2\\` files. Root cause: the rename we",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input",
+      "snippet": "ion evidence \\`fixture/profile-introspection.txt\\`: \\`\\`\\` Get-Item C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input | Select FullName, LinkType, Target LinkType : Junction Target : {E:\\",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input",
+      "snippet": "Select FullName, LinkType, Target LinkType : Junction Target : {E:\\dev\\dsh-attach-input} Get-Item E:\\dev\\dsh-attach-input | Select FullName, LinkType, Target LinkType : (empty) Target : ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\cordis.patch.yml",
+      "snippet": "mpty) \\`\\`\\` and the profile composition marker: \\`\\`\\` Get-Content C:\\Users\\me\\.dsh\\profiles\\web\\cordis.patch.yml | Select-String dsh-attach-input - node_modules/@org/dsh-attach-input # link:E:\\dev\\dsh-at",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\…\\",
+      "snippet": "a junction install means for deployment Every filesystem access to \\`C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\…\\` is redirected by the reparse point to \\`E:\\dev\\dsh-attach-input\\…\\`. Th",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\…\\",
+      "snippet": "les\\@org\\dsh-attach-input\\…\\` is redirected by the reparse point to \\`E:\\dev\\dsh-attach-input\\…\\`. There is **one physical directory, two path names**. Consequences: - **The repo tree IS the installed copy.** ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\",
+      "snippet": "s\\web\\node_modules\\@org\\dsh-attach-input\\lib\\` — but that path *is* \\`E:\\dev\\dsh-attach-input\\lib\\` through the junction (§1.2). The rename therefore moved the **one physical file** that both views share. Immed",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\client.js.old2",
+      "snippet": ". **Restore the original names**: \\`\\`\\`powershell Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\client.js.old2' 'client.js' Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\index.js.old2' 'index.js' \\`\\`\\` 3. ",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\index.js.old2",
+      "snippet": "\\dev\\dsh-attach-input\\lib\\client.js.old2' 'client.js' Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\index.js.old2' 'index.js' \\`\\`\\` 3. **Verify the directory is whole**: \\`Get-ChildItem E:\\dev\\dsh-attach-inp",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\index.js",
+      "snippet": "try would now fail at host boot): \\`\\`\\`powershell node --check E:\\dev\\dsh-attach-input\\lib\\index.js node --check E:\\dev\\dsh-attach-input\\lib\\client.js \\`\\`\\` (If either file is ESM and \\`node --",
+      "soft": true
+    },
+    {
+      "seq": 79,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\…\\",
+      "snippet": "s + cache bypass, in this order.** 1. **Edit & save in the repo** (\\`E:\\dev\\dsh-attach-input\\lib\\…\\`). This *is* the deployment. Do not copy anything anywhere. Optionally run \\`node --check\\` on both files now",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input",
+      "snippet": "uild step; shipped files `lib/client.js` + `lib/index.js`) **Repo**: `E:\\dev\\dsh-attach-input` · **Profile**: `C:\\Users\\me\\.dsh\\profiles\\web` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnose). Eviden",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web",
+      "snippet": "+ `lib/index.js`) **Repo**: `E:\\dev\\dsh-attach-input` · **Profile**: `C:\\Users\\me\\.dsh\\profiles\\web` **Mode**: plugin-upgrade Mode A (read-only inspect/diagnose). Evidence: fixture `copy-session.txt`, `profile-",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\*.js",
+      "snippet": " this as \"the profile must run an installed COPY\" and runs `Copy-Item E:\\dev\\dsh-attach-input\\lib\\*.js → <profile>\\node_modules\\@org\\dsh-attach-input\\lib\\ -Force` → **EBUSY** (\"being used by another process\") o",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+      "snippet": "** path), then copy from the repo path fails with **\"Cannot find path E:\\dev\\dsh-attach-input\\lib\\client.js — it does not exist\"**. Both listings now show only the two `.old2` files. Root cause: the rename went",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input",
+      "snippet": "spection evidence `fixture/profile-introspection.txt`: ``` Get-Item C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input | Select FullName, LinkType, Target LinkType : Junction Target : {E:\\",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\cordis.patch.yml",
+      "snippet": " (empty) ``` and the profile composition marker: ``` Get-Content C:\\Users\\me\\.dsh\\profiles\\web\\cordis.patch.yml | Select-String dsh-attach-input - node_modules/@org/dsh-attach-input # link:E:\\dev\\dsh-at",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\…",
+      "snippet": " a junction install means for deployment Every filesystem access to `C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\…` is redirected by the reparse point to `E:\\dev\\dsh-attach-input\\…`. There",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\…",
+      "snippet": "dules\\@org\\dsh-attach-input\\…` is redirected by the reparse point to `E:\\dev\\dsh-attach-input\\…`. There is **one physical directory, two path names**. Consequences: - **The repo tree IS the installed copy.** S",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib",
+      "snippet": "les\\web\\node_modules\\@org\\dsh-attach-input\\lib` — but that path *is* `E:\\dev\\dsh-attach-input\\lib` through the junction (§1.2). The rename therefore moved the **one physical file** that both views share. Immedi",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\client.js.old2",
+      "snippet": ". 2. **Restore the original names**: ```powershell Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\client.js.old2' 'client.js' Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\index.js.old2' 'index.js' ``` 3. **V",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\index.js.old2",
+      "snippet": "\\dev\\dsh-attach-input\\lib\\client.js.old2' 'client.js' Rename-Item 'E:\\dev\\dsh-attach-input\\lib\\index.js.old2' 'index.js' ``` 3. **Verify the directory is whole**: `Get-ChildItem E:\\dev\\dsh-attach-input\\l",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\index.js",
+      "snippet": " entry would now fail at host boot): ```powershell node --check E:\\dev\\dsh-attach-input\\lib\\index.js node --check E:\\dev\\dsh-attach-input\\lib\\client.js ``` (If either file is ESM and `node --chec",
+      "soft": true
+    },
+    {
+      "seq": 80,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "write",
+      "field": "content",
+      "token": "E:\\dev\\dsh-attach-input\\lib\\…",
+      "snippet": "ts + cache bypass, in this order.** 1. **Edit & save in the repo** (`E:\\dev\\dsh-attach-input\\lib\\…`). This *is* the deployment. Do not copy anything anywhere. Optionally run `node --check` on both files now — ",
+      "soft": true
+    },
+    {
+      "seq": 97,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\\\dev\\\\dsh-attach-input",
+      "snippet": "overs all 5 questions: (1) profile entry is an NTFS Junction → Target E:\\\\dev\\\\dsh-attach-input per profile-introspection.txt, repo tree IS the installed copy, Copy-Item into node_modules was NEVER right (self-",
+      "soft": true
+    },
+    {
+      "seq": 97,
+      "type": "tool/call",
+      "tool": "run_code",
+      "field": "code",
+      "token": "E:\\dev\\dsh-attach-input",
+      "snippet": "overs all 5 questions: (1) profile entry is an NTFS Junction → Target E:\\dev\\dsh-attach-input per profile-introspection.txt, repo tree IS the installed copy, Copy-Item into node_modules was NEVER right (self-co",
+      "soft": true
+    },
+    {
+      "seq": 98,
+      "type": "tool/ptc-dispatch-start",
+      "tool": "send_message",
+      "field": "message",
+      "token": "E:\\dev\\dsh-attach-input",
+      "snippet": "overs all 5 questions: (1) profile entry is an NTFS Junction → Target E:\\dev\\dsh-attach-input per profile-introspection.txt, repo tree IS the installed copy, Copy-Item into node_modules was NEVER right (self-co",
+      "soft": true
+    }
+  ]
+}

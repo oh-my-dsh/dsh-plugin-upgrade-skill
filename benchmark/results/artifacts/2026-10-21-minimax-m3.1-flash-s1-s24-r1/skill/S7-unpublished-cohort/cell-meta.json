@@ -1,0 +1,125 @@
+{
+  "task": "S7-unpublished-cohort",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:00:52.785Z",
+  "endedAt": "2026-10-21T06:21:33.492Z",
+  "durationMs": 1240707,
+  "durationSec": 1241,
+  "subagentId": "49a83bee-4c85-4c8b-be65-fd4ce75598ee",
+  "sessionIds": [
+    "49a83bee-4c85-4c8b-be65-fd4ce75598ee"
+  ],
+  "toolCalls": 66,
+  "toolCounts": {
+    "run_code": 33,
+    "glob": 2,
+    "read": 20,
+    "grep": 4,
+    "pwsh": 6,
+    "send_message": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 175196,
+    "outputTokens": 145182,
+    "cacheReadTokens": 2663545,
+    "cacheWriteTokens": 0,
+    "total": 2983923
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 34,
+      "llmMs": 1209098,
+      "toolMs": 27577
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S7-unpublished-cohort/S7-unpublished-cohort-install-plan.md",
+      "chars": 27079,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 66,
+      "toolCounts": {
+        "run_code": 33,
+        "glob": 2,
+        "read": 20,
+        "grep": 4,
+        "pwsh": 6,
+        "send_message": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "k:\\`",
+          "resolved": "k:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "e:\\`",
+          "resolved": "e:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "k:\\`/\\`overrides\\`",
+          "resolved": "k:\\`\\`overrides\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/app/fixture",
+          "resolved": "E:\\app\\fixture",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 4,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 20,
+      "uniqueOperands": 20,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 2,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:00:52.785Z",
+    "endedAt": "2026-10-21T06:21:33.492Z",
+    "durationSec": 1241,
+    "flushWaitMs": 9665,
+    "complete": true
+  }
+}

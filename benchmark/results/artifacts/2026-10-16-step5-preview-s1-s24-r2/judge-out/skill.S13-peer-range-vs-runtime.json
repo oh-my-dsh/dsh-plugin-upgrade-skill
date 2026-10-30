@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Cites source lines 734/6685 reading session.events, maps the stack to undefined reaching an iteration site (42 refs), and cites the changelog for removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents replacements."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Verifies ^0.1.2-alpha.2 = >=0.1.2-alpha.2 <0.2.0-0 so alpha.5 satisfies it, explains npm only resolves declared version strings and never examines code or API existence; frames the peer declaration as an author claim."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Explains distinct classes: API removal/rename, signature/shape changes, removed services/transports, and default/behavior changes, with concrete examples."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires booting on the newest allowed version plus typecheck/self-scan, and a compatibility policy of pinning/narrowing the range and a runtime feature-detection dual path; contrasts metadata with runtime guards."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Concrete pre-install investigations: inspect metadata, grep the unpacked tarball for session.events against the changelog, and behaviorally boot in a throwaway profile — tied to the Session.events incident."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Affirms the opposite: metadata cannot prove runtime compatibility; explicitly says the install is correct but the plugin is incompatible, and does not deny the Session.events removal."}
+  ]
+}

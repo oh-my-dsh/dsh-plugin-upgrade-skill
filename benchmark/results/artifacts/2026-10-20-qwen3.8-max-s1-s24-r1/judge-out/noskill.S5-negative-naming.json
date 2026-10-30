@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "official-short-name",
+      "verdict": "pass",
+      "reason": "Locates greet as plugin.name/pluginNames[0], distinguishes it from coordinate acme/greet and package dsh-greet, argues coordinate scoping makes the unprefixed short name valid with prefixing only a collision-avoidance recommendation, explicitly declines to call it a compatibility error."
+    },
+    {
+      "id": "service-collision-advice",
+      "verdict": "pass",
+      "reason": "Identifies unprefixed service `search` as the highest collision risk in a host-global lookup space (silent shadowing by registration order), classifies it CR/warning not CE, and does not infer incompatibility from any strict-mode exit (none run; none claimed as proof)."
+    },
+    {
+      "id": "shared-event-context",
+      "verdict": "pass",
+      "reason": "Treats web-search/ready as a foreign/shared channel, informational not an error; explains conflicts depend on contract ownership/compatibility and registry context, not name overlap; explicitly refuses any uniqueness/reservation claim and flags emit-vs-subscribe as unknown."
+    },
+    {
+      "id": "coverage-and-registry-limits",
+      "verdict": "pass",
+      "reason": "Covers loader, tool, command, skill, provider, settings, route surfaces with per-surface reasoning; separates local compatibility from unqueried registry occupancy; states unknown/not-checked throughout, proposes later verification (P1) without claiming it ran, and reports private:true as out-of-scope test-material observation rather than a naming error."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsupported-all-clear",
+      "triggered": false,
+      "reason": "Report explicitly rejects all available/reserved/publish-clear claims ('zero availability facts', 'no findings ≠ no problems'); no unsupported blanket clearance."
+    }
+  ]
+}

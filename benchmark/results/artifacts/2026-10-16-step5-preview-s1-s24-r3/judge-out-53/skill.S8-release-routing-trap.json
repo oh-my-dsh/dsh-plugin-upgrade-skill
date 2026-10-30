@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"missing-mirror-tag","verdict":"pass","reason":"Dangling-ref analysis from ls-remote gap + branch-only sync script; differential proof it is not network/consumer error."},
+{"id":"runtime-compatibility-direction","verdict":"pass","reason":"v0.9.7 built for 0.1.2-alpha.1 client API vs frozen 0.1.1-rc.2 host lacking useConversation; explains direction, why install/restart cannot help."},
+{"id":"frozen-runtime-remedy","verdict":"pass","reason":"Identifies v0.9.3 as the compat-table match (rc.1 verified, additive rc.2), notes it is absent from the mirror, gives conditional #v0.9.3 command after maintainer re-push, refuses to invent a SHA, honors freeze; v0.9.1 given only as flagged-inference stopgap."},
+{"id":"tag-distribution-repair","verdict":"pass","reason":"Adds explicit per-mirror tag push to the sync loop plus ls-remote SHA-equality verification gate and docs-vs-refs CI check."},
+{"id":"version-routing-docs","verdict":"partial","reason":"Routing table and dsh --version probe are present, but maps '0.1.2-*' wholesale to v0.9.7, generalizing support to untested future alphas; otherwise complete."}
+],"caps":[]}

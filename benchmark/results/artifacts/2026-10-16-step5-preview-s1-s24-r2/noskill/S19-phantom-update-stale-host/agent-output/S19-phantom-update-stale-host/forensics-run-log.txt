@@ -1,0 +1,106 @@
+### 1. build the synthetic demo generation file
+
+$ node zstd-frame-forensics.mjs --build-demo forensics-demo\
+
+demo written to E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-16-step5-preview-s1-s24-r2\noskill\S19-phantom-update-stale-host\agent-output\S19-phantom-update-stale-host\forensics-demo\
+
+### 2. carve + decode the generation file frame-by-frame
+
+$ node zstd-frame-forensics.mjs forensics-demo\demo-session.generations.zst
+
+file: E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-16-step5-preview-s1-s24-r2\noskill\S19-phantom-update-stale-host\agent-output\S19-phantom-update-stale-host\forensics-demo\demo-session.generations.zst | bytes: 722 | frames: 5
+tiling verified: carved frames exactly cover the file (no gaps, no overlap), and the merged output matches an independent decoder
+
+--- frame #1  offset=0  compressed=77B  decompressed=68B  records=1
+    line 1: user (generation 1)
+--- frame #2  offset=77  compressed=110B  decompressed=116B  records=1
+    line 1: assistant (generation 2)
+--- frame #3  offset=187  compressed=272B  decompressed=484B  records=1
+    line 1: tool_result (generation 3)
+        stored text @ $.text (385 chars)
+--- frame #4  offset=459  compressed=80B  decompressed=82B  records=1
+    line 1: assistant (generation 4)
+        stored text @ $.text (43 chars)
+--- frame #5  offset=539  compressed=183B  decompressed=308B  records=1
+    line 1: tool_result (generation 5)
+        stored text @ $.text (223 chars)
+
+XML verdicts (external parser):
+
+### 3. recover the stored text of each tool_result frame
+
+recovered frame #3 stored payload = 385 chars; frame #5 re-read = 223 chars
+
+### 4. reconstruct the stored payload into a validatable document
+
+$ node zstd-frame-forensics.mjs --reconstruct forensics-demo\recovered-payload.txt forensics-demo\reconstructed-payload.svg svg
+
+reconstructed document written to E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-16-step5-preview-s1-s24-r2\noskill\S19-phantom-update-stale-host\agent-output\S19-phantom-update-stale-host\forensics-demo\reconstructed-payload.svg (7 lines)
+
+### 4b. reconstruct the re-read
+
+$ node zstd-frame-forensics.mjs --reconstruct forensics-demo\recovered-reread.txt forensics-demo\reconstructed-reread.svg svg
+
+reconstructed document written to E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-16-step5-preview-s1-s24-r2\noskill\S19-phantom-update-stale-host\agent-output\S19-phantom-update-stale-host\forensics-demo\reconstructed-reread.svg (6 lines)
+
+### 4c. XML well-formedness verdicts
+
+  demo-source.svg :: WELL-FORMED
+  reconstructed-payload.svg :: NOT well-formed -> not well-formed (invalid token): line 4, column 53
+  reconstructed-reread.svg :: WELL-FORMED
+
+### 5. splice proof on the recovered payload
+
+$ node zstd-frame-forensics.mjs --prove-splice forensics-demo\recovered-payload.txt forensics-demo\demo-source.svg
+
+splice findings: 4
+{
+  "payloadLine": 1,
+  "verdict": "clean",
+  "identicalToSourceLine": 231
+}
+{
+  "payloadLine": 2,
+  "verdict": "clean",
+  "identicalToSourceLine": 232
+}
+{
+  "payloadLine": 3,
+  "verdict": "SPLICE",
+  "prefixFromSourceLine": 233,
+  "cutAtChar": 52,
+  "suffixFromSourceLine": 248,
+  "suffixAtChar": 35,
+  "prefix": "    <circle r=\"98\" fill=\"none\" stroke=\"#dde6ea\" stro",
+  "suffix": "0,1 821,730\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"3\" opacity=\".7\" stroke-linecap=\"round\"/>",
+  "sourceLinesDroppedBetween": 14,
+  "reconstruction": "source[233][0:52] + source[248][35:]"
+}
+{
+  "payloadLine": 4,
+  "verdict": "truncated-or-foreign",
+  "prefixFromSourceLine": 248,
+  "cutAtChar": 23,
+  "prefix": "    <path d=\"M 587,730 "
+}
+
+### 5b. control: splice proof on the clean re-read
+
+$ node zstd-frame-forensics.mjs --prove-splice forensics-demo\recovered-reread.txt forensics-demo\demo-source.svg
+
+splice findings: 3
+{
+  "payloadLine": 1,
+  "verdict": "clean",
+  "identicalToSourceLine": 231
+}
+{
+  "payloadLine": 2,
+  "verdict": "clean",
+  "identicalToSourceLine": 232
+}
+{
+  "payloadLine": 3,
+  "verdict": "clean",
+  "identicalToSourceLine": 233
+}

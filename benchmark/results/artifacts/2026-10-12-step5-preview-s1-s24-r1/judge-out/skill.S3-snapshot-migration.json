@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "chat-projection", "verdict": "pass", "reason": "Locates the partial/runningCalls/turnEnds reads and explains the temporary views.get('chat')?.legacy projection with the durable useChat order/nodes.get(id) keyed-store target from API-10, field-by-field migration and pending-confirm discriminants."},
+    {"id": "session-lifecycle", "verdict": "pass", "reason": "Identifies running as a lifecycle field absent from the chat legacy projection, belonging to the useSession seat, requiring an immediate read-path switch; never claims the existing useSession call itself must be renamed."},
+    {"id": "type-and-inject", "verdict": "pass", "reason": "Locates the removed dsh-client-runtime imports and the package.json client.inject entry; repoints Context as ClientContext to @deepseek-ai/cordis, moves snapshot types to their target owner (ui-chat), and defers unknown snapshot symbols to target exports without claiming cordis exports them."},
+    {"id": "slot-registration", "verdict": "pass", "reason": "Locates the scoped slots.register call; keeps inject=['slots','conversation'] around registration, explains ownership by ui-conversation and Context augmentation, and preserves the slot name and registration lifetime/order."},
+    {"id": "mapping-and-plan", "verdict": "pass", "reason": "Ties each located change to full DSH-0.1.2-A1-03 (plus valid additional A1-25/A1-27/A1-30/API-10) with grounded reasoning, and cleanly separates projection-first reads from immediate type/inject/lifecycle changes."}
+  ],
+  "caps": []
+}

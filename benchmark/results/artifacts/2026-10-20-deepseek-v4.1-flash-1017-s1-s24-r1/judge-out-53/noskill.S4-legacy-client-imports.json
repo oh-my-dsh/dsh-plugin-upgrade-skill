@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "runtime-removal",
+   "verdict": "pass",
+   "reason": "定位 index.ts:1 旧 ClientContext import 并映射 A1-25，指出 import type 擦除后仍是硬性 typecheck 失败，迁移方向（重指包根导出/模板入口，名称 unconfirmed 不猜测）可辩护且标注清楚"
+  },
+  {
+   "id": "registration-id",
+   "verdict": "pass",
+   "reason": "对比 pet-legacy-bundle 与 package.json name dsh-pet-session-bench，映射 A1-26，要求 id 精确等于包名并给出 dev shell 中 apply 恰好激活一次的验证"
+  },
+  {
+   "id": "session-content",
+   "verdict": "pass",
+   "reason": "定位 useSession()/nodes[0] 并映射 A1-27，明确平面快照已移除、换用目标读取面且以 root id/有序访问器保序，未声称旧 API 仍受支持，Pet.tsx 空文件无破坏面"
+  },
+  {
+   "id": "connection-face",
+   "verdict": "pass",
+   "reason": "定位 ctx.connection.api.agentPresets.list 并映射 A1-30，要求改用存活公共访问器（名称 unconfirmed 待验证）并补 inject 服务声明，方向正确"
+  }
+ ],
+ "caps": [
+  {
+   "id": "invented-migration",
+   "triggered": false,
+   "reason": "报告未断言 apply→setup/activate 之类生命周期替换，也未称 inject 须整体移入 manifest；仅建议在代码级 inject 列表补充服务名，属合法清理"
+  }
+ ]
+}

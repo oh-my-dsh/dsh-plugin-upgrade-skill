@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Uses LinkType Junction, Target, and # link: marker to show profile entry is the repo tree; repo edits already deploy; copying is a self-copy, distinguished from a copied install."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Running host holds lib file handles (EBUSY persists after tab close) and old module cache; browser HTTP cache treated separately, requiring host restart plus hard refresh."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains rename through junction renamed sole source making copy fail 'source does not exist'; restores .old2 names, verifies content, node --check both files, host stopped first."},
+{"id":"ordered-activation","verdict":"pass","reason":"Semantic order: fully stop host, start host, cache-bypass hard refresh, then verify new feature and no load errors."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Pre-flight Get-Item LinkType/Target and cordis.patch.yml marker with linked-vs-copied procedure table; explains why generic node_modules copy advice caused the incident."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final plan explicitly contains no file copy; recovery is pure rename-back."},
+{"id":"browser-only-activation","triggered":false,"reason":"Plan mandates full host stop and restart; browser refresh alone is never claimed sufficient."}
+]}

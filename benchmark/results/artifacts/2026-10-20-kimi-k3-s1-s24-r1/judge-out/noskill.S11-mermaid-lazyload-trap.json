@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Explains sibling imports resolve against the entry chunk URL, siblings were never shipped so the graph fetch fails despite entry 200, and proposes a self-contained single-file build with inlineDynamicImports."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Identifies uppercase E: LIB_DIR vs lowercase e: realpath, case-sensitive startsWith rejecting a contained file; explains Linux byte-identical prefix and laptop case agreement; explicitly rejects the 'Windows paths unreliable' claim and notes realpath case is host-dependent, not always lowercase."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Canonicalizes both sides via realpathSync, uses path.relative rejecting '' , '..', '..'-prefixed and absolute results, keeps realpath symlink-escape check, and preserves a JavaScript MIME type for dynamic import."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains wheel bubbling delivering one gesture to both pane and modal handlers; grants the modal exclusive ownership with preventDefault plus stopPropagation and has the pane handler stand down via composedPath/target checks."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned checks with expected outcomes for all three incidents: build/pack assertions plus no-404, no-code-block-fallback smoke; case-mismatched Windows path must serve while traversal and symlink escape stay 403; modal Ctrl+wheel zooms with pane font unchanged, plus over-blocking guard."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The proposed fix keeps and strengthens containment; no advice serves paths outside the plugin root."
+    }
+  ]
+}

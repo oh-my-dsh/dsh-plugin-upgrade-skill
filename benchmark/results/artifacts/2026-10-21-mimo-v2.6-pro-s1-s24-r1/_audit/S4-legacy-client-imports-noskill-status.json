@@ -1,0 +1,42 @@
+{
+  "task": "S4-legacy-client-imports",
+  "arm": "noskill",
+  "cell": "E:/deepseek-harness/dsh-plugin-upgrade-skill/benchmark/results/artifacts/2026-10-21-mimo-v2.6-pro-s1-s24-r1/noskill/S4-legacy-client-imports",
+  "subagentId": "555dffdd-bc87-4231-b5db-99db144578ef",
+  "status": "done",
+  "startedAt": "2026-10-21T13:47:27+08:00",
+  "endedAt": "2026-10-21T13:54:14+08:00",
+  "duration": "6m47s",
+  "report": {
+    "path": "agent-output/report.md",
+    "bytes": 9103,
+    "ok": true
+  },
+  "fixture": {
+    "compare": {
+      "checked": 4,
+      "mismatched": [],
+      "missing": [],
+      "extra": [],
+      "zeroByte": []
+    },
+    "ok": true
+  },
+  "transcriptAudit": {
+    "manifestLines": 10,
+    "manifestViolations": 0,
+    "toolTranscriptLines": 19,
+    "flaggedLines": 0,
+    "realViolations": 0,
+    "verdict": "pass",
+    "manifestViolationLines": [],
+    "flaggedTranscriptLines": [],
+    "auditErr": null,
+    "note": "Manifest used a '<cell>' placeholder with a footer defining it as the cell root; auditor initially flagged all 10 entries before placeholder resolution was added. Resolved entries: reads = cell dir listing + 4 fixture files + 1 own report verify-read; writes = 4 files all under agent-output/. No out-of-whitelist access. Directory listings (glob/pwsh Get-ChildItem, workdir=cell) are in-cell reads."
+  },
+  "runStats": {
+    "toolcalls": "23",
+    "tokens": "n/a"
+  },
+  "notes": "Post-closeout self-correction by solver: toolcalls 19 -> 23 (verification/notify merged into one run_code in the first count); report run-stats and tool-transcript.txt updated in-cell after closeout. Audit verdict unchanged (pass)."
+}

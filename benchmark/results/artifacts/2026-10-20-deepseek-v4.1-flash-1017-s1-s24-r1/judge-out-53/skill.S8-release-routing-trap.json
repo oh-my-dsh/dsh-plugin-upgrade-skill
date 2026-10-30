@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "missing-mirror-tag",
+   "verdict": "pass",
+   "reason": "用镜像 tag 清单与只推 HEAD:main 的脚本证明 v0.9.5（及 v0.9.2–v0.9.6）从未分发，绑定 attempt 1 的立即解析失败，并用'同命令形态装上 v0.9.7'排除网络/代理/引号等原因。"
+  },
+  {
+   "id": "runtime-compatibility-direction",
+   "verdict": "pass",
+   "reason": "明确 v0.9.7 面向更新的 0.1.2-alpha.1 客户端契约而 rc.2 缺 useConversation 座位的方向，安装成功只证依赖解析、重启无法治愈静态符号缺失，并以卡片佐证该符号属 alpha.1 后契约。"
+  },
+  {
+   "id": "frozen-runtime-remedy",
+   "verdict": "pass",
+   "reason": "选 v0.9.3 且不升级宿主，指出 v0.9.3 同样缺失并警告照抄 README 会复现失败 1；给出经 ls-remote 验证的 #v0.9.3 或维护者提供并验证的 v0.9.3 commit 的条件化命令与 tarball/link 离线通道，未发明 SHA。"
+  },
+  {
+   "id": "tag-distribution-repair",
+   "verdict": "pass",
+   "reason": "T1/T2 要求随发布循环显式推送 refs/tags 到每个镜像（或 --follow-tags/批量 refs/tags/*，等价），并逐镜像 ls-remote 校验 tag 存在且 peeled SHA 一致，非零退出阻止 README 更新与公告。"
+  },
+  {
+   "id": "version-routing-docs",
+   "verdict": "pass",
+   "reason": "D1/D2 把兼容表变为按宿主线排序、每行带精确安装坐标的路由表（run dsh --version 取行），T7 维护分支与 alpha 通道纪律，rc.2→v0.9.3、alpha.1→v0.9.7，未测版本标'勿安装'。"
+  }
+ ],
+ "caps": []
+}

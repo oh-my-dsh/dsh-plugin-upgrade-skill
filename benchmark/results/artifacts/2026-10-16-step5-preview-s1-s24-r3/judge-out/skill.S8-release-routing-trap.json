@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Shows the mirror tag listing lacks v0.9.2–v0.9.6 including the README-pinned v0.9.5, roots it in the sync script pushing HEAD:main only, and gives a differential proof excluding network/typo."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Explains v0.9.7's alpha.1 client API (useConversation seat, views projection) against the frozen rc.2 runtime, the undefined-binding mechanism, why restart cannot help, and the plugin-newer-than-host direction."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Identifies v0.9.3 as the compat-table match (rc.1 verified, rc.2 additive), flags its absence from the mirror, defers the #v0.9.3 pin until the maintainer re-pushes, rejects SHA pinning honestly (no SHAs in the pack), and refuses host upgrade."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Adds an explicit per-mirror 'git push <remote> refs/tags/<tag>' to the sync loop plus a post-push ls-remote gate verifying presence and SHA equality, grounded in the branch-only script."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "Routes installs by dsh --version via a normative compat matrix (rc line → v0.9.x/v0.9.3, 0.1.2 line → v0.9.7), adds an engine-range manifest guard, and keeps the 0.1.1 line supported rather than generalizing to untested alphas."}
+  ],
+  "caps": []
+}

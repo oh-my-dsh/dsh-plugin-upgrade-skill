@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位旧导入并映射 A1-25,方向具体(从实际属主包导入 Context、补直接依赖、类型增强、诊断性 typecheck 暴露静默 any),类型擦除不豁免已覆盖。"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "对比 'pet-legacy-bundle' 与 dsh-pet-session-bench、映射 A1-26,要求 id 精确对齐,并以 --dump-config、window.__DSH_BOOT__.entries 与加载脚本检查验证 client 激活。"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes、映射 A1-27,给出 useChat + snapshot.order + nodes.get(id) 有序读取及 SessionBinding 持久窗口方向,保序要求明确,未声称旧平铺 API 仍受支持,Pet.tsx 判无破坏面。"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 agentPresets.list、映射 A1-30,要求移除已删 face 改走公共 remote/宿主路由并清理死 inject 项;具体后继名按闭卷不强制,方向属受支持的 remote/公共域 API。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未主张生命周期替换或 inject 移入 manifest;从 client.inject 清理已删包属正当清理且明示该 fixture 未声明该项。"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Records the package.json declaration and the brief-supplied registry facts (alpha.1 never published; alpha.2 and rc versions exist), with proposed npm view verification; no inference of packages from root package or dist-tags."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Correct caret+prerelease reasoning shows the range silently selects 0.1.2-alpha.2, names the drift-not-breakage hazard and alpha.1→alpha.2 type-surface drift uncertainty, and correctly notes future stable uptake."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path 1 targets published alpha.2 with tradeoff acknowledging the baseline is not alpha.1; Path 2 gives a complete build-from-verified-tag, pack, and explicit tarball-overrides plan with tradeoffs; Path 3 offers a verify-only alternative."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Frozen lockfile/absolute-path caveats, consistent manager per plan (pnpm or npm), tsc --noEmit typecheck against the alpha.1 source baseline, defined exit paths (e.g. remove overrides once published), and honest unconfirmed-items section."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "States alpha.1 can only be obtained by building from a Git tag with local tarballs, never prescribes installing alpha.1 from npm as if available."
+    }
+  ]
+}

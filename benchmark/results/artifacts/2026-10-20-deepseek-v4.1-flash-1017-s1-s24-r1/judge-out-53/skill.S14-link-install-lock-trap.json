@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "用 Junction/Target 与 cordis.patch.yml link 标记(含 R-09 link 安装轨迹)确立仓库即安装副本，无部署步骤，拷贝是类别错误，与 copied/registry 安装区分。"
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Lock A/B 区分宿主驻留模块与 EBUSY 句柄同属宿主 PID，关标签页两重理由无法释放；宿主半区启动时注册、浏览器缓存重放独立解释，须重启+硬刷新。"
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "解释改名经 junction 作用于唯一目录项，先枚举并停止全部宿主进程，再经仓库路径把 .old2 改回原名，node --check 校验后激活，仅改名不重建。"
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "顺序为保存→完全停止宿主→重启 dsh web→硬刷新(缓存旁路)→验证服务字节/新路由/行为，明确刷新或关标签页不算停止、语法检查不等于激活。"
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "先以 LinkType/Target、同文件证明(file id/哈希)、patch 标记与锁定进程枚举判定安装模式再定流程，并逐条解释通用拷贝建议的危害链。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "最终方案'永不拷贝'，恢复与回滚都只经仓库路径操作，.old2 改回原名而非删除。"
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "方案强制先完全停止再重启宿主，浏览器动作仅为宿主重启后的缓存旁路硬刷新。"
+    }
+  ]
+}

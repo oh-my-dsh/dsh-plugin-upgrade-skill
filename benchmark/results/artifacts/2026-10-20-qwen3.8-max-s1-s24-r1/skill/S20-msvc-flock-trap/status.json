@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S20-msvc-flock-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S20-msvc-flock-trap",
+    "status": "done",
+    "subagentId": "60c9e91d-9bea-4565-bb5b-3b2d989f9870",
+    "start": "2026-10-20T18:28:45+08:00",
+    "end": "2026-10-20T18:34:19+08:00",
+    "durationSec": 334,
+    "toolcalls": 26,
+    "tokensIn": 37091,
+    "tokensOut": 10743,
+    "tokensTotal": 258906,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S20-msvc-flock-trap\\agent-output\\S20-msvc-flock-trap\\report.md",
+    "fixtureFiles": 5,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; pnpm install fails in fs-ext@2.1.1 install script (node-gyp configure build), no MSVC/VS Build Tools on Win11; fs-ext exact-pinned dep of dsh-session-persistence-jsonl@0.1.3-alpha.1, statically imported (flock) at lease.ts module top -> --ignore-scripts moves failure to service boot; Windows runtime never calls flock: lock path = named kernel semaphore (CreateSemaphoreW via acquireLockHandleWin32 win32.ts) -> fs-ext dead code on Windows, pure-JS warn-once no-op fallback behaviorally lossless; fix = repo-local pnpm patch of fs-ext@2.1.1 (platform-guard install script to non-win32 + entry flock no-op fallback + patch-commit), registered in pnpm-workspace.yaml patchedDependencies + allowBuilds per patches/node-pty@* precedent; no VS, no upstream mod; verification per card (install exit 0, require loads, flock warns once, dsh web --no-open HTTP 200, POSIX untouched); rollback + follow-up (upstream drops fs-ext at 0.1.5-alpha.1, DSH-0.1.5-A1-13); corridor card DSH-0.1.3-A1-03; fixture 5/5 SHA identical; no deviations",
+    "startMs": 1792492125696,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\60c9e91d-9bea-4565-bb5b-3b2d989f9870",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S20-msvc-flock-trap\\agent-output\\S20-msvc-flock-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S20-msvc-flock-trap\\report.md",
+        "bytes": 11762
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 5
+    },
+    "metrics": {
+      "toolcalls": 26,
+      "requests": 7,
+      "tokensIn": 37091,
+      "tokensOut": 10743,
+      "tokensTotal": 258906,
+      "lastTime": 1792492459355
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\60c9e91d-9bea-4565-bb5b-3b2d989f9870",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\60c9e91d-9bea-4565-bb5b-3b2d989f9870\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

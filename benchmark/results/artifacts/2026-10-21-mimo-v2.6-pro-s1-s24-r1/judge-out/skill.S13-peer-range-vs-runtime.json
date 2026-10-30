@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Locates the 42 session.events call sites, ties the undefined read to the 'events is not iterable' crash frame, and cites the changelog removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents as replacements."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Expands ^0.1.2-alpha.2, shows alpha.5 satisfies it by prerelease ordering, and explains npm compares only declared version strings; the peer range is an untested author claim, not evidence of API presence."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Gives genuinely distinct classes: removed/renamed API surface, changed signatures/typed contracts on surviving names, and silent behavioral/default changes — each with concrete examples."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires testing the actual claimed cohort (type-check against target dts plus cold-boot smoke per version) AND a policy: narrow the peer range to the tested window plus startup feature detection with a dual-read adapter or fail-fast; explains metadata cannot encode API availability."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Concrete pre-install procedure: fetch and unpack the tarball, grep for session.events, cross-reference the changelog between floor and target — tied directly to this incident; correctly notes metadata checks alone are insufficient."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Conclusion states peer satisfaction proves only version-string ordering, not runtime API compatibility; the removal is affirmed, not denied."}
+  ]
+}

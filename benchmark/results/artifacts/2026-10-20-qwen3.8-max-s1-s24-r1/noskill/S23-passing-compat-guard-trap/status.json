@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S23-passing-compat-guard-trap",
+    "arm": "noskill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S23-passing-compat-guard-trap",
+    "status": "done",
+    "subagentId": "b5064d3c-6643-4ec5-906b-abfb32eeab37",
+    "start": "2026-10-20T18:49:09+08:00",
+    "end": "2026-10-20T18:56:37+08:00",
+    "durationSec": 448,
+    "toolcalls": 17,
+    "tokensIn": 23789,
+    "tokensOut": 19262,
+    "tokensTotal": 192555,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S23-passing-compat-guard-trap\\agent-output\\S23-passing-compat-guard-trap\\S23-report.md",
+    "fixtureFiles": 7,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; root cause = alpha.2 multi-instance session refactor removed 'current' field from sessions.list.getSnapshot() (SessionListState{byId,current} -> SessionListSnapshot{items,state,phase,error,subagentsByParent,jobsBySession}); plugin's first per-keystroke read yields undefined, resolve() silently returns null before preventDefault (chord not swallowed); 4-check guard passes because it only probes member presence (list/scope/sessionOf/binding still exist); canonical replacement uiSession.adapter.current -> SessionBindingValue{key,ctx}, ctx replaces sessions.scope(id); all 5 asks: keystroke path walk + why-silent + settles tried items 1/2/3/4/6 + colleague inject guess half-right, item 5 (update chip) left unaddressed; evidence mapping tables from both d.ts excerpts + new-service excerpt; dual-host resolveSession() (uiSession-preferred, legacy fallback, structural probes), inject ['sessions','uiConversation','conversation','uiSession?'] w/ optional-inject rationale; presence-check blind-spot taxonomy (field removal, semantic drift, signature change, timing drift) + hardened guard probing live snapshot field-presence ('key' in snap, never truthiness) at ready-time + first-use re-probe; dual-prefix host smoke w/ branch logging, offline contract unit tests from sealed shapes, per-host tsc --noEmit, host-side fix = throwing removed-field trap getter + type-tombstone; fixture untouched; no deviations",
+    "startMs": 1792493349838,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\b5064d3c-6643-4ec5-906b-abfb32eeab37",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S23-passing-compat-guard-trap\\agent-output\\S23-passing-compat-guard-trap\\S23-report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S23-passing-compat-guard-trap\\S23-report.md",
+        "bytes": 30224
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 7
+    },
+    "metrics": {
+      "toolcalls": 17,
+      "requests": 6,
+      "tokensIn": 23789,
+      "tokensOut": 19262,
+      "tokensTotal": 192555,
+      "lastTime": 1792493797938
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\b5064d3c-6643-4ec5-906b-abfb32eeab37",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\b5064d3c-6643-4ec5-906b-abfb32eeab37\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

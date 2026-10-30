@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates partial (B2), runningCalls (B3), turnEnds (B4) reads; explains ChatSnapshot.legacy projection for the first two and correctly switches turnEnds reason to the chat timeline turn/end payload, including views.chat access coordinates."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "B6 keeps useSession(s => s.running) on the SessionSnapshot lifecycle seat, explicitly unchanged, and never claims the call must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "partial",
+      "reason": "Repoints the ConversationSnapshot import to dsh-client-ui-conversation, but claims the package.json dsh-client-runtime inject entry 'stands' and only tentatively notes a later cordis re-export instead of removing the entry and repointing ClientContext to scoped cordis, contradicting the required migration."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "Mentions the scoped slots.register call, the inject service list, and the declare-module merge as unchanged, but does not explain slots.inject around registration, ui-renderer/client Context augmentation ownership, or slot lifetime."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties changes to fully described DSH-0.1.2-A1-03 (turn timeline) and clearly separates projection-first fields from immediate changes (B4, B1/B5/B7); each card ID carries substantive explanation, not a bare ID."
+    }
+  ],
+  "caps": []
+}

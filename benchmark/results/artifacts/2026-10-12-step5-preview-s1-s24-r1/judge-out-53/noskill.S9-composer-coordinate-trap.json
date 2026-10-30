@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"projection-contract","verdict":"pass","reason":"Clearly distinguishes clipboardText projection (draft/occurrence offsets, chip = full clipboardText) from detectText TokenSpan space (chip = one U+FFFC), citing both host files; separator space and ordinary text widths handled (29-27=2)."},
+{"id":"repeat-paste-failure","verdict":"pass","reason":"Locates snapshot.draft.length in add; empty composer coincidence then 29 vs detect length 2 out-of-range splice; insertReference false -> changed-composer toast; explicitly not a concurrent edit and no hardcoded-count dependence."},
+{"id":"removal-and-bookkeeping","verdict":"pass","reason":"Traces remove: unconverted offset/length span to consumeToken, false ignored, records.delete anyway; occurrence survives, record missing renders 'unavailable', chip stays — both tied to the same mismatch."},
+{"id":"conversion-and-success-gate","verdict":"pass","reason":"Derives detect(c) = c - sum(length-1) over preceding occurrences, applies at both call sites (insert at draft end, removal one-detect-char span), keeps rev CAS, gates record deletion on verb success with verified setDraft fallback."},
+{"id":"regression-sequences","verdict":"pass","reason":"Two successive pastes with both chips, removal with a preceding chip surviving, first/last and empty-again variants, declined-consumption bookkeeping, plus invariants; covers required assertions."}
+],"caps":[]}

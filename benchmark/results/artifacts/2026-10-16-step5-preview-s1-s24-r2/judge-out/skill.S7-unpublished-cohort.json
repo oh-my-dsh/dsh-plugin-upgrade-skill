@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "published-version-evidence", "verdict": "pass", "reason": "Uses the fixture declaration and the brief/README-supplied registry fact (corroborated by R-01) to distinguish the declaration from the published list; alpha.1 never published, alpha.2 published; proposes package-specific verification without requiring an online lookup."},
+    {"id": "caret-resolution", "verdict": "pass", "reason": "Explains ^0.1.2-alpha.1 admits the published 0.1.2-alpha.2 via the prerelease tuple gate, the missing lower bound does not block resolution, and identifies the silent type-baseline mismatch, drift surface, and prerelease uncertainty; no claim that all alphas are missing."},
+    {"id": "workable-baseline-plan", "verdict": "pass", "reason": "Multiple complete plans with tradeoffs: exact pin to published alpha.2 (acknowledging it does not validate alpha.1), verify-only source lane, and build-tag local tarball/link: cohort paths with exits."},
+    {"id": "reproducibility-and-exit", "verdict": "pass", "reason": "One consistent package manager, committed lockfile, official-registry install, a proposed skipLibCheck:false tsc --noEmit against the pinned target, explicit override-removal/restore exits, and honestly marked unverified source/runtime details."}
+  ],
+  "caps": [
+    {"id": "install-unpublished-registry-version", "triggered": false, "reason": "Path C uses local tarballs built from the alpha.1 tag, and forcing 0.1.2-alpha.1 via overrides is explicitly rejected as ETARGET; no prescription to install the unpublished version from npm."}
+  ]
+}

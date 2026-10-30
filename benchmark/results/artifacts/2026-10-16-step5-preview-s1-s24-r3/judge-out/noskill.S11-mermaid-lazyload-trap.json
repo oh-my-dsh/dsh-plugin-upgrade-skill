@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Explains relative sibling specifiers resolve against the fetched chunk URL, the siblings were never shipped (404s), and the rejection propagates to the outer import; fix is a single self-contained chunk with inlineDynamicImports/splitting disabled, mermaid bundled."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Pinpoints guard #2: uppercase-E LIB_DIR vs lowercase-e realpath compared with case-sensitive startsWith; explains Linux (single case, identical realpath) and control hosts passing, and explicitly avoids the forbidden 'Windows paths unreliable' claim."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "path.relative-based isInside rejecting '', '..', '..' + sep and absolute results, realpath check kept for symlink escapes, explicit rejection of lowercasing on case-sensitive systems, JS MIME type requirement preserved."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Explains both handlers act on the one Ctrl+wheel gesture (preventDefault vs stopPropagation vs stopImmediatePropagation, capture ordering); modal gets exclusive ownership via capture registration plus an ownership token that gates the pane handler even when the pane uses ancestor capture."},
+    {"id": "incident-regressions", "verdict": "pass", "reason": "Full matrix: emitted-asset closure and deployability checks with code-block fallback, case-differing Windows path serves 200 while traversal/sibling/symlink escapes stay 403, and modal Ctrl+wheel zooms only the diagram; presented as planned checks."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "Fix keeps both guards including realpath; explicitly refuses to remove the guard or lowercase arbitrary paths; escape cases remain rejected."}
+  ]
+}

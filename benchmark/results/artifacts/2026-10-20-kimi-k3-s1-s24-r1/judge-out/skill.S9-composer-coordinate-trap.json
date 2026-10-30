@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Explicitly distinguishes clipboard-text draft/Occurrence coordinates from detect-coordinate insertReference/consumeToken spans; chip = clipboardText vs one U+FFFC, with ordinary text/space contributing normal width in both."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Pinpoints snapshot.draft.length as the insert coordinate; explains first-paste success by empty-composer coincidence, second-paste failure by 29-in-2 detectText out-of-range splice returning false and triggering the toast, with the rev guard passing (no real concurrent edit)."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces remove passing raw clipboard [0,28) to consumeToken, ignoring its false result, and unconditionally records.delete-ing; occurrence/chip remain while the missing record renders 'unavailable', all tied to the one coordinate misread."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives the Σ(len−1) rule from the contract, applies it at insert (detect end over all preceding chips) and removal (map offset, one-detect-char span); keeps the draftRev guard and gates record deletion on a true return or the coordinate-consistent clipboard fallback."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "T1 covers two successive pastes with both chips present; T6/T7 remove the first/second chip asserting composer occurrence, dock chip and record vanish together while the other chip survives; T8 pins declined-consumption bookkeeping retention."}
+  ],
+  "caps": []
+}

@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "half-cell-background", "verdict": "pass", "reason": "Locates upper-only/lower-only branches, explains inherited SGR background painting the transparent half, proposes ESC[49m per half-cell, notes row-end reset is too late, and ties mechanism to right-edge symptoms without blaming emulator."},
+    {"id": "frame-clearing", "verdict": "pass", "reason": "Explains trailing-trim plus downstream whitespace trimming means surplus columns are never written; proposes fixed canvas width plus ESC[K which survives trimming, with SGR state controlled and why spaces alone fail."},
+    {"id": "frame-data-integrity", "verdict": "pass", "reason": "Uses digest report to identify hand-ported tail2 with 23 changed cells, distinguishes data drift from renderer artifacts, explains the different-frame excerpt test missed it, and proposes source-art-generated sha256 manifest checked exhaustively for every frame."},
+    {"id": "timer-liveness", "verdict": "pass", "reason": "Uses CI evidence: hosts never unmount, self-rearming ref'd setTimeout chain pins the loop; unref each scheduled timeout so animation continues while process can exit; TTY already keeps product alive; rejects timeout extension / global animation stop."},
+    {"id": "renderer-and-rollout-prevention", "verdict": "pass", "reason": "Consolidates a renderer checklist covering background pinning, fixed-width/erase, SGR completeness, and all-frame digest integrity; pre-rollout audit inventories mount sites, proves liveness per host, and proposes open-handle/watchdog exit regression."}
+  ],
+  "caps": [
+    {"id": "contradictory-render-advice", "triggered": false, "reason": "Final advice affirms background reset, clearing, source-backed frame checks, and unref; no denial of any fix and no emulator blame."}
+  ]
+}

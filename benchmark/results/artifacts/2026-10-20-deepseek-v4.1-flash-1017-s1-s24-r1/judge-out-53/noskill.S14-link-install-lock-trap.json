@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "用 LinkType=Junction/Target 与 cordis.patch.yml link 标记确立档案条目即解析到仓库工作树，编辑即时生效、拷贝是自拷贝，并与 copied 安装区分处置。"
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "两把锁(驻留模块与句柄)都归于运行中的宿主进程，关标签页不释放；独立解释宿主旧模块状态与浏览器 HTTP/ESM 缓存两层过期，需宿主重启加缓存旁路刷新。"
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "解释经 junction 改名唯一源文件使后续拷贝报'源不存在'；先停宿主，将两个 .old2 改回原名、node --check 校验后激活，纯改名不重建不删除。"
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "给出 停宿主→验字节→重启 dsh web→验证服务字节→硬刷新→验证新特性且无加载错误 的正确依赖顺序，node --check 仅作验证而非激活。"
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "三类只读信号(重解析点/cordis.patch.yml link 标记/同文件哈希)先判定 link vs copied 再选流程，并逐条剖析通用拷贝建议为何引发本次事故。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "最终方案明确'永不拷贝'，恢复是纯改名且把 .old2 备份到 junction 外的真实目录，未把两条路径当独立副本。"
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "方案要求完全停止并重启宿主，明确浏览器刷新/关标签页不是宿主停止、不释放锁。"
+    }
+  ]
+}

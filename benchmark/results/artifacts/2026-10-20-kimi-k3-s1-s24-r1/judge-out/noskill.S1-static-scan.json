@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "partial", "reason": "Locates patch.yml target, apply-patch.mjs and the session-view coupling, but never distinguishes source patching from ordinary composition (treats cordis.patch.yml as part of the hit)."},
+    {"id": "events", "verdict": "pass", "reason": "Finds producer, consumer and ignorable:true, correctly folds the alpha.1 removal into the alpha.2 restoration as net non-breaking; no false Session.append claim."},
+    {"id": "host-services", "verdict": "partial", "reason": "Locates apiProxy and invoke calls, but no removal explanation, no Host domain-service vs Web Client Remote distinction, no llm/listProviders mapping."},
+    {"id": "host-path", "verdict": "partial", "reason": "Locates the hard-coded homedir/.dsh/profiles/default path correctly, but the remediation is vague (no DSH_HOME/profile-source-of-truth); no false --profile claim."},
+    {"id": "ui", "verdict": "partial", "reason": "Finds both the /internal import and the command registration plus the patch cross-coupling, but only says targets 'must be re-validated' without public owner/seam verification after the split."},
+    {"id": "channel", "verdict": "partial", "reason": "Locates the loopback server, but asserts it 'bypasses the Host Gateway authentication model' — the opposite of the required point that loopback does not exempt auth; host-managed vs raw route distinction absent."},
+    {"id": "subprocess", "verdict": "pass", "reason": "Both dsh subprocess sites and the JSON.parse-on-stdout assumption found; correctly states stdout is final text and the JSONL assumption was already wrong, inventing no alpha.2 stdout change."},
+    {"id": "mapping", "verdict": "partial", "reason": "Touchpoint-to-category reasoning is substantively right but no card IDs (A1-01, A1-02+A2-01, A1-03, A1-04, A1-08) are ever named, only generic 'A1 series' labels."},
+    {"id": "limits", "verdict": "partial", "reason": "Accounts for all seven hit categories and states scan limits well, but proposes no target-version build/typecheck, isolated boot, or functional-path verification."}
+  ],
+  "caps": []
+}

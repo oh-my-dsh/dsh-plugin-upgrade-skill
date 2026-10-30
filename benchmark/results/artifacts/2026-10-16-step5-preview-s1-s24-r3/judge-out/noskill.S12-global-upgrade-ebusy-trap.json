@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "native-module-owner", "verdict": "pass", "reason": "Identifies the dsh web host node.exe PID 42432 as the process that loaded koffi.node and explains the image stays mapped (file locked) until that process exits, so npm's copyfile fails with EBUSY."},
+    {"id": "browser-versus-host-sequence", "verdict": "pass", "reason": "Refresh only re-fetches the SPA from the still-running host; ordered procedure given: fully stop dsh host and session workers, verify via tasklist, install, verify version, restart; no indiscriminate killing of unrelated processes."},
+    {"id": "unpinned-dist-tag-resolution", "verdict": "pass", "reason": "Bare name follows latest = 0.1.1-rc.2 while alpha = 0.1.2-alpha.5, silently replacing the installed 0.1.2-alpha.4 with the older rc.2; correctly explains npm does not preserve the installed version."},
+    {"id": "safe-exact-commands", "verdict": "pass", "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus @deepseek-harness-tui/dsh-tui after stopping the host, verifies dsh --version prints alpha.5 and restarts; @alpha only mentioned as a mutable alternative."},
+    {"id": "readme-prevention", "verdict": "pass", "reason": "Tells authors to pin the exact core version (or split core/plugin commands) whenever an install command touches dsh, and not to let unpinned installs silently follow latest over a prerelease."}
+  ],
+  "caps": []
+}

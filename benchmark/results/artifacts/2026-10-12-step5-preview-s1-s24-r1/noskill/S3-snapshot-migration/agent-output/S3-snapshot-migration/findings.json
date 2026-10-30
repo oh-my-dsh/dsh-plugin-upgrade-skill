@@ -1,0 +1,191 @@
+{
+  "$schema_note": "S3 snapshot read-surface migration assessment - machine-readable companion to S3-snapshot-migration-assessment.md",
+  "task": "S3-snapshot-migration",
+  "plugin": "@demo/dsh-bench-pet",
+  "migration": {
+    "from": "0.1.1-rc.1",
+    "to": "0.1.2-alpha.2"
+  },
+  "mode": "read-only assessment",
+  "executed": false,
+  "fixture_modified": false,
+  "disclosure": {
+    "card_numbers_cited": false,
+    "reason": "The upgrade-card catalog is absent from the permitted scope (fixture enumerated exhaustively, including hidden files: 6 files, 2 dirs). The workspace boundary confines reads to the fixture and agent-output directories, and the task instructions forbid reading or citing the repository's skills/ tree where card identifiers live. No DSH-0.1.2-A1-xx identifier was fabricated.",
+    "new_api_spellings": "All new-form spellings are marked inferred and must be confirmed against the 0.1.2-alpha.2 types. Structural break determinations are derived from the fixture itself."
+  },
+  "read_sites": [
+    { "id": "R1", "location": "src/client/Pet.tsx:19", "old": "useSession(s => s.running)", "live": false, "dead_consumer": "void running (Pet.tsx:26)" },
+    { "id": "R2", "location": "src/client/Pet.tsx:20", "old": "useSession(isThinking)  // whole-snapshot selector, def at Pet.tsx:13-15", "live": true },
+    { "id": "R3", "location": "src/client/Pet.tsx:14", "old": "snapshot.partial?.blocks.some(b => b.kind === 'reasoning') ?? false", "live": true, "note": "asymmetric optional chaining: guards partial, not blocks" },
+    { "id": "R4", "location": "src/client/Pet.tsx:21", "old": "useSession(s => s.runningCalls.length > 0)", "live": true },
+    { "id": "R5", "location": "src/client/Pet.tsx:23", "old": "useSession(s => s.turnEnds[s.turnEnds.length - 1]?.reason)", "live": false, "dead_consumer": "void lastTurnEnd as CSSProperties (Pet.tsx:27)" }
+  ],
+  "findings": [
+    {
+      "id": "S1",
+      "file": "src/client/Pet.tsx",
+      "line": 19,
+      "old": "useSession(s => s.running)",
+      "surface": "snapshot read",
+      "break": "flat top-level `running` boolean re-nested or converted to a derived status",
+      "severity": "TYPE (dead in fixture) / SILENT if re-enabled",
+      "strategy": "projection-ok"
+    },
+    {
+      "id": "S2",
+      "file": "src/client/Pet.tsx",
+      "line": 20,
+      "old": "useSession(isThinking)",
+      "surface": "snapshot read primitive signature",
+      "break": "whole-snapshot function selector passed to useSession; no projection can bridge a signature change",
+      "severity": "BLOCKER",
+      "strategy": "immediate"
+    },
+    {
+      "id": "S3",
+      "file": "src/client/Pet.tsx",
+      "line": 14,
+      "old": "snapshot.partial?.blocks.some(block => block.kind === 'reasoning') ?? false",
+      "surface": "snapshot read",
+      "break": "partial re-nested onto active turn; blocks renamed; kind discriminant 'reasoning' renamed",
+      "severity": "SILENT (BLOCKER if blocks becomes undefined - unguarded .some)",
+      "strategy": "immediate unless discriminant literal is verified unchanged"
+    },
+    {
+      "id": "S4",
+      "file": "src/client/Pet.tsx",
+      "line": 21,
+      "old": "useSession(s => s.runningCalls.length > 0)",
+      "surface": "snapshot read",
+      "break": "runningCalls array replaced by derived/keyed in-flight tool state; .length -> undefined; undefined > 0 === false",
+      "severity": "SILENT - highest risk, pet frozen on 'idle' during live tool calls",
+      "strategy": "immediate"
+    },
+    {
+      "id": "S5",
+      "file": "src/client/Pet.tsx",
+      "line": 23,
+      "old": "useSession(s => s.turnEnds[s.turnEnds.length - 1]?.reason)",
+      "surface": "snapshot read",
+      "break": "turnEnds denormalized array folded onto turn node (endReason)",
+      "severity": "TYPE (dead in fixture) / SILENT if re-enabled",
+      "strategy": "projection-ok, but must be re-pointed before projection removal"
+    },
+    {
+      "id": "S6",
+      "file": "src/client/Pet.tsx",
+      "line": 8,
+      "old": "import type { ConversationSnapshot } from '@deepseek-ai/dsh-client-runtime/client'",
+      "surface": "snapshot type import",
+      "break": "type renamed or moved",
+      "severity": "BLOCKER - compile gate for the whole read surface",
+      "strategy": "immediate"
+    },
+    {
+      "id": "S7",
+      "file": "src/client/Pet.tsx",
+      "line": 10,
+      "old": "PetProps = PropsRuntime<'conversation.session.header.actions'> & PropsLocale<'pet'>  (imports at line 7)",
+      "surface": "slot prop types",
+      "break": "PropsRuntime/PropsLocale shape change; useSession and t are injected through these types",
+      "severity": "BLOCKER",
+      "strategy": "immediate (in lockstep with S8)"
+    },
+    {
+      "id": "S8",
+      "file": "src/client/index.ts",
+      "line": 40,
+      "old": "{ name: 'conversation.session.header.actions', id: 'pet', order: 10 }",
+      "surface": "slot registration",
+      "break": "slot id renamed; registering into an undeclared slot throws (per own comment at index.ts:26-27)",
+      "severity": "BLOCKER - fail-fast, not projectable",
+      "strategy": "immediate"
+    },
+    {
+      "id": "S9",
+      "file": "src/client/index.ts",
+      "line": 29,
+      "old": "export const inject = ['slots', 'conversation', 'locale']  (also line 38)",
+      "surface": "service inject list",
+      "break": "service name `conversation` renamed or absorbed; ctx.inject throws",
+      "severity": "BLOCKER - fail-fast, not projectable",
+      "strategy": "immediate"
+    },
+    {
+      "id": "S10",
+      "file": "src/client/index.ts",
+      "line": 36,
+      "old": "ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'pet: dictionaries')",
+      "surface": "locale registration",
+      "break": "register signature / namespace contract change",
+      "severity": "BLOCKER or SILENT (dictionaries fail to attach)",
+      "strategy": "packaging surface"
+    },
+    {
+      "id": "S11",
+      "file": "src/client/index.ts",
+      "line": 14,
+      "old": "declare module '@deepseek-ai/dsh-client-ui-slots' { interface LocaleNamespaceMap { pet: PetKey } }",
+      "surface": "module augmentation target",
+      "break": "LocaleNamespaceMap moved or renamed; augmentation silently stops applying",
+      "severity": "SILENT (type safety loss)",
+      "strategy": "packaging surface"
+    },
+    {
+      "id": "S12",
+      "file": "src/client/index.ts",
+      "line": 8,
+      "old": "import type {} from '@deepseek-ai/dsh-client-locale/client'  (and line 10, dsh-client-ui-conversation/client)",
+      "surface": "type-only side-effect imports",
+      "break": "exist only to load declare-module merges; /client subpath rename silently removes the augmentation",
+      "severity": "SILENT (BLOCKER if subpath removed)",
+      "strategy": "packaging surface"
+    },
+    {
+      "id": "S13",
+      "file": "src/client/index.ts",
+      "line": 6,
+      "old": "import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'",
+      "surface": "context type import",
+      "break": "ClientContext type change; tied to S12 subpath risk",
+      "severity": "BLOCKER",
+      "strategy": "packaging surface"
+    },
+    {
+      "id": "S14",
+      "file": "package.json",
+      "line": 8,
+      "old": "\"inject\": [\"dsh-client-runtime\", \"dsh-client-ui-conversation\", \"dsh-client-locale\"]",
+      "surface": "runtime dependency list",
+      "break": "package names / version ranges must be bumped to the 0.1.2-alpha.2 host line",
+      "severity": "BLOCKER (resolution failure)",
+      "strategy": "packaging surface"
+    },
+    {
+      "id": "S15",
+      "file": "cordis.patch.yml",
+      "line": 1,
+      "old": "- insert: [{ id: 'bench-pet', name: '@demo/dsh-bench-pet' }]",
+      "surface": "plugin registration patch",
+      "break": "patch schema must be verified against 0.1.2-alpha.2",
+      "severity": "BLOCKER if schema changed, otherwise clean",
+      "strategy": "packaging surface"
+    }
+  ],
+  "not_breaking": [
+    "src/client/locales.ts - pure data + local type alias, no dsh API surface",
+    "src/client/Pet.tsx:28-31 - useEffect/useRef frame logic and data-frame render are React-only"
+  ],
+  "projection_vs_immediate": {
+    "may_use_compatibility_projection": ["S1", "S5", "S3 (only if the 'reasoning' discriminant literal is verified unchanged)", "S7", "S10", "S11", "S12", "S13", "S14", "S15"],
+    "must_switch_to_new_read_path_immediately": ["S4", "S3 (discriminant literal)", "S2", "S8", "S9", "S6"],
+    "rationale": "The split is driven by whether a read can be wrong without raising an error. S4 (.length on non-array -> undefined > 0 === false) and the S3 discriminant literal (inequality) are silent-wrong-behavior reads, so a projection carries a wrong answer forward faithfully. S2 is a signature change with no shim. S8 and S9 throw at plugin load, so a projection cannot suppress them."
+  },
+  "read_only_discipline": {
+    "fixture_writes": 0,
+    "paths_read_outside_allowed_scope": 0,
+    "fixture_mtimes_unchanged": true,
+    "output_path": "agent-output/S3-snapshot-migration/S3-snapshot-migration-assessment.md (+ this index)"
+  }
+}

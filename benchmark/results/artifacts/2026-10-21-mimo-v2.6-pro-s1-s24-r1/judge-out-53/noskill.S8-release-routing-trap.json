@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"missing-mirror-tag","verdict":"pass","reason":"Uses ls-remote-tags.txt and sync-script.sh to show v0.9.5 absent because only HEAD:main is pushed; ties to attempt-1 resolution failure; explicitly rules out network/typo causes."},
+{"id":"runtime-compatibility-direction","verdict":"pass","reason":"Explains v0.9.7 targets 0.1.2-alpha.1 while runtime is 0.1.1-rc.2, so the newer-API artifact lacks useConversation on the older host; install success and restarts prove nothing."},
+{"id":"frozen-runtime-remedy","verdict":"pass","reason":"Selects v0.9.3 via rc.1 verification + additive rc.2 note, notes v0.9.3 also missing from mirror, gives consumer command after maintainer tag push plus conditional verified-SHA path with reachability pre-check; no invented SHA, no DSH upgrade."},
+{"id":"tag-distribution-repair","verdict":"pass","reason":"Explicit per-remote tag refspec push plus ls-remote verification gate and README pin resolution checks, grounded in the branch-only script."},
+{"id":"version-routing-docs","verdict":"pass","reason":"Routes install commands per DSH version (rc.x→v0.9.3, alpha.1→v0.9.7) with compatibility matrix and runtime guard; rejects newest-tag default; no generalization to untested alphas."}
+],"caps":[]}

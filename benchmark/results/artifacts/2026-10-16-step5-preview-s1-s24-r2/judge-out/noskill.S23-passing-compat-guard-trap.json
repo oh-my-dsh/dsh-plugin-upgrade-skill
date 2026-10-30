@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Full resolve() walk: getSnapshot succeeds, current gone, id undefined, null every keystroke, bail before preventDefault; explains guard passes (four members survive, only field gone) and undefined-as-legitimate-no-session silence; never claims service/guard removed or throwing."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Type-walks both SessionListState/SessionListSnapshot, cites navigation-moves-to-view-owners doc, maps uiSession.adapter.current ObservableSnapshot<SessionBindingValue> with key replacing current and ctx replacing sessions.scope(id); card not needed."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "One-build resolver feature-detects uiSession, falls back to legacy current + scope(id); inject discussion with dual-host rationale; conversation resolved via binding ctx and input.for receives that scope. Explicitly notes inject alone fixes nothing."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names field-level removal behind service-level stability, activation-once vs per-use recurrence; hardened guard probes actual snapshot fields (key/ctx on alpha.2, current on alpha.1) and re-probes on emissions/first use, distinguishing no-session from broken."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "pass",
+      "reason": "Verification without migration: unit fakes, smoke on both hosts including adapter.current key probe, negative control; prevention proposes deprecated warning accessor and versioned snapshot contract; notes typecheck against alpha.2 types catches the read at compile time."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Report explicitly rejects the inject-only colleague suggestion as insufficient; final remedy is the code change to resolve()."
+    }
+  ]
+}

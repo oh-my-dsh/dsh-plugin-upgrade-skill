@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Explains relative sibling specifiers resolve against the entry chunk URL, only the entry was shipped so each sibling 404s while the entry returns 200, and proposes a self-contained single-chunk build with inlineDynamicImports accounting for the full mermaid subgraph."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Pinpoints the second guard comparing original-case LIB_DIR (uppercase E:) against realpath-canonicalized lowercase e: with a case-sensitive startsWith; reconciles Linux (byte-identical), laptop (coincidental case agreement) and production; explicitly rejects 'Windows paths are unreliable' and avoids claiming realpath always lowercases."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Canonicalizes root and candidate via realpathSync, replaces prefix test with path.relative containment rejecting empty, '..', '..'-prefixed and absolute results, symlink escapes resolved before the test, and preserves the JavaScript MIME type."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains the same bubbling Ctrl+wheel event reaching both handlers; modal gets exclusive ownership via capture-phase non-passive listener with preventDefault and stopPropagation, which also handles an ancestor capture-phase pane listener; pane additionally ignores events originating inside the overlay."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "Planned checks with expected outcomes covering all three incidents: pack-completeness, single-chunk shape and zero-404 import success; mocked case-differing Windows path expects 200 while traversal, absolute and symlink escapes expect 403 plus MIME header assertion; modal Ctrl+wheel zooms with pane font-size unchanged and an outside-the-modal control test."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "The fix strengthens containment (canonical containment test keeping symlink checks); no affirmative advice serves outside the resource root."
+    }
+  ]
+}

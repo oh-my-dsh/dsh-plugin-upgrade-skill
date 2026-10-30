@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Distinguishes the clipboard projection (draft/occurrences, chip = full clipboardText) from the detect-coordinate TokenSpan space (chip = one U+FFFC) via contract and facade citations; normal text and separator spaces keep normal width."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Locates snapshot.draft.length in add, walks the capture (first span {0,0} valid in both spaces, second 29 vs 2-char detect text), ties insertReference false to the failed detect splice and the generic changed-composer toast; rules out the rev CAS and real concurrency."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces remove passing clipboard-space [0,28) to consumeToken, the ignored false, unconditional records.delete, surviving occurrence and record-miss rendering as unavailable; both symptoms tied to the same mismatch."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives detect(c) = c − Σ(length−1) over preceding chips, applies it at insert (all preceding occurrences) and removal (mapped offset + one-char span), keeps the rev guard, and gates record deletion on verb success or a verified snapshot-based fallback; invariant sanity-checked."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "Two-successive-paste test with both chips present, removal of a chip with another preceding chip asserting composer/dock/record removed together while the other chip survives; adds declined-consumption, ordering, and empty-again variants; section 5 kept as unscored guidance."}
+  ],
+  "caps": []
+}

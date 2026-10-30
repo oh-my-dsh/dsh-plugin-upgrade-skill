@@ -1,0 +1,75 @@
+=== TASK SEGMENT (task brief) ===
+
+The task brief below is your assignment. It is reproduced verbatim from the sealed task material.
+
+# S1 · Static Touchpoint Scan (Read-Only)
+
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
+
+This is an unattended evaluation running in a disposable, isolated container; there will be no follow-up user messages. This task brief is itself the user's explicit authorization and confirmation for the approach and execution needed to complete the task: complete the necessary analysis and planning on your own, and keep executing as soon as the plan is formed — do not pause to wait for "confirmation", and do not ask the user follow-up questions. That confirmation continues to apply to the concrete plans you produce under the applicable skill, but only within the following scope:
+
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
+
+I am a DSH plugin maintainer. `/app/fixture/` in the container holds the source of a legacy plugin written in the dsh 0.1.1 era. I plan to migrate it to dsh 0.1.2-alpha.2, but before touching anything I want to know which known changes it will collide with (static copy, not executable).
+
+Please **scan this source read-only** (do not modify any file under `/app/fixture/`) and produce a touchpoint inspection report, written under `/app/agent-output/S1-static-scan/` (any filename; .md/.txt both fine). Requirements:
+
+1. For each of the seven touchpoint categories (#1 source patch, #2 events, #3 service/Remote, #4 host directory, #5 UI/commands/tools, #6 custom channel, #7 subprocess/output parsing), report: whether it hits, the hit files/lines, and the concrete coupling points hit;
+2. Map every hit to the specific change card in the 0.1.1-rc.2 → 0.1.2-alpha.2 corridor (card IDs may be written as `A1-01` or as the full ID). Note the corridor folding: when a field is removed in an intermediate corridor version and restored in the target version, treat it by the final net state — think through how that should be mapped;
+3. For the touchpoint categories with no hits, state clearly which files you scanned, what you ruled out, and why you cannot directly conclude "no hit = no problem".
+
+There are no traps in this brief; what is tested is whether the scan is complete, the card mapping is accurate, and read-only discipline is respected.
+
+=== END TASK SEGMENT ===
+
+The brief above is written for a container where /app/fixture is the sealed fixture and
+/app/agent-output is the report directory. In THIS environment those paths are mapped to your cell
+directory:
+
+  /app/fixture        ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/fixture
+  /app/agent-output   ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/agent-output
+
+Your report must be written under:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/agent-output/S1-static-scan/
+
+(Any filename ending in .md or .txt is acceptable, as the brief states.)
+
+=== BOUNDARY SEGMENT (read whitelist / write scope) ===
+
+Your READ whitelist is exactly:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/
+
+Within that whitelist there is no skills/ directory, and none may be consulted.
+
+HARD RULES:
+
+- You MUST NOT read, list, search, or open anything outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/.
+- You MUST NOT read tests/, solution/, benchmark/results/, or any other directory of this repository.
+- You MUST NOT write to ANY path outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/ - including system TEMP, /tmp, the user home,
+  the repository, or the fixture source tree. Any temporary file you need must be written under
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/agent-output/ (a scratch subdirectory there is fine).
+- Do not modify, move, or delete anything under E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\noskill\S1-static-scan/fixture/ unless the brief explicitly authorizes it.
+- Do not modify the skill, any evaluator, or any reference answer.
+- Do not publish, push, or contact external services.
+- When your report cites a card or a reference document, write ONLY the key points and the card ID.
+  Do NOT paste the full text of a card or reference into your report or into your reply.
+  (Context budget is 256k; full-text pasting is a protocol violation.)
+
+=== END BOUNDARY SEGMENT ===
+
+=== ARM CLAUSE (no skill) ===
+
+There is no skills/ directory for you. You MUST NOT read, open, or consult any file under a
+skills/ path anywhere on this machine. Work from the task brief and the fixture alone.
+
+=== END ARM CLAUSE ===
+
+=== DELIVERY ===
+
+This is an unattended run. Do not ask questions; do not wait for confirmation.
+When the report file is written, finish with exactly: DONE

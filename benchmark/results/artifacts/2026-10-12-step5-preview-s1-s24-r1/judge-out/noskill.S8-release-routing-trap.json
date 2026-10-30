@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Uses ls-remote listing (v0.9.5 absent) and sync-script's HEAD:main-only push to explain the attempt-1 ref-resolution failure; explicitly rules out network, typo, outage."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Explains v0.9.7 targets the newer 0.1.2-alpha.1 API whose useConversation seat is absent on the frozen 0.1.1-rc.2 host, so install success and restarts prove nothing."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Picks v0.9.3 via rc.1 verification plus additive rc.2 note, notes it is also missing from the mirror, gates install on maintainer tag publication and verification; fallback via origin is conditional with no invented SHA, and upgrade is explicitly refused."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Non-forced per-mirror refs/tags pushes inside the existing sync loop plus ls-remote verification per mirror; branch-only sync identified as insufficient."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "README routes by runtime via an explicit matrix (rc line to v0.9.3, alpha.1 to v0.9.7) with version check, matrix-as-release-gate, and install-time runtime declaration; no blanket newest-tag default or open-ended alpha support."}
+  ],
+  "caps": []
+}

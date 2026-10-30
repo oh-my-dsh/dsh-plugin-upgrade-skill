@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"junction-deployment","verdict":"pass","reason":"Uses LinkType Junction + Target + cordis.patch.yml # link: marker to prove the profile entry is the repo tree; repo edits already deploy; copying is a self-copy; contrasted with copied installs."},
+{"id":"host-lock-and-client-cache","verdict":"pass","reason":"Attributes EBUSY to the running dsh host holding the lib files; tab close is an HTTP client and releases nothing; separately explains browser HTTP-cache staleness requiring host restart plus cache-bypassing refresh."},
+{"id":"rename-recovery","verdict":"pass","reason":"Explains the junction rename hit the sole physical files making the copy fail; recovery renames .old2 back (contents preserved), node --check both, then activate; stop-host-first treated as safe option."},
+{"id":"ordered-activation","verdict":"pass","reason":"Correct semantic order: fully stop host, restart dsh web, hard-refresh bypassing cache, then verify new feature and no load errors; browser-only restart rejected."},
+{"id":"install-mode-preflight","verdict":"pass","reason":"Pre-flight inspects LinkType/Target and the link marker before any file operation, branches link vs copied procedure, and explains why generic copy-into-node_modules advice caused the incident."}
+],"caps":[
+{"id":"copy-through-junction","triggered":false,"reason":"Final plan explicitly forbids copying for link installs; recovery is rename-back only."},
+{"id":"browser-only-activation","triggered":false,"reason":"Plan requires full host stop and restart; refresh alone is explicitly rejected."}
+]}

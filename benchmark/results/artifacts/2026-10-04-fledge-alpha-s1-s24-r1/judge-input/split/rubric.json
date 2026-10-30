@@ -1,0 +1,37 @@
+﻿{
+    "criteria":  [
+                     {
+                         "id":  "paste-names-and-scope",
+                         "points":  20,
+                         "requirement":  "Design paste_image and paste_file names, adding (2), (3), etc. before the extension until an unused name is found. Reserve names within the batch as well as across live attachments. Scope renaming to clipboard acquisition before duplicate validation/record creation; drop and picker keep their real names. An explicit paste-only option in a shared function is equivalent if other sources remain unchanged. Do not require the words increment or collision. The prompt explicitly makes item 2 (original extension/MIME fallback and chip/upload display details) unscored: do not require or deduct for those details.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "live-conflict-state",
+                         "points":  20,
+                         "requirement":  "Identify the live composer snapshot occurrences as the authoritative occupied-name source and explain why the records subscription can delete cache entries on a transient empty snapshot while an attachment remains live. Account for the current paste batch/in-flight reservations; records may supplement but cannot replace live state. Do not demand a particular variable name or literal source-of-truth phrase.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "stale-tag-display",
+                         "points":  20,
+                         "requirement":  "Use the captured cached tags response (x-cache HIT, age, older 0.2.9) and renderCurrentChip(tag) to explain the stale latest label. Compare fetched and running PLUGIN_VERSION semantically: show an update only when remote is newer, otherwise show the running version, never an older fetched tag. Equivalent pseudocode such as remote \u003e local and remote \u003c= local is sufficient.",
+                         "sourceRequired":  true
+                     },
+                     {
+                         "id":  "regressions",
+                         "points":  20,
+                         "requirement":  "Propose tests showing repeated/same-batch image pastes retain distinct live attachments, a live occurrence still blocks a name with an empty records cache, and drop/picker names stay unchanged. Test an older/equal remote tag against the running build and a genuinely newer remote tag. Concrete expected names or assertions in code suffice; no mandatory coexist/assert wording. Do not grade the unscored extension/display guidance.",
+                         "sourceRequired":  false
+                     },
+                     {
+                         "id":  "release-hygiene",
+                         "points":  20,
+                         "requirement":  "Synchronize the package version and hand-inlined PLUGIN_VERSION in the distributed lib artifact, run its syntax check (node --check or equivalent) plus behavioral regressions, and explain deployment/update of the served plugin artifact followed by browser reload/hard refresh. A Git tag or update chip alone does not install the artifact; there is no host-side update endpoint. Package metadata wording is equivalent to package.json. Do not require executing or publishing this static fixture.",
+                         "sourceRequired":  true
+                     }
+                 ],
+    "caps":  [
+
+             ]
+}

@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "用 contract/facade 准确区分 clipboard 投影（chip 展开为整个 clipboardText，供 draft/occurrence 偏移）与 detect 投影（chip 为一个 U+FFFC，TokenSpan/两动词与 $replace 拼接索引之），公式表明普通文本与分隔空格照常计宽。"
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "定位 add 中 start/end=snapshot.draft.length，解释空 composer 两坐标重合首贴偶然成功、有 chip 后 29 超出 2 长度 detect 文档致 splice 失败返回 false 变'composer changed' toast，并明确否定并发编辑/rev 竞争解释，计数推导自洽。"
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "完整追踪 remove：offset/length 未换算直接传 consumeToken、返回 false 被丢弃、records.delete 照跑；live occurrence 留存致 dock 元数据 'unavailable' 且 composer chip 不消失，两症状归同一坐标错位而非独立上传故障。"
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "两处调用点均给出换算实现（对前序 chip 累减 length-1；插入取 detect 端点，删除映射 offset 后用 1 字符 span），保留 draftRev 守卫并明言勿 bump，仅在 consumeToken 成功或剪贴板回退成功后才清理 records。"
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "partial",
+   "reason": "覆盖两次粘贴双 chip（B2）、双 chip 删除后幸存者与重排断言（C4）、拒收记账（C3）与清空（C4/C8），但删除目标始终是无前置 chip 的 chip（C4 先删第一个、再删已归零的第二个），未覆盖'删除带前置 chip（offset≠0）'的指定序列。"
+  }
+ ],
+ "caps": []
+}

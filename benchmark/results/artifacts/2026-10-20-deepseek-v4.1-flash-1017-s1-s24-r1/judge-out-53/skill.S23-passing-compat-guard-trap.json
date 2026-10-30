@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "逐步走查 :34 读 current 得 undefined、:35 每次按键提前返回且先于 preventDefault；双沉默均解释（四项 presence 探测全存活、undefined 是合法无会话哨兵被既有分支静默处理），并明确 sessions.scope 仍在、无服务/guard 被删或抛错"
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "alpha1/alpha2 d.ts 对比齐全（current 指针消失、身份移至 binding/uiSession.adapter.current），uiSession 类型走读给出 adapter.current→{key,ctx,hooks,keyedHooks,props}，key 替代 current、ctx 替代 scope(id)，并映射卡片 DSH-0.1.6-A2-01"
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "单构建阶梯：优先读 uiSession.adapter.current 的 key/ctx、回退 legacy current+sessions.scope；inject 增 uiSession；conversation 经绑定值 ctx 的 get('conversation') 解析、input.for 收该 session scope"
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "命名'服务级稳定背后的字段级删除/哨兵碰撞'并点明 activation 单点采样看不到逐次复发的破坏；guard 改为探测值形状（'current' in、'key'/'ctx' in）与终端能力，且明确须在 activation+首次事件时解析（逐会话切换复检）运行、不能只在 activation"
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "pass",
+      "reason": "双 cohort typecheck 作为最强发布前闸门、同一工件双宿主和弦冒烟（单会话开）与纯逻辑测试齐备；预防给出 required 运行时 shape 契约 + throwing tombstone getter 双方案，且明确不要求实际执行本静态 fixture"
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "最终修复是完整的 currentMainBinding 双宿主读取代码改动；同事的 re-register slot/re-declare inject 红鲱鱼被明确否定（'injecting it alone changes nothing'）"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "split-chunk-attribution", "verdict": "pass", "reason": "Reads the 200 entry plus sibling 404s from console-split-chunks.txt: emitted relative specifiers resolve against the fetched chunk URL but the sibling files were never shipped, so the dynamic import fails despite HTTP 200; proposes inlineDynamicImports/single-output self-contained bundling as the primary fix."},
+    {"id": "windows-containment-attribution", "verdict": "pass", "reason": "Explains lexical join/normalize/fileURLToPath versus OS-canonical realpathSync (uppercase E: configured, lowercase e: on disk) failing a case-sensitive startsWith; Linux passes because canonical bytes equal lexical bytes, the C: laptop because its volume is registered uppercase; explicitly rejects Windows-unreliable folklore."},
+    {"id": "safe-route-fix", "verdict": "pass", "reason": "Canonicalizes both root and target through realpathSync, uses path.relative with .., absolute, and different-drive rejection (symlink escapes handled by resolving both sides), keeps platform case semantics, and preserves the JavaScript MIME type; the rejected toLowerCase hack is clearly disallowed advice."},
+    {"id": "modal-event-ownership", "verdict": "pass", "reason": "Shows both handlers consume the same Ctrl+wheel gesture, preventDefault does not stop listener dispatch; gives the modal exclusive ownership via an owner stack the pane defers to, modal calling preventDefault plus stopPropagation, and notes capture/ancestor listeners cannot be undone later."},
+    {"id": "incident-regressions", "verdict": "pass", "reason": "Planned checks cover all three incidents: post-build specifier closure plus pack parity (deployable dependency set) and a rejected-import fallback test; case-differing contained path served while traversal, symlink escape, and cross-drive are refused; real-gesture test asserting diagram zoom with unchanged pane font size."}
+  ],
+  "caps": [
+    {"id": "unsafe-containment", "triggered": false, "reason": "The fix strengthens containment (canonical realpath on both sides, path.relative with explicit escape rejection); disabling containment appears only as an explicitly rejected example."}
+  ]
+}

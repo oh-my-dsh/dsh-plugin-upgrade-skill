@@ -1,0 +1,17 @@
+1. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md（全文）
+2. glob pattern **/* path ...\S12-global-upgrade-ebusy-trap（列 fixture/agent-output 内容）
+3. read ...\fixture\README.md
+4. read ...\fixture\attempt1-ebusy.log
+5. read ...\fixture\attempt2-downgrade.log
+6. read ...\fixture\npm-dist-tags.txt
+7. read ...\fixture\running-processes.txt
+8. grep pattern "dist-tag|latest|host-self|EBUSY|koffi|downgrade|unpinned|global" path ...\skills\plugin-upgrade\references
+9. read ...\skills\plugin-upgrade\references\precision-checklist.md offset=190 limit=30
+10. grep pattern "host-self|Host-self|install-channel|pitfall" path ...\skills\plugin-upgrade\references\rollup-0.1.2.md
+11. grep pattern "R-0[0-9] ·|safety boundary" path ...\skills\plugin-upgrade\references\rollup-0.1.2.md
+12. grep pattern "^### DSH-|^## DSH-|^- DSH-" path ...\skills\plugin-upgrade\references\v0.1.2-alpha.5.md
+13. write ...\agent-output\report.md（主报告，含 run-stats）
+14. write ...\agent-output\S12-global-upgrade-ebusy-trap\report.md（同内容副本，兼容题面路径写法）
+15. write ...\agent-output\tool-transcript.txt（本文件）
+16. write ...\agent-output\transcript-manifest.txt
+17. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（回传结论摘要）

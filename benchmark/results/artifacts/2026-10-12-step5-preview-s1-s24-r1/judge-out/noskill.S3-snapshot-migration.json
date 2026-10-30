@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "chat-projection", "verdict": "partial", "reason": "Correctly locates the partial/runningCalls/turnEnds reads with live/dead analysis, but never mentions the temporary chat legacy projection or the views/timeline / target-owned Chat access path; its replacement spellings are self-admitted inventions."},
+    {"id": "session-lifecycle", "verdict": "fail", "reason": "Treats running as an ordinary snapshot field that can ride the compatibility projection; never identifies the Session/useSession lifecycle seat outside the chat legacy projection — the opposite of the required distinction (though it does not claim useSession must be renamed)."},
+    {"id": "type-and-inject", "verdict": "partial", "reason": "Locates the dsh-client-runtime imports and the package.json client.inject entry, and defers unknown snapshot symbols to target exports, but keeps ClientContext on the removed runtime instead of repointing to scoped cordis and only generically 'bumps' the inject list without removing dsh-client-runtime."},
+    {"id": "slot-registration", "verdict": "pass", "reason": "Locates the scoped slots.register inside ctx.inject(['slots','conversation']); explains service-ownership ordering (registering before ui-conversation declares the slot throws), keeps the slot name and order/lifetime, and covers the module-augmentation surface."},
+    {"id": "mapping-and-plan", "verdict": "partial", "reason": "Separates projection-first from immediate type/inject/lifecycle changes with sound silent-vs-fail-fast reasoning, but cites no card at all — no tie to DSH-0.1.2-A1-03 (or A1-25) is even attempted, leaving the mapping requirement substantially unmet."}
+  ],
+  "caps": []
+}

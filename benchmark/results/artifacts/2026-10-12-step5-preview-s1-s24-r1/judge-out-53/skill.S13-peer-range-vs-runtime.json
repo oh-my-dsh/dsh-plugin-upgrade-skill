@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"removed-api-and-crash","verdict":"pass","reason":"Read sites in plugin excerpt, crash at channel.js:623 iterating undefined session.events after alpha.4 removal, replacements seq/eventAt/snapshotEvents cited from changelog."},
+{"id":"peer-check-boundary","verdict":"pass","reason":"alpha.5 satisfies ^0.1.2-alpha.2 as version arithmetic only; npm compares declarations, never API surface or behavior; a floor is author intent, not tested evidence."},
+{"id":"distinct-breakage-categories","verdict":"pass","reason":"Table of eight distinct categories: removed property, moved declarations, changed signatures/types, removed packages, service topology, default drift, silent lookup failure, platform issues."},
+{"id":"author-prevention","verdict":"pass","reason":"Test against actual target cohort (tsc against tag, cold boot, product path) plus compatibility policy: raise peer floor to ^0.1.2-alpha.4 and dual-cohort runtime guards; metadata vs runtime roles explained."},
+{"id":"user-preinstall-check","verdict":"pass","reason":"Pre-install: read release notes between peer floor and installed host, scratch-profile cold boot, grep source for the removed .events patterns — tied to this incident."}
+],"caps":[{"id":"peers-prove-runtime","triggered":false,"reason":"Report affirms the opposite: install-time silence is a static gate proving nothing about runtime compatibility."}]}

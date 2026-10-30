@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Identifies both workspace-files insert rows (bundle and profile), pins rejection to EntryGroup.update during cordis:include via the stack, argues fail-closed over last-write-wins, and flags the 'redundant' comment as wrong."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Table distinguishes config-by-id (safe), genuinely new id (safe), and insert of bundle-shipped id (fatal); classifies the maintainer's row as fatal with evidence from web-app-patch-excerpt.txt and the crash log id."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Deletes only the manual workspace-files insert stanza from the profile patch, adds no row since the bundle provides it, and preserves bundle provision."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Explains composition-time failure before any plugin loads so no plugin-side change can help; treats the original file-read symptom as a separate misdiagnosed problem (restart healing) rather than claiming the removal cures it."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Recommends inspecting the installed bundle's patch for the id before hand-adding rows and proposes a host message naming workspace-files, both sources, blame, and deleting the manual profile row."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice removes the duplicate insert; no affirmative claim that duplicates merge or that editing the plugin cures the boot."
+    }
+  ]
+}

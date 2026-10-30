@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位 index.ts:1 ClientContext 导入并映射 A1-25，指出 Web Client/apply 签名受影响，要求改指受支持的目标导出且细节标 unconfirmed，方向可辩护（type-only 导入仍断构建）"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "正确比较 pet-legacy-bundle 与 package.json name、映射 A1-26 并要求 id 精确对齐，但全篇未提出任何客户端激活/加载验证（boot 图、启动断言等）"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes 并映射 A1-27，要求弃用 flat nodes 改用目标快照读取面并保留 first-node 语义，未声称旧 flat API 仍受支持，Pet.tsx 判为无破坏面"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 ctx.connection.api.agentPresets.list 并映射 A1-30，要求移除该删除的 face 改走受支持的 plugin→Host 服务机制，细节标 unconfirmed"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未主张 apply→setup/activate 生命周期替换，也未要求 service inject 移入 manifest；inject 行仅标 unconfirmed，无肯定性迁移断言"
+    }
+  ]
+}

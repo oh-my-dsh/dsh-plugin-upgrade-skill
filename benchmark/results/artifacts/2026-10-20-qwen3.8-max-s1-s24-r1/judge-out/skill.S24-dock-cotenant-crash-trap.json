@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    { "id": "culprit-attribution", "verdict": "pass", "reason": "Plugin A only: unconditional useSessionPendingInteraction call throws TypeError in render; contract diff shows the seat removed and replaced by useSessionStatus.pendingInteraction while useSessions stays; B uses no standard-kit hooks and throws nothing." },
+    { "id": "cotenant-mechanism", "verdict": "pass", "reason": "Shares the dock-render-tree mount tree: one DrawerErrorBoundary around the whole dock list slot, null fallback unmounts both entries (console follow-up quoted); attach button survives under the separate input.left boundary." },
+    { "id": "experiment-reading", "verdict": "pass", "reason": "Toggle proves A is the sole active cause and B renders once freed; explicitly states it neither proves B fully compatible elsewhere nor that A's crash is the only dock defect; reinstalling B cannot help since B's bytes were never at fault; colleague theory dismantled point by point." },
+    { "id": "degradation-fix", "verdict": "pass", "reason": "Seat-adapter code reads useSessionStatus(...)?.pendingInteraction (or legacy seat) with EMPTY_PENDING fallback, never calling a missing hook; only the pending highlight degrades while running/todos/tokens/ETA keep working; silent degradation justified because a throw unmounts all co-tenants." },
+    { "id": "verification-and-hygiene", "verdict": "pass", "reason": "Rebuild + hard refresh, no host restart; both entries verified rendering together plus pending-seat and isolation gates; B regression covers paste/remove/re-paste with A enabled; hygiene covers defensive destructuring, entry-local boundary, and host per-entry boundaries with overhead/visibility trade-off." }
+  ],
+  "caps": [
+    { "id": "innocent-plugin-fix", "triggered": false, "reason": "Final remedy touches only plugin A; B is explicitly left untouched and the event treated as one crash with collateral eviction, not two independent bugs." }
+  ]
+}

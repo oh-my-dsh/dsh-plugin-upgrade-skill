@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "对比探针+meta.status=none定位provider/RPC链,声明≠激活有点明"
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "sweep/join与URL限值判定正确,但未处理manifest 60 vs probe 62差异"
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "fold告警独立;改名+session-only仅解释绝对地址claim失败"
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "重启→回滚(含0.1.3-alpha.2)→上游;拒绝插件侧变通;alpha.1为前案"
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "取证含join标无效;provider握手与契约版本boot诊断"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "join 404被明确标为无效,禁止当缺模块证据"
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "明确拒绝插件侧rewrite/retry/fallback与复制链路"
+    }
+  ]
+}

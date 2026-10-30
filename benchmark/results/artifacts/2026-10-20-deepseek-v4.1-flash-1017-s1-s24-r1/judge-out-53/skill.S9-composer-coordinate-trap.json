@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "准确区分两个投影及使用者：clipboardText/draft 中 chip 为 28 字符、Occurrence.offset/length 用之，detectText 中 chip 恰一个 U+FFFC、TokenSpan 两动词与 $replace 拼接用之；漂移公式与重放表表明普通文本与分隔空格两侧等宽。"
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "定位 plugin-client.js:29-31 的 draft.length 误用，给出'首贴 0==0 巧合成功、此后每贴在同一位置确定性失败'的指纹论证与重放表（29/28/2、漂移 27），明确 toast 是几何错误被误标为并发编辑而非真实竞态。"
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "逐行追踪 remove：28 字符 span 喂给 2 字符 detect 文档、返回 false 被丢弃、records.delete 照跑，occurrence 留存 + 记录缺失使 dock 渲染 'unavailable'、composer chip 仍在；两症状同为 Σ(length-1) 漂移，非独立上传故障。"
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "toDetect/detectEnd 在插入与删除两处落地（前序 chip 累减 length-1、删除映射 offset 后用 1 字符 span），draftRev 明确不换算保留，records 仅在消费成功或宿主快照证实 occurrence 已消失后才清理。"
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "pass",
+   "reason": "T2 两次粘贴双 chip 断言 span [2,2] 非 [29,29]；T7 删带前置 chip 的第二个 chip 断言 span [2,3)、仅 B 移除且 A 的 chip/大小/draft 幸存；另有 T9 拒收记账、T6 首 chip、T10/T13 清空等变体。"
+  }
+ ],
+ "caps": []
+}

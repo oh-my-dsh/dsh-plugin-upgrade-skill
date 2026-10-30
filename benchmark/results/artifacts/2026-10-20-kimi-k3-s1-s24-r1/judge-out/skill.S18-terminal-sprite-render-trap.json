@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "half-cell-background", "verdict": "pass", "reason": "Locates the half-filled branches emitting fg with no background term, explains sticky SGR background filling the empty half, ties mechanism to right-edge/Z/heart symptoms, fixes with fg + ESC[49m and a no-inherited-state rule."},
+    {"id": "frame-clearing", "verdict": "pass", "reason": "Explains trailing-space trim plus pipeline whitespace eating, why shorter rows leave surplus columns untouched, and proposes full-rectangle padding plus ESC[K, noting erase control bytes survive trimming; SGR state kept complete."},
+    {"id": "frame-data-integrity", "verdict": "pass", "reason": "Cites digest report tail2 MISMATCH of 23 differing cells (visible cluster as partial), hand-copied transcription slip distinct from renderer behavior, different-frame excerpt regression blind spot, and an all-frames whole-frame digest gate against source art."},
+    {"id": "timer-liveness", "verdict": "pass", "reason": "Uses CI evidence: channel-ui hosts mount without unmounting, self-rescheduling referenced setTimeout chain keeps the loop alive after checks pass; TTY/stdin keeps interactive alive; fix is unref() on each scheduled timer."},
+    {"id": "renderer-and-rollout-prevention", "verdict": "pass", "reason": "Checklist consolidates per-cell SGR completeness, fixed-rect rendering, whitespace-independent erase, whole-frame digests, and unref'd timers; pre-flip audit enumerates mounting hosts, handle/timer audits, and headless exit/liveness assertions."}
+  ],
+  "caps": [
+    {"id": "contradictory-render-advice", "triggered": false, "reason": "Final advice affirms background reset, full-rect + ESC[K clearing, all-frame digest gating, and unref; no emulator blame or pro-referenced-timer claim."}
+  ]
+}

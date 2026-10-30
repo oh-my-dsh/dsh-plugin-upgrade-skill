@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Distinguishes the clipboard projection (draft/occurrence offsets, chip expanded to clipboardText) from the detect-coordinate spans of insertReference/consumeToken (chip = one U+FFFC), grounded in both host files."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Locates snapshot.draft.length in add, computes 29-vs-2 divergence, connects out-of-range detect splice to insertReference false and the toast, rules out the draftRev/concurrent-edit red herring; no hardcoded-count demand."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces unconverted occurrence offsets into consumeToken, the ignored false return, unconditional records.delete, and ties chip-stays + unavailable to the same coordinate mismatch, not a separate upload failure."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives the Σ(length−1) conversion applied at both call sites; removal maps offset and effectively yields a one-detect-character span; keeps the draftRev guard and deletes records only after successful consumption."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "Proposes two successive pastes with chips present (T1), removal of a chip with other chips surviving asserting chip/occurrence/record removal together (T2), plus declined-consumption and first/last/empty-again variants."}
+  ],
+  "caps": []
+}

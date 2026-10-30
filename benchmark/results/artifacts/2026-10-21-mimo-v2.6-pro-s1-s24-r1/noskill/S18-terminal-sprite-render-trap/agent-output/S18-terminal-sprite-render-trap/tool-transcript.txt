@@ -1,0 +1,13 @@
+S18-terminal-sprite-render-trap · tool-transcript（按发生顺序，全部工具调用）
+1. run_code  tools.glob pattern=**/* path=fixture（列出 fixture 全部文件）
+2. run_code  tools.working_directory 无参数（读取当前工作目录，非文件系统访问）
+3. read  file_path=fixture\README.md（无效调用：direct tool 不可直接调用，被拒绝、未执行）
+4. read  file_path=fixture\symptom-log.txt（无效调用：同上，未执行）
+5. read  file_path=fixture\frames-digest-report.txt（无效调用：同上，未执行）
+6. read  file_path=fixture\ci-hang-evidence.txt（无效调用：同上，未执行）
+7. run_code  tools.read ×4：fixture\README.md、fixture\symptom-log.txt、fixture\frames-digest-report.txt、fixture\ci-hang-evidence.txt（并行读取证据文本）
+8. run_code  tools.read fixture\renderer-excerpt.ts（读取 46 行渲染器源码摘录）
+9. run_code  tools.write ×2：agent-output\S18-terminal-sprite-render-trap\report.md 与 agent-output\report.md（写入 127 行 / 14420 字节根因报告，含 run-stats 与完成时间戳）
+10. run_code  tools.read agent-output\report.md（回读校验：totalLines=127，非空）
+11. run_code  tools.send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（向父代理上报结果摘要，messageId=09867291-807a-4cc0-b861-200f290f5036）
+12. run_code  tools.write ×4：agent-output\tool-transcript.txt、agent-output\S18-terminal-sprite-render-trap\tool-transcript.txt、agent-output\transcript-manifest.txt、agent-output\S18-terminal-sprite-render-trap\transcript-manifest.txt（写入本清单与文件系统访问清单及镜像）13. run_code  tools.read agent-output\report.md + tools.write ×2（report.md 校正 run-stats 计数）+ tools.write ×2（tool-transcript.txt 追加本条）—— 同一程序内完成14. run_code  tools.read agent-output\report.md + tools.write ×2（report.md 再次校正 run-stats 为自计数终值）+ tools.write ×2（tool-transcript.txt 追加本条）—— 本次之后不再有任何工具调用

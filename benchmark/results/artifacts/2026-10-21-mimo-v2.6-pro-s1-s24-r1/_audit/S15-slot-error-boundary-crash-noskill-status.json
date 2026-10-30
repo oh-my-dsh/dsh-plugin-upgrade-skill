@@ -1,0 +1,41 @@
+{
+  "task": "S15-slot-error-boundary-crash",
+  "arm": "noskill",
+  "cell": "E:/deepseek-harness/dsh-plugin-upgrade-skill/benchmark/results/artifacts/2026-10-21-mimo-v2.6-pro-s1-s24-r1/noskill/S15-slot-error-boundary-crash",
+  "subagentId": "e22fab2f-c65b-425f-bae6-366e1d7863d3",
+  "status": "done",
+  "startedAt": "2026-10-21T15:02:53+08:00",
+  "endedAt": "2026-10-21T15:37:31+08:00",
+  "duration": "34m38s",
+  "report": {
+    "path": "agent-output/report.md",
+    "bytes": 20223,
+    "ok": true
+  },
+  "fixture": {
+    "compare": {
+      "checked": 4,
+      "mismatched": [],
+      "missing": [],
+      "extra": [],
+      "zeroByte": []
+    },
+    "ok": true
+  },
+  "transcriptAudit": {
+    "manifestLines": 13,
+    "manifestViolations": 0,
+    "toolTranscriptLines": 34,
+    "flaggedLines": 0,
+    "realViolations": 0,
+    "verdict": "pass",
+    "manifestViolationLines": [],
+    "flaggedTranscriptLines": [],
+    "auditErr": null
+  },
+  "runStats": {
+    "toolcalls": "34",
+    "tokens": "n/a"
+  },
+  "notes": "Infrastructure retry cell (first instance fe94d13e crashed with zero output at 15:01; this run is instance e22fab2f). Mid-run incident self-reported by solver: one pwsh write-back misdecoded the report's CJK text as ANSI and corrupted it; solver rewrote the report in full via write and verified UTF-8. In-cell writes only; fixture untouched. "
+}

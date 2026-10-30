@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Ties v0.9.5's absence to the branch-only sync script (HEAD:main, never tags) and the immediate ref-resolution failure, explicitly ruling out network, typo and npm-package causes."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "States the direction: v0.9.7 (alpha.1 client API, useConversation) is ahead of the frozen rc.2 host; explains why install success and restarts prove nothing about API compatibility."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Selects v0.9.3 via rc.1 verification + additive rc.2 note, notices v0.9.3 is also absent from the mirror, sequences maintainer tag push before the #v0.9.3 install command, conditional SHA fallback, no DSH upgrade."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Pushes release tags to every mirror in the sync script (explicit refs/tags refspec or --tags backfill) plus per-mirror ls-remote verification gates and README-tag CI checks."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "partial",
+      "reason": "Compat matrix, machine-checkable gating, per-row commands and rejection of the newest-tag default are all present, but 'dsh 0.1.2-alpha.1+ → #v0.9.7' and '>=0.1.2-alpha.1' route untested future alphas to v0.9.7, which the rubric forbids."
+    }
+  ],
+  "caps": []
+}

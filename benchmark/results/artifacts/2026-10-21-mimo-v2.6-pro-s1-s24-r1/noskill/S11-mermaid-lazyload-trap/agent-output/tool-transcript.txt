@@ -1,0 +1,5 @@
+1. run_code 说明="枚举格目录文件"; inner: glob pattern=**/* path=<cell>
+2. run_code 说明="读取5份fixture证据"; inner: read <cell>\fixture\README.md; read <cell>\fixture\chunk-route.ts; read <cell>\fixture\ci-note.md; read <cell>\fixture\console-403-windows.txt; read <cell>\fixture\console-split-chunks.txt
+3. run_code 说明="Node路径API大小写语义探针"; 命令=import node:path/node:url/node:fs; pathToFileURL/fileURLToPath/normalize/join/startsWith/path.relative 对比 + fs.realpathSync(大写盘符)/fs.realpathSync(小写盘符)/fs.realpathSync.native(<cell>\fixture\README.md); 输出=guard_pre_realpath:true, guard_post_realpath:false
+4. run_code 说明="写入报告与转录并回读校验"; inner: write <cell>\agent-output\S11-mermaid-lazyload-trap\report.md; write <cell>\agent-output\report.md; write <cell>\agent-output\tool-transcript.txt; write <cell>\agent-output\transcript-manifest.txt; read <cell>\agent-output\report.md(写后校验, 174行)
+5. run_code 说明="订正run-stats并把结果发给父代理"; inner: edit <cell>\agent-output\S11-mermaid-lazyload-trap\report.md(run-stats块); edit <cell>\agent-output\report.md(run-stats块); write <cell>\agent-output\tool-transcript.txt; send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e

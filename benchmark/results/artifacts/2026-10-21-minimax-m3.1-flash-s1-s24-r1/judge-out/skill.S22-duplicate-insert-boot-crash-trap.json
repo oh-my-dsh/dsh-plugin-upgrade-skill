@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "duplicate-loader-attribution", "verdict": "pass", "reason": "Shows both patches insert the same id/name, traces the throw to EntryGroup.update during cordis:include application, explains why duplicate insertion is fatal rather than merged, and rejects the profile comment's harmless-redundancy premise."},
+    {"id": "three-layering-cases", "verdict": "pass", "reason": "Fully distinguishes config override by id (safe), inserting a new id (safe), and inserting a bundle-shipped id (fatal), classifies the maintainer's row as case (c), and grounds each in the excerpts and sibling rows."},
+    {"id": "minimal-profile-fix", "verdict": "pass", "reason": "One deletion of the redundant profile block, preserving the bundle row and all unrelated plugins/config, with explicit rejection of renaming, deleting the bundle service, or adding another insert; config tuning via id override."},
+    {"id": "plugin-and-failure-boundary", "verdict": "pass", "reason": "Explains the crash occurs in composition before any plugin module is imported, so no plugin-side change can resolve it; states the deletion restores boot only and keeps the original read failure as a separate, to-be-verified problem."},
+    {"id": "author-and-host-prevention", "verdict": "pass", "reason": "Requires grepping the installed web-app bundle's (and other composing bundles') cordis.patch.yml for the id and distinguishing override from insert before adding rows; proposes a concrete host diagnostic naming workspace-files, both file origins with line locators, and the delete-the-profile-block remedy."}
+  ],
+  "caps": [
+    {"id": "retain-or-add-duplicate", "triggered": false, "reason": "The affirmative fix removes the duplicate; duplicate-id tolerance is discussed only as something the loader must not silently do."}
+  ]
+}

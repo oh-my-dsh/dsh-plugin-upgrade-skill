@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Ties the v0.9.2–v0.9.6 mirror gap to the branch-only HEAD:main sync push, explains ref-resolution failure, and rules out network/typo via the later v0.9.7 success."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Uses dsh-version 0.1.1-rc.2 and the v0.9.7→0.1.2-alpha.1 row to explain the missing useConversation seat, states the plugin-newer-than-host direction, and notes install/restart success proves nothing."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Selects v0.9.3 via rc.1 verification plus the additive rc.2 note, flags that v0.9.3 is also absent, gives the #v0.9.3 install command conditional on maintainer tag push, and offers a conditional reachable-SHA alternative without inventing one or upgrading DSH."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Proposes --atomic --follow-tags plus an explicit refs/tags push per mirror and an ls-remote verification gate that fails on a missing tag; grounded in the branch-only script."},
+    {"id": "version-routing-docs", "verdict": "pass", "reason": "README routing table maps rc.x users to v0.9.3 and alpha.1+ to v0.9.7, with an install-time runtime-range check; no newest-tag default and no generalization to untested alphas."}
+  ],
+  "caps": []
+}

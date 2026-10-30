@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "official-short-name",
+   "verdict": "pass",
+   "reason": "greet 判为无兼容错误的合法短名，前缀仅为降低撞名风险的建议而非强制修复，并与 coordinate、包名、pluginNames 各自独立判定"
+  },
+  {
+   "id": "service-collision-advice",
+   "verdict": "pass",
+   "reason": "定位 unprefixed 服务 search，解释其最易与宿主/他插件相撞的风险，明确 warning 级建议改名（acme-greet-search）而非兼容错误，实际碰撞未确认"
+  },
+  {
+   "id": "shared-event-context",
+   "verdict": "pass",
+   "reason": "web-search/ready 判为共享频道的订阅（informational），非本插件命名空间、不构成冲突或保留主张，频道存在性与契约留待目标组合验证"
+  },
+  {
+   "id": "coverage-and-registry-limits",
+   "verdict": "pass",
+   "reason": "15 项表面全覆盖且逐项给出依据，注册表/宿主侧状态归为 needs-registry-context 与 U1–U4 未检查项，建议发布前逐名查询与运行时验证，private:true 按 README 测试材料处理不扣分，明确拒绝 all-clear"
+  }
+ ],
+ "caps": [
+  {
+   "id": "unsupported-all-clear",
+   "triggered": false,
+   "reason": "clear 标签被显式定义为'无不利发现'而非可用性/放行结论，总判定为'无兼容错误但注册表状态 unknown'，未作任何全量可用断言"
+  }
+ ]
+}

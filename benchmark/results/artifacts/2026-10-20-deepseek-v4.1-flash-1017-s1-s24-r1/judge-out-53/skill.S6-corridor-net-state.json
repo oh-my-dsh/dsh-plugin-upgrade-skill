@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "corridor-net-state",
+   "verdict": "pass",
+   "reason": "给出 A1-02 临时移除→A2-01 恢复（revert）的完整版本史与净态折叠（终态与 rc.2 一致），并落到 produceExternalEvent：删除防御、保留 ignorable 生产者意图待 API 补齐"
+  },
+  {
+   "id": "remove-marker-stripping",
+   "verdict": "pass",
+   "reason": "定位 delete 语句，论证其为 no-op、语义方向相反（marker 是放行依据）且注释理由错误，最终建议删除防御与陷阱注释，明确区分删剥离代码与删 marker 本身"
+  },
+  {
+   "id": "informational-producer",
+   "verdict": "pass",
+   "reason": "完整说明 ignorable:true 仅限旧 reader 可省略而不破坏重建的信息性事件、必需事件不得标记、保留不是消费侧过滤开关且 reload 后仍留在 loaded events，并按 append 能力缺口应用于 third-party/informational producer"
+  },
+  {
+   "id": "public-append-gap",
+   "verdict": "pass",
+   "reason": "明确公开 Session.append 无 ignorable 参数为 capability gap，禁止 cast/解冻/手改 JSONL 伪造，建议 sidecar/store 并将该 seam 记为 pending 待上游正式机制，提出冷加载验证方案而未执行"
+  }
+ ],
+ "caps": [
+  {
+   "id": "keep-stripping-marker",
+   "triggered": false,
+   "reason": "最终建议是删除该防御且不改成条件删除，'删掉 delete'之后也未继续任何剥离 marker 的动作"
+  }
+ ]
+}

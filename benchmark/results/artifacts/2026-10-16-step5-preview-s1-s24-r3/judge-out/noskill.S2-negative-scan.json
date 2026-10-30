@@ -1,0 +1,9 @@
+{
+  "decisions": [
+    {"id": "host-break", "verdict": "partial", "reason": "Locates inject:[\"apiProxy\"] and ctx.apiProxy.llm.providers() plus the dead dsh-host-apiproxy dependency, but never maps to A1-01 (openly declines card IDs) and does not explain the llm injection/listProviders replacement path."},
+    {"id": "negative-coverage", "verdict": "pass", "reason": "Accounts for all six other categories with per-file scan evidence; clears session-notes.js as a pure utility and treats cordis.patch.yml as ordinary composition without denying its existence or inventing coupling."},
+    {"id": "inference-boundary", "verdict": "pass", "reason": "Explains absence-of-evidence limits (no transitive/runtime visibility, unverified pinned dependency) and separates the one decisive apiProxy break from the six negative categories."},
+    {"id": "verification-plan", "verdict": "pass", "reason": "Proposes build/typecheck against 0.1.2 types, an isolated-profile cold boot, and an actual providers call as checks to run, not as executed."}
+  ],
+  "caps": []
+}

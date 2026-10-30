@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "partial",
+      "reason": "定位三读取并给出投影/立即分治及 turnEnds→timeline 等去向，但断言 partial 不可投影（走廊 legacy 投影实际覆盖它）且未识别 views.get('chat')?.legacy 机制。"
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "partial",
+      "reason": "定位 running 且未要求改名 useSession，但称其随扁平快照被移除、可由兼容投影承接——与『留在 Session/useSession 生命周期席位、原行不变、不属 chat legacy』相悖。"
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "partial",
+      "reason": "定位 ConversationSnapshot 导入与 client.inject 条目并合理 TVC 延后，但误判 dsh-client-runtime 存活（inject『预期稳定』、类型重指回该包），未做 Context→ClientContext→scoped cordis 重指。"
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "定位 slots.register 并保留槽名，但判注册面『预期不变』（实际 ordering edge 失效需 ctx.slots.inject 包裹），未解释 ui-renderer 的 Context 增强与 slots 服务归属。"
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "partial",
+      "reason": "有真实的投影/立即分阶段计划，但变更被拆成六个重构卡号而非整卡 A1-03，A1-25 包移除卡缺失且被『inject 稳定』结论抵触。"
+    }
+  ],
+  "caps": []
+}

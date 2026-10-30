@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Correctly explains siblings resolve relative to the entry chunk URL, were never shipped (ls evidence), and ESM all-or-nothing instantiation rejects import() despite entry 200; proposes self-contained single-file build via inlineDynamicImports/splitting:false, plus ship-whole-outdir alternative."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Compares uppercase E: LIB_DIR vs lowercase e: realpath, case-sensitive startsWith rejects a contained file; explains Linux green (single canonical spelling) and laptop green as coincidence; explicitly rejects the 'Windows paths unreliable' folklore and gives per-API casing table without overclaiming."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Proposes realpath-canonicalizing both sides, path.relative containment with rel!==''/'..'/isAbsolute checks, platform-appropriate case folding (win32 only), symlink/junction escapes caught by realpath, and explicitly preserves the JS Content-Type required for dynamic import."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both handlers act on one Ctrl+wheel via full propagation path; gives modal exclusive ownership with pane standing down (modal-open/contains check, works even against capture) and modal consuming via non-passive preventDefault+stopPropagation; notes ancestor capture cannot be undone by modal-side stop."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "T1.1–T1.3 cover zero-sibling build, tarball import closure, and svg-render smoke (fallback not shown); T2.1–T2.3 cover drive-case allow plus traversal/sibling-prefix/junction deny; T3.1–T3.3 cover modal zoom with unchanged pane font and reverse direction — all with expected outcomes, framed as planned checks."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "Fix strengthens containment (realpath both sides, traversal/symlink denied, sibling-prefix hazard removed); no advice serves outside the resource root."
+    }
+  ]
+}

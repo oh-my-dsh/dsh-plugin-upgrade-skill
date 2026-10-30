@@ -70,6 +70,18 @@ node scripts/validate-manifests.mjs
 
 When you modify a skill, command, manifest, version card, or example, run both. If an example has its own build/test, run those commands too. Checks that were not run, or were limited by credentials/platform, must be noted in the PR.
 
+`scripts/validate.mjs` also reconciles the root `README.md` / `README.en.md` — the headline
+badges, the "What's in this repo" bullets, and every row of the coverage table — against the
+`cardCount` in each card set's frontmatter and the real directory count under
+`benchmark/tasks/`. If you change a card or task count, change the root README in the same PR.
+
+The self-checks need the **full git history**: the execution-contract and evaluation-snapshot
+validators resolve commits pinned in `task.toml` through local git objects. A shallow clone
+(`git clone --depth 1`) fails them with `cannot resolve … skill snapshot tree` (for example on
+H11 / H21). That is a clone artifact, not a repository defect — use a full clone, or run
+`git fetch --unshallow` on an existing one, then `npm run prepare:ci` to fetch the snapshot
+commits. CI already does this with `fetch-depth: 0`.
+
 ## PR checklist
 
 - [ ] No duplication with existing issues/PRs, or coordination already completed

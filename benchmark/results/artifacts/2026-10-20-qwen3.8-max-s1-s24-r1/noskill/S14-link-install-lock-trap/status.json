@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S14-link-install-lock-trap",
+    "arm": "noskill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S14-link-install-lock-trap",
+    "status": "done",
+    "subagentId": "96258b94-3f3f-4f31-8ad9-0495de258a50",
+    "start": "2026-10-20T17:12:18+08:00",
+    "end": "2026-10-20T17:23:02+08:00",
+    "durationSec": 644,
+    "toolcalls": 12,
+    "tokensIn": 31811,
+    "tokensOut": 23451,
+    "tokensTotal": 246750,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S14-link-install-lock-trap\\agent-output\\S14-link-install-lock-trap\\S14-report.md",
+    "fixtureFiles": 4,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; profile entry = Junction (LinkType Junction, Target E:\\dev\\dsh-attach-input, corroborated by cordis.patch.yml '# link:' marker) -> repo tree IS installed copy; Copy-Item never right for link mode (self-copy); two locks: A = file handles by running dsh web host Node process (EBUSY; browser tabs irrelevant, browser only held HTTP bytes), B = browser HTTP cache serving stale client.js on plain refresh; rename-aside destroyed source because both paths are the same directory (renamed repo's only edited files to *.old2 -> 'source does not exist', dir listed twice); recovery: full host stop -> Rename *.old2 back (one place suffices) -> node --check both (ESM caveat) -> confirm package.json/junction intact -> restart -> hard refresh -> verify; ordered activation edit->syntax->stop(process+port)->restart->hard-refresh->verify at network/host-route/UI layers; pre-flight Get-Item LinkType/Target + Select-String install marker; copy advice harmful for link installs; fixture SHA before+after identical; no deviations | audit adjudicated: sole HARD cand = token 'E:\\dev\\dsh-attach-input' quoted inside solver's own send_message report text (junction Target cited from fixture Get-Item evidence; scenario-machine path, not accessed - send_message has no fs capability; zero read/glob/pwsh touched it) -> data citation, not roaming",
+    "startMs": 1792487538412,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\96258b94-3f3f-4f31-8ad9-0495de258a50",
+    "auditVerdict": "clean-with-soft-notes",
+    "auditHard": 0,
+    "auditSoft": 35
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S14-link-install-lock-trap\\agent-output\\S14-link-install-lock-trap\\S14-report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S14-link-install-lock-trap\\S14-report.md",
+        "bytes": 16657
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 4
+    },
+    "metrics": {
+      "toolcalls": 12,
+      "requests": 8,
+      "tokensIn": 31811,
+      "tokensOut": 23451,
+      "tokensTotal": 246750,
+      "lastTime": 1792488182839
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\96258b94-3f3f-4f31-8ad9-0495de258a50",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\96258b94-3f3f-4f31-8ad9-0495de258a50\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 35,
+    "verdict": "clean-with-soft-notes"
+  }
+}

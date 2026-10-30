@@ -1,0 +1,35 @@
+工具调用总表（按时间顺序；run_code 为顶层执行器，其内嵌的 read/grep/glob/write 亦逐条列出）
+1. run_code 读取技能 SKILL.md 全文（内嵌 read）
+2. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+3. run_code 列格目录全部文件（内嵌 glob）
+4. glob pattern=**/* path=E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state
+5. run_code 读 fixture 三个文件（内嵌 read x3）
+6. read E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\fixture\README.md
+7. read E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\fixture\package.json
+8. read E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\fixture\src\events.ts
+9. run_code grep ignorable 于 skills/plugin-upgrade（内嵌 grep）
+10. grep pattern=ignorable path=E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade
+11. run_code grep A1-02|A2-01 于 skills/plugin-upgrade（内嵌 grep）
+12. grep pattern=A1-02|A2-01 path=E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade
+13. run_code 读 alpha.1 卡 / alpha.2 卡 / API-05（内嵌 read x3）
+14. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\v0.1.2-alpha.1.md offset=100 limit=35
+15. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\v0.1.2-alpha.2.md offset=1 limit=60
+16. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\api-migration-0.1.2-alpha.2.md offset=400 limit=60
+17. run_code 读 rollup 净态规则 / pre-flight #2 / legacy 示例（内嵌 read x3）
+18. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\rollup-0.1.2.md offset=35 limit=35
+19. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\pre-flight.md offset=100 limit=30
+20. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\examples\legacy-plugin\src\index.ts
+21. run_code grep session event 于 v0.1.1-rc.1.md（内嵌 grep）
+22. grep pattern=session event|SessionEvent|event contract path=E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\v0.1.1-rc.1.md
+23. run_code grep append|SurfaceIntent|SessionEventMap 于 API 台账（内嵌 grep）
+24. grep pattern=append|SurfaceIntent|SessionEventMap path=E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\api-migration-0.1.2-alpha.2.md
+25. run_code 读 DSH-0.1.5-A2-05 与 One-Page 结论表（内嵌 read x2）
+26. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\v0.1.5-alpha.2.md offset=194 limit=25
+27. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\api-migration-0.1.2-alpha.2.md offset=65 limit=25
+28. run_code 生成迁移报告并回读校验（内嵌 write + read；取 Asia/Shanghai 时间戳 2026-10-21T14:14:46+08:00）
+29. write E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\agent-output\S6-corridor-net-state\report.md
+30. read E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\agent-output\S6-corridor-net-state\report.md offset=1 limit=6（回读校验非空，totalLines=101）
+31. run_code 写收尾两文件（内嵌 write x2）
+32. write E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\agent-output\tool-transcript.txt
+33. write E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-mimo-v2.6-pro-s1-s24-r1\skill\S6-corridor-net-state\agent-output\transcript-manifest.txt
+34. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e 报告结论（delete 防御代码 + Session.append 能力缺口）

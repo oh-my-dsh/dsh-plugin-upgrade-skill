@@ -1,0 +1,50 @@
+{
+ "decisions": [
+  {
+   "id": "source-patch",
+   "verdict": "partial",
+   "reason": "定位声明/表面/脚本三处，但未区分源码补丁与普通组合，也未解释补丁目标对私有 SessionView 内部路径的耦合（仅列目标路径）"
+  },
+  {
+   "id": "events",
+   "verdict": "pass",
+   "reason": "定位生产者/消费者与 ignorable:true；正确按 alpha.1 删除→alpha.2 恢复的净态折叠（不应删除标记）；无 Session.append 谬误"
+  },
+  {
+   "id": "host-services",
+   "verdict": "partial",
+   "reason": "定位 apiProxy 用法与移除，但未区分 Host 域服务注入（llm/listProviders）与 Web Client Remote，替换方案含糊"
+  },
+  {
+   "id": "host-path",
+   "verdict": "partial",
+   "reason": "定位硬编码路径并主张运行时解析，但未说明用运行时 DSH_HOME/profile 信息（只称 host-directory API）"
+  },
+  {
+   "id": "ui",
+   "verdict": "partial",
+   "reason": "定位私有 import 与命令注册两处，但未解释拆分后公共 owner/seam 的核验"
+  },
+  {
+   "id": "channel",
+   "verdict": "pass",
+   "reason": "定位回环服务器；指出绕过网关鉴权是缺陷、通道须走 Host 网关鉴权模型，区分原始回环桥与受管通道"
+  },
+  {
+   "id": "subprocess",
+   "verdict": "partial",
+   "reason": "定位两处调用与逐行 JSON.parse，给出 stdout=final text；但未提 stderr 进度，且将本就错误的 JSONL 假设表述为'输出契约变更'"
+  },
+  {
+   "id": "mapping",
+   "verdict": "partial",
+   "reason": "六项耦合语义映射正确（含 A1-05 stdout），但源码补丁耦合被映射为虚构的'补丁声明形状变更'而非 session-view 拆分，映射不完整"
+  },
+  {
+   "id": "limits",
+   "verdict": "partial",
+   "reason": "七类命中齐备、扫描局限论述充分；但未提出目标版本 build/typecheck、隔离冷启动与功能路径的验证方案"
+  }
+ ],
+ "caps": []
+}

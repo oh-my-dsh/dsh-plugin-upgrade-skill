@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "Cites console lines: entry 200 at 8.1 kB facade, siblings 404, shipped lib/ lacks them; explains relative specifiers resolve against the chunk's own URL and the whole graph must settle before import() resolves; proposes inlineDynamicImports single-file build plus a complete ship-whole-outdir alternative with integrity invariant."
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "Precisely attributes 403 to guard 2 comparing realpath output (lowercase e:) against verbatim module-URL LIB_DIR (uppercase E:) with case-sensitive startsWith; explains Linux/control green structurally and laptop green as casing coincidence; explicitly rejects 'Windows paths unreliable' and notes realpath casing is provenance-dependent, not universal."
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "Gives concrete fix: realpath both sides, platform-appropriate case folding, symmetric prefix or equivalent path.relative containment rejecting ../, absolute/outside, sibling prefixes, and symlink/junction escapes via symmetric realpath; preserves JS MIME on success paths and notes strict module MIME checking. Containment is strengthened, not removed."
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "Explains both handlers act on one bubbling Ctrl+wheel; grants modal exclusive ownership via capture+non-passive preventDefault/stopPropagation and pane-side stand-down (defaultPrevented/containment/modal-open checks); explicitly notes a bubble-phase modal stop cannot undo a window-capture pane listener."
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "T1–T3 assert tarball import closure, single-chunk contract, and 200+JS-MIME serving/render smoke; T4–T6 assert drive-case allow with traversal/sibling-prefix/junction deny on both OS lanes; T7–T9 assert modal zoom with unchanged pane font, defaultPrevented, and reverse direction on close — expected outcomes throughout, planned not executed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "Proposed fix keeps and strengthens containment (lexical pre-guard, symmetric realpath, case-folded comparison); no final advice serves paths outside the plugin resource root."
+    }
+  ]
+}

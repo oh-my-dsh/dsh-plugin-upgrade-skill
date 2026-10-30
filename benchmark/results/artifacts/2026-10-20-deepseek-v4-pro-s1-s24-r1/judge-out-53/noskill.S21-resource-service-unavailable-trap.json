@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "双读者对照定位workspace-files资源链，排除磁盘/文件/静态服务，假设有据"
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "partial",
+      "reason": "sweep与join 404区分及loader逐条取数正确；manifest 60 vs probe 62差异未显式处理"
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "paste警告判为独立家族；rename+session-only canOpen只解释绝对地址claim失败"
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "回滚0.1.3-alpha.2逃生口→上游；拒绝插件侧改写/兜底；alpha.1为先例非本轮缺字节"
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "法证清单齐全，boot诊断（provider完整性/根解析自检）直击失败链"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "join 404被明确判为探针伪影，sweep证明模块齐全"
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "疗法为主机侧诊断/回滚/上游，插件侧改写与永久兜底被拒"
+    }
+  ]
+}

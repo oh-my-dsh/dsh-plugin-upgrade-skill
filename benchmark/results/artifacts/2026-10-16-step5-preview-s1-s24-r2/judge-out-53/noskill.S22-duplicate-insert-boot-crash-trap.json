@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"duplicate-loader-attribution","verdict":"pass","reason":"Compares both excerpts, pins the throw at EntryGroup.update during cordis:include composition, states duplicate insert is fatal (no silent merge/last-write-wins), and explicitly rejects the profile comment's harmless-redundancy claim."},
+{"id":"three-layering-cases","verdict":"pass","reason":"§2 table distinguishes config-override-by-id (safe), new-id insert (safe), bundle-provided-id insert (fatal); classifies the maintainer's row as the third case, grounded in both excerpts including the L110-111 bundle row."},
+{"id":"minimal-profile-fix","verdict":"pass","reason":"Deletes only the redundant workspace-files insert block (lines 16-20 incl. comments), leaves dsh-file-trace/dsh-profiles and the bundle row untouched, uses config-by-id override if needed, and explicitly rejects renaming or re-inserting."},
+{"id":"plugin-and-failure-boundary","verdict":"pass","reason":"Explains the crash is composition-time before any plugin code ran, so no plugin-side edit can fix it; §3.3 keeps the original resource-metadata failure separate and explicitly unverified."},
+{"id":"author-and-host-prevention","verdict":"pass","reason":"§4.1 prescribes grepping the installed bundle's cordis.patch.yml for the id and distinguishing override from insert; §4.2 proposes a host diagnostic naming workspace-files with both file/line origins and the deletion remedy."}],
+"caps":[
+{"id":"retain-or-add-duplicate","triggered":false,"reason":"Final advice is to delete the duplicate and treat it as fatal; no claim of silent merge or plugin-side cure."}
+]}

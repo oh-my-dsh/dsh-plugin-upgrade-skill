@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "准确定位fs-ext@2.1.1/node-gyp缺MSVC,归属正确"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "静态导入致ignore-scripts只推迟失败到启动"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "分支语义完整:Win信号量/POSIX flock,存根合法"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "本地补丁+存根+workspace注册+三项验证齐全"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "尊重无VS约束,用仓库补丁不改上游"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "完整ID且实质关联失败与补丁方案"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "明确拒绝安装VS"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "仅作反例,方案使入口可加载"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "用仓库pnpm补丁机制"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "仅Windows死代码存根,信号量保留"
+    }
+  ]
+}

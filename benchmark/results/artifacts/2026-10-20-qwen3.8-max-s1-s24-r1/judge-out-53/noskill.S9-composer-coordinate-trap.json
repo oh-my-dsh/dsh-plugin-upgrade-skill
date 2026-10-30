@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Table with contract/facade line cites separates clipboardText (chip = full clipboardText; InputState.draft, Occurrence.offset/length) from detectText (chip = one U+FFFC; TokenSpan splices), with ordinary text/space 1:1."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates add() L21–32 building the span from snapshot.draft.length; empty composer coincides so paste #1 works; paste #2 sends 29 into a 2-char detect text → out-of-bounds splice → false → changed-composer toast; explicitly not a concurrent edit."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove(): clipboard span [0,28) passed unconverted, consumeToken false ignored, records.delete unconditional → chip survives + dock 'unavailable'; both symptoms tied to the same coordinate mismatch, not an upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "detectOffset(x) = x − Σ(len−1) applied at both sites: insert-end subtracts all occurrences, removal maps offset and uses a width-1 span; draftRev CAS kept; records.delete gated on consumeToken === true."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "A1 two/three successive pastes with both chips asserted; B2/B3 remove first/second of two chips asserting composer+dock+record removed together and the other survives; B1 empty-again and B5 declined-consumption variants included."
+    }
+  ],
+  "caps": []
+}

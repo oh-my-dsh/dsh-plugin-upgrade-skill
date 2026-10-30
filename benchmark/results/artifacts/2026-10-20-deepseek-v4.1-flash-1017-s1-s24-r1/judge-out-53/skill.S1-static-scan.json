@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位声明/目标/脚本，按 API-08 区分组合行与源码补丁，A1-03 会话视图拆分耦合与 pending 纪律讲清"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位生产/消费与 ignorable，A1-02 折叠、A2-01 生效，明确 Session.append 写不进该字段须 sidecar，且非消费侧白名单"
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "定位 apiProxy 两处，明确宿主面注入域服务（inject:['llm']→ctx.llm.listProviders()）、客户端面才走 ctx.remote，点名 pending 陷阱"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位固定路径，DSH_HOME 与当前 profile 一律取运行时/官方 launcher，未称 --profile 为 alpha.1 新增"
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "定位内部导入与命令注册，按归属模块重建、无稳定公开接缝标 pending 不猜路径，命令迁公开命令面"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位环回服务器，明说'只监听环回不是免鉴权理由'，区分官方鉴权通道与不自继承鉴权的自定义路由及 requestRejection"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处 JSONL 解析，讲明 stdout 从来是最终文本（rc.2 即如此、非 alpha.2 回归）、alpha.1 增量为 stderr reasoning 段、exit code 为准"
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "A1-01、A1-02+A2-01（含折叠）、A1-03、A1-04、A1-08 及 A1-05 全部正确映射且逐条附命中证据与排除理由"
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "七类命中与扫描限度完备，但目标版本 build/typecheck、隔离冷启动与功能链路仅记为跳过，未作为迁移后验证方案提出"
+    }
+  ],
+  "caps": []
+}

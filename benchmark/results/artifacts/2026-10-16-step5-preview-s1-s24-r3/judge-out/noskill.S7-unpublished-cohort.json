@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "published-version-evidence", "verdict": "pass", "reason": "Uses package.json declaration vs README-supplied registry list, marks registry facts as taken-as-given, and proposes package-specific npm view/semver verification without requiring online access."},
+    {"id": "caret-resolution", "verdict": "pass", "reason": "Correctly desugars the caret, applies the prerelease tuple rule, concludes install succeeds resolving to alpha.2 with silent type-baseline drift and unconfirmable alpha.1/alpha.2 diff; no false 'all alphas missing' claim."},
+    {"id": "workable-baseline-plan", "verdict": "pass", "reason": "Option B is a complete exact-pin-alpha.2 plan with tradeoffs and exit path; report also acknowledges alpha.1's surface can never be validated (impossible diff) and offers a vendored alpha.1 alternative."},
+    {"id": "reproducibility-and-exit", "verdict": "pass", "reason": "Committed lockfile + npm ci, tsc --noEmit gate, per-option exit paths, and an explicit unconfirmed-items section; single consistent manager, no install execution required."}
+  ],
+  "caps": [
+    {"id": "install-unpublished-registry-version", "triggered": false, "reason": "Never prescribes installing alpha.1 from npm; the vendored alpha.1 option is local/unconfirmed and no exact-install of the unpublished version is recommended."}
+  ]
+}

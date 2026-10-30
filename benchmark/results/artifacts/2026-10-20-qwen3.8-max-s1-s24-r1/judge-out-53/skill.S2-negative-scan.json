@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "定位两处调用并映射 A1-01；给出 host 面 inject ['llm']→ctx.llm.listProviders()（含 listConfigurableProviders 拆分）与 declared-but-dead apiproxy 依赖的移除。"
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "六个规范类目逐项模式组+全文证据；session-notes.js 判纯字符串/数组工具、cordis.patch.yml 判组合而非源码补丁，无文件名臆造耦合。"
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "论证零命中非兼容证明（启发式契约、死依赖即反例、静默 pending 失败），并区分决定性 apiProxy 断裂与六个阴性类目。"
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "提议（未执行）build/typecheck（skipLibCheck:false）、alpha.2 隔离冷启动断言激活且无服务 pending、ctx.llm.listProviders() 成功+失败分支的行为路径。"
+    }
+  ],
+  "caps": []
+}

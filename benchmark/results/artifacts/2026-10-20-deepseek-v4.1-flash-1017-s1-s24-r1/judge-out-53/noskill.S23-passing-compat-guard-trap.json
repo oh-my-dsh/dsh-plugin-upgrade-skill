@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "逐步走查 resolve()：L34 读 current 得 undefined、L35 提前返回先于 preventDefault；双沉默均解释（guard 四项 presence 探测全存活、undefined 是合法无会话态被静默忽略），未误称服务/guard 被删或抛错"
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "alpha1/alpha2 d.ts 对比齐全（current 消失、导航归 view owners），uiSession 类型走读给出 adapter.current→{key,ctx,hooks,keyedHooks,props}，key 替代 current、ctx 替代 scope(id)"
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "单构建双分支：有 uiSession 时读 adapter.current 的 key/ctx，否则回退 legacy current+sessions.scope；inject 增 optional uiSession；conversation 经绑定值 ctx 的 get('conversation') 解析、input.for 收该 scope"
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "partial",
+      "reason": "正确命名'字段级删除藏于服务级稳定'且 guard 改为探测具体快照字段/双契约，但坚持探测只在 activation（加热重载）并明确反对逐次/lazy 探测，未满足'须 lazy 或逐次运行、不能只在 activation'的要点"
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "partial",
+      "reason": "双宿主和弦行为验证、绑定值探测与 throwing deprecated getter 预防方案完整，但完全缺失'以 alpha.2 发布类型 typecheck 作为最强发布前闸门'且论证中贬低类型层检查"
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "最终修复是完整的 current-session 读取代码改动；同事的 re-register slot/re-declare inject 红鲱鱼被明确否定为非诊断"
+    }
+  ]
+}

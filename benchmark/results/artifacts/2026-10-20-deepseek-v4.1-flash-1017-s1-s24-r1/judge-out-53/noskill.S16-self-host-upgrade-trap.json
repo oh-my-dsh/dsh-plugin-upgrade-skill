@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "用日志与环境状态把会话/worker/journal 全部归入被替换的宿主进程：宿主先死、GUI 断连、工具结果无法落盘且结局未知；明确非偶发网络/超时故障，也未泛化为所有平台必崩"
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "包内容在而 dsh/dsh.cmd 缺失、dsh.ps1 陈旧 = bin-link 中断签名，内容存在不等于安装完整；把手工换树与 shim 损坏关联，并以七条理由拒绝手工换目录/手写 shim"
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "依 repair-notes 复述外部(非 dsh 会话)重跑 npm install -g @deepseek-ai/dsh@0.1.2-rc.1 重新生成 shim、dsh --version=rc.1，源 checkout 对齐同 tag；记录的修复/待验证与候选只读行为分层清楚"
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "识别自身即升级目标并拒绝会话内执行，交接外部流程：先全停宿主→pinned 安装→重启→强刷新→验证；明确区分既有规则与新增自宿主规则，宿主后代 shell 不算独立交接"
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "守卫把升级目标与自身运行时/worker 路径解析比对；用 alpha.5→rc.1 纯版本 diff 免插件迁移，重启/刷新后查版本标记与插件实际加载，备份清理仅在验证成功后；结论限于给定 tag"
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "最终协议明确拒绝会话内执行/宿主存活时安装，要求非 dsh 后代的外部终端在宿主全停后执行 pinned 安装"
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "最终修复是外部 registry pinned 安装；手工换目录/手写 shim 被逐条论证并明确拒绝"
+    }
+  ]
+}

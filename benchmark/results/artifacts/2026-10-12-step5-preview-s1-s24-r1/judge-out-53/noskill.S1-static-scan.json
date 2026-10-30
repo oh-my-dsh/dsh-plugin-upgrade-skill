@@ -1,0 +1,11 @@
+{"decisions":[
+{"id":"source-patch","verdict":"pass","reason":"Locates patch.yml target/symbol, apply-patch.mjs, and the patch: declaration; distinguishes source patching from composition and ties it to the session-view surface shared with #5."},
+{"id":"events","verdict":"pass","reason":"Locates producer/consumer and ignorable:true; explains alpha.1 removal vs alpha.2 restoration with net-state-unchanged reasoning and correctly keeps the marker; no Session.append claim."},
+{"id":"host-services","verdict":"partial","reason":"Locates apiProxy usage and its removal, but prescribes moving to the BFF/Typert RPC client without distinguishing Host domain-service injection (llm/listProviders) from the Web Client Remote."},
+{"id":"host-path","verdict":"pass","reason":"Locates the hardcoded homedir/.dsh/profiles/default write and recommends host-resolved/profile-runtime (DSH_HOME-style) resolution; no false --profile provenance claim."},
+{"id":"ui","verdict":"pass","reason":"Locates both the /internal SessionView import and registerCommand; flags module-resolution break and the need to verify the target's public UI seam after the split."},
+{"id":"channel","verdict":"pass","reason":"Locates the loopback HTTP server, notes it bypasses the gateway auth model (not exempt because loopback), distinguishes gateway-routed channels from raw listeners, and correctly marks it latent."},
+{"id":"subprocess","verdict":"partial","reason":"Locates both dsh call sites and the JSONL JSON.parse error, correctly noting stdout is final text and the assumption was already wrong; but never explains stderr as the progress channel."},
+{"id":"mapping","verdict":"partial","reason":"All couplings semantically identified and events/alpha.2 fold correct, but card IDs are self-invented provisional labels (apiProxy->A1-03, channel->A1-06, stdout->A1-07) that miss the required A1-01/A1-08 mapping."},
+{"id":"limits","verdict":"partial","reason":"Accounts for all seven hit categories and states scan limits thoroughly; proposes target-version build but lacks an explicit isolated-boot and functional-path verification proposal."}
+],"caps":[]}

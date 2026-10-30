@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "junction-deployment", "verdict": "pass", "reason": "Uses Junction LinkType, Target, and the # link: marker to prove the profile entry is the repo tree; explains editing deploys directly and that copying acts on the same physical files; distinguishes copied installs."},
+    {"id": "host-lock-and-client-cache", "verdict": "pass", "reason": "Attributes EBUSY to the running dsh host's open handles and old module state, explains tab closure releases nothing, and separately treats browser HTTP caching as requiring hard refresh after host restart; no version extrapolation."},
+    {"id": "rename-recovery", "verdict": "pass", "reason": "Explains rename through the junction renamed the sole physical source files, failing the follow-up copy; restores .old2 to original names preserving contents, node --check both, then activates; stopping host offered as precaution without requiring rename-while-locked."},
+    {"id": "ordered-activation", "verdict": "pass", "reason": "Correct semantic order: fully stop host, restart dsh web, hard-refresh bypassing cache, then verify new version/feature and no load errors; syntax check treated as gate, not activation."},
+    {"id": "install-mode-preflight", "verdict": "pass", "reason": "Pre-flight inspects LinkType/Target plus cordis.patch.yml link marker before any file operation, branches linked vs copied procedures, and explains why generic copy-into-node_modules advice caused the incident."}
+  ],
+  "caps": [
+    {"id": "copy-through-junction", "triggered": false, "reason": "Final plan explicitly forbids copying through the junction and renames .old2 back without deleting; copies mentioned only as rejected/copied-install alternatives."},
+    {"id": "browser-only-activation", "triggered": false, "reason": "Plan always requires full host stop/restart before hard refresh; browser-only steps are explicitly rejected."}
+  ]
+}

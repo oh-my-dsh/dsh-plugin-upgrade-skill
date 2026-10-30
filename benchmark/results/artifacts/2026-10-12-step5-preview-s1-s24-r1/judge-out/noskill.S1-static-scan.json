@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {"id": "source-patch", "verdict": "pass", "reason": "Locates patch.yml target/symbol, applier script and env contract; distinguishes declarative composition from source rewrite; ties patch target to the session-view split."},
+    {"id": "events", "verdict": "pass", "reason": "Locates producer/consumer and ignorable:true; correctly folds alpha.1 removal into alpha.2 restoration (keep marker, no double-count); explains required-on-read escape hatch; never claims Session.append can write the marker."},
+    {"id": "host-services", "verdict": "partial", "reason": "Locates both apiProxy calls and removal, but prescribes a generic 'BFF/Typert RPC client' route without distinguishing Host domain-service injection (llm/listProviders) from Web Client Remote."},
+    {"id": "host-path", "verdict": "pass", "reason": "Locates homedir()/.dsh/profiles/default and points to runtime DSH_HOME/profile resolution; no --profile-introduced-in-alpha.1 claim."},
+    {"id": "ui", "verdict": "pass", "reason": "Locates the /internal SessionView import and registerCommand; requires verifying the target's public owner/seam, flagging no-guess pending confirmation."},
+    {"id": "channel", "verdict": "pass", "reason": "Locates the loopback server; treats the unauthenticated raw route as a security hole and directs traffic to the authenticated Gateway transport vs raw listeners."},
+    {"id": "subprocess", "verdict": "partial", "reason": "Locates both call sites and correctly treats stdout-as-final-text as the already-wrong JSONL assumption (no invented alpha.2 stdout change), but never explains the stderr reasoning/progress channel."},
+    {"id": "mapping", "verdict": "partial", "reason": "Mappings are semantically substantively correct (source patch, A1-02+A2-01 fold, apiProxy, host path, UI, channel, stdout) but card IDs are admitted provisional and mis-keyed (e.g. its A1-05/UI and A1-06/channel collide with the real A1-05/A1-08), so coverage is incomplete against the rubric's targets."},
+    {"id": "limits", "verdict": "partial", "reason": "Accounts for all seven hit categories and states scan limits thoroughly, but does not concretely propose target-version build/typecheck, isolated boot, and a functional verification path."}
+  ],
+  "caps": []
+}

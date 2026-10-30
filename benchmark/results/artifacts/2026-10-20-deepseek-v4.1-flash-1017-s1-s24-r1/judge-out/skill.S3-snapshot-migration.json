@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "S3 locates the partial/runningCalls/turnEnds reads with lines, stages them onto the per-view chat legacy projection, then the chat timeline and ChatSnapshot order/nodes as the primary read, explicitly noting legacy is temporary only."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "S4 locates the running selector and explains it belongs to the useSession lifecycle seat outside the chat projection, keeping the existing call unchanged."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "S1/S2/S5 locate the removed dsh-client-runtime imports and the package.json client inject entry, repoint Context as ClientContext to scoped cordis and snapshot types to their owning packages, and defer unpinned timeline symbols to target exports."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "S7 locates the scoped slots.register call, wraps it in ctx.slots.inject, explains the ui-renderer Context augmentation and slots service ownership (S1/S5), and preserves the slot name and registration shape."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties every located change to fully explained cards including DSH-0.1.2-A1-03 and A1-25 for package removal, and its ordered plan separates immediate type/inject/lifecycle work from staged legacy-projection and timeline passes."
+    }
+  ],
+  "caps": []
+}

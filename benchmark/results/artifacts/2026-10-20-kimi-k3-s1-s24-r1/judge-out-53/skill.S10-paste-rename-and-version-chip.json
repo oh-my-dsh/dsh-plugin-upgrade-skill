@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "命名方案、批内 Set 并入、仅在 paste 路径记录创建前完成重命名(paste 处理器内或 origin:'paste' 选项),drop/picker 调 add 原样不变。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "以 getSnapshot().occurrences 为权威;引 fixture 守卫解释任意瞬时空快照即 records.delete 的漏报,另指出缓存只见本运行时新增;批内已分配名并入。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "引用 x-cache HIT/age=178/s-maxage=300 的 v0.2.9 缓存页,复现比较<=0 走 current 分支且 chip 插值 fetched tag;规则为严格更新才显示远程 tag,否则显示运行版本(max 语义)。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "单批/顺序批次编号、脆弱缓存回归(空快照退役后仍得 (2))、drop/picker 原名、旧/等/新远程 tag 的 chip 断言及反向用例齐备。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "PLUGIN_VERSION 与 package.json 同步+CI 断言;node --check 门禁并随发布跑测试链;无宿主更新端点,client 变更需浏览器硬刷新、host 半边需 dsh 重启。"
+    }
+  ],
+  "caps": []
+}

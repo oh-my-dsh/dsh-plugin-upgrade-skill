@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "removed-api-and-crash", "verdict": "pass", "reason": "Locates session.events reads (734, 657, 2685, 3004; 42 refs), maps the stack to iterating undefined after the getter removal, cites changelog alpha.4 removal and seq/eventAt/snapshotEvents replacements."},
+    {"id": "peer-check-boundary", "verdict": "pass", "reason": "Shows alpha.5 satisfies ^0.1.2-alpha.2 with a semver table, explains npm only checks version strings, never code or API existence, and calls the peer range an untested author claim."},
+    {"id": "distinct-breakage-categories", "verdict": "pass", "reason": "Explains multiple genuinely distinct classes: removal/rename, signature/arity change, semantic change of surviving APIs, return-shape/nullability, event changes, error behavior, resolution mismatch."},
+    {"id": "author-prevention", "verdict": "pass", "reason": "Requires testing top of range with a real boot smoke test, plus narrowing the peer range and adding load-time feature detection/dual-path adapter; explains metadata vs runtime guard and engines caveat."},
+    {"id": "user-preinstall-check", "verdict": "pass", "reason": "Gives concrete pre-install checks: diff the changelog across the peer range span (would have caught alpha.4 Session.events removal) and grep the plugin source for removed APIs against target declarations."}
+  ],
+  "caps": [
+    {"id": "peers-prove-runtime", "triggered": false, "reason": "Report explicitly states peer-range satisfaction proves nothing about runtime compatibility; no affirmative claim that a clean install proves API compatibility."}
+  ]
+}

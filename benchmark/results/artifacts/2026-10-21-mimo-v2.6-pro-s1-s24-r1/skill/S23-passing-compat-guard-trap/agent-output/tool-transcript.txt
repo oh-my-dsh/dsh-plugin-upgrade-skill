@@ -1,0 +1,25 @@
+1. read  E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+2. glob  pattern=**/*  path=<cell>\（列证据包与输出目录）
+3. read  <cell>\fixture\symptom-report.md
+4. read  <cell>\fixture\README.md
+5. read  <cell>\fixture\upgrade-notes.txt
+6. read  <cell>\fixture\plugin\src-client-index.ts
+7. read  <cell>\fixture\host-types\session-list-alpha1.d.ts
+8. read  <cell>\fixture\host-types\session-list-alpha2.d.ts
+9. read  <cell>\fixture\host-types\ui-session-service-alpha2.d.ts
+10. read  E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\v0.1.6-alpha.2.md（DSH-0.1.6-A2 卡集）
+11. read  E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\references\troubleshooting.md（症状→卡索引）
+12. grep  pattern="getSnapshot()\.current|scope\(id\)|inject =|applyWithCompat\(|current:|byId|items:|readonly ctx|adapter:|legacy\.nodes"  path=<cell>\fixture（取引用行号）
+13. glob  pattern=agent-output/**  path=<cell>\（确认输出目录可写）
+14. write  <cell>\agent-output\report.md（失败：代码模板解析错误，未产生写入）
+15. run_code  probe new Date()（非文件系统探针；2026-10-21T08:17:47Z）
+16. write  <cell>\agent-output\report.md（成功，23892 字节）
+17. write  <cell>\agent-output\tool-transcript.txt（v1，1432 字节）
+18. write  <cell>\agent-output\transcript-manifest.txt（v1，2876 字节）
+19. edit  <cell>\agent-output\report.md（更新 run-stats 计数，成功）
+20. read  <cell>\agent-output\report.md（失败：offset 190 越界，文件 189 行）
+21. read  <cell>\agent-output\report.md（校验末节与 run-stats）
+22. write  <cell>\agent-output\tool-transcript.txt（v2 定稿，补记 20-24 行）
+23. write  <cell>\agent-output\transcript-manifest.txt（v2 定稿，补记后续读写）
+24. edit  <cell>\agent-output\report.md（run-stats 定稿）
+25. send_message  agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（结果回传父代理）

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "定位 running-processes.txt 中 dsh web 宿主 node.exe(PID 42432)加载 koffi.node;.node 映射为可执行映像、进程存活期间被锁、Node 不卸载原生插件,npm copyfile 因此 EBUSY。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "明确刷新浏览器只重载 SPA、宿主仍持锁;有序步骤:Ctrl+C/按实际 PID 停宿主与会话 worker→tasklist 确认→安装→验证→重启 dsh web,未要求杀无关 Node 进程。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸名走 latest dist-tag(=0.1.1-rc.2,alpha=0.1.2-alpha.5),npm 不考虑已装版本,alpha.4 被静默降级为 rc.2;明确 unpinned 安装不保留当前版本。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "停止宿主后给出精确命令 npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 @deepseek-harness-tui/dsh-tui;@alpha 仅作易变替代讨论;验证 dsh --version=0.1.2-alpha.5 后重启 dsh web。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "要求 README 永不裸名 dsh、钉住确切经测试版本或明示 channel 当前含义、说明裸名跟随 latest 可静默降级、附停止与验证步骤,并建议插件 README 只装插件。"
+    }
+  ],
+  "caps": []
+}

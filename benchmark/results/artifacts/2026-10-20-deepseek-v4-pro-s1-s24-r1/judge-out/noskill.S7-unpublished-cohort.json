@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Correctly separates the ^0.1.2-alpha.1 declaration from the published set (alpha.1 never published, alpha.2 was), and proposes package-specific npm view verification without requiring network access."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains the caret range resolves to 0.1.2-alpha.2 with correct semver prerelease reasoning, identifies silent type-baseline drift/mismatch, and avoids claiming alpha.1 is guaranteed or that all alphas are missing."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path B gives an exact pin to published alpha.2 with tradeoff and explicitly acknowledges the type surface may differ from the never-published alpha.1; several coherent alternatives with tradeoffs and exit paths."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Consistent npm usage, notes the missing lockfile and that install would record alpha.2, includes manual-bump + type-check for the pin, honest unverified-items section, and exit paths per plan."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Never prescribes installing alpha.1 from npm; explicitly notes an exact pin to alpha.1 would fail with ETARGET and only targets published versions or flags the mismatch."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"published-version-evidence","verdict":"pass","reason":"Uses package.json declaration vs README published list; states alpha.1 never published, alpha.2 published; proposes npm view/dist-tags verification rather than executing it."},
+{"id":"caret-resolution","verdict":"pass","reason":"Correct desugaring and candidate-by-candidate evaluation; ^0.1.2-alpha.1 resolves to alpha.2, missing lower bound is not fatal; identifies silent type-baseline drift and prerelease tuple rule; notes alpha.1 diff unknowable."},
+{"id":"workable-baseline-plan","verdict":"pass","reason":"Option B exact-pins published 0.1.2-alpha.2 with tradeoffs and acknowledges it does not validate alpha.1; several other complete plans with tradeoffs."},
+{"id":"reproducibility-and-exit","verdict":"pass","reason":"Single package manager (npm), committed lockfile/npm ci, tsc --noEmit as baseline gate, per-option exit/upgrade paths, honest unconfirmed list."}
+],"caps":[
+{"id":"install-unpublished-registry-version","triggered":false,"reason":"Never prescribes installing alpha.1 from npm as available; all pins target published alpha.2 or local/source-built options."}
+]}

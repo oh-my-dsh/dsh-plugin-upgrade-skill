@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "duplicate-loader-attribution", "verdict": "pass", "reason": "Compares both excerpts showing identical workspace-files insert rows, locates the throw at EntryGroup.update during include apply, argues fatal composition error with no last-write-wins, and explicitly refutes the 'redundant, keep it' comment."},
+    {"id": "three-layering-cases", "verdict": "pass", "reason": "Table distinguishes config-override-by-id (safe), insert of unprovided id (safe, with examples), insert of bundle-provided id (fatal); classifies the maintainer's row as the third and grounds it in both excerpts with line cites."},
+    {"id": "minimal-profile-fix", "verdict": "pass", "reason": "Deletes only the workspace-files insert block (L16-20) from the profile patch, preserves all other rows and the bundle, forbids editing the bundle or renaming, and points to a config override by existing id if adjustment is ever needed."},
+    {"id": "plugin-and-failure-boundary", "verdict": "pass", "reason": "Explains the crash is composition-time before any plugin module loads so plugin-side change cannot help; §3.4 keeps the earlier document-read failure as a separate, unproven problem to verify independently rather than claiming the fix cures it."},
+    {"id": "author-and-host-prevention", "verdict": "pass", "reason": "Advises grepping installed bundle cordis.patch.yml (and other composing bundles) for the id before inserting and distinguishing override from insert; proposes a host diagnostic naming workspace-files with both declaration origins and pointing to deleting the profile block."}
+  ],
+  "caps": [
+    {"id": "retain-or-add-duplicate", "triggered": false, "reason": "Final advice removes the duplicate and calls keeping it a fatal error; the 'harmless redundancy' idea appears only as the maintainer's comment being refuted."}
+  ]
+}

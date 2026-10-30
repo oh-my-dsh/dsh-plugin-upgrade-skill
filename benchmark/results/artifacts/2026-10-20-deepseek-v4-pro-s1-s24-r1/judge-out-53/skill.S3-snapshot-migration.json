@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "chat-projection",
+   "verdict": "pass",
+   "reason": "定位三处读取；partial/runningCalls/turnEnds 走 views.get('chat')?.legacy 过渡投影，终态 useChat+ChatSnapshot.order/nodes；指出 legacy 暂读须显式双宿主"
+  },
+  {
+   "id": "session-lifecycle",
+   "verdict": "pass",
+   "reason": "定位 running；明确其为生命周期字段、不在 legacy 投影内，须经 useSession 席读取且该席存续（仅选择器输入类型变化），未要求重命名"
+  },
+  {
+   "id": "type-and-inject",
+   "verdict": "pass",
+   "reason": "定位 ClientContext/ConversationSnapshot 两处移除 import 与 client.inject 项；ClientContext→cordis Context+scoped type-only 增强，快照类型→ui-chat ChatSnapshot，未称 cordis 导出全部快照类型，未知符号显式延后"
+  },
+  {
+   "id": "slot-registration",
+   "verdict": "pass",
+   "reason": "定位 index.ts:29/38-42；说明保留 'slots' 于 export const inject、服务归 ui-renderer、需 renderer/client type-only 增强补全类型图；slot 名与注册形态保留并待 tag 核验"
+  },
+  {
+   "id": "mapping-and-plan",
+   "verdict": "pass",
+   "reason": "快照/生命周期/slot 变化全部系于 A1-03 实质论证；投影暂读与即时类型/注入/生命周期变更分层清晰；A1-25 作为包移除卡正确引入"
+  }
+ ],
+ "caps": []
+}

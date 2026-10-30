@@ -1,0 +1,13 @@
+S8-release-routing-trap · tool transcript（每次工具调用一行；run_code 顶层调用内的嵌套工具单独列出）
+1. glob pattern=**/*, path=fixture（列出 fixture 全部证据文件，共 5 个）
+2. read fixture\README.md
+3. read fixture\compat-table.md
+4. read fixture\dsh-version.txt
+5. read fixture\ls-remote-tags.txt
+6. read fixture\sync-script.sh
+7. fs.mkdir agent-output\S8-release-routing-trap（recursive；本行所在 run_code 随后因 Intl.DateTimeFormat 选项冲突在任何写入前中止）
+8. write agent-output\S8-release-routing-trap\report.md（8996 字符，完整诊断报告）
+9. write agent-output\report.md（8996 字符，同一报告副本，便于检索）
+10. write agent-output\tool-transcript.txt（本文件）
+11. write agent-output\transcript-manifest.txt
+12. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（自包含结果摘要）

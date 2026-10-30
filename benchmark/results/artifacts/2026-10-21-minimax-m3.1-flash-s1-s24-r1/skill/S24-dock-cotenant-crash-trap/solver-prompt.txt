@@ -1,0 +1,132 @@
+=== TASK SEGMENT (task brief) ===
+
+The task brief below is your assignment. It is reproduced verbatim from the sealed task material.
+
+# S24 · The Dock That Vanished Together (Read-Only)
+
+## Unattended Evaluation Authorization (BENCHMARK-AUTH-v1)
+
+This is an unattended evaluation running in a disposable, isolated container; there will be
+no follow-up user messages. This task brief is itself the user's explicit authorization and
+confirmation for the approach and execution needed to complete the necessary analysis and
+planning on your own, and keep executing as soon as the plan is formed — do not pause to
+wait for "confirmation", and do not ask the user follow-up questions. That confirmation
+continues to apply to the concrete plans you produce under the applicable skill, but only
+within this scope:
+
+- You may inspect `/app/fixture/`, in-container local documentation, and local tools read-only; `/app/fixture/` must remain completely unchanged; you may write your report into the designated `/app/agent-output/` directory as the brief specifies;
+- You may create temporary files needed for the report and run read-only local scan commands, but you must not execute migrations or installations;
+- You must not modify the skill, the evaluator, or the reference answers, and you must not publish, push, access external services, or alter resources outside the container;
+- If you cannot complete the task, state the blocker honestly, but do not stop merely because another round of confirmation is missing.
+
+## Scenario
+
+A maintainer upgrades dsh in place (npm global, 0.1.6-alpha.1 → 0.1.6-alpha.2) on a
+Windows web profile with six external client plugins. After the upgrade + restart, TWO
+things appear broken at once: the session-progress strip is entirely gone from the
+composer dock, AND the paste/attachment plugin's chip rail no longer renders when files
+are pasted (its attach button, mounted in a different slot, still shows). F12 shows
+exactly one render error. The maintainer reinstalled the attachment plugin to no effect,
+then ran one experiment whose result is the decisive evidence.
+
+The evidence pack is under `/app/fixture/` (read-only — do not modify it):
+`symptom-report.md`, `console-excerpt.txt`, `tried-notes.txt`,
+`plugin-a/SessionProgressBar-excerpt.tsx`, `plugin-b/dock-entry-excerpt.md`,
+`host-types/slots-contract-alpha1.d.ts`, `host-types/slots-contract-alpha2.d.ts`,
+`host-types/dock-render-tree.md`, `README.md`.
+
+**Your report** (write to `/app/agent-output/S24-dock-cotenant-crash-trap/`, any
+filename):
+
+1. **Culprit attribution**: which plugin actually fails, at which exact call, and why
+   now (what changed in the standard kit between the two contracts)? Use the console
+   error and the two type excerpts. Then explain why the innocent co-tenant's dock
+   entry disappears with it — name the mechanism, and use the render-tree note to
+   explain why the attach button in a different slot survives while the chips do not.
+2. **The experiment**: the maintainer's disable-experiment is the decisive evidence.
+   Explain exactly what it proves and what it does not (does it prove plugin B is
+   bug-free on alpha.2? does it prove the strip crash is the ONLY dock problem?).
+   Also explain why reinstalling plugin B could never have helped, and what is wrong
+   with the colleague's "both plugins were hit" theory.
+3. **The fix**: write the corrected component code (fenced) using graceful
+   degradation for the removed seat — state which hook supplies the pending state on
+   alpha.2, which feature of the strip degrades on a host that supplies neither
+   pending hook and which parts keep working, and why the degradation must be silent
+   rather than throwing.
+4. **Multi-tenant hygiene**: what should a dock tenant do so its own crash cannot
+   take down co-tenants, and what could the HOST change so one entry's failure
+   isolates to that entry? Name the trade-off the host faces.
+5. **Verification**: how to verify the fix restores BOTH plugins' dock entries
+   without a host restart, and what regression the verification must cover for
+   plugin B specifically.
+
+What is tested: attributing a co-tenant crash from a single error and a control
+experiment, reading a standard-kit reduction from sealed contracts, writing
+graceful-degradation code, and reasoning about slot isolation boundaries.
+
+=== END TASK SEGMENT ===
+
+The brief above is written for a container where /app/fixture is the sealed fixture and
+/app/agent-output is the report directory. In THIS environment those paths are mapped to your cell
+directory:
+
+  /app/fixture        ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/fixture
+  /app/agent-output   ->  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/agent-output
+
+Your report must be written under:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/agent-output/S24-dock-cotenant-crash-trap/
+
+(Any filename ending in .md or .txt is acceptable, as the brief states.)
+
+=== BOUNDARY SEGMENT (read whitelist / write scope) ===
+
+Your READ whitelist is exactly:
+
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/
+
+Within that whitelist, skills/plugin-upgrade/ is provided as reference material for you to use.
+
+HARD RULES:
+
+- You MUST NOT read, list, search, or open anything outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/.
+- You MUST NOT read tests/, solution/, benchmark/results/, or any other directory of this repository.
+- You MUST NOT write to ANY path outside E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/ - including system TEMP, /tmp, the user home,
+  the repository, or the fixture source tree. Any temporary file you need must be written under
+  E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/agent-output/ (a scratch subdirectory there is fine).
+- Do not modify, move, or delete anything under E:\deepseek-harness\dsh-plugin-upgrade-skill\benchmark\results\artifacts\2026-10-21-minimax-m3.1-flash-s1-s24-r1\skill\S24-dock-cotenant-crash-trap/fixture/ unless the brief explicitly authorizes it.
+- Do not modify the skill, any evaluator, or any reference answer.
+- Do not publish, push, or contact external services.
+- Do NOT probe the live host environment for facts the fixture does not contain: no `dsh --version`,
+  `dsh --help`, `dsh --dump-config`, `dsh --dump-config-schema`,
+  `dsh plugin --help`, `dsh headless --help`, and no `cordis_inspect_*` runtime
+  introspection. The installed host runs a DIFFERENT version than the version this task is about, so
+  anything you learn from it is out of scope and wrong. Work from the task brief and the fixture only.
+- Do not re-read the same file repeatedly. Read each fixture file once, take your notes, and move on;
+  a repeated read cycle wastes the run and invalidates the cell.
+- If you cannot verify something from the brief and the fixture, mark it as unconfirmed in the report
+  instead of guessing or going outside the whitelist to find out.
+- When your report cites a card or a reference document, write ONLY the key points and the card ID.
+  Do NOT paste the full text of a card or reference into your report or into your reply.
+  (Context budget is 256k; full-text pasting is a protocol violation.)
+
+=== END BOUNDARY SEGMENT ===
+
+=== ARM CLAUSE (skill available) ===
+
+Before you start the analysis, read skills/plugin-upgrade/SKILL.md in your cell directory.
+Consult its references/ files as needed for the change cards and API details.
+Follow the workflow that skill prescribes. Its bundled scripts under skills/plugin-upgrade/scripts/
+are yours to run - run them from the cell-local copy, never from another location.
+
+=== END ARM CLAUSE ===
+
+=== DELIVERY ===
+
+This is an unattended run. Do not ask questions; do not wait for confirmation.
+
+Budget: you have 25 minutes of wall clock. Plan for that. A good run reads the fixture files once
+or twice, writes the report, and finishes. If you find yourself re-reading files or repeating a
+probe, stop and write what you have.
+
+When the report file is written, finish with exactly: DONE

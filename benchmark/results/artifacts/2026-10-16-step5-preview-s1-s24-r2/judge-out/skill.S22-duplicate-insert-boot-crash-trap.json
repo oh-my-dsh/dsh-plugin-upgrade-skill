@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Compares both excerpts showing identical workspace-files insert rows, pins the throw to EntryGroup.update via cordis:include during composition, explains fail-fast versus silent override, and calls the 'keep to be safe' comment the anti-pattern."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Full three-case table: config-by-id override safe (with precedence reasoning), insert of unprovided id safe (dsh-file-trace/dsh-profiles examples), insert of bundle-provided id fatal; classifies the maintainer's row as the third case grounded in both excerpts plus the session-controller contrast."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Deletes exactly the manual workspace-files block with its comments from the profile patch, keeps bundle service and unrelated rows, rejects substituting an override insert, and rejects plugin-side fixes."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "Crash is composition-time before plugin execution, so no plugin-side change removes the overlay duplicate; removing the row restores boot while the original read failure is attributed to a separate stale-combo/artifact gap left to verification probes, not declared cured."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Advises opening and grepping the installed bundle's cordis.patch.yml (L110-111) before any insert and distinguishing override from insert; proposes a host diagnostic naming workspace-files, both declaration origins with file/line, and the exact block to delete."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice deletes the duplicate block; the 'silently shadowed' remark concerns non-insert row layering in a hypothetical, and duplicate inserts are consistently described as fatal, never as harmless or silently merging."
+    }
+  ]
+}

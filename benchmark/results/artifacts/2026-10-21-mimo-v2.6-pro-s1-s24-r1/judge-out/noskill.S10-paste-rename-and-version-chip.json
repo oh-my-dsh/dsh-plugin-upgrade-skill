@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "paste-names-and-scope", "verdict": "pass", "reason": "paste_image/paste_file with (2),(3)… before the extension, batch reservations plus live names, rename scoped to the paste acquisition path before validation, drop/picker keep real names."},
+    {"id": "live-conflict-state", "verdict": "pass", "reason": "Names live snapshot occurrences as authoritative and explains the records subscription deleting cache entries on transient empty snapshots while attachments stay live; batch reservations accounted."},
+    {"id": "stale-tag-display", "verdict": "pass", "reason": "Uses the cached tags capture (x-cache HIT, age 178, stale 0.2.9) and renderCurrentChip; rule: show update only when fetched is strictly newer, otherwise show running PLUGIN_VERSION, never an older tag."},
+    {"id": "regressions", "verdict": "pass", "reason": "T1–T3 cover repeated/same-batch pastes and unchanged drop/picker names; T5 covers live occurrence blocking with an emptied records cache; T8–T10 cover older/equal/newer remote tags."},
+    {"id": "release-hygiene", "verdict": "pass", "reason": "Syncs package.json version with hand-inlined PLUGIN_VERSION in lib/client.js, node --check plus behavioral gates, explains manual artifact replacement and hard refresh, notes there is no host-side update endpoint."}
+  ],
+  "caps": []
+}

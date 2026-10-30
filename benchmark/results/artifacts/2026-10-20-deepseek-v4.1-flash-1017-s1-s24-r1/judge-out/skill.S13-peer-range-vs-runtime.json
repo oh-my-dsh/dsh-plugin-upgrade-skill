@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates the session.events read in plugin-source-excerpt.js, links the crash-stack iteration failure to undefined after removal, and cites the changelog for the 0.1.2-alpha.4 removal with seq/eventAt/snapshotEvents replacements."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Explains the same-tuple prerelease rule making alpha.5 satisfy ^0.1.2-alpha.2, and that npm evaluates only a version-metadata predicate; a peer range is an author claim with nothing loaded, imported, or booted."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Five distinct classes explained concretely: removed/renamed API, changed shape/signature/type discipline (incl. async splits), declared-but-not-composed, behavioral/default changes, composition/manifest registration."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires CI matrix booting every admitted host version with a real cold start, then a narrowed tested peer range excluding alpha.4 and an activation-time capability probe with correct legacy/new paths; explains engines is for Node, not DSH API claims."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete pre-install investigation: fetch the published tarball and grep for the APIs removed in the floor-to-target corridor, tied directly to the Session.events removal and the alpha.5 boundary, plus an isolated boot check."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "The report's thesis is the opposite — peer satisfaction is never evidence of runtime compatibility; final advice never asserts installs or warnings prove API compatibility."
+    }
+  ]
+}

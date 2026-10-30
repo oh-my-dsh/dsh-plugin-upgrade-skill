@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "missing-mirror-tag", "verdict": "pass", "reason": "Uses ls-remote-tags.txt (v0.9.2-v0.9.6 missing incl. v0.9.5) and sync-script.sh (only HEAD:main, no tag refspec, no verification gate) to explain attempt 1's failure, explicitly excluding network/config causes."},
+    {"id": "runtime-compatibility-direction", "verdict": "pass", "reason": "Explains direction: v0.9.7 artifact targets DSH 0.1.2-alpha.1 client API while the consumer runs older 0.1.1-rc.2 lacking the useConversation export; install succeeds untracked and restart cannot help."},
+    {"id": "frozen-runtime-remedy", "verdict": "pass", "reason": "Keeps DSH at rc.2, selects v0.9.3 via rc.1 verification plus additive rc.2 note; flags that v0.9.3 tag is also absent, gives maintainer tag-push alternative and a conditional SHA path requiring the maintainer's rev-parse and a fetch reachability pre-check; no invented SHA, no DSH upgrade."},
+    {"id": "tag-distribution-repair", "verdict": "pass", "reason": "Script fix pushes the release tag refspec explicitly to each mirror (or --tags), plus per-mirror ls-remote verification gate failing the release on unresolvable documented tags."},
+    {"id": "version-routing-docs", "verdict": "partial", "reason": "Replaces the single default with a per-cohort matrix (rc.1/rc.2 to v0.9.3, alpha.1 to v0.9.7) and pin-change verification, but the routing line 'dsh-v0.1.2-alpha.1+' extends support to untested future alpha releases, which the criterion forbids."}
+  ],
+  "caps": []
+}

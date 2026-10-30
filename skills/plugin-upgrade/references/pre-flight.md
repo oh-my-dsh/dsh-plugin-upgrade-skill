@@ -34,6 +34,7 @@ artifacts, vendor, and `node_modules`. Record at least:
 - the resolved version and lockfile (trust only the package manager the repository actually uses);
 - the standard manifest `dsh-plugin.json` (if present);
 - profile composition: `cordis.patch.yml`, `agent.cordis.yml`, legacy `cordis.yml`;
+- prompt template variables: persona `prefix`/`suffix` and preset `suffix`/`prefix` templates, including copies nested in profile patches and installed bundles; resolve every `{{…}}` against the variables the target tag actually registers (`git grep "systemPrompt.variable(" <tag> -- packages/core/agent-loop/src/index.ts`) — a leftover `{{cwd}}` throws at render time and the session never starts, instead of degrading silently;
 - the actual install track: registry package, Git checkout, workspace/junction, or copied install.
 
 These files have different ownership, so they cannot all be called manifests, and unknown

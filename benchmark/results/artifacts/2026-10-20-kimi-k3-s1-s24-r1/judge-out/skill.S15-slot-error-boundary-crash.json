@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Locates the exact expression, identifies busy as a free identifier owned by sibling AttachButton and absent from AttachmentChips's scope chain, and explains the empty-state return null before the map plus the plain-phase falsy guard that forces evaluation and throws ReferenceError."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render-time throw is caught by the slot-level error boundary which unmounts the entire dock entry (no partial chip output), the attach button in a different slot with its own boundary survives, and the error surfaces only in the console with no UI banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Establishes from the shipped v0.2.10 artifact that busy pre-exists v0.2.11, proposes both rollback/re-add bisection and a minimal data-present plain-phase mount, notes the diff's misleading hunk and the imageItem placement inconsistency versus callback-scoped status/record, and avoids claiming exactly when every historical user first exercised the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Proposes removing the dangling reference (or properly owned state in a per-chip component) while keeping the phase guard; hardens record?.items ?? [] and event.target.closest?.() / instanceof Element check, and flags that the imageItem computation must live where status/record are scoped."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a data-present plain-phase mount test asserting the chip renders and the boundary does not capture, explains the empty-state early return that lets such tests pass and why node --check is a syntax check blind to free identifiers, and requires data-present slot smokes in pre-ship checks."
+    }
+  ],
+  "caps": []
+}

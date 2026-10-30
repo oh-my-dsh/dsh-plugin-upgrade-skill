@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Correctly distinguishes clipboard-space draft/occurrence offsets from detect-coordinate TokenSpan used by insertReference/consumeToken, chip = one U+FFFC vs full clipboardText, grounded in contract/facade lines with expansion-delta formula."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in add, explains empty-composer coincidence (0==0), 29 vs 2-unit detect overshoot after a chip, insertReference false and the plugin's changed-composer toast; explicitly rules out real concurrent edit/revision race."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove: clipboard offset/length [0,28) passed unconverted to consumeToken, false return ignored, records.delete runs anyway; chip stays, missing record renders unavailable; ties both symptoms to the same coordinate mismatch, not a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives toDetect subtracting SUM(length-1) of preceding chips, applies it at insert (detect end) and removal (mapped offset plus one-detect-char span), keeps draftRev guard, and retires records only after successful consumption or the clipboard-space fallback."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes two successive pastes (B2/B3) and removal with a preceding chip (C2/C4) asserting occurrence, chip and record removed while the other chip/offset survives; adds declined-consumption (C3), last-chip and empty-again (C4/C5) variants."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,10 @@
+{"decisions":[
+{"id":"self-host-failure","verdict":"pass","reason":"Traces session->host->worker chain into the replaced package; host dies mid-install, result transport dies with it, unknown outcome preserved; structural not flaky; scoped to this incident, no universal-platform claim."},
+{"id":"interrupted-install-signature","verdict":"pass","reason":"Shims generated only at install end; old unlinked, new never written; dsh/dsh.cmd missing, dsh.ps1 stale while content present; manual swap made tree non-standard; hand-copy/hand-shim repair rejected."},
+{"id":"external-pinned-repair","verdict":"pass","reason":"Repair-notes grounded: external pinned npm install regenerating all shims, dsh --version = rc.1, checkout aligned to rc.1 tag; immediate vs deferred verification separated from candidate actions."},
+{"id":"handoff-protocol","verdict":"pass","reason":"Refuses in-session execution (R-12); external procedure: fully stop every dsh process first, pinned install from plain shell, restart, refresh, verify; known rules vs new self-host rule distinguished; browser refresh is not a host stop."},
+{"id":"guard-and-postupgrade-checks","verdict":"pass","reason":"Guard resolves target identity vs own runtime/host path and blocks on match; version-only diff means no re-migration; checks version markers, plugin loading, ghost processes; cleanup last; specific to alpha.5->rc.1."}
+],"caps":[
+{"id":"execute-inside-target","triggered":false,"reason":"Final advice is refusal plus external handoff procedure only."},
+{"id":"manual-shim-repair","triggered":false,"reason":"Only formal external pinned reinstall is advised; manual fixes rejected."}
+]}

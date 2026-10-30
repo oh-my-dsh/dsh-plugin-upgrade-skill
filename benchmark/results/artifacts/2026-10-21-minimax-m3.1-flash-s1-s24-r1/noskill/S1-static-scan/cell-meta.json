@@ -1,0 +1,137 @@
+{
+  "task": "S1-static-scan",
+  "arm": "noskill",
+  "status": "timeout",
+  "invalid": [
+    "timeout:30min-cap-exceeded",
+    "invalid:no-report",
+    "invalid:roaming",
+    "invalid:loop"
+  ],
+  "startedAt": "2026-10-21T04:18:25.033Z",
+  "endedAt": "2026-10-21T05:12:57.410Z",
+  "durationMs": 3272377,
+  "durationSec": 3272,
+  "subagentId": "69628f20-d776-4ed7-9ab6-4d54ba49eaa3",
+  "sessionIds": [
+    "69628f20-d776-4ed7-9ab6-4d54ba49eaa3"
+  ],
+  "toolCalls": 344,
+  "toolCounts": {
+    "run_code": 71,
+    "working_directory": 1,
+    "glob": 2,
+    "read": 158,
+    "pwsh": 22,
+    "grep": 21,
+    "cordis_inspect_list": 2,
+    "cordis_inspect_query": 67
+  },
+  "tokens": {
+    "uncachedInputTokens": 157517,
+    "outputTokens": 192498,
+    "cacheReadTokens": 2907661,
+    "cacheWriteTokens": 0,
+    "total": 3257676
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 72,
+      "llmMs": 2891370,
+      "toolMs": 299854
+    }
+  ],
+  "stopReason": "timeout",
+  "stopDetail": "Solver was interrupted by the orchestrator at 55 min (cap is 30 min). It never wrote a report file; its closing message was 'All evidence is gathered and cross-verified. Now let me write the report.' Behavior was degenerate: 273 tool dispatches over 72 steps, of which ~185 were repeated re-reads of the same 6 fixture files, plus 67 cordis_inspect_query calls and 22 dsh --dump-config probes against the live host runtime. The solver was probing the RUNNING host (dsh 0.2.1-rc.1) to reconstruct target-version facts that the fixture does not contain, instead of reasoning from the task brief.",
+  "checks": {
+    "report": {
+      "found": false,
+      "candidates": 0,
+      "path": null,
+      "chars": 0,
+      "nonEmpty": false,
+      "pass": false
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 344,
+      "toolCounts": {
+        "run_code": 71,
+        "working_directory": 1,
+        "glob": 2,
+        "read": 158,
+        "pwsh": 22,
+        "grep": 21,
+        "cordis_inspect_list": 2,
+        "cordis_inspect_query": 67
+      },
+      "violations": [
+        {
+          "kind": "read",
+          "tool": "pwsh",
+          "raw": "C:\\Users\\lhh\\AppData\\Local\\nvm\\v24.18.1\\node_modules\\@deepseek-ai\\dsh\\package.json",
+          "resolved": "C:\\Users\\lhh\\AppData\\Local\\nvm\\v24.18.1\\node_modules\\@deepseek-ai\\dsh\\package.json",
+          "verdict": "invalid:roaming",
+          "detail": "filesystem cmdlet segment with an absolute path operand outside the cell whitelist"
+        }
+      ],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": false
+    },
+    "timeout": {
+      "capMinutes": 30,
+      "actualMinutes": 55,
+      "exceeded": true,
+      "pass": false
+    },
+    "loop": {
+      "detected": true,
+      "pass": false,
+      "signature": "repeating 6-file read cycle",
+      "cycle": [
+        "fixture/README.md",
+        "fixture/package.json",
+        "fixture/patch.yml",
+        "fixture/cordis.patch.yml",
+        "fixture/src/index.ts",
+        "fixture/scripts/apply-patch.mjs"
+      ],
+      "cycleLength": 6,
+      "cycleRepetitions": 25,
+      "redundantReads": 150,
+      "totalReadDispatches": 158,
+      "uniqueReadOperands": 11,
+      "maxRepeatOfOneOperand": 25,
+      "shareOfRunThatWasLoop": 0.55,
+      "note": "The solver re-read the same 6 fixture files in a fixed repeating cycle 25 times. The cycle produced no new information and consumed roughly the last half of the run. Combined with the roaming probe of the live host runtime, this is a degenerate execution, not a productive one."
+    }
+  },
+  "error": "timeout",
+  "loopDetected": true,
+  "loop": {
+    "detected": true,
+    "signature": "repeating 6-file read cycle",
+    "cycle": [
+      "fixture/README.md",
+      "fixture/package.json",
+      "fixture/patch.yml",
+      "fixture/cordis.patch.yml",
+      "fixture/src/index.ts",
+      "fixture/scripts/apply-patch.mjs"
+    ],
+    "cycleLength": 6,
+    "cycleRepetitions": 25,
+    "redundantReads": 150,
+    "totalReadDispatches": 158,
+    "uniqueReadOperands": 11,
+    "maxRepeatOfOneOperand": 25,
+    "shareOfRunThatWasLoop": 0.55,
+    "note": "The solver re-read the same 6 fixture files in a fixed repeating cycle 25 times. The cycle produced no new information and consumed roughly the last half of the run. Combined with the roaming probe of the live host runtime, this is a degenerate execution, not a productive one."
+  }
+}

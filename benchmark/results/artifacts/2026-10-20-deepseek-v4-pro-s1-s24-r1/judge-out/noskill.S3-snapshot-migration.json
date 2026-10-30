@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "partial",
+      "reason": "Correctly locates the partial/runningCalls/turnEnds reads in Pet.tsx, but its projection-vs-switch classification is contradicted by the rubric: it speculates running and runningCalls are projection-safe while partial/turnEnds must switch immediately, never identifying the chat legacy projection (views.get('chat')?.legacy) or the target-owned Chat/useChat access."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "fail",
+      "reason": "Locates the running read but treats it as a projection-derivable snapshot field; never explains it belongs to the Session/useSession lifecycle seat outside chat legacy."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "partial",
+      "reason": "Locates the removed ConversationSnapshot/ClientContext runtime imports and legitimately defers exact new symbols, but never locates the package.json client.inject entry and does not repoint Context to scoped cordis."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "fail",
+      "reason": "Mentions scope.slots.register exists but wrongly concludes index.ts is unaffected by the migration; no explanation of slots.inject, Context augmentation, ui-renderer ownership, or slot name/lifetime preservation."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "fail",
+      "reason": "Explicitly declines to cite any card identifiers, so no DSH-0.1.2-A1-03 mapping and no card-grounded projection/immediate separation; per rubric a bare or absent card ID earns zero."
+    }
+  ],
+  "caps": []
+}

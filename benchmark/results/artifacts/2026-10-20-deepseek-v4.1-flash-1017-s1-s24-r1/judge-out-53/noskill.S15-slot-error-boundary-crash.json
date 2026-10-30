@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "定位 disabled 表达式，指出 busy 是兄弟组件 AttachButton 的 useState 局部量、在 AttachmentChips 中无绑定，空列表先 return null 而 plain 相位使左守卫为假才求值 busy 引发 ReferenceError。"
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "解释渲染异常被槽级错误边界捕获并卸载整个 dock 槽项而非仅移除按钮，+按钮是独立槽项存活，诊断只在浏览器控制台、无 UI 横幅。"
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "partial",
+      "reason": "基线确立(busy 已在 v0.2.10)与 plain 相位数据在场挂载、回滚-重加隔离都很扎实且讨论了 imageItem 越界缺陷，但断言 diff 仅把 busy 行'作为上下文'——实际 feature.diff 以 -/+ 把该行呈现为 v0.2.11 新增，rubric 点名的 diff 与基线不一致被误述而非辨析。"
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "删除悬空 busy 引用并保留相位守卫(locked)，配 (record?.items ?? [])、event.target?.closest?.() 加固，imageItem 移入 record/status 所在回调作用域。"
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "提出 plain 相位带 occurrence 的挂载测试并断言芯片/移除按钮在场且边界零捕获，解释空态测试为何漏检与 node --check 只解析不解析绑定，预发门槛含数据在场槽冒烟。"
+    }
+  ],
+  "caps": []
+}

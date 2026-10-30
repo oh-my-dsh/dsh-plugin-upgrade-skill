@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "用 console-split-chunks.txt 说明兄弟 import 按入口 chunk 自身 URL 解析且未随包发布，故入口 200 后整图 import() 拒绝；给出 inlineDynamicImports 单文件方案及整图发布+清单的等价替代。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "对照 ci-note 的 LIB_DIR 'E:' 与 realpath 'e:'，以码元级 startsWith 解释 403；Linux 单一拼写、C: 笔记本拼写巧合故通过，未泛称 Windows 路径不可靠或 realpath 恒小写。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "realpath 双侧归一后用 path.relative 判包含，拒绝 ''、'..' 前缀、绝对结果与解析后的 symlink 逃逸；win32/posix 各用平台语义，保留 application/javascript MIME，明确拒绝 lowercasing 与去防护。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "解释同一 Ctrl+wheel 被窗格字号与 modal 缩放两个监听各自处理、preventDefault 不阻传播、window 捕获先行使 modal 内 stopPropagation 无法撤销；给出单一路由/外层挂起等仲裁，modal 独占并阻止默认与传播。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "依赖集可部署、大小写差异的包含路径可服务且遍历/symlink 逃逸被拒、modal 缩放不改窗格字号均有带期望值的检查，但缺少'导入失败保留代码块回退'这一检查项。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "最终方案保留并强化包含检查（双侧 realpath+path.relative），未建议禁用防护或服务根外路径。"
+    }
+  ]
+}

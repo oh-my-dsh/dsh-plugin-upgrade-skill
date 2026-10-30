@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "native-module-owner", "verdict": "pass", "reason": "Identifies PID 42432 web host as loader of koffi.node; image section kept until process exit makes copyfile fail with EBUSY."},
+    {"id": "browser-versus-host-sequence", "verdict": "pass", "reason": "Explains refresh only reloads the SPA while host survives; gives ordered stop-verify-install-restart steps scoped to dsh host/workers (kill-all fallback carries an explicit caution)."},
+    {"id": "unpinned-dist-tag-resolution", "verdict": "pass", "reason": "Unpinned install follows latest=0.1.1-rc.2 while alpha=0.1.2-alpha.5; explains semver downgrade replacing alpha.4."},
+    {"id": "safe-exact-commands", "verdict": "pass", "reason": "Gives pinned npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus pinned TUI install after stopping host; verifies dsh --version and restarts."},
+    {"id": "readme-prevention", "verdict": "pass", "reason": "Tells authors to pin exact core versions, avoid following latest over a prerelease, and keep core/plugin commands pinned."}
+  ],
+  "caps": []
+}

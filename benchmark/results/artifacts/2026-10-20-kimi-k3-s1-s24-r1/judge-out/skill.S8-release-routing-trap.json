@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses the tag listing and the branch-only sync script to attribute attempt 1 to tag distribution, explicitly rejecting network or command guesses."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explains the direction: v0.9.7 consumes the alpha.1 useConversation seat absent from the 0.1.1-rc.2 client surface; restart cannot fix a missing export, install success proves nothing."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "fail",
+      "reason": "Contradicts the fixture by asserting v0.9.3 is present on the mirror and installs it immediately; the criterion requires noticing v0.9.3 is absent and pinning it only after maintainer tag publication, so the remedy is presented as installable when it would fail exactly like attempt 1."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit tag pushes to every mirror with a per-mirror ls-remote verification gate and README-command smoke test; tags are never force-pushed."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Routes installs by runtime version via a published compat table plus a peer-range declaration (rc.x → v0.9.3, ≥0.1.2-alpha.1 → v0.9.7), with a deliberate frozen-runtime patch line rather than blanket alpha support."
+    }
+  ],
+  "caps": []
+}

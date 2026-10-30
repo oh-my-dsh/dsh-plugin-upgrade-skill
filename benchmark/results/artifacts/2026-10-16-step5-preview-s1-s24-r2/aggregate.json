@@ -1,0 +1,285 @@
+{
+  "run": "2026-10-16-step5-preview-s1-s24-r2",
+  "round": 2,
+  "solver": "StepFun Step 5 Preview (DSH in-session subagents; provider-configured API; see run-manifest for per-cell model descriptors)",
+  "protocol_deltas_vs_r1": [
+    "harness: DSH in-session subagents (r1 used an external opencode orchestrator)",
+    "WORKSPACE BOUNDARY adds an explicit out-of-cell write ban (incl. system TEMP); temporary scripts live inside agent-output/ — zero real boundary violations this round (r1 had 3 TEMP-write invalids)",
+    "transcript audit uses the corrected rules (r1 judge-side adjudication semantics): regex char classes, quoted path literals, path-less globs with in-cell absolute patterns, and no-FS probes are not violations"
+  ],
+  "tasks": 24,
+  "attempts": "1 per cell (5 provider-failure relaunches; 2 over-limit cells with reports in place scored as-run)",
+  "judges": {
+    "canonical": "glm-5.3-flash (in-session subagents, sealed briefs)",
+    "panel": "glm-5.3 (same protocol, independent run)"
+  },
+  "byTask": {
+    "S1-static-scan": {
+      "noskill": {
+        "flash": 70,
+        "glm53": 70
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S10-paste-rename-and-version-chip": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S11-mermaid-lazyload-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S12-global-upgrade-ebusy-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S13-peer-range-vs-runtime": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S14-link-install-lock-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S15-slot-error-boundary-crash": {
+      "noskill": {
+        "flash": 90,
+        "glm53": 90
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S16-self-host-upgrade-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S17-external-ui-plugin-onboarding-trap": {
+      "noskill": {
+        "flash": 80,
+        "glm53": 80
+      },
+      "skill": {
+        "flash": 90,
+        "glm53": 100
+      }
+    },
+    "S18-terminal-sprite-render-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S19-phantom-update-stale-host": {
+      "noskill": {
+        "flash": 80,
+        "glm53": 90
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S2-negative-scan": {
+      "noskill": {
+        "flash": 80,
+        "glm53": 70
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S20-msvc-flock-trap": {
+      "noskill": {
+        "flash": 97.5,
+        "glm53": 82.5
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S21-resource-service-unavailable-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S22-duplicate-insert-boot-crash-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S23-passing-compat-guard-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S24-dock-cotenant-crash-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S3-snapshot-migration": {
+      "noskill": {
+        "flash": 50,
+        "glm53": 40
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S4-legacy-client-imports": {
+      "noskill": {
+        "flash": 62.5,
+        "glm53": 75
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S5-negative-naming": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 87.5
+      }
+    },
+    "S6-corridor-net-state": {
+      "noskill": {
+        "flash": 75,
+        "glm53": 75
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S7-unpublished-cohort": {
+      "noskill": {
+        "flash": 87.5,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S8-release-routing-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    },
+    "S9-composer-coordinate-trap": {
+      "noskill": {
+        "flash": 100,
+        "glm53": 100
+      },
+      "skill": {
+        "flash": 100,
+        "glm53": 100
+      }
+    }
+  },
+  "totals": {
+    "noskill": {
+      "flash": 2172.5,
+      "glm53": 2172.5
+    },
+    "skill": {
+      "flash": 2390,
+      "glm53": 2387.5
+    }
+  },
+  "means_over_24": {
+    "noskill": {
+      "flash": 90.52,
+      "glm53": 90.52
+    },
+    "skill": {
+      "flash": 99.58,
+      "glm53": 99.48
+    }
+  },
+  "lift_pp": {
+    "flash": 9.06,
+    "glm53": 8.96
+  },
+  "inter_judge": {
+    "exact_cell_agreement": "40/48 scored cells identical; all divergences are single-step partial/pass boundary moves; no cap triggered under either judge"
+  }
+}

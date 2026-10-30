@@ -1,0 +1,22 @@
+PS E:\dev> Copy-Item E:\dev\dsh-attach-input\lib\*.js C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input\lib\ -Force
+Copy-Item : The file "C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input\lib\client.js"
+is being used by another process, so the process cannot access this file.
++ CategoryInfo          : NotSpecified: (:) [ ], IOException, Microsoft.PowerShell.Commands.CopyItemCommand
+
+# maintainer closes the browser tab, waits, retries:
+PS E:\dev> Copy-Item E:\dev\dsh-attach-input\lib\*.js C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input\lib\ -Force
+Copy-Item : ... same IOException for client.js, index.js, package.json
+
+# maintainer tries the rename-aside trick (rename the locked file, then copy the new one in):
+PS E:\dev> $dst = 'C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input\lib'
+PS E:\dev> Rename-Item ($dst + '\client.js') 'client.js.old2'
+PS E:\dev> Rename-Item ($dst + '\index.js') 'index.js.old2'
+PS E:\dev> Copy-Item 'E:\dev\dsh-attach-input\lib\client.js' ($dst + '\client.js')
+Copy-Item : Cannot find path "E:\dev\dsh-attach-input\lib\client.js" because it does not exist.
+PS E:\dev> Get-ChildItem E:\dev\dsh-attach-input\lib
+client.js.old2
+index.js.old2
+PS E:\dev> Get-ChildItem $dst
+client.js.old2
+index.js.old2
+# ^ both directories now show ONLY the renamed files, and the plugin has no entry files at all

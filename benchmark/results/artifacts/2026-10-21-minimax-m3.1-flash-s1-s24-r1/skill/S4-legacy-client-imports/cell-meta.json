@@ -1,0 +1,103 @@
+{
+  "task": "S4-legacy-client-imports",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T05:51:14.866Z",
+  "endedAt": "2026-10-21T06:07:37.463Z",
+  "durationMs": 982597,
+  "durationSec": 983,
+  "subagentId": "f0a42200-339b-4829-8221-c0b632e8b713",
+  "sessionIds": [
+    "f0a42200-339b-4829-8221-c0b632e8b713"
+  ],
+  "toolCalls": 93,
+  "toolCounts": {
+    "run_code": 34,
+    "pwsh": 5,
+    "read": 32,
+    "grep": 19,
+    "write": 1,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 242314,
+    "outputTokens": 81741,
+    "cacheReadTokens": 2643652,
+    "cacheWriteTokens": 0,
+    "total": 2967707
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 35,
+      "llmMs": 950039,
+      "toolMs": 28006
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S4-legacy-client-imports/S4-migration-touchpoint-report.md",
+      "chars": 28985,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 93,
+      "toolCounts": {
+        "run_code": 34,
+        "pwsh": 5,
+        "read": 32,
+        "grep": 19,
+        "write": 1,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 32,
+      "uniqueOperands": 23,
+      "maxRepeatOfOneOperand": 4,
+      "overThresholdOperands": [
+        {
+          "operand": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-21-minimax-m3.1-flash-s1-s24-r1\\skill\\S4-legacy-client-imports\\skills\\plugin-upgrade\\references\\rollup-0.1.2.md",
+          "count": 4
+        }
+      ],
+      "repeatingCycle": null,
+      "redundantReads": 9,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 2,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T05:51:14.866Z",
+    "endedAt": "2026-10-21T06:07:37.463Z",
+    "durationSec": 983,
+    "flushWaitMs": 41,
+    "complete": true
+  }
+}

@@ -1,0 +1,43 @@
+S18 · reproduction trace  (node repro-halfblock.mjs)
+
+================================================================================
+A. PHANTOM PIXEL: inherited background in the empty half of a half-filled cell
+================================================================================
+raw row : "   \u001b[38;2;26;28;38m▄\u001b[38;2;26;28;38m\u001b[48;2;40;120;190m▀▀▀▀▀▀▀▀\u001b[38;2;26;28;38m▀\u001b[38;2;220;50;70m▀▀\u001b[0m"
+
+cell  up lo  glyph  fg-at-write         bg-at-write         verdict
+   0    .   .     (sp)     default              default              
+   1    .   .     (sp)     default              default              
+   2    .   .     (sp)     default              default              
+   3    .   D     ▄     rgb(26,28,38)        default              half-cell
+   4    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+   5    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+   6    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+   7    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+   8    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+   9    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+  10    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+  11    D   B     ▀     rgb(26,28,38)        rgb(40,120,190)      
+  12    D   .     ▀     rgb(26,28,38)        rgb(40,120,190)      half-cell  <== PHANTOM: empty half painted rgb(40,120,190)
+  13    H   .     ▀     rgb(220,50,70)       rgb(40,120,190)      half-cell  <== PHANTOM: empty half painted rgb(40,120,190)
+  14    H   .     ▀     rgb(220,50,70)       rgb(40,120,190)      half-cell  <== PHANTOM: empty half painted rgb(40,120,190)
+
+visible cells emitted: 15 | sprite width: 20 -> every trailing transparent cell was deleted, not blanked
+
+================================================================================
+B. GHOST FRAME: row width is data-dependent; trailing blanks are not paint
+================================================================================
+wide pose   visible cells: 40
+narrow pose visible cells: 28 -> columns 28..39 are never written, so the wide tail survives
+naive pad with 12 spaces -> visible cells after pipeline trim: 28 (padding is stripped, still 28)
+narrow + ESC[K           -> ESC[K survives pipeline trim: true (ESC[K is not whitespace)
+recommended row suffix   : "\u001b[0m\u001b[K" (pad to canvas width first, then EL)
+
+================================================================================
+C. HANG: a self-re-arming setTimeout is a ref-ed handle that pins the event loop
+================================================================================
+mounted, flag OFF        -> ref-ed Timeouts: 0
+mounted, flag ON (as is)-> ref-ed Timeouts: 1 => loop pinned, job cannot exit
+unmount() clears         -> ref-ed Timeouts: 0
+mounted, flag ON + unref -> ref-ed Timeouts: 0 => animation still ticks, loop drains, process exits
+hosts that never unmount never run the clear; unref() makes that harmless.

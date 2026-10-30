@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "partial",
+      "reason": "精确定位 partial/runningCalls/turnEnds 三处读取并给出暂态投影概念，但投影为自拟（三字段实际均可走 chat legacy 投影），后续也未走 views/timeline/useChat 而是编造新字段"
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "partial",
+      "reason": "定位 running 并保留 useSession 调用（未踩改名陷阱），但称 running 可走兼容投影，与'生命周期字段不在投影内、留在 useSession 座位'的结论相反"
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "fail",
+      "reason": "迁移后仍从已删除的 dsh-client-runtime 导入类型，漏掉 index.ts 的 ClientContext 导入，还将 client.inject 判为无需改动，未做 cordis/目标归属重指向"
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "定位 slots.register 并解释服务级 inject 排序边、保留槽名与生命周期，但未讲 slots.inject 声明级等待与 ui-renderer/client Context 增强及服务归属"
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "partial",
+      "reason": "逐项给出暂拟卡号与投影/立即分层及迁移顺序，但卡号全为自拟（真实 A1-03 未引用），A1-25 包移除卡缺失且结论与之矛盾"
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,34 @@
+1. glob pattern=**/* path=...\S3-snapshot-migration\fixture
+2. glob pattern=**/* path=...\S3-snapshot-migration\agent-output
+3. read ...\fixture\README.md
+4. read ...\fixture\cordis.patch.yml
+5. read ...\fixture\package.json
+6. read ...\fixture\src\client\Pet.tsx
+7. read ...\fixture\src\client\index.ts
+8. read ...\fixture\src\client\locales.ts
+9. glob pattern=**/* path=...\S3-snapshot-migration（查隐藏文件，结果与 1/2 一致）
+10. glob pattern=* path=...\S3-snapshot-migration
+11. cordis_inspect_list（列出全部 Inspect Provider）
+12. pwsh Get-ChildItem -Force -Recurse workdir=...\S3-snapshot-migration（枚举格目录）
+13. cordis_inspect_query platform=client provider=Service method=listService（10s 超时，页面未连上）
+14. cordis_inspect_query platform=host provider=Tool method=listTools
+15. cordis_inspect_query platform=host provider=Service method=listService（契约目录）
+16. cordis_inspect_query platform=client provider=Service method=listService（10s 超时）
+17. cordis_inspect_query platform=client provider=Event method=listEvents（10s 超时）
+18. cordis_inspect_query platform=host provider=Service method=listService（服务键清单）
+19. cordis_inspect_query platform=client provider=Builtin method=listBuiltins（10s 超时）
+20. cordis_inspect_query platform=client provider=Service method=listService（10s 超时）
+21. pwsh dsh --version（进程探针，非文件系统访问）
+22. cordis_inspect_query platform=host provider=Service method=listService（服务键清单复核）
+23. read ...\fixture\src\client\Pet.tsx（带行号复核，供引用行号）
+24. read ...\fixture\src\client\index.ts（带行号复核）
+25. read ...\fixture\src\client\locales.ts（带行号复核）
+26. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（中期发现：卡片目录不可及）
+27. write ...\agent-output\report.md（迁移评估报告）
+28. edit ...\agent-output\report.md（失败：old_string 未匹配，文件未改动）
+29. read ...\agent-output\report.md（取 run-stats 原文用于精确替换）
+30. edit ...\agent-output\report.md（run-stats 精确完成时间与工具计数，状态：ok）
+31. write ...\agent-output\tool-transcript.txt（本文件）
+32. write ...\agent-output\transcript-manifest.txt
+33. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（最终结果汇报）
+备注：上列均经 run_code 执行器发出；另有 1 次 run_code 因代码解析错误未发出工具调用、1 次 run_code 仅 console.log 解析探针，均不计为文件系统访问。

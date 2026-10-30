@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "published-version-evidence",
+   "verdict": "pass",
+   "reason": "以 fixture 与题面注册表快照为权威（alpha.1 未发布、alpha.2 唯一满足且确定），Layer 2 的后续测量明确标为未确认，并提出 npm view/dry-run 等包级验证供维护者执行。"
+  },
+  {
+   "id": "caret-resolution",
+   "verdict": "pass",
+   "reason": "给出区间展开与同元组预发布准入规则，解释装到 alpha.2、区间并非不可解析（四类安装失败均不含'声明版本缺失'），并点明静默类型基线错位与预发布类型面（TS2305 等）不确定性。"
+  },
+  {
+   "id": "workable-baseline-plan",
+   "verdict": "pass",
+   "reason": "A1 精确钉 0.1.2-alpha.2 + 提交 lockfile 为完整方案，利弊/出口齐备；B 明言只有源码 tag 校验才能证明 alpha.1 面（即承认 A1 不验证 alpha.1），C 给源码构建本地 tarball 的完整 alpha.1 路径。"
+  },
+  {
+   "id": "reproducibility-and-exit",
+   "verdict": "pass",
+   "reason": "A1 单一 npm + lockfile + npm ci + tsc --noEmit；C 的 overrides 给出'注册表可用即删除'出口，A1 给出 0.1.2 final 后的升级出口；§5 未确认清单诚实，不混用包管理器。"
+  }
+ ],
+ "caps": [
+  {
+   "id": "install-unpublished-registry-version",
+   "triggered": false,
+   "reason": "'Do not' 明确禁止精确写 0.1.2-alpha.1（ETARGET），B 用 git tag + tsconfig paths，C 用本地打包 tarball，均非从 npm 安装未发布版本。"
+  }
+ ]
+}

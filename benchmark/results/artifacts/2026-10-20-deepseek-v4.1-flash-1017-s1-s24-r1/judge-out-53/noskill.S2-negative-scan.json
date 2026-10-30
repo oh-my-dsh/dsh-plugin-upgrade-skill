@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "partial",
+      "reason": "定位 inject/apiProxy.llm.providers 与死依赖并给出迁移要求，但未映射 A1-01（自拟 TP-3 卡），也未给出 llm 注入/listProviders 的宿主面正解"
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "partial",
+      "reason": "六类无命中均有文件证据，session-notes.js 判纯工具、cordis.patch.yml 判组合皆正确；但类别清单为自拟，未覆盖宿主目录/自定义通道/子进程三类"
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "七条理由说明零命中≠兼容（扫描覆盖/依赖清单/运行期契约/语义变化/结构假阴性），并将唯一 apiProxy 断裂与六类负结论区分"
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "提出迁移后 build/typecheck、隔离 profile 冷启动（apply 时服务在场）与真实 providers() 冒烟，均声明为建议未执行"
+    }
+  ],
+  "caps": []
+}

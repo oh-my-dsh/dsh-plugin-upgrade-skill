@@ -1,0 +1,38 @@
+S17 tool transcript（序号. 工具名 关键参数）
+1. run_code 读取 SKILL.md + 枚举 fixture/agent-output 目录
+2. read E:\deepseek-harness\dsh-plugin-upgrade-skill\skills\plugin-upgrade\SKILL.md
+3. glob pattern=**/* path=...\S17-external-ui-plugin-onboarding-trap\fixture
+4. glob pattern=**/* path=...\S17-external-ui-plugin-onboarding-trap\agent-output
+5. run_code 读取 fixture 全部 8 个证据文件
+6. read ...\fixture\README.md
+7. read ...\fixture\browser-error.txt
+8. read ...\fixture\host-boot-log.txt
+9. read ...\fixture\plugin-apply-error.txt
+10. read ...\fixture\plugin\lib\client.js
+11. read ...\fixture\profile\cordis.patch.yml
+12. read ...\fixture\restart-notes.txt
+13. read ...\fixture\working-plugin-excerpt.txt
+14. run_code 在 skills\plugin-upgrade 内检索关键概念
+15. grep pattern=__ModuleLoader__ path=E:\...\skills\plugin-upgrade
+16. grep pattern=children table path=E:\...\skills\plugin-upgrade
+17. grep pattern=combo path=E:\...\skills\plugin-upgrade
+18. grep pattern=slots\.inject|slots\.register path=E:\...\skills\plugin-upgrade
+19. grep pattern=EADDRINUSE|process tree|taskkill path=E:\...\skills\plugin-upgrade
+20. grep pattern=classic script|client bundle|client-modules path=E:\...\skills\plugin-upgrade
+21. run_code 读取 troubleshooting 与关键卡图片段
+22. read ...\skills\plugin-upgrade\references\troubleshooting.md offset=1 limit=60
+23. read ...\skills\plugin-upgrade\references\v0.1.5-alpha.1.md offset=710 limit=745
+24. read ...\skills\plugin-upgrade\references\v0.1.7-alpha.2.md offset=60 limit=90
+25. read ...\skills\plugin-upgrade\references\v0.1.2-alpha.1.md offset=300 limit=340
+26. read ...\skills\plugin-upgrade\references\v0.1.2-alpha.1.md offset=440 limit=480
+27. run_code 读取 slot 注册包装与 pre-flight 触点段
+28. read ...\skills\plugin-upgrade\references\jump-0.1.5-rc.2-to-0.1.7-rc.1.md offset=630 limit=130
+29. read ...\skills\plugin-upgrade\examples\06-real-world-batch-migration.en.md offset=25 limit=110
+30. read ...\skills\plugin-upgrade\references\pre-flight.md offset=120 limit=60
+31. run_code 生成并写入报告与收尾产物
+32. write ...\agent-output\report.md
+33. write ...\agent-output\tool-transcript.txt
+34. write ...\agent-output\transcript-manifest.txt
+35. run_code 校验 report.md 非空且含 run-stats
+36. read ...\agent-output\report.md offset=1 limit=40（校验读回）
+37. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（回传结果）

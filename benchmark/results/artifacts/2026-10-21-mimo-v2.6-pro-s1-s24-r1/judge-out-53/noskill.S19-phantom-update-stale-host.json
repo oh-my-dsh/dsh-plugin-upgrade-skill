@@ -1,0 +1,36 @@
+{
+ "decisions": [
+  {
+   "id": "baked-version-release-order",
+   "verdict": "pass",
+   "reason": "Correctly derives build-before-bump baking 0.3.6 into shipped v0.3.7, self-referential update, constant not reread at runtime; prescribes bump-before-build, emitted-constant check, retained mirror SHA verification; distinguishes v0.3.8."
+  },
+  {
+   "id": "client-host-update-asymmetry",
+   "verdict": "pass",
+   "reason": "Uses PNG 200 / SVG 404 / disk whitelist containing svg to pin staleness on running host process boot-time registration; client refresh insufficient; host restart required, scoped to this lifecycle."
+  },
+  {
+   "id": "payload-corruption-attribution",
+   "verdict": "pass",
+   "reason": "Clean source XML vs spliced persisted payload vs clean reread locates corruption in upstream result-text assembly/persistence; plugin consumes damaged copy; disk file innocent; explicitly rejects editing the good SVG."
+  },
+  {
+   "id": "validated-render-fallbacks",
+   "verdict": "pass",
+   "reason": "Ordered chain: asset-route disk bytes; payload only after DOMParser/parsererror well-formedness check; sandboxed iframe without allow-scripts (SMIL preserved); explicit error state; malformed payload never passed unchecked to iframe."
+  },
+  {
+   "id": "forensics-and-prevention",
+   "verdict": "pass",
+   "reason": "Decodes all concatenated zstd frames in order, reconstructs stored splice text, compares with source, reports upstream bug; checklist covers bump-before-build, shipped-constant assertion, per-mirror tag SHA, plane-specific probes; even demonstrates decode."
+  }
+ ],
+ "caps": [
+  {
+   "id": "contradictory-release-render-advice",
+   "triggered": false,
+   "reason": "Final advice consistently bump-before-build, rebuild for repair, restart for host route, no SVG editing, validated rendering with sandboxed no-scripts fallback."
+  }
+ ]
+}

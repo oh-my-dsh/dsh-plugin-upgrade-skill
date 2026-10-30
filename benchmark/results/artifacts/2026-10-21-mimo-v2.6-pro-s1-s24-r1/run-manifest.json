@@ -1,0 +1,121 @@
+{
+  "runId": "2026-10-21-mimo-v2.6-pro-s1-s24-r1",
+  "model": "MiMo-V2.6-Pro",
+  "provider": "DeepSeek Harness session-configured provider (unchanged per iron rule 3)",
+  "startedAt": "2026-10-21T11:59:22+08:00[Asia/Shanghai]",
+  "timezone": "Asia/Shanghai",
+  "benchmark": "S-series 24-task dual-arm (noskill / skill), 48 cells, round r1",
+  "repo": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+  "tasksDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\tasks",
+  "artifactRoot": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-21-mimo-v2.6-pro-s1-s24-r1",
+  "concurrency": 4,
+  "cellTimeoutMinutes": 30,
+  "scheduling": "earliest-runnable in canonical cell order (S1->S24, noskill before skill within each task as a hard dependency: a task's skill cell starts only after its noskill cell completes); max 4 cells in flight (raised from 2 by user instruction mid-run); per-cell timeout 30 min",
+  "fixtureSourceLayout": "<task>/environment/fixture/ (fallback <task>/fixture/)",
+  "fixtureSealNote": "HEAD verified; benchmark/tasks/ byte-identical to sealed baseline; corrected audit semantics in effect",
+  "auditSemantics": "out-of-whitelist reads/writes = invalid:roaming; NOT violations: regex char classes inside grep/rg patterns, quoted path literal arguments, path-less globs whose pattern is an in-cell absolute path, filesystem-free probes (e.g. node --version)",
+  "whitelist": {
+    "all": "<cell dir>",
+    "skillArmOnly": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgrade",
+    "forbidden": [
+      "tests/",
+      "solution/",
+      "benchmark/results/",
+      "any other repo path"
+    ],
+    "writesOutsideCellForbidden": true
+  },
+  "ironRules": [
+    "do not read any pre-existing directory under benchmark/results/artifacts/",
+    "no git operations",
+    "model config untouched (MiMo-V2.6-Pro)"
+  ],
+  "cellOrder": [
+    "S1-static-scan/noskill",
+    "S1-static-scan/skill",
+    "S2-negative-scan/noskill",
+    "S2-negative-scan/skill",
+    "S3-snapshot-migration/noskill",
+    "S3-snapshot-migration/skill",
+    "S4-legacy-client-imports/noskill",
+    "S4-legacy-client-imports/skill",
+    "S5-negative-naming/noskill",
+    "S5-negative-naming/skill",
+    "S6-corridor-net-state/noskill",
+    "S6-corridor-net-state/skill",
+    "S7-unpublished-cohort/noskill",
+    "S7-unpublished-cohort/skill",
+    "S8-release-routing-trap/noskill",
+    "S8-release-routing-trap/skill",
+    "S9-composer-coordinate-trap/noskill",
+    "S9-composer-coordinate-trap/skill",
+    "S10-paste-rename-and-version-chip/noskill",
+    "S10-paste-rename-and-version-chip/skill",
+    "S11-mermaid-lazyload-trap/noskill",
+    "S11-mermaid-lazyload-trap/skill",
+    "S12-global-upgrade-ebusy-trap/noskill",
+    "S12-global-upgrade-ebusy-trap/skill",
+    "S13-peer-range-vs-runtime/noskill",
+    "S13-peer-range-vs-runtime/skill",
+    "S14-link-install-lock-trap/noskill",
+    "S14-link-install-lock-trap/skill",
+    "S15-slot-error-boundary-crash/noskill",
+    "S15-slot-error-boundary-crash/skill",
+    "S16-self-host-upgrade-trap/noskill",
+    "S16-self-host-upgrade-trap/skill",
+    "S17-external-ui-plugin-onboarding-trap/noskill",
+    "S17-external-ui-plugin-onboarding-trap/skill",
+    "S18-terminal-sprite-render-trap/noskill",
+    "S18-terminal-sprite-render-trap/skill",
+    "S19-phantom-update-stale-host/noskill",
+    "S19-phantom-update-stale-host/skill",
+    "S20-msvc-flock-trap/noskill",
+    "S20-msvc-flock-trap/skill",
+    "S21-resource-service-unavailable-trap/noskill",
+    "S21-resource-service-unavailable-trap/skill",
+    "S22-duplicate-insert-boot-crash-trap/noskill",
+    "S22-duplicate-insert-boot-crash-trap/skill",
+    "S23-passing-compat-guard-trap/noskill",
+    "S23-passing-compat-guard-trap/skill",
+    "S24-dock-cotenant-crash-trap/noskill",
+    "S24-dock-cotenant-crash-trap/skill"
+  ],
+  "cellsTotal": 48,
+  "status": "complete",
+  "scoring": "out of scope for this run (separate judge session)",
+  "concurrencyHistory": [
+    {
+      "value": 2,
+      "note": "initial handoff setting"
+    },
+    {
+      "value": 4,
+      "from": "2026-10-21T13:55+08:00",
+      "note": "user instruction mid-run: more concurrent solvers allowed"
+    },
+    {
+      "at": "2026-10-21T16:08+08:00",
+      "event": "user-override: dispatch S24 skill arm concurrently with its still-running noskill arm (per-task noskill->skill dependency waived for S24 by explicit user instruction)"
+    }
+  ],
+  "toolcallsConvention": "ledger toolcalls = solver-stated total tool-call count (top-level + nested when only a split is given); transcript line counts recorded per-cell in _audit/*-status.json as objective cross-check; tokens n/a because solver sessions expose no usage metering",
+  "anomalies": [
+    {
+      "cell": "S15-slot-error-boundary-crash/noskill",
+      "at": "2026-10-21T15:01+08:00",
+      "kind": "solver-crash-then-infra-retry",
+      "detail": "First solver instance (fe94d13e-17ad-4e53-9bb5-6f0ed09a2ab8) failed before finishing and left no closing message; cell contains only the pristine fixture copy and an empty agent-output/ (zero tool output, no report). Treated as an infrastructure failure, not a solve attempt: respawned once with a fresh instance (no state carries over). Single-attempt integrity preserved; if the retry also fails the cell is recorded failed."
+    }
+  ],
+  "completedAt": "2026-10-21T16:22:00+08:00",
+  "totals": {
+    "cells": 48,
+    "byStatus": {
+      "done": 47,
+      "timeout": 1
+    },
+    "cellDurationSum": "595m14s",
+    "toolcallsSum": 1135,
+    "tokens": "n/a (solver sessions expose no usage metering)"
+  }
+}

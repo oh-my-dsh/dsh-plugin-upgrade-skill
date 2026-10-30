@@ -1,0 +1,8 @@
+{"decisions":[
+{"id":"published-version-evidence","verdict":"pass","reason":"Separates the ^0.1.2-alpha.1 declaration from the published list (alpha.1 absent, alpha.2 present), credits the brief-supplied registry fact, and proposes package-specific npm view verification without requiring execution."},
+{"id":"caret-resolution","verdict":"pass","reason":"Correct node-semver analysis: alpha.2 satisfies the range, missing lower bound is not fatal, silent declaration/baseline mismatch and prerelease compatibility uncertainty both identified."},
+{"id":"workable-baseline-plan","verdict":"pass","reason":"Path A exactly pins published 0.1.2-alpha.2 with explicit pros/cons and acknowledges it does not give alpha.1; Paths B-E add alternatives."},
+{"id":"reproducibility-and-exit","verdict":"pass","reason":"Single package manager (npm), committed lockfile / npm ci option, proposed npx tsc --noEmit typecheck, exit paths per plan, and unverified items marked honestly."}
+],"caps":[
+{"id":"install-unpublished-registry-version","triggered":false,"reason":"No prescription to install the unpublished alpha.1 from npm; only the caret range and published pins are recommended."}
+]}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "给出 paste_image/paste_file 无后缀+(2)(3) 于扩展名前的取号链、批内预留与跨活附件探测；重命名限定在粘贴获取边界(add/validate 之前)，drop/picker 原名保留(含真实名为 paste_image.png 的反例)。"
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "指认 input.state.getSnapshot().occurrences ∪ 当前批已分配名为权威占用源；解释 records 订阅在瞬时空快照误删缓存而附件仍存活、records 只会低计，不能替代活状态。"
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "用捕获响应(x-cache HIT、age 178、仅到 v0.2.9)解释 renderCurrentChip 打印 fetched tag 的旧'最新'标签；规则为 fetched>running 才示更新、否则显示 PLUGIN_VERSION，绝不显示更旧的 fetched tag。"
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "覆盖顺序/同批多图去重、records 被误删后仍占用名字、drop/picker(含对抗名)不变、旧/等/新远端 tag 三态及上传路径一致性等具体断言。"
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "package.json 与内联 PLUGIN_VERSION 同步(发布脚本+CI 相等断言)、对发布产物 node --check+冒烟并引用行为回归、说明用户须重取/重装产物并硬刷新、明确无宿主侧更新端点、tag/芯片本身不安装产物。"
+    }
+  ],
+  "caps": []
+}

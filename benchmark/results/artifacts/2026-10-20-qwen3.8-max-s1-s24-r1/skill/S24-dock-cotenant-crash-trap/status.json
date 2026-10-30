@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S24-dock-cotenant-crash-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S24-dock-cotenant-crash-trap",
+    "status": "done",
+    "subagentId": "afd98c1a-b875-4f82-9d75-3f4259e368b0",
+    "start": "2026-10-20T19:04:22+08:00",
+    "end": "2026-10-20T19:11:42+08:00",
+    "durationSec": 440,
+    "toolcalls": 26,
+    "tokensIn": 39059,
+    "tokensOut": 16396,
+    "tokensTotal": 272927,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S24-dock-cotenant-crash-trap\\agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+    "fixtureFiles": 9,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; culprit = plugin A SessionProgressBar calling useSessionPendingInteraction unconditionally; alpha.2 GlobalStandardProps removed that seat (replaced by useSessionStatus.pendingInteraction + useSessionRetainInfo; dock slot contract unchanged) - card DSH-0.1.6-A2-02; TypeError at render trips slot-level DrawerErrorBoundary (null fallback, DockEntry no own boundary) unmounting BOTH input.dock entries; B's attach button survives (conversation.input.left separate boundary subtree); disable-experiment proves A sole active crash source + B renders on alpha.2, does NOT prove B bug-free (event-time SessionListState.current removal A2-01 untested - one-time paste toast flagged) nor strip crash the only dock problem (A post-throw path masked); reinstalling B could not help (no link in host-contract->A-throw->boundary-fallback chain involves B bytes); colleague both-hit theory refuted (one error, B uses no kit hooks, registrations unchanged); fix = dual-seat feature-detection component (typeof checks, render-stable branch, EMPTY_PENDING degradation, one-time console.warn) + plugin-owned EntryBoundary; degrades only pending/attention, running/todos/tokens/eta/subagent-running keep working; silent because throw deletes whole dock with no visible error; hygiene tenant-side optional-seat handling + self boundary, host-side per-entry boundaries, trade-off per-entry overhead + reset semantics + visibility vs isolation; verify without host restart: rebuild A in junction + hard-refresh + console/mount-line gates + both entries visually + live pending-interaction test; B regression = end-to-end paste attach (identify toast/A2-01 check), chips under A re-render churn, session-switch remount, attach unchanged; fixture read-only; no deviations",
+    "startMs": 1792494262935,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\afd98c1a-b875-4f82-9d75-3f4259e368b0",
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S24-dock-cotenant-crash-trap\\agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S24-dock-cotenant-crash-trap\\report.md",
+        "bytes": 26385
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 9
+    },
+    "metrics": {
+      "toolcalls": 26,
+      "requests": 7,
+      "tokensIn": 39059,
+      "tokensOut": 16396,
+      "tokensTotal": 272927,
+      "lastTime": 1792494702451
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\afd98c1a-b875-4f82-9d75-3f4259e368b0",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\afd98c1a-b875-4f82-9d75-3f4259e368b0\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

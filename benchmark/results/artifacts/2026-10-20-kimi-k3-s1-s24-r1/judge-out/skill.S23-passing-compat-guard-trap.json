@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Accurate per-keystroke walk: snapshot succeeds, current absent, id undefined, null each keystroke, return before preventDefault; explains guard survival (field-level removal below presence-probe granularity) and the legitimate no-session undefined semantics; no false claim of service removal or throw."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Full type walk: current gone from SessionListState, navigation moved to view owners; canonical uiSession.adapter.current replacement with key replacing current, ctx replacing sessions.scope(id), complete SessionBindingValue shape; card DSH-0.1.6-A2-01 cited alongside, not instead of."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "Single build prefers uiSession.adapter.current with legacy current+scope fallback; inject gains uiSession; conversation resolved via binding.ctx and input.for(actx); branching by capability not version. Minor unverifiable claim that uiSession also exists on alpha.1 does not undermine the fallback."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names the container-present/content-changed class (field-level removal behind service stability, per-use break vs activation check); hardened guard probes real capability ('current' in snapshot or uiSession binding shape) and adds a lazy recheck at first adapter.current publication beyond activation."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "pass",
+      "reason": "Verifies via adapter.current key probe with a session open, chord behavior on pinned alpha.1 and alpha.2 hosts, and typecheck against both published d.ts surfaces as the pre-ship gate; prevention proposes a throwing deprecated getter or @deprecated transition window."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Explicitly rejects slot re-registration/inject-only as the fix; final remedy is the resolve() rewrite with uiSession binding."
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "task": "S19-phantom-update-stale-host",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:32:07.444Z",
+  "endedAt": "2026-10-21T06:46:07.186Z",
+  "durationMs": 839742,
+  "durationSec": 840,
+  "subagentId": "11f09818-3dc2-4e73-94ed-d49813592b8b",
+  "sessionIds": [
+    "11f09818-3dc2-4e73-94ed-d49813592b8b"
+  ],
+  "toolCalls": 50,
+  "toolCounts": {
+    "run_code": 23,
+    "pwsh": 10,
+    "read": 13,
+    "write": 2,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 58089,
+    "outputTokens": 66396,
+    "cacheReadTokens": 700153,
+    "cacheWriteTokens": 0,
+    "total": 824638
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 24,
+      "llmMs": 808729,
+      "toolMs": 28502
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S19-phantom-update-stale-host/S19-phantom-update-stale-host-report.md",
+      "chars": 42876,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 50,
+      "toolCounts": {
+        "run_code": 23,
+        "pwsh": 10,
+        "read": 13,
+        "write": 2,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "pwsh",
+          "raw": "/ZSTD/i.test",
+          "resolved": "E:\\ZSTD\\i.test",
+          "note": "path literal in a non-filesystem command segment"
+        },
+        {
+          "kind": "literal",
+          "tool": "pwsh",
+          "raw": "p://www.w3.org/2000/svg",
+          "resolved": "p:\\www.w3.org\\2000\\svg",
+          "note": "path literal in a non-filesystem command segment"
+        }
+      ],
+      "outOfScopeMentionCount": 2,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 13,
+      "uniqueOperands": 13,
+      "maxRepeatOfOneOperand": 1,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:32:07.444Z",
+    "endedAt": "2026-10-21T06:46:07.186Z",
+    "durationSec": 840,
+    "flushWaitMs": 7419,
+    "complete": true
+  }
+}

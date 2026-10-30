@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "runtime-removal",
+   "verdict": "pass",
+   "reason": "定位 import 并映射 A1-25，给出从实际所有者包导入 Context（@deepseek-ai/cordis）加按需类型增强的迁移方向，并清理 dsh-client-runtime 残留，符合准则内嵌期望方向"
+  },
+  {
+   "id": "registration-id",
+   "verdict": "pass",
+   "reason": "对比 loader id pet-legacy-bundle 与包名并映射 A1-26，要求以包名为基线三处 id 对齐，验证含 boot manifest 条目、无注册断言失败与 DOM 标记"
+  },
+  {
+   "id": "session-content",
+   "verdict": "pass",
+   "reason": "定位 useSession().nodes 并映射 A1-27，给出 useChat+snapshot.order+nodes.get（保留顺序）及 sessions.binding 内容读取两条方向，明确平面数组已移除且不依赖 legacy 投影，Pet.tsx 无破坏面"
+  },
+  {
+   "id": "connection-face",
+   "verdict": "pass",
+   "reason": "定位 connection.api.agentPresets.list 并映射 A1-30，改用 ctx.remote.agentPresets.list 公共投影、声明 inject 命名空间并处理 RemoteResult/RemoteError，属已验证的公共域接口方向"
+  }
+ ],
+ "caps": [
+  {
+   "id": "invented-migration",
+   "triggered": false,
+   "reason": "未断言不支持的生命周期替换或 inject 须移入 manifest；inject 保持在代码导出中仅追加 remote 命名空间，dsh.client.inject 清理属合法移除被删包"
+  }
+ ]
+}

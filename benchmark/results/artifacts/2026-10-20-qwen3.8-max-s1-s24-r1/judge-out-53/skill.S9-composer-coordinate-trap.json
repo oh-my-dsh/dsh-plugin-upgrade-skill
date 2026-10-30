@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "§1.1 maps detectText (chip = 1 U+FFFC, consumed by insertReference/consumeToken span splices) against clipboardText (chip = full clipboardText, InputState.draft/Occurrence) with contract/facade citations; non-chip text 1:1."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Quotes add() start/end = snapshot.draft.length; paste #1 coincides at 0, paste #2 sends 29 into the 2-char detect document → unmappable splice → false → toast; CAS race and phase rejection explicitly ruled out."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Five-step remove() trace: unconverted [0,28) span unmappable in 2-char detect text, boolean not inspected, records.delete anyway → composer chip stays + dock 'unavailable'; same coordinate misread, no separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "toDetect(p) subtracts Σ(len−1) of preceding chips; detectEnd covers all occurrences for append; removal span [toDetect(o.offset), +1); draftRev kept as CAS currency; records deleted only when consumed === true."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "T2 successive pastes with both chips (plus third for cumulative shift); T6 removes the middle chip with a preceding chip while A/C survive; T5 asserts composer/dock/record removed together; T7 declined-consumption and T8 soak variants."
+    }
+  ],
+  "caps": []
+}

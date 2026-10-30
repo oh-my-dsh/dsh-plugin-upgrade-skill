@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Distinguishes the declaration from the brief's published cohort, marks registry facts 'given by brief; unconfirmed', explicitly refuses dist-tag inference (R-01 alpha.3/4 kept as contingency only), and proposes package-specific npm-view re-query."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Full caret expansion + same-tuple prerelease derivation (§3.1–3.4): missing alpha.1 floor still resolves to alpha.2; §3.4/3.7 identify the silent alpha.2-for-alpha.1 baseline swap and prerelease type-surface uncertainty."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Path A (exact 0.1.2-alpha.2 pin + lockfile + ledger-driven typecheck) is complete with tradeoffs and explicitly leaves alpha.1 semantics to Path B/C; Path C adds the source-built tarball-override variant."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "Committed lockfile, tsc --noEmit typecheck lanes, override removal explained (delete overrides once the cohort ships), deliberate future repin, and §2/§7 mark unconfirmed items honestly."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Alpha.1 is reached only via publish-first (Path B) or source-built file: tarballs (Path C); 'What NOT to do' explicitly rejects exact-pinning the unpublished version from the registry."
+    }
+  ]
+}

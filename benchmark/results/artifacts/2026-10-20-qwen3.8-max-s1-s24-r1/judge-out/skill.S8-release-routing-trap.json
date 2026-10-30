@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses ls-remote-tags.txt (v0.9.1 jumps to v0.9.7) and the branch-only sync push to conclude v0.9.5 was never distributed, matches this to the immediate ref-resolution failure, and rules out network/syntax because #v0.9.7 resolved."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Explains v0.9.7 was forward-migrated to the alpha.1 client API (useConversation seat) while the host is 0.1.1-rc.2, so the import resolves to undefined and throws; install succeeds only because nothing gates compatibility, and restart cannot fix a static mismatch."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Honors the freeze; derives v0.9.3 from rc.1 verification plus the additive rc.2 note; flags v0.9.3 as also absent from the mirror and gives the preferred #v0.9.3 re-pin only after maintainer tag publication (the immediately installable v0.9.1 exists on the mirror and is presented with an unverified-at-plugin-level caveat, not as the absent tag)."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes pushing the release tag refspec (or --follow-tags) to every mirror without force, grounded in the branch-only sync script, plus a post-release ls-remote verification gate asserting all README-pinned tags resolve."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Requires per-runtime-line install commands beside a compatibility matrix (rc.1/rc.2 → #v0.9.3; alpha.1+ → #v0.9.7) with a dsh --version check, machine-checkable peer/manifest ranges, mount-time feature detection, and a maintained legacy line — not a newest-tag default and no generalization to untested alphas."
+    }
+  ],
+  "caps": []
+}

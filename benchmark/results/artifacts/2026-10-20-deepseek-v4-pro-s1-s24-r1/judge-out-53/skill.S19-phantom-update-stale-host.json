@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "构建先于bump、0.3.6入包、运行时不重读，修正顺序/发布前断言/镜像SHA齐全"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "探针三角定位运行host过期白名单，需重启，仅限boot注册生命周期"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "结构化结果干净而持久化文本被拼接，定位于上游文本装配，拒绝修文件"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "字节路由优先→parsererror校验→无allow-scripts iframe保SMIL→具名错误"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "帧边界定位+逐帧解压保序重构、与源比对、上报上游；清单含bump先/常量/镜像SHA"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "无矛盾结论：错误做法均被明确否定，校验与沙箱约束完整"
+    }
+  ]
+}

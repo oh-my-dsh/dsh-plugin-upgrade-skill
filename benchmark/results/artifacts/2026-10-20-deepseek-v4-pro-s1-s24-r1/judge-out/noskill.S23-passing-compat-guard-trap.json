@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Walks resolve() exactly: snapshot read succeeds, current removed, id undefined, null every keystroke; explains both silences (all four presence probes survive, undefined is the tolerated no-session state) without claiming removal/throw."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Full type-walk: current gone from alpha.1 state, uiSession.adapter.current (ObservableSnapshot<SessionBindingValue>) yields key/ctx/hooks/keyedHooks/props with key replacing current and ctx replacing sessions.scope(id)."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "Single build reads uiSession.adapter.current when present with legacy current+scope fallback; inject gains uiSession (optional); conversation resolves via binding ctx and input.for receives that scope."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names field-level removal behind service-level stability; hardened probe asserts the actual snapshot field / feature-detects uiSession, and explicitly re-probes lazily at first non-empty snapshot, not only activation."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "partial",
+      "reason": "Has typecheck against both hosts' d.ts and fixture-driven runtime tests plus throwing-deprecation prevention, but never verifies chord behavior in the real listener on both hosts nor probes adapter.current key with a session open."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Final remedy is the resolution code fix; slot re-registration is explicitly rejected as unsupported by evidence."
+    }
+  ]
+}

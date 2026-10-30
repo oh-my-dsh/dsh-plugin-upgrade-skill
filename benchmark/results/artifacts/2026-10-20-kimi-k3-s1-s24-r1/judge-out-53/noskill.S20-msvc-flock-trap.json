@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "fs-ext由jsonl引入,缺VS致node-gyp败,归因依赖构建阶段"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "顶层静态import在Windows加载即崩,--ignore-scripts不解决启动"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "POSIX真flock/Win32命名信号量分支语义清晰,Windows仍用信号量"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "循node-pty先例:no-op脚本+可导入桩,注册workspace,三步验证"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "尊重无VS约束,用仓库patch机制,不动上游"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "partial",
+      "reason": "实质与关联完整,但ID为自造slug而非DSH-0.1.3-A1-03"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "方案不依赖VS,安装脚本改为no-op"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "明确否定--ignore-scripts,桩使入口可加载"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "用仓库现成patchedDependencies,声明不动上游"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows仍走信号量,POSIX保真flock,桩被调即抛错"
+    }
+  ]
+}

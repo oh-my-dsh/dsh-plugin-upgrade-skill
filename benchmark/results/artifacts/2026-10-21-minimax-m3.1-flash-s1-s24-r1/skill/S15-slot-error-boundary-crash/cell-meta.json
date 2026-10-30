@@ -1,0 +1,154 @@
+{
+  "task": "S15-slot-error-boundary-crash",
+  "arm": "skill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:23:45.760Z",
+  "endedAt": "2026-10-21T06:43:02.584Z",
+  "durationMs": 1156824,
+  "durationSec": 1157,
+  "subagentId": "bc197685-e03a-4ec0-8ce4-7df64835a23b",
+  "sessionIds": [
+    "bc197685-e03a-4ec0-8ce4-7df64835a23b"
+  ],
+  "toolCalls": 22,
+  "toolCounts": {
+    "run_code": 20,
+    "send_message": 1,
+    "present": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 75149,
+    "outputTokens": 116094,
+    "cacheReadTokens": 993548,
+    "cacheWriteTokens": 0,
+    "total": 1184791
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 18,
+      "llmMs": 1148665,
+      "toolMs": 6774
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S15-slot-error-boundary-crash/S15-report.md",
+      "chars": 38870,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 22,
+      "toolCounts": {
+        "run_code": 20,
+        "send_message": 1,
+        "present": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/unmount/i",
+          "resolved": "E:\\unmount\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/no-undef/i",
+          "resolved": "E:\\no-undef\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/eslint/i",
+          "resolved": "E:\\eslint\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/lib-only/i",
+          "resolved": "E:\\lib-only\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/smoke/i",
+          "resolved": "E:\\smoke\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/render/i",
+          "resolved": "E:\\render\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/InputZone/i",
+          "resolved": "E:\\InputZone\\i",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "d:\\`",
+          "resolved": "d:\\`",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        },
+        {
+          "kind": "literal",
+          "tool": "run_code",
+          "raw": "/app/fixture",
+          "resolved": "E:\\app\\fixture",
+          "note": "absolute path literal in a run_code body that also calls fs APIs"
+        }
+      ],
+      "outOfScopeMentionCount": 9,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 0,
+      "uniqueOperands": 0,
+      "maxRepeatOfOneOperand": 0,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 0,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:23:45.760Z",
+    "endedAt": "2026-10-21T06:43:02.584Z",
+    "durationSec": 1157,
+    "flushWaitMs": 24,
+    "complete": true
+  }
+}

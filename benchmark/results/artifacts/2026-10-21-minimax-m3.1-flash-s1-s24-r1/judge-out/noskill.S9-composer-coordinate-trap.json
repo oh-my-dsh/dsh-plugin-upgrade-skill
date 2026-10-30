@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "projection-contract", "verdict": "pass", "reason": "Uses contract and facade doc comments and splice targets to separate the clipboard projection (draft/Occurrence, chip expanded to clipboardText) from the detect-coordinate TokenSpan verbs (chip = one U+FFFC), while ordinary text and spaces keep normal width in both."},
+    {"id": "repeat-paste-failure", "verdict": "pass", "reason": "Locates snapshot.draft.length in add, shows the empty-composer first paste succeeds only because both spaces coincide, computes the Σ(length−1) overshoot against the 2-char detect text, and ties the false return of insertReference to the changed-composer toast while ruling out a real concurrent edit and revision CAS."},
+    {"id": "removal-and-bookkeeping", "verdict": "pass", "reason": "Traces remove passing unconverted offset/length [0,28) to consumeToken, the ignored false return, the unconditional records.delete, and derives both the surviving composer chip and the 'unavailable' dock label from the same coordinate mismatch."},
+    {"id": "conversion-and-success-gate", "verdict": "pass", "reason": "Derives detectPos = c − Σ(length−1) with verified arithmetic, applies it at both call sites (end-of-draft insert over all occurrences; removal mapped offset plus width-1 span), keeps draftRev verbatim, and gates records.delete on a true consumeToken result."},
+    {"id": "regression-sequences", "verdict": "pass", "reason": "Proposes two successive pastes with both chips asserted present (B2/B3) and removal of a chip with a preceding chip asserting composer occurrence, dock chip, and record removed together while the other chip survives (B6/B7), plus declined-consumption and stale-occurrence variants."}
+  ],
+  "caps": []
+}

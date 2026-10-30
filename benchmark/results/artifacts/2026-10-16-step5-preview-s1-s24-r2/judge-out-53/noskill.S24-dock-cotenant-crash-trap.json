@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"culprit-attribution","verdict":"pass","reason":"Plugin A's unconditional useSessionPendingInteraction(...) is the sole throw (TypeError at render, client.js:219); alpha.2 dropped the seat for useSessionStatus while useSessions stays; plugin B uses no standard-kit hooks and throws nothing; one fault, not two."},
+{"id":"cotenant-mechanism","verdict":"pass","reason":"dock-render-tree cited: both entries are siblings under ONE shared DrawerErrorBoundary whose null fallback unmounts the whole input.dock subtree (host log names both unmounted entries); attach button survives in conversation.input.left under a separate boundary."},
+{"id":"experiment-reading","verdict":"pass","reason":"Disable-A control proves render-crash coupling and B can render once freed; explicitly not proof B is alpha.2-compatible elsewhere nor that A's crash is the only dock defect; reinstall of B could never help since B was never broken; colleague's both-hit theory falsified (B reads no kit hooks)."},
+{"id":"degradation-fix","verdict":"pass","reason":"Corrected component picks whichever pending seat the host supplies (useSessionStatus -> pendingInteraction, else legacy), never calls a missing seat, stable empty-map fallbacks so only attention/pending indicators hide while running/todos/token/ETA/subRunning continue; silent degradation justified by co-tenant unmount blast radius."},
+{"id":"verification-and-hygiene","verdict":"pass","reason":"Client-bundle reload/HMR + hard refresh with no host restart, slot-log assertions that both entries mount, B regression across paste/remove/re-paste and session switch; tenant hygiene (feature-detect, defensive render, optional local boundary) and host per-entry boundary trade-off both covered."}],
+"caps":[
+{"id":"innocent-plugin-fix","triggered":false,"reason":"Fix targets plugin A's component; B explicitly exonerated and reinstall declared futile."}
+]}

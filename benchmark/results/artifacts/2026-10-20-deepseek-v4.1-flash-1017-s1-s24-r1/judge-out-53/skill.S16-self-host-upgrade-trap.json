@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "以日志第3行宿主进程路径把 GUI 会话/worker/CLI 归为同一被替换对象；宿主死于 linkStuff 前、调用有记录而结果无记录即结局未知；明确非 flaky npm 或慢机器，未泛化到所有平台"
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "content=place 阶段、command=link 阶段：.cmd 与无扩展名缺失 + .ps1 陈旧指向旧树 = 安装中断在两阶段之间；手工换树/手写 shim 以七条独立理由明令禁止"
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "按 repair-notes 复述外部 pinned 重装即完成被打断的安装(shim 再生、dsh --version=rc.1)，源 checkout 独立对齐 dsh-v0.1.2-rc.1；已验证与留待用户的事项分层，候选为只读分析"
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "四问识别目标是自身运行时并拒绝执行、交接用户；外部流程先枚举停掉全部 dsh 进程再 pinned 安装、重启+强刷新+验证；§4.4 区分既有规则与自宿主新规则，执行 shell 不得是 dsh 后代"
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "deny-with-procedure 守卫解析全局 prefix 并与 process.execPath/宿主包根/祖先命令行比对；rc.1 走廊 252 文件纯版本 bump 免再迁移；查版本标记与插件真实加载，dsh-old-* 验证后再清；结论限定 alpha.5→rc.1"
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "最终结论是会话内执行属结构性不可能，须交接外部、宿主全停后 pinned 安装再重启验证"
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "明确禁止手拷包树/手写 shim，唯一修复是从外部重跑 pinned 正式安装"
+    }
+  ]
+}

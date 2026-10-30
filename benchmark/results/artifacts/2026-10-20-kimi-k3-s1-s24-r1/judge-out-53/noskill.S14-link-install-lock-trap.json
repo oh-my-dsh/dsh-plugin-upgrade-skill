@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "引LinkType/Target与link标记,两路径同一目录,区分拷贝安装"
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "锁属host进程,关tab无效;缓存与文件锁分开讲"
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "先停host,.old2改名还原,node --check后激活"
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "停host→重启→硬刷新→验证,顺序正确"
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "先探测LinkType/标记再选流程,解释通用拷贝建议之害"
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "最终方案无拷贝步骤,还原.old2且视为同一目录"
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "明确要求停机重启host,非仅刷浏览器"
+    }
+  ]
+}

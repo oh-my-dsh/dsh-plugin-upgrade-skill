@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位导入与 A1-25，给出卡证方向 Context from @deepseek-ai/cordis、按 owning package 组合类型、声明直接依赖，并处理 skipLibCheck 下静默 any 的类型擦除风险"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "比较 id 与 package name、映射 A1-26、要求三处 id 一致，并给出 boot manifest entries/combo artifact/--dump-config/无 loaded-without-registering 等客户端激活验证"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes、映射 A1-27，迁移到 useChat + order/nodes.get 保序读取（另给 durable window 备选），明确拒绝旧 flat API 与 legacy.nodes，Pet.tsx 未捏造触点"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 connection.api.agentPresets.list、映射 A1-30，改用 ctx.remote.agentPresets.list 生成 Remote 投影并按 A2-02 处理错误，仅生成签名细节标 unconfirmed"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未主张生命周期替换或 service inject 移入 manifest；仅建议扩展代码级 inject 导出，client.inject 清理被正确判为对此 fixture 空操作"
+    }
+  ]
+}

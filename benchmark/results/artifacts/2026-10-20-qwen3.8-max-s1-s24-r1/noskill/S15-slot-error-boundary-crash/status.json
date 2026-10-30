@@ -1,0 +1,75 @@
+{
+  "cell": {
+    "task": "S15-slot-error-boundary-crash",
+    "arm": "noskill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S15-slot-error-boundary-crash",
+    "status": "done",
+    "fixtureFiles": 4,
+    "fixtureBeforeOk": true,
+    "violations": null,
+    "notes": "solver(rerun): COMPLETE; root cause = free identifier 'busy' in AttachmentChips remove-button disabled expr (plugin-dock-chips.js:34) - busy is AttachButton local useState (line 7), evaluating during render throws ReferenceError; gated by empty-dock early return (line 23, why only chip-present renders crash) and || short-circuit (right operand only when phase==='plain', latency through v0.2.10); render-phase throw caught by slot-level error boundary unmounting whole InputZone entry (entire dock vanishes, console-only error) while AttachButton (input.left) + paste/add service layer keep working; correct bisection (minimal data-present render mount + rollback/re-add, single-line neutralization) vs blaming v0.2.11 hover-preview diff, distinguishing evidence (console error names busy, non-image attachment reproduces with feature inert); flagged fixture discrepancy (feature.diff shows ||busy as v0.2.11 addition while shipped excerpt + maintainer note say pre-existing - resolvable via published v0.2.10 tarball) + diff's second dangler (imageItem initializer misplaced above .map where record/status unbound; window.status footnote); fix = delete ||busy (or thread real in-scope busy via phase/store/props, no hook inside map), scope imageItem per-occurrence inside callback, hardening (record?.items??[]).find + event.target?.closest?.('.remove')??null w/ asymmetric-cost rationale; regression = data-present render smoke mounting dock with >=1 occurrence AND phase plain (defeats both gates), assert no boundary capture/console.error, chip present, x enabled (proves full disabled-expr evaluation); empty-state pass = false comfort; release lesson: node --check parser-only blind to free identifiers/short-circuit latency/data-gated TypeErrors; min viable pre-ship = headless data-present render smokes per slot component + ESLint no-undef (env:browser hides status) + npm-pack artifact canary; fixture 4/4 sha256 match; no deviations",
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ed9521ce-d365-4a5c-aded-45ca4bfd0d19",
+    "attempt1": {
+      "status": "no-report",
+      "subagentId": "5f2cf2f7-1691-4762-b74c-4ed8259d7335",
+      "start": "2026-10-20T17:23:13+08:00",
+      "end": "2026-10-20T17:39:17+08:00",
+      "durationSec": 963,
+      "toolcalls": 8,
+      "tokensIn": 6233,
+      "tokensOut": 33116,
+      "tokensTotal": 81333,
+      "reportPath": null,
+      "auditVerdict": "clean-auto",
+      "auditHard": 0,
+      "auditSoft": 0,
+      "fixtureAfterOk": true,
+      "notes": "ANOMALY: subagent ran out of context room before finishing, left no closing message; single-attempt protocol - no retry; closeout performed on whatever landed on disk"
+    },
+    "subagentId": "ed9521ce-d365-4a5c-aded-45ca4bfd0d19",
+    "start": "2026-10-21T00:58:15+08:00",
+    "startMs": 1792515495528,
+    "end": "2026-10-21T01:12:09+08:00",
+    "durationSec": 834,
+    "toolcalls": 7,
+    "tokensIn": 44741,
+    "tokensOut": 36235,
+    "tokensTotal": 286800,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S15-slot-error-boundary-crash\\agent-output\\S15-slot-error-boundary-crash\\report.md",
+    "fixtureAfterOk": true,
+    "auditVerdict": "clean-auto",
+    "auditHard": 0,
+    "auditSoft": 0
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\noskill\\S15-slot-error-boundary-crash\\agent-output\\S15-slot-error-boundary-crash\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S15-slot-error-boundary-crash\\report.md",
+        "bytes": 32065
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 4
+    },
+    "metrics": {
+      "toolcalls": 7,
+      "requests": 7,
+      "tokensIn": 44741,
+      "tokensOut": 36235,
+      "tokensTotal": 286800,
+      "lastTime": 1792516329724
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ed9521ce-d365-4a5c-aded-45ca4bfd0d19",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\ed9521ce-d365-4a5c-aded-45ca4bfd0d19\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 0,
+    "verdict": "clean-auto"
+  }
+}

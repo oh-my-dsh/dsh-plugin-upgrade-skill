@@ -1,0 +1,101 @@
+{
+  "task": "S24-dock-cotenant-crash-trap",
+  "arm": "noskill",
+  "status": "ok",
+  "invalid": [],
+  "loopDetected": false,
+  "hostProbeDetected": false,
+  "startedAt": "2026-10-21T06:46:37.405Z",
+  "endedAt": "2026-10-21T06:53:46.574Z",
+  "durationMs": 429169,
+  "durationSec": 429,
+  "subagentId": "83c4342c-b5c9-456a-8f7c-38f4c5ba921e",
+  "sessionIds": [
+    "83c4342c-b5c9-456a-8f7c-38f4c5ba921e",
+    "e32fbab6-d268-452f-86af-9d810d6ce1f2"
+  ],
+  "toolCalls": 37,
+  "toolCounts": {
+    "run_code": 13,
+    "glob": 1,
+    "read": 19,
+    "pwsh": 3,
+    "write": 1
+  },
+  "tokens": {
+    "uncachedInputTokens": 41156,
+    "outputTokens": 90669,
+    "cacheReadTokens": 235294,
+    "cacheWriteTokens": 0,
+    "total": 367119
+  },
+  "sessionStats": [
+    {
+      "turns": 1,
+      "steps": 9,
+      "llmMs": 423456,
+      "toolMs": 4507
+    },
+    {
+      "turns": 1,
+      "steps": 6,
+      "llmMs": 320785,
+      "toolMs": 5861
+    }
+  ],
+  "checks": {
+    "report": {
+      "found": true,
+      "candidates": 1,
+      "path": "agent-output/S24-dock-cotenant-crash-trap/S24-dock-cotenant-crash-trap-report.md",
+      "chars": 38572,
+      "nonEmpty": true,
+      "pass": true
+    },
+    "fixture": {
+      "intact": true,
+      "drift": [],
+      "pass": true
+    },
+    "audit": {
+      "toolCalls": 37,
+      "toolCounts": {
+        "run_code": 13,
+        "glob": 1,
+        "read": 19,
+        "pwsh": 3,
+        "write": 1
+      },
+      "violations": [],
+      "outOfScopeMentions": [],
+      "outOfScopeMentionCount": 0,
+      "pass": true
+    },
+    "loop": {
+      "detected": false,
+      "rule": "one operand read >3 times, OR a fixed block of N consecutive read operands recurring 3+ times",
+      "totalReads": 19,
+      "uniqueOperands": 10,
+      "maxRepeatOfOneOperand": 2,
+      "overThresholdOperands": [],
+      "repeatingCycle": null,
+      "redundantReads": 9,
+      "pass": true
+    },
+    "hostProbe": {
+      "detected": false,
+      "execProbeCount": 0,
+      "byWhat": {},
+      "quotedMentions": 0,
+      "pass": true
+    }
+  },
+  "error": null,
+  "sessionWindow": {
+    "startedAt": "2026-10-21T06:46:37.405Z",
+    "endedAt": "2026-10-21T06:53:46.574Z",
+    "durationSec": 429,
+    "flushWaitMs": 17,
+    "complete": true
+  }
+}

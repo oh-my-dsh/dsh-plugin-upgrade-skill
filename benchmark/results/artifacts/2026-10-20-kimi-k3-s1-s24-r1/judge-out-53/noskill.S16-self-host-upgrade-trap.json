@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "自宿主依赖、宿主死亡、GUI断连、工具结果未知均覆盖,未当网络故障"
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "内容在而shim缺失/陈旧,关联手动换树,拒绝手换手写"
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "外部精确版本重装再生shim、版本验证、tag对齐、留验分离"
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "识别自宿主拒绝自执行,停机→外部装→重启刷新验证,新旧规则区分"
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "守卫关联自身运行时,版本差免迁移,插件加载验证,清理后置"
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "最终方案明确外部执行且先停机"
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "明确拒绝手工换目录/自制shim,走正式安装"
+    }
+  ]
+}

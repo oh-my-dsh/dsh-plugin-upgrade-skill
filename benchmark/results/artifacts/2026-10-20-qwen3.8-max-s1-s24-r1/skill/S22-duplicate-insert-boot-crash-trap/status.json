@@ -1,0 +1,58 @@
+{
+  "cell": {
+    "task": "S22-duplicate-insert-boot-crash-trap",
+    "arm": "skill",
+    "cellDir": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S22-duplicate-insert-boot-crash-trap",
+    "status": "done",
+    "subagentId": "8ea1b5c7-e1ab-4192-814b-120135759dc0",
+    "start": "2026-10-20T18:41:13+08:00",
+    "end": "2026-10-20T18:48:58+08:00",
+    "durationSec": 466,
+    "toolcalls": 36,
+    "tokensIn": 47064,
+    "tokensOut": 16789,
+    "tokensTotal": 453357,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S22-duplicate-insert-boot-crash-trap\\agent-output\\S22-duplicate-insert-boot-crash-trap\\report.md",
+    "fixtureFiles": 4,
+    "fixtureBeforeOk": true,
+    "fixtureAfterOk": true,
+    "violations": null,
+    "notes": "solver: COMPLETE; root cause = profile patch manual insert id workspace-files (profile-patch-excerpt L16-20) collides with identical row web-app bundle ships (installed tree cordis.patch.yml L110-111, web-app-patch-excerpt L6-8); detected at Cordis loader/entry-tree layer (EntryGroup.update in cordis-plugin-loader, applying cordis:include during dsh-app-boot boot()) before any plugin code; loader fails closed - duplicate inserts have no deterministic merge semantics (order-dependence, package-substitution hijack vector, error masking); troubleshooting states cross-version rule (discussion #5999); layering: config/disabled by id safe (host writes disabled toggles, DSH-0.1.6-A2-03), insert of unshipped id safe (dsh-file-trace/dsh-profiles rows), insert of bundle-shipped id fatal = maintainer's case; fix = delete manual block from profile yml + restart dsh web + hard-refresh; plugin NOT at fault (crash precedes instantiation, attribution = profile-config); pre-crash service-unavailable symptom was DSH-0.1.5-A1-20 combo/roster gap self-healed by same restart - insert never needed (bundle rows arrive with bundle, A1-16); prevention = check installed bundle yml + dsh.profile.bundles + --dump-config before hand-inserting; host should print both colliding sources w/ layer/file attribution + blame profile row + list all duplicates / guard plugin-manager writes; fixture 4/4 match; no deviations",
+    "startMs": 1792492873179,
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\8ea1b5c7-e1ab-4192-814b-120135759dc0",
+    "auditVerdict": "clean-with-soft-notes",
+    "auditHard": 0,
+    "auditSoft": 6
+  },
+  "closeout": {
+    "reportOk": true,
+    "reportPath": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-20-qwen3.8-max-s1-s24-r1\\skill\\S22-duplicate-insert-boot-crash-trap\\agent-output\\S22-duplicate-insert-boot-crash-trap\\report.md",
+    "reportFiles": [
+      {
+        "rel": "agent-output\\S22-duplicate-insert-boot-crash-trap\\report.md",
+        "bytes": 16678
+      }
+    ],
+    "fixture": {
+      "ok": true,
+      "changed": [],
+      "missing": [],
+      "added": [],
+      "count": 4
+    },
+    "metrics": {
+      "toolcalls": 36,
+      "requests": 11,
+      "tokensIn": 47064,
+      "tokensOut": 16789,
+      "tokensTotal": 453357,
+      "lastTime": 1792493338793
+    },
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\8ea1b5c7-e1ab-4192-814b-120135759dc0",
+    "sessionFile": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--\\8ea1b5c7-e1ab-4192-814b-120135759dc0\\session.v4.jsonl.zstd",
+    "noTranscript": false,
+    "hardCandidates": 0,
+    "softCandidates": 6,
+    "verdict": "clean-with-soft-notes"
+  }
+}

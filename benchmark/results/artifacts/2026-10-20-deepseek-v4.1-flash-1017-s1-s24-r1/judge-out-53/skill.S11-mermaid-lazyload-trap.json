@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "依据捕获说明分片实为 URL 清单、兄弟按 chunk URL 解析而未随包发布，入口 200 后整图原子失败；给出独立构建 inlineDynamicImports（或 manualChunks 钉住全子图+整目录发布）方案。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "以 lexical（URL 派生 E:）对 OS-canonical（realpath e:）的码元前缀比较解释 403；Linux 因大小写敏感单拼写而通过、C: 机巧合通过，并点名驳斥'Windows 路径不可靠'的说法。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "realpathSync 双侧归一+path.relative 段比较，拒绝 .. 前缀、绝对、越界及解析后 symlink 逃逸，win32 折叠大小写/posix 保持敏感并显式否定 toLowerCase 兜底，响应保持 text/javascript。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "解释双 handler 同手势、preventDefault 非传播屏障且捕获相位先行使 modal 内 stopPropagation 太迟；给出 modal 非被动 preventDefault+stopPropagation 独占与外层按 ownership 标记/defaultPrevented 让位的仲裁。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "T1–T9 覆盖图闭包与打包部署、字面 403 输入恢复 200、逃逸/遍历拒绝、modal 缩放不改字号及阴性对照，但未提出导入失败保留代码块回退的检查。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "最终建议保留 realpath 归一后的 path.relative 包含检查并拒绝逃逸，未禁用防护或故意服务根外路径。"
+    }
+  ]
+}

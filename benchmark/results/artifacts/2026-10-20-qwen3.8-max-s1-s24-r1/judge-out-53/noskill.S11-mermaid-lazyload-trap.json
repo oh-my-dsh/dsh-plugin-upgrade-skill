@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "用控制台证据解释相对 specifier 按入口 chunk URL 解析、97 个兄弟块未随包发布故入口 200 仍整体 import 拒绝且 TypeError 指向入口；给出单文件 inlineDynamicImports(或整目录发布并同前缀服务)方案并覆盖全部依赖。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "LIB_DIR(E:) 与 realpath(e:) 的大小写敏感 startsWith 误拒实际包含文件；Linux 单一拼写恒绿、笔记本为巧合通过；明确否定'Windows 路径不可靠'，realpath 小写归因于该卷设备拼写而非普遍规律。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "双侧经同一 realpath 规范化后用 path.relative 判包含(拒绝空/../绝对)，win32 折叠大小写而 POSIX 保持敏感；符号链接解析后逃逸仍拒；并保留动态导入所需 JS Content-Type。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "同一次 Ctrl+wheel 沿传播路径触发模态缩放与 pane 字号两个处理器；模态独占、pane 侧让位(早退/注销)为必要半，模态以非被动 preventDefault+stopPropagation 消费，并正确指出祖先捕获阶段无法被模态侧追补。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "三事故矩阵丰富(构建自包含/tar 闭包/守卫纯函数含大小写与逃逸/Playwright 手势正反例)，但始终未提出'导入失败仍保留代码块回退'这一要点对应的检查。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "修复方案是对称 realpath+平台语义+path.relative 的安全 containment，遍历与符号链接逃逸仍被拒，未移除守卫也未建议服务插件根之外的路径。"
+    }
+  ]
+}

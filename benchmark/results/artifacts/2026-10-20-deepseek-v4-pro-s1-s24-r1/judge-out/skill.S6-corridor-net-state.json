@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Full rc.2 → alpha.1 (removal) → alpha.2 (restoration) history with semantics, folded to net state and applied to produceExternalEvent with correct reasoning."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates the delete line, rejects the keep comment as a trap, recommends removing the defense, distinguishes removing the stripping code from removing the marker, and correctly notes the delete is a no-op on the shown literal."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "Explains ignorable:true is only for informational events old readers can safely omit, unmarked unknown events stay required-on-read, retention is not reader-side filtering (marked events persist after reload), and applies it to the producer via the sidecar recommendation respecting the live append limitation."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that Session.append has no supported ignorable parameter, forbids faking via casts or hand-edited persistence, and defers formal integration pending a supported upstream mechanism; proposes validation without requiring execution."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation removes the defense; continuing to strip the marker is explicitly rejected."
+    }
+  ]
+}

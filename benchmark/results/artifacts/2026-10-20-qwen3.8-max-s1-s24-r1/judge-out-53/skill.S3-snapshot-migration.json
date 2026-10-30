@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "定位三读取；讲清 views.get('chat')?.legacy 临时投影（partial/runningCalls/turnEnds 均覆盖、仅过渡用）及最终 chat 视图字段/timeline/useChat 主面。"
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "定位 running；明确其属 Session/useSession 生命周期席位、不在任何投影中、原行保持不变，未声称 useSession 需为 running 改名。"
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "定位两处 dsh-client-runtime 导入与 client.inject 条目；Context as ClientContext 重指 @deepseek-ai/cordis、快照类型重指 ui-chat/client 目标 owner，未声称 cordis 导出全部快照类型，未知符号显式延后到目标导出。"
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "定位 slots.register；给出 ctx.slots.inject 包裹注册替代 ordering edge、ui-renderer/client 类型增强与 slots 服务归属（仅类型边不进 inject）、槽名与生命周期保持。"
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "快照/生命周期/槽位变更统一系于整卡 DSH-0.1.2-A1-03（field note 佐证）并加 A1-25 包移除卡；§3/§5 明确分离临时投影与立即 type/inject/lifecycle 变更，非裸卡号。"
+    }
+  ],
+  "caps": []
+}

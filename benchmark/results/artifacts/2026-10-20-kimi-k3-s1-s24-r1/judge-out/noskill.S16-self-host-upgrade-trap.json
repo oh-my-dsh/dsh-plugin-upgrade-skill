@@ -1,0 +1,13 @@
+{
+  "decisions": [
+    {"id": "self-host-failure", "verdict": "pass", "reason": "Ties session/tool worker and GUI to the host tree npm removes; host dies mid-install, tool result never recorded (outcome unknown), explicitly rejects network-flake reading."},
+    {"id": "interrupted-install-signature", "verdict": "pass", "reason": "Explains shims vs package tree: content present but dsh/dsh.cmd missing, dsh.ps1 stale; hand-swap created non-standard tree; rejects hand-patching as repair."},
+    {"id": "external-pinned-repair", "verdict": "pass", "reason": "Grounded in repair-notes: external pinned npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerates shims; checkout aligned to rc.1 tag; distinguishes recorded repair from user-side verification."},
+    {"id": "handoff-protocol", "verdict": "pass", "reason": "Agent recognizes it lives in the target and must hand off, never execute; procedure stops host before pinned install, restarts and verifies; labels stop-first/pinning as known rules and in-session refusal as the new self-host rule."},
+    {"id": "guard-and-postupgrade-checks", "verdict": "pass", "reason": "Guard detects upgrade target intersecting own runtime and refuses; cites alpha.5→rc.1 252-file version-only diff so no re-migration; checks version markers and plugin load after restart/refresh; backup cleanup only after verification; no code changes."}
+  ],
+  "caps": [
+    {"id": "execute-inside-target", "triggered": false, "reason": "Final plan mandates an external shell and explicitly forbids executing from inside the host."},
+    {"id": "manual-shim-repair", "triggered": false, "reason": "Manual swaps/hand-written shims are analyzed and explicitly rejected in favor of the formal external pinned install."}
+  ]
+}

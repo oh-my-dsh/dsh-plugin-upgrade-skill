@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-21-minimax-m3.1-flash-s1-s24-r1",
+  "model": "MiniMax-M3.1-Flash",
+  "provider": "llmapi",
+  "servedModel": "MiniMax-M3.1-Flash",
+  "endpointIdentityNote": "This DSH session runs with provider=llmapi, model=MiniMax-M3.1-Flash. The model identity is asserted by the harness runtime context and the subagent/descriptor events; no independent served-model probe was performed in this run.",
+  "repo": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill",
+  "startedAt": "2026-10-21T04:17:21.045Z",
+  "finishedAt": null,
+  "tasks": [
+    "S1-static-scan",
+    "S2-negative-scan",
+    "S3-snapshot-migration",
+    "S4-legacy-client-imports",
+    "S5-negative-naming",
+    "S6-corridor-net-state",
+    "S7-unpublished-cohort",
+    "S8-release-routing-trap",
+    "S9-composer-coordinate-trap",
+    "S10-paste-rename-and-version-chip",
+    "S11-mermaid-lazyload-trap",
+    "S12-global-upgrade-ebusy-trap",
+    "S13-peer-range-vs-runtime",
+    "S14-link-install-lock-trap",
+    "S15-slot-error-boundary-crash",
+    "S16-self-host-upgrade-trap",
+    "S17-external-ui-plugin-onboarding-trap",
+    "S18-terminal-sprite-render-trap",
+    "S19-phantom-update-stale-host",
+    "S20-msvc-flock-trap",
+    "S21-resource-service-unavailable-trap",
+    "S22-duplicate-insert-boot-crash-trap",
+    "S23-passing-compat-guard-trap",
+    "S24-dock-cotenant-crash-trap"
+  ],
+  "arms": [
+    "noskill",
+    "skill"
+  ],
+  "cellsPlanned": 48,
+  "concurrency": 8,
+  "cellTimeoutMinutes": 30,
+  "order": "S1 -> S24; within a task: noskill first, then skill",
+  "fixtureSealNote": "HEAD verified; benchmark/tasks/ byte-identical to sealed baseline; corrected audit semantics in effect",
+  "fixtureSealDetail": {
+    "method": "SHA-256 per file over benchmark/tasks/<task>/environment/fixture, compared against the staged copy before spawn and again after the solver finished",
+    "sourceRoot": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\tasks"
+  },
+  "auditSemantics": {
+    "whitelist": "cell directory only, for both arms (skills/plugin-upgrade/ is staged inside the cell directory)",
+    "notViolations": [
+      "regex character classes inside a grep/rg pattern (e.g. [/\\\\], \\w+)",
+      "path literals quoted as arguments inside a command (text mentions, not accesses)",
+      "glob patterns without a path operand whose pattern is an absolute in-cell path",
+      "probes with no filesystem access (node --version, --help, pwd)"
+    ],
+    "violationMarker": "invalid:roaming"
+  },
+  "runtime": {
+    "harness": "DSH (DeepSeek Harness) Web GUI session",
+    "sessionDir": "C:\\Users\\lhh\\.dsh\\sessions\\--E-deepseek-harness-test-lhh010--",
+    "subagentMechanism": "spawn subagent (mode=continuable), one fresh instance per cell, single attempt",
+    "tokenSource": "session projection cache rows.tokenUsage.totals"
+  },
+  "graderNote": "Grading is out of scope for this run; a separate judging session handles it.",
+  "status": "completed",
+  "pauseReason": null,
+  "timeoutPolicy": {
+    "capMinutes": 30,
+    "onCapExceeded": "interrupt the solver, record status=timeout with invalid:[timeout:30min-cap-exceeded, invalid:no-report], keep the fixture seal and transcript",
+    "note": "A timeout cell is NOT re-run in this round; it is preserved as evidence and reported."
+  },
+  "degenerateRunPolicy": {
+    "definition": "A solver execution that (a) loops — repeating the same read operands in a fixed cycle — and/or (b) probes the live host runtime for target-version facts the fixture does not contain, instead of reasoning from the task brief.",
+    "loopDetectionRule": "Count read-dispatch operands by exact path. A cell is flagged invalid:loop when one operand is read more than 3 times, or when a repeating block of N consecutive read operands recurs 3+ times with no new information.",
+    "invalidMarker": "invalid:loop",
+    "signals": [
+      "duplicate read operand count",
+      "repeating cycle length/repetitions",
+      "cordis_inspect_query volume",
+      "dsh CLI probes against the live host"
+    ],
+    "observedIn": [
+      "S1-static-scan::noskill"
+    ]
+  },
+  "invalidMarkers": {
+    "invalid:no-report": "the solver wrote no report file",
+    "invalid:fixture-modified": "the sealed fixture changed",
+    "invalid:roaming": "a real read or write outside the cell whitelist",
+    "invalid:loop": "the solver repeated the same reads in a fixed cycle without producing new information",
+    "timeout:30min-cap-exceeded": "the solver was stopped at the 30-minute per-cell cap"
+  },
+  "armDifferenceSignal": {
+    "name": "card-catalogue-absent-in-noskill",
+    "description": "The noskill arm has no change-card catalogue inside its read whitelist. A noskill solver can still reason well from the fixture, but any card ID it cites is reconstructed, not read. Verified on S3-snapshot-migration: all 8 cited IDs exist in the real catalogue, yet the subjects it assigned to them (0/8 matching) are wrong, and the two cards that actually govern the task (A1-03 session-view split, A1-25 client-runtime removal) were mis-numbered or missed.",
+    "consequence": "Card-ID citations in a noskill report must be treated as UNVERIFIED unless the card is present in the whitelist. This is a correctness signal about the arm, not a whitelist violation.",
+    "verification": "Compare each noskill-cited card ID against the cell-local catalogue in a skill-arm cell (skills/plugin-upgrade/references/*.md) and check the card subject, not only that the ID exists.",
+    "observedIn": [
+      "S3-snapshot-migration::noskill",
+      "S2-negative-scan::noskill",
+      "S4-legacy-client-imports::noskill"
+    ]
+  },
+  "cardEvidenceCheck": {
+    "method": "For each finalized noskill cell, extract cited card IDs, look them up in the cell-local catalogue (from any skill-arm cell), and compare the assigned subject with the real card subject.",
+    "fields": [
+      "cardIdsCited",
+      "distinctRealCardIds",
+      "subjectMappingCorrect",
+      "subjectMappingPlausible",
+      "subjectMappingWrong",
+      "selfDisclosed"
+    ]
+  },
+  "resumedAt": "2026-10-21T06:24:41.555Z",
+  "concurrencyNote": "raised from 2 to 8 after the initial wave; the harness active-child limit of 8 is the hard ceiling",
+  "auditHarnessChanges": [
+    "audit.mjs v5: host-probe detector no longer charges a run_code body that merely MENTIONS a command in prose; a probe is now a pwsh segment invoking the binary or a run_code that spawns/execs it. Re-validated: S1 noskill still the only probing cell (78 exec probes); S12 noskill prose mentions dropped to 0 exec / 4 quotations.",
+    "finalize.mjs: ledgerRow is an upsert (one row per task::arm), replacing the append that duplicated rows on re-finalize.",
+    "wave.mjs: finish() refuses to finalize a cell whose session log has no turn/end yet (returns {pending:true}).",
+    "session-window.mjs: bounded wait for turn/end to flush, so duration/end timestamps are not read early.",
+    "audit.mjs v4: relative fs paths and concatenated path fragments resolve against the cell dir instead of being charged as roaming.",
+    "audit.mjs v4: loop rule refined to redundancy >= 60% over >= 20 reads OR an exact repeating block (the >3-reads rule false-positived S4/S6 skill).",
+    "audit.mjs: token counts read from the projection cache, re-read for settled numbers (the session log alone under-reports).",
+    "tools.pwsh has a broken binding (missing required 'description'), so all file operations go through Node fs inside run_code."
+  ],
+  "completedAt": "2026-10-21T07:08:25.029Z",
+  "summary": {
+    "cells": 48,
+    "clean": 47,
+    "anomalies": 1,
+    "toolCalls": 1983,
+    "tokens": 59097302,
+    "summedWallSeconds": 34125,
+    "noskill": {
+      "cells": 24,
+      "tokens": 12036567,
+      "avgSeconds": 591
+    },
+    "skill": {
+      "cells": 24,
+      "tokens": 47060735,
+      "avgSeconds": 831
+    },
+    "armRatios": {
+      "tokens": 3.91,
+      "time": 1.4
+    },
+    "completeArmPairs": 24,
+    "reportBytes": {
+      "min": 12962,
+      "median": 30924,
+      "max": 52275
+    },
+    "durationSeconds": {
+      "min": 118,
+      "median": 629,
+      "max": 3272
+    }
+  },
+  "rescueNotes": [
+    "S23 noskill: the agent completed 180K chars of analysis then exhausted its context before writing the report (11 tool calls, 0 report). The agent was RESUMED via send_message with instructions to write from the existing analysis without re-reading the fixture; it wrote the report in one write call. Final: ok. The failure was write mechanics, not diagnostic ability.",
+    "S24 noskill: a duplicate spawn put two live agents in one cell directory (the child limit caused my refill logic to skip a cell silently). Both wrote to the same report path. The COMPLETED agent (83c4342c-b5c9-456a-8f7c-38f4c5ba921e, 429 lines, 38572 bytes) was kept and the duplicate interrupted; the audit is pinned to the completed session. Final: ok."
+  ]
+}

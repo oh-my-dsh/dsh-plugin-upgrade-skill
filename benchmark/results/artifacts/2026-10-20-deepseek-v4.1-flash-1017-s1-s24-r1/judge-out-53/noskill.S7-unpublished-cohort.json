@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "published-version-evidence",
+   "verdict": "pass",
+   "reason": "正确区分 package.json 声明与 README/题面给出的已发布列表（alpha.1 从未发布、alpha.2 已发布），未从根包或 dist-tag 推断，提出 npm view 等包级验证供维护者执行，未要求任务内联网。"
+  },
+  {
+   "id": "caret-resolution",
+   "verdict": "pass",
+   "reason": "区间展开与预发布准入规则解释 ^0.1.2-alpha.1 解析到已发布 alpha.2、下界缺失不致不可解析；指出静默声明/类型基线错位、漂移与 alpha 间类型兼容不确定性。"
+  },
+  {
+   "id": "workable-baseline-plan",
+   "verdict": "pass",
+   "reason": "Option B 精确钉 0.1.2-alpha.2 加 lockfile 与 CI 构成完整可行方案，利弊与出口齐备；§2.4/§6 明确钉到的是 alpha.2 基线且 alpha.1/alpha.2 差异不可验证，Option D 另给确需 alpha.1 的带外路径。"
+  },
+  {
+   "id": "reproducibility-and-exit",
+   "verdict": "pass",
+   "reason": "推荐方案单一 npm + 提交 package-lock + npm ci + tsc --noEmit；overrides(C)与 file: tarball(D)均给出撤除出口，精确钉版给出未来升级路径，未验证项在 §6 诚实登记。"
+  }
+ ],
+ "caps": [
+  {
+   "id": "install-unpublished-registry-version",
+   "triggered": false,
+   "reason": "把精确安装 alpha.1 列为会 ETARGET 失败的情形而非处方，D1/D2 是镜像 tarball 或请维护者补发布的条件路径，从未开出'从 npm 安装未发布 alpha.1'。"
+  }
+ ]
+}

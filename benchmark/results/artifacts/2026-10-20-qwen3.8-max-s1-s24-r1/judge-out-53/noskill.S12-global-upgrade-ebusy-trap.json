@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "指认 PID 42432 的 dsh web 宿主 node.exe 为加载并持有 koffi.node 的进程；已加载原生镜像被 OS 映射锁定直至进程退出，npm 的 copyfile 因此 EBUSY。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "刷新仅重载浏览器 SPA、不停持有锁的宿主；有序步骤：优雅停止→tasklist/wmic 确认(按命令行识别 dsh PID、不杀无关 node)→必要时按 PID 杀树→安装→验证→重启。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "裸名解析到 latest=0.1.1-rc.2(alpha 指向 0.1.2-alpha.5)，把已装的 0.1.2-alpha.4 覆盖为 rc.2 而非保留/升级；明确 npm 不保留也不推进已装版本，机制(非最高 semver、非已装版)正确。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "在宿主停止并验证后于独立终端执行 npm install -g @deepseek-ai/dsh@0.1.2-alpha.5(连同 TUI)，dsh --version 须打印 0.1.2-alpha.5 后再重启宿主；@alpha 仅作为可变备选讨论。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "告诫 README 作者：core 绝不裸名(或干脆不写入插件命令、单独文档化)，合并命令须钉版(tag 或精确版)，并加'裸名=latest 会静默降级预发布用户'警示与安装前后版本核对。"
+    }
+  ],
+  "caps": []
+}

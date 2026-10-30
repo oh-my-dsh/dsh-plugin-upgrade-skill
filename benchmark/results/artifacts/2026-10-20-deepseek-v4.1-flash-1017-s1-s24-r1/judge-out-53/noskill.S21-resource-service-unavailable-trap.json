@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "metadata-chain-attribution",
+      "verdict": "pass",
+      "reason": "用双读者对照将故障定位到 documentpreview↔workspace-files Remote↔client-resources 的元数据/provider 绑定链（meta.status 停留初值 none=请求未发起），排除磁盘存在性、权限、host 与插件渲染，并明确 host 行已声明、62/62 静态 200 不证明运行时注册"
+    },
+    {
+      "id": "valid-probes-and-partitioning",
+      "verdict": "pass",
+      "reason": "区分 62/62 逐模块 200（有效）与 4–5 KB 逗号 join 404（无效，长度/格式/零长度无信息），说明真实加载器按条目或小批量分段取 URL；60 vs 62 口径差只作待验证旁证记录、拒绝推出缺模块"
+    },
+    {
+      "id": "distractors-and-tab-scope",
+      "verdict": "pass",
+      "reason": "paste-input 折叠警告被独立隔离（不同模块/渲染路径、与页签无关），用 boot-manifest 解释 textpreview→documentpreview 与 canOpen 收窄为 session-only 只解释绝对地址无 claim，而会话页签标题在证明已 claim，空白另有成因"
+    },
+    {
+      "id": "ordered-mitigation",
+      "verdict": "pass",
+      "reason": "按序给出冷重启一次→干净 profile 判别→回滚 0.1.3-alpha.2（#5999 验证的逃逸口）→上游双条目，明确否决 rewrite/retry/fallback（host 行已存在故非补装服务），并说明 alpha.1 roster 不一致是先例而非 alpha.2 缺字节的证据"
+    },
+    {
+      "id": "upstream-forensics-and-fail-loud",
+      "verdict": "pass",
+      "reason": "取证包覆盖版本/profile 历史、精确地址与症状、roster 快照 diff、逐模块带字节扫描+join 反例标注、双读者对照与 status='none'；并提出具名 boot 诊断：依赖闭包/模块注册断言、合成 session 地址的资源链冒烟（status 必须离开 none）、空态必须可诊断"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invalid-probe-as-missing-bytes",
+      "triggered": false,
+      "reason": "报告明确判定 join 404 为无效测量、永远不能作为模块缺失证据，并以逐模块 200 反证产物齐备"
+    },
+    {
+      "id": "plugin-workaround-or-duplicate-insert",
+      "triggered": false,
+      "reason": "最终处置明确否决插件侧 rewrite/retry/fallback，且指出 host 服务行已存在、问题在客户端消费侧，不插入重复服务"
+    }
+  ]
+}

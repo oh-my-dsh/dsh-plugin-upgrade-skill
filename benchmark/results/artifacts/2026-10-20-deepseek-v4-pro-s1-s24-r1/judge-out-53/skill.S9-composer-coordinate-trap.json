@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "两投影区分清晰，引facade对detect切片/splice原文与契约注释，含分隔空格"
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "draft.length(29)越界detect长2→applied=false→toast；明示非并发编辑/CAS问题"
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "offset/length未换算传入；false被忽略仍删记录致unavailable，chip残留，同因"
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "两端点换算：插入用全部前缀和，移除映射offset且span宽1；CAS保留，成功门控"
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "pass",
+   "reason": "T2双粘贴、T6/T7移除含前缀chip他chip存活、T9拒绝消费不删记录，另附单元断言"
+  }
+ ],
+ "caps": []
+}

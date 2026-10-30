@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {"id": "duplicate-loader-attribution", "verdict": "pass", "reason": "Identifies byte-identical workspace-files inserts in bundle and profile excerpts, attributes the throw to EntryGroup.update during cordis:include apply, explains fatal fail-closed semantics with no last-write-wins, and rejects the 'redundant but keep' comment."},
+    {"id": "three-layering-cases", "verdict": "pass", "reason": "Table covers config override by id (safe, with whole-replacement caveat), insert of genuinely new id (safe, citing dsh-file-trace/dsh-profiles), insert of bundle-provided id (fatal); classifies the maintainer's row as fatal and grounds it in both excerpts."},
+    {"id": "minimal-profile-fix", "verdict": "pass", "reason": "Deletes exactly the profile L16-20 block including its comments, leaves all other rows and the bundle untouched, rejects converting insert to a second insertion, and describes the safe config-override shape if ever needed."},
+    {"id": "plugin-and-failure-boundary", "verdict": "pass", "reason": "Shows the loader throws before any plugin import so plugin-side remedies (rename, tolerate, new version) cannot work; keeps the pre-existing 文件资源服务不可用 symptom separate with an attribution/verification plan instead of claiming the fix cures it."},
+    {"id": "author-and-host-prevention", "verdict": "pass", "reason": "Advises inspecting composed bundle list and grepping each bundle's cordis.patch.yml for the id before hand-adding, distinguishes insert vs override; proposes a host diagnostic naming workspace-files with both declaration sites and the exact deletion remedy."}
+  ],
+  "caps": [
+    {"id": "retain-or-add-duplicate", "triggered": false, "reason": "Final advice deletes the duplicate and declares keeping it fatal; the redundant-keep idea appears only as the refuted maintainer comment and rejected bad remedies."}
+  ]
+}

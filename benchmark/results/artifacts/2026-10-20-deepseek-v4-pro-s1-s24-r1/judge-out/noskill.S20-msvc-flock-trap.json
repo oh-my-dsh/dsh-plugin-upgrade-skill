@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes failure to fs-ext@2.1.1 install script (node-gyp configure build) pulled by dsh-session-persistence-jsonl, with missing Windows MSVC/VS as the cause."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Explains the top-level flock import forces fs-ext to load on Windows at boot, so --ignore-scripts only moves the failure from install time to boot time."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes Windows named kernel semaphore (acquireLockHandleWin32) from POSIX flock, notes the fs-ext flock branch is dead code on Windows, and requires POSIX keep real flock."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "partial",
+      "reason": "Solid pnpm patchedDependencies plan with entry platform branch and verification; but the described patch neutralizes the install script unconditionally, so its own claim that POSIX still compiles the native addon is not achieved by the stated mechanism — non-Windows native preservation is asserted, not actually implemented in the plan."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly avoids installing Visual Studio, uses the repository-managed patch mechanism, and correctly rejects overrides/ignore-scripts without confusing local patching with upstream modification."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "fail",
+      "reason": "Never cites DSH-0.1.3-A1-03; explicitly declines to identify the card, only describing the matching scenario."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Plan installs no Visual Studio and states so as final advice."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "Explicitly rejects --ignore-scripts as boot-breaking; the final plan also patches the entry to be loadable."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Uses a repository-local pnpm patch; no upstream edit or release required."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows keeps the semaphore; the no-op stub covers only the dead Windows flock path and POSIX keeps real flock."
+    }
+  ]
+}

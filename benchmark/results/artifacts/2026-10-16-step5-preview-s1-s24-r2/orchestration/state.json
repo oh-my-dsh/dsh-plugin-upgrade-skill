@@ -1,0 +1,2459 @@
+{
+  "runStartMs": 1792120003453,
+  "runStartIso": "2026-10-16T03:06:43.453Z",
+  "manifestBase": {
+    "model": "step-5-preview (provider: stepfun; DSH in-session subagents; identity undisclosed)",
+    "model_notes": "session model config provider=stepfun model=step-5-preview (contextWindow 1024000), inherited by every solver subagent and verified per cell from session request/header events; identity not independently verified — recorded as identity_undisclosed per union-alpha / fledge-alpha precedent",
+    "judge_model": null,
+    "judge_status": "NOT JUDGED — solvers only; judging deferred to a separate DSH session (GLM-5.3-Flash in-session judge subagents + scoreDecisions)",
+    "harness": "DSH in-session subagents (deepseek-harness checkout, session workspace E:/deepseek-harness/test-lhh010): fresh subagent per cell, one attempt per task per arm, prompt-level workspace boundary, concurrency 3, per-cell timeout 30 minutes; subagent cwd = cell directory",
+    "base_commit": "ef075767b476e8000c716a18f848028eebcd5aef",
+    "base_commit_note": "fixture source branch benchmark/step5-preview-s1-s24-r1 @ ef07576 (same commit as main). Run start HEAD drift: working tree on docs/cards/v0.2.1-alpha.4-corridor @ cdfa12995fbe1631cd4a840507aeabbb65d6b5a1 (external sessions). git diff benchmark/step5-preview-s1-s24-r1 -- benchmark/tasks/ is EMPTY (task seals and fixtures byte-identical); skills/plugin-upgrade/ differs by +2 files (v0.2.1-alpha.4 corridor docs: references/README.md, references/v0.2.1-alpha.4.md) — skill-arm cells read the post-drift skill reference content. No repo files were modified by this run; no branch switch performed.",
+    "round": "step5-preview S1-S24 round 2",
+    "protocol": "R2 single attempt; S1..S24 static pool; noskill before skill within each task; S1->S24 order; concurrency 3; 30-minute per-cell timeout; WORKSPACE BOUNDARY block embedded in every solver prompt (cell-only read allowlist + skill dir for skill arm; r2-strengthened: NO writes outside the cell directory, explicitly including system TEMP/%TEMP%/AppData/Local/Temp, temp scripts must live in agent-output/<task>/); fixtures sha256-verified BEFORE dispatch and again after; transcript roaming audit per cell with corrected adjudication; noskill exposure audit; skill-arm card citations recorded; one relaunch permitted only when no report is produced",
+    "audit_caliber_note": "r2 transcript audit uses the corrected adjudication from .step5-unc-fixup.md, continuing the judge-side adjudication caliber (judge-side-adjudication.md, 2026-10-15): NOT violations = regex character-class spans (e.g. [/\\], [\\\\]) inside grep/rg patterns, quoted path literals passed as arguments (node -e probe scripts), glob calls without a path parameter whose pattern is a cell-absolute path, and probes with no filesystem access (node --version, $PSVersionTable). Real out-of-bounds access remains invalid:roaming: reads of existing paths outside the allowlist, and ANY write outside the cell directory (system temp included). Reads of non-existent out-of-allowlist paths are recorded as re-admit notes (zero information). Orchestrator verdicts keep the r1 judge-side re-admit families visible in per-cell audit details (orchestration/audit/<task>__<arm>.json) so the judging side can re-adjudicate.",
+    "solver_prompt": "instruction.md with /app paths rewritten to the cell absolute paths; r2-strengthened WORKSPACE BOUNDARY block; arm-specific clause appended verbatim (per protocol section 2.3)",
+    "totals": {
+      "cells": 48,
+      "toolcalls": 1535,
+      "tokens": 40495884,
+      "solver_work_time": "10h01m54s",
+      "status": {
+        "ok": 43,
+        "relaunched": 5
+      }
+    }
+  },
+  "executionNotes": [
+    "2026-10-16T03:06:43.455Z: r2 run started in DSH session (workspace E:/deepseek-harness/test-lhh010). All 48 cells prepared with fixtures copied from repo benchmark/tasks/<task>/environment/fixture/ and sha256-verified against source before dispatch. Orchestration assets (lib.mjs, runner.mjs, prompts/, state.json) persisted under the artifacts dir orchestration/ for crash resilience.",
+    "2026-10-16T03:14:44.607Z: S1-static-scan/skill attempt 1 (subagent dd93b643-6915-48ea-bf0b-91f4a8834782) failed with provider-side errors: 5 llm/retry events, assistant attempts exhausted, turn ended with no report; reads confined to fixture + skill dir; no out-of-bounds access observed in the failed attempt. Per protocol one relaunch dispatched.",
+    "2026-10-16T03:14:44.607Z: S2-negative-scan/noskill attempt 1 (subagent 6007e5af-7c26-4d9f-80c7-d9d8e6a9321e) failed before finishing (provider-side; closing message shows fixture fully mapped, greps not yet run); no report produced. Per protocol one relaunch dispatched.",
+    "2026-10-16T03:30:41.446Z: auditor v2 fix + re-audit (S1-static-scan/noskill): v1 program-text scanner mis-paired a naive quote over solver-embedded report markdown and read the JS-escaped literal (double-backslash + S1-static-scan-report.md) as a UNC path adjacent to the real writeFileSync call, producing one false invalid:roaming. v2 auditor: escape-aware quote pairing, segment unescaping, junk/markdown-fragment filtering, leading-separator fragments resolved as cell-relative, const NAME = path variable tracking for direct fs/exec calls, execSync family added to filesystem-call detection. Re-audit of the unchanged transcript: verdict invalid:roaming -> ok. Mirrors the r1 UNC_RE fixup precedent (.step5-unc-fixup.md); judge-side adjudication caliber unchanged.",
+    "2026-10-16T03:32:00.682Z: transcript accounting fix: the first (provider-failed) attempt sessions of S1-static-scan/skill (dd93b643) and S2-negative-scan/noskill (6007e5af) are now merged into their cell audits per the r1 merged-session precedent; both failed attempts were re-audited (S1/skill attempt 1: one read of a mistyped non-existent skill path E:\\deepseek-harness\\skills\\plugin-upgrade = zero-information re-admit, plus allowed skill-dir reads; S2/noskill attempt 1: cell-confined reads/globs/greps). Final verdicts unchanged: relaunched -> relaunched, relaunched -> relaunched. extractCardIds tightened (trailing-dash fragments dropped).",
+    "2026-10-16T03:53:52.896Z: auditor fix #2 + re-audit (S6-corridor-net-state/skill): the var-tracking write heuristic treated any > character within 500 chars of a filesystem call as a shell redirect, so JS arrow functions and markdown blockquotes inside solver programs flipped readFileSync/readdirSync calls on the allowed skill directory into a false write-to-skill-dir violation. Fixed: the redirect heuristic now applies only to exec-family calls (execSync/execFileSync/spawnSync/exec/spawn); writes are otherwise detected by exact fs write-function names and by structured write tool calls. Re-audit of the unchanged transcript (verified: the only nested write call targeted the cell agent-output directory; skill-dir accesses were readdirSync/readFileSync reads): verdict invalid:roaming -> ok. Same fixup-and-re-audit precedent as the r1 UNC_RE correction (.step5-unc-fixup.md); judge-side caliber unchanged.",
+    "2026-10-16T05:10:21.154Z: S11-mermaid-lazyload-trap/skill attempt 1 exceeded the 30-minute per-cell timeout and was interrupted (subagent eae31afb-dd34-47e3-b7dd-50215c37ac49).",
+    "2026-10-16T05:10:21.154Z: S11-mermaid-lazyload-trap/skill attempt produced no report (subagent eae31afb-dd34-47e3-b7dd-50215c37ac49, agent status running); one relaunch dispatched per protocol (subagent b26f6348-253c-431a-996c-de801370639d).",
+    "2026-10-16T05:10:21.154Z: S12-global-upgrade-ebusy-trap/skill attempt 1 exceeded the 30-minute per-cell timeout and was interrupted (subagent 8f8be20e-9417-4191-985f-a4b94225c241).",
+    "2026-10-16T05:10:21.154Z: S12-global-upgrade-ebusy-trap/skill attempt produced no report (subagent 8f8be20e-9417-4191-985f-a4b94225c241, agent status running); one relaunch dispatched per protocol (subagent dbcbc76c-858a-4c9d-9353-48d5d98ab2c1).",
+    "2026-10-16T05:19:13.496Z: auditor v3/v4 fixes + full re-audit: (a) the program-text scanner now determines each filesystem call argument span by parenthesis matching, so a path literal is a real access only when it sits inside the call arguments — this removes the false positive class where x.startsWith(\"E:\")-style string comparisons and log lines following a call were read as filesystem access (S11/skill interrupted attempt 1: readdirSync/realpathSync probe followed by rp.startsWith drive-root comparison); (b) TEMP_RE was non-global, so any program text containing a temp-path pattern spun the temp scanner in an infinite loop (latent since v1, first triggered by a synthetic self-test); fixed with the g flag. Self-tests: startsWith-after-call = no violation; writeFileSync to AppData/Local/Temp = violation; readdirSync of the drive root = violation. Full re-audit of all finalized cells on unchanged transcripts: all verdicts stable. Same fixup-and-re-audit precedent as the r1 UNC_RE correction (.step5-unc-fixup.md).",
+    "2026-10-16T05:19:13.496Z: S11-mermaid-lazyload-trap/noskill ran 54m45s (5 provider-side llm/retry events) and exceeded the 30-minute per-cell timeout; the runtime stopped the subagent after it had already written its report (31 KB) and was sending its final message. Report present, audit clean, finalized ok per protocol; the overrun is recorded here for transparency. Root cause of the missed timeout interrupt: the 04:32Z safety-net poll crashed on a stale variable reference (fixed) and the session then stalled ~33 minutes with no reminder deliveries, so the next poll ran at 05:10Z; two other in-flight cells (S11/skill, S12/skill attempt 1) had by then also exceeded 30 minutes without reports and were interrupted and relaunched per protocol (one relaunch each).",
+    "2026-10-16T05:57:05.396Z: S18-terminal-sprite-render-trap/skill attempt produced no report (subagent e700f505-2e82-4deb-b07f-094b439af3c9, agent status inactive); one relaunch dispatched per protocol (subagent e0c9a615-971e-4be9-9537-c708079b174c).",
+    "2026-10-16T06:19:42.683Z: S19-phantom-update-stale-host/noskill attempt 1 exceeded the 30-minute per-cell timeout and was interrupted (subagent 1e28fb8d-0f50-43d0-b718-d511e11dfbe3).",
+    "2026-10-16T06:46:23.919Z: run complete (48/48). Final verification: all 48 cell fixtures sha256-identical to repo sources (0 mismatches); 48/48 deliverables present under agent-output/<task>/ (deliverable = non-empty depth-0 document file, scratch/demo artifacts excluded and preserved for transparency); ledger and manifest consistent. Totals: 1535 tool calls, 40495884 tokens, 10h01m54s cumulative solver work time (sum of per-session spans, relaunch attempts included). Status histogram: {\"ok\":43,\"relaunched\":5}. Judging deferred to a separate DSH session per protocol."
+  ],
+  "cells": {
+    "S1-static-scan/noskill": {
+      "status": "ok",
+      "subagentId": "b7cf6f73-6112-4863-a2e3-b3ee5a61b887",
+      "dispatchedAt": 1792120029588,
+      "dispatchedIso": "2026-10-16T03:07:09.588Z",
+      "attempt": 1,
+      "sessions": [
+        {
+          "id": "b7cf6f73-6112-4863-a2e3-b3ee5a61b887",
+          "createdAt": 1792120029588
+        }
+      ],
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S1-static-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 65,
+        "candidates": 65
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 27,
+      "tokens": 240845,
+      "start": "2026-10-16T03:07:09.496Z",
+      "end": "2026-10-16T03:14:59.986Z",
+      "duration": "7m50s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S1-static-scan/skill": {
+      "status": "relaunched",
+      "subagentId": "dd93b643-6915-48ea-bf0b-91f4a8834782",
+      "dispatchedAt": 1792120484607,
+      "dispatchedIso": "2026-10-16T03:14:44.607Z",
+      "attempt": 2,
+      "sessions": [
+        {
+          "id": "dd93b643-6915-48ea-bf0b-91f4a8834782",
+          "createdAt": 1792119884607
+        },
+        {
+          "id": "cfb797b8-8e07-4116-ad05-013664c02192",
+          "createdAt": 1792120484607
+        }
+      ],
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S1-touchpoint-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\skills\\plugin-upgrade",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "dd93b643-6915-48ea-bf0b-91f4a8834782/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\skills\\plugin-upgrade",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dd93b643-6915-48ea-bf0b-91f4a8834782/run_code:code:var",
+            "source": "text-var"
+          }
+        ],
+        "oks": 199,
+        "candidates": 201
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-05,A1-06,A1-08,A1-13,A1-19,A1-20,A1-21,A1-22,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-04,A2-05,A2-06,A2-08,A2-10",
+      "toolcalls": 103,
+      "tokens": 2055887,
+      "start": "2026-10-16T03:07:09.616Z",
+      "end": "2026-10-16T03:25:05.448Z",
+      "duration": "12m16s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S2-negative-scan/noskill": {
+      "status": "relaunched",
+      "subagentId": "6007e5af-7c26-4d9f-80c7-d9d8e6a9321e",
+      "dispatchedAt": 1792120484607,
+      "dispatchedIso": "2026-10-16T03:14:44.607Z",
+      "attempt": 2,
+      "sessions": [
+        {
+          "id": "6007e5af-7c26-4d9f-80c7-d9d8e6a9321e",
+          "createdAt": 1792119884607
+        },
+        {
+          "id": "fa43b27f-6d8d-42d1-91f8-ea2b96380e2a",
+          "createdAt": 1792120484607
+        }
+      ],
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 74,
+        "candidates": 76
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 28,
+      "tokens": 324642,
+      "start": "2026-10-16T03:07:09.737Z",
+      "end": "2026-10-16T03:20:52.938Z",
+      "duration": "10m04s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S2-negative-scan/skill": {
+      "status": "ok",
+      "subagentId": "3f553bc0-012f-4aca-8d60-c29cfbec8023",
+      "sessions": [
+        {
+          "id": "3f553bc0-012f-4aca-8d60-c29cfbec8023",
+          "createdAt": 1792120584604
+        }
+      ],
+      "dispatchedAt": 1792120584604,
+      "dispatchedIso": "2026-10-16T03:16:24.604Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S2-negative-scan-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 199,
+        "candidates": 199
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-05,A1-06,A1-07,A1-08,A1-09,A1-10,A1-11,A1-12,A1-13,A1-14,A1-19,A1-20,A1-21,A1-22,A1-23,A1-24,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-04,A2-05,A2-06,A2-08,A2-10",
+      "toolcalls": 94,
+      "tokens": 2761953,
+      "start": "2026-10-16T03:16:24.657Z",
+      "end": "2026-10-16T03:30:04.567Z",
+      "duration": "13m40s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S3-snapshot-migration/noskill": {
+      "status": "ok",
+      "subagentId": "1e3c29a5-2c13-454a-a251-d22aa5d19ff4",
+      "sessions": [
+        {
+          "id": "1e3c29a5-2c13-454a-a251-d22aa5d19ff4",
+          "createdAt": 1792121441460
+        }
+      ],
+      "dispatchedAt": 1792121441460,
+      "dispatchedIso": "2026-10-16T03:30:41.460Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S3-snapshot-migration-assessment.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 32,
+        "candidates": 32
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 22,
+      "tokens": 491849,
+      "start": "2026-10-16T03:30:41.676Z",
+      "end": "2026-10-16T03:40:41.483Z",
+      "duration": "10m00s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S3-snapshot-migration/skill": {
+      "status": "ok",
+      "subagentId": "c43d3f18-9cd7-4daf-b9fc-6e68d1816b2b",
+      "sessions": [
+        {
+          "id": "c43d3f18-9cd7-4daf-b9fc-6e68d1816b2b",
+          "createdAt": 1792121441460
+        }
+      ],
+      "dispatchedAt": 1792121441460,
+      "dispatchedIso": "2026-10-16T03:30:41.460Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S3-snapshot-migration.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 118,
+        "candidates": 118
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-04,A1-09,A1-10,A1-11,A1-14,A1-19,A1-20,A1-21,A1-22,A1-23,A1-24,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-04,A2-05,A2-06,A2-08,A2-10,R1-01,R1-02,R1-03,R1-04,R1-05,R1-06,R1-07,R1-08,R1-09,R2-01,R2-03",
+      "toolcalls": 33,
+      "tokens": 2295517,
+      "start": "2026-10-16T03:30:41.766Z",
+      "end": "2026-10-16T03:46:24.875Z",
+      "duration": "15m43s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S4-legacy-client-imports/noskill": {
+      "status": "ok",
+      "subagentId": "9fdbc1c2-a1c9-4d7c-95c2-674b81ba221f",
+      "sessions": [
+        {
+          "id": "9fdbc1c2-a1c9-4d7c-95c2-674b81ba221f",
+          "createdAt": 1792121441460
+        }
+      ],
+      "dispatchedAt": 1792121441460,
+      "dispatchedIso": "2026-10-16T03:30:41.460Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S4-migration-touchpoints.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 47,
+        "candidates": 47
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 26,
+      "tokens": 225969,
+      "start": "2026-10-16T03:30:41.858Z",
+      "end": "2026-10-16T03:36:19.175Z",
+      "duration": "5m37s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S4-legacy-client-imports/skill": {
+      "status": "ok",
+      "subagentId": "60cb6ba8-419f-47be-8d54-59999ee16351",
+      "sessions": [
+        {
+          "id": "60cb6ba8-419f-47be-8d54-59999ee16351",
+          "createdAt": 1792121794336
+        }
+      ],
+      "dispatchedAt": 1792121794336,
+      "dispatchedIso": "2026-10-16T03:36:34.336Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S4-legacy-client-imports.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 79,
+        "candidates": 79
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-03,A1-05,A1-19,A1-20,A1-21,A1-22,A1-25,A1-26,A1-27,A1-28,A1-29,A1-30,A1-31,A1-32,A2-01,A2-02,A2-03,A2-08",
+      "toolcalls": 52,
+      "tokens": 1355308,
+      "start": "2026-10-16T03:36:34.419Z",
+      "end": "2026-10-16T03:44:41.661Z",
+      "duration": "8m07s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S5-negative-naming/noskill": {
+      "status": "ok",
+      "subagentId": "2052de41-1418-4262-8e96-de4a3b6aa3d8",
+      "sessions": [
+        {
+          "id": "2052de41-1418-4262-8e96-de4a3b6aa3d8",
+          "createdAt": 1792122084458
+        }
+      ],
+      "dispatchedAt": 1792122084458,
+      "dispatchedIso": "2026-10-16T03:41:24.458Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S5-naming-judgment-report.md",
+        "S5-naming-verdicts.json"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 20,
+        "candidates": 20
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 7,
+      "tokens": 172032,
+      "start": "2026-10-16T03:41:24.561Z",
+      "end": "2026-10-16T03:46:02.576Z",
+      "duration": "4m38s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S5-negative-naming/skill": {
+      "status": "ok",
+      "subagentId": "d6822770-2769-4f80-b271-1ee934ff48e3",
+      "sessions": [
+        {
+          "id": "d6822770-2769-4f80-b271-1ee934ff48e3",
+          "createdAt": 1792122303141
+        }
+      ],
+      "dispatchedAt": 1792122303141,
+      "dispatchedIso": "2026-10-16T03:45:03.141Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S5-negative-naming-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 59,
+        "candidates": 59
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 19,
+      "tokens": 947581,
+      "start": "2026-10-16T03:45:03.211Z",
+      "end": "2026-10-16T03:52:59.860Z",
+      "duration": "7m57s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S6-corridor-net-state/noskill": {
+      "status": "ok",
+      "subagentId": "888147b1-6ed2-43f9-83df-3ef114b17386",
+      "sessions": [
+        {
+          "id": "888147b1-6ed2-43f9-83df-3ef114b17386",
+          "createdAt": 1792122363815
+        }
+      ],
+      "dispatchedAt": 1792122363815,
+      "dispatchedIso": "2026-10-16T03:46:03.815Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S6-corridor-net-state-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 22,
+        "candidates": 22
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 9,
+      "tokens": 202409,
+      "start": "2026-10-16T03:46:03.898Z",
+      "end": "2026-10-16T03:50:09.643Z",
+      "duration": "4m06s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S6-corridor-net-state/skill": {
+      "status": "ok",
+      "subagentId": "08429e71-f2e1-4a53-bef7-a0a405e5d111",
+      "sessions": [
+        {
+          "id": "08429e71-f2e1-4a53-bef7-a0a405e5d111",
+          "createdAt": 1792122408879
+        }
+      ],
+      "dispatchedAt": 1792122408879,
+      "dispatchedIso": "2026-10-16T03:46:48.879Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S6-corridor-net-state-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 93,
+        "candidates": 93
+      },
+      "exposure": null,
+      "skillUse": "A1-01,A1-02,A1-04,A2-01,A2-05,J1-05",
+      "toolcalls": 20,
+      "tokens": 849130,
+      "start": "2026-10-16T03:46:48.972Z",
+      "end": "2026-10-16T03:52:13.287Z",
+      "duration": "5m24s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S7-unpublished-cohort/noskill": {
+      "status": "ok",
+      "subagentId": "ff1b5e5b-544d-4834-ba3a-91aac45b9261",
+      "sessions": [
+        {
+          "id": "ff1b5e5b-544d-4834-ba3a-91aac45b9261",
+          "createdAt": 1792122644718
+        }
+      ],
+      "dispatchedAt": 1792122644718,
+      "dispatchedIso": "2026-10-16T03:50:44.718Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S7-install-type-baseline-plan.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 30,
+        "candidates": 30
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 15,
+      "tokens": 207928,
+      "start": "2026-10-16T03:50:44.777Z",
+      "end": "2026-10-16T03:56:10.506Z",
+      "duration": "5m26s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S7-unpublished-cohort/skill": {
+      "status": "ok",
+      "subagentId": "67f29133-0fc6-4366-9ee6-4e5c5aad4c7a",
+      "sessions": [
+        {
+          "id": "67f29133-0fc6-4366-9ee6-4e5c5aad4c7a",
+          "createdAt": 1792122741832
+        }
+      ],
+      "dispatchedAt": 1792122741832,
+      "dispatchedIso": "2026-10-16T03:52:21.832Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S7-unpublished-cohort-install-plan.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 70,
+        "candidates": 70
+      },
+      "exposure": null,
+      "skillUse": "A1-07,A1-08,A1-19,A1-24,A1-25,A2-02,A2-03,A2-08,A2-10,J1-01",
+      "toolcalls": 23,
+      "tokens": 1426963,
+      "start": "2026-10-16T03:52:21.909Z",
+      "end": "2026-10-16T04:03:51.624Z",
+      "duration": "11m30s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S8-release-routing-trap/noskill": {
+      "status": "ok",
+      "subagentId": "c754831c-713b-45c7-84ad-f10da0b99887",
+      "sessions": [
+        {
+          "id": "c754831c-713b-45c7-84ad-f10da0b99887",
+          "createdAt": 1792122832913
+        }
+      ],
+      "dispatchedAt": 1792122832913,
+      "dispatchedIso": "2026-10-16T03:53:52.913Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S8-release-routing-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 35,
+        "candidates": 35
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 25,
+      "tokens": 258519,
+      "start": "2026-10-16T03:53:52.959Z",
+      "end": "2026-10-16T04:00:36.809Z",
+      "duration": "6m44s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S8-release-routing-trap/skill": {
+      "status": "ok",
+      "subagentId": "8ef1e072-a596-43a5-a3aa-4e91693a2f96",
+      "sessions": [
+        {
+          "id": "8ef1e072-a596-43a5-a3aa-4e91693a2f96",
+          "createdAt": 1792122981367
+        }
+      ],
+      "dispatchedAt": 1792122981367,
+      "dispatchedIso": "2026-10-16T03:56:21.367Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S8-release-routing-trap.diagnosis.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 49,
+        "candidates": 49
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 33,
+      "tokens": 625648,
+      "start": "2026-10-16T03:56:21.441Z",
+      "end": "2026-10-16T04:05:24.675Z",
+      "duration": "9m03s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S9-composer-coordinate-trap/noskill": {
+      "status": "ok",
+      "subagentId": "6138ec9e-53b3-45b1-ba53-59e5e235818b",
+      "sessions": [
+        {
+          "id": "6138ec9e-53b3-45b1-ba53-59e5e235818b",
+          "createdAt": 1792123246866
+        }
+      ],
+      "dispatchedAt": 1792123246866,
+      "dispatchedIso": "2026-10-16T04:00:46.866Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S9-composer-coordinate-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 27,
+        "candidates": 27
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 13,
+      "tokens": 518858,
+      "start": "2026-10-16T04:00:46.940Z",
+      "end": "2026-10-16T04:13:45.319Z",
+      "duration": "12m58s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S9-composer-coordinate-trap/skill": {
+      "status": "ok",
+      "subagentId": "99b8aced-d50f-4aca-852d-7efc4d719ba0",
+      "sessions": [
+        {
+          "id": "99b8aced-d50f-4aca-852d-7efc4d719ba0",
+          "createdAt": 1792123432040
+        }
+      ],
+      "dispatchedAt": 1792123432040,
+      "dispatchedIso": "2026-10-16T04:03:52.040Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S9-composer-coordinate-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\skills\\plugin-upgrade\\references\\v0.1.2-alpha.3.md",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "99b8aced-d50f-4aca-852d-7efc4d719ba0/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 49,
+        "candidates": 50
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 34,
+      "tokens": 1415847,
+      "start": "2026-10-16T04:03:52.168Z",
+      "end": "2026-10-16T04:20:14.733Z",
+      "duration": "16m23s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S10-paste-rename-and-version-chip/noskill": {
+      "status": "ok",
+      "subagentId": "3442ce79-566a-42ce-9eb3-b2f2c904b598",
+      "sessions": [
+        {
+          "id": "3442ce79-566a-42ce-9eb3-b2f2c904b598",
+          "createdAt": 1792123534313
+        }
+      ],
+      "dispatchedAt": 1792123534313,
+      "dispatchedIso": "2026-10-16T04:05:34.313Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S10-paste-rename-and-version-chip.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 35,
+        "candidates": 35
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 19,
+      "tokens": 275843,
+      "start": "2026-10-16T04:05:34.380Z",
+      "end": "2026-10-16T04:13:33.164Z",
+      "duration": "7m59s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S10-paste-rename-and-version-chip/skill": {
+      "status": "ok",
+      "subagentId": "c1bde903-8f06-470c-aefd-e69f8aa79e4c",
+      "sessions": [
+        {
+          "id": "c1bde903-8f06-470c-aefd-e69f8aa79e4c",
+          "createdAt": 1792124024590
+        }
+      ],
+      "dispatchedAt": 1792124024590,
+      "dispatchedIso": "2026-10-16T04:13:44.590Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S10-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 69,
+        "candidates": 69
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 38,
+      "tokens": 460257,
+      "start": "2026-10-16T04:13:44.691Z",
+      "end": "2026-10-16T04:22:27.712Z",
+      "duration": "8m43s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S11-mermaid-lazyload-trap/noskill": {
+      "status": "ok",
+      "subagentId": "7d0c4044-1507-4960-9547-529164ceae7e",
+      "sessions": [
+        {
+          "id": "7d0c4044-1507-4960-9547-529164ceae7e",
+          "createdAt": 1792124053224
+        }
+      ],
+      "dispatchedAt": 1792124053224,
+      "dispatchedIso": "2026-10-16T04:14:13.224Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S11-mermaid-lazyload-trap.report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\a\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\b\\c",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a-evil",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\A\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\...\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\x\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\x\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\noskill\\a-evil",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\A\\b\\c",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "7d0c4044-1507-4960-9547-529164ceae7e/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 91,
+        "candidates": 132
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 34,
+      "tokens": 596174,
+      "start": "2026-10-16T04:14:13.310Z",
+      "end": "2026-10-16T05:08:58.718Z",
+      "duration": "54m45s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S11-mermaid-lazyload-trap/skill": {
+      "status": "relaunched",
+      "subagentId": "eae31afb-dd34-47e3-b7dd-50215c37ac49",
+      "sessions": [
+        {
+          "id": "eae31afb-dd34-47e3-b7dd-50215c37ac49",
+          "createdAt": 1792124426368
+        },
+        {
+          "id": "b26f6348-253c-431a-996c-de801370639d",
+          "createdAt": 1792127421154
+        }
+      ],
+      "dispatchedAt": 1792127421154,
+      "dispatchedIso": "2026-10-16T05:10:21.154Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S11-mermaid-lazyload-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\a\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\b",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\lib\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\lib-evil\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\dsh\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\dsh\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\lib-evil\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\...\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\...\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\...\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\lib\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\DSH\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\LIB\\mermaid-chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "D:\\dsh\\lib\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "eae31afb-dd34-47e3-b7dd-50215c37ac49/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\index.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "c:\\dsh\\lib\\index.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code:var",
+            "source": "text-var"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\mermaid-chunk.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code:var",
+            "source": "text-var"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\fixture\\chunk-route.ts",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\agent-output\\S11-mermaid-lazyload-trap\\probe-link",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\other\\evil.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\windows\\evil.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\libsibling.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\A\\B",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\b\\c",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\lib\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\evil\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\libsibling.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\x",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\evil",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\x",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib\\Mermaid-Chunk.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\libsibling.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\src\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\profiles\\web\\node_modules\\windows\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\windows\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\windows\\evil.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\other\\evil.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\windows\\evil.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\other\\x.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...\\lib\\mermaid-chunk.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\evil\\x.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\libsibling.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\x",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\A\\lib\\x.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\...\\index.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\a\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\dsh\\lib",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dsh\\lib",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\A\\B",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\a\\b\\c",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\lib",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\lib\\x.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\libsibling.js",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\x",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "e:\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\...\\",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "b26f6348-253c-431a-996c-de801370639d/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 156,
+        "candidates": 310
+      },
+      "exposure": null,
+      "skillUse": "A1-08",
+      "toolcalls": 44,
+      "tokens": 1327556,
+      "start": "2026-10-16T04:20:26.479Z",
+      "end": "2026-10-16T05:27:40.318Z",
+      "duration": "1h07m14s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S12-global-upgrade-ebusy-trap/noskill": {
+      "status": "ok",
+      "subagentId": "65003fc1-81a3-49df-91db-ca6594b750c9",
+      "sessions": [
+        {
+          "id": "65003fc1-81a3-49df-91db-ca6594b750c9",
+          "createdAt": 1792124548517
+        }
+      ],
+      "dispatchedAt": 1792124548517,
+      "dispatchedIso": "2026-10-16T04:22:28.517Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S12-global-upgrade-ebusy-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 18,
+        "candidates": 18
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 9,
+      "tokens": 220986,
+      "start": "2026-10-16T04:22:28.591Z",
+      "end": "2026-10-16T04:27:59.013Z",
+      "duration": "5m30s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S12-global-upgrade-ebusy-trap/skill": {
+      "status": "relaunched",
+      "subagentId": "8f8be20e-9417-4191-985f-a4b94225c241",
+      "sessions": [
+        {
+          "id": "8f8be20e-9417-4191-985f-a4b94225c241",
+          "createdAt": 1792124894321
+        },
+        {
+          "id": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1",
+          "createdAt": 1792127421154
+        }
+      ],
+      "dispatchedAt": 1792127421154,
+      "dispatchedIso": "2026-10-16T05:10:21.154Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S12-global-upgrade-ebusy-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgrade'",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgrade*.md",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd:cmd-token",
+            "source": "cmd-token"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgradescripts*.md",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd:cmd-token",
+            "source": "cmd-token"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgradeexamples*.md",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd:cmd-token",
+            "source": "cmd-token"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgradeSKILL.md",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills\\plugin-upgradeSKILL.md",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd:cmd-token",
+            "source": "cmd-token"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\S12-global-upgrade-ebusy-trapagent-output",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd",
+            "source": "text"
+          },
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\skill\\S12-global-upgrade-ebusy-trapagent-output",
+            "reason": "read of non-existent path (zero information)",
+            "ctx": "dbcbc76c-858a-4c9d-9353-48d5d98ab2c1/pwsh:cmd:cmd-token",
+            "source": "cmd-token"
+          }
+        ],
+        "oks": 151,
+        "candidates": 163
+      },
+      "exposure": null,
+      "skillUse": "A1-20,A2-04,A5-01,A5-03",
+      "toolcalls": 80,
+      "tokens": 2276829,
+      "start": "2026-10-16T04:28:14.390Z",
+      "end": "2026-10-16T05:19:53.439Z",
+      "duration": "51m39s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S13-peer-range-vs-runtime/noskill": {
+      "status": "ok",
+      "subagentId": "1fdacfe5-707b-4a2e-b079-fc0de45c91fa",
+      "sessions": [
+        {
+          "id": "1fdacfe5-707b-4a2e-b079-fc0de45c91fa",
+          "createdAt": 1792127421154
+        }
+      ],
+      "dispatchedAt": 1792127421154,
+      "dispatchedIso": "2026-10-16T05:10:21.154Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S13-peer-range-vs-runtime.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 50,
+        "candidates": 50
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 24,
+      "tokens": 330917,
+      "start": "2026-10-16T05:10:21.509Z",
+      "end": "2026-10-16T05:15:55.453Z",
+      "duration": "5m34s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S13-peer-range-vs-runtime/skill": {
+      "status": "ok",
+      "subagentId": "1bca074a-d5e9-4c52-b9c6-cf3d7c55f624",
+      "sessions": [
+        {
+          "id": "1bca074a-d5e9-4c52-b9c6-cf3d7c55f624",
+          "createdAt": 1792127953515
+        }
+      ],
+      "dispatchedAt": 1792127953515,
+      "dispatchedIso": "2026-10-16T05:19:13.515Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S13-peer-range-vs-runtime-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 53,
+        "candidates": 53
+      },
+      "exposure": null,
+      "skillUse": "A4-03,A4-04",
+      "toolcalls": 40,
+      "tokens": 641567,
+      "start": "2026-10-16T05:19:13.605Z",
+      "end": "2026-10-16T05:25:23.839Z",
+      "duration": "6m10s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S14-link-install-lock-trap/noskill": {
+      "status": "ok",
+      "subagentId": "51f0155c-8a4b-400d-b669-911f4f7bce74",
+      "sessions": [
+        {
+          "id": "51f0155c-8a4b-400d-b669-911f4f7bce74",
+          "createdAt": 1792128006704
+        }
+      ],
+      "dispatchedAt": 1792128006704,
+      "dispatchedIso": "2026-10-16T05:20:06.704Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S14-link-install-lock-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "51f0155c-8a4b-400d-b669-911f4f7bce74/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 22,
+        "candidates": 23
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 8,
+      "tokens": 275563,
+      "start": "2026-10-16T05:20:06.812Z",
+      "end": "2026-10-16T05:29:35.227Z",
+      "duration": "9m28s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S14-link-install-lock-trap/skill": {
+      "status": "ok",
+      "subagentId": "a2546e51-5026-4013-8856-dcc99819a796",
+      "sessions": [
+        {
+          "id": "a2546e51-5026-4013-8856-dcc99819a796",
+          "createdAt": 1792128337253
+        }
+      ],
+      "dispatchedAt": 1792128337253,
+      "dispatchedIso": "2026-10-16T05:25:37.253Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S14-link-install-lock-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\client.js.old2",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\index.js.old2",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\client.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib\\index.js",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "C:\\Users\\me\\.dsh\\profiles\\web\\node_modules\\@org\\dsh-attach-input\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\...",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          },
+          {
+            "path": "E:\\dev\\dsh-attach-input\\lib",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "a2546e51-5026-4013-8856-dcc99819a796/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 65,
+        "candidates": 80
+      },
+      "exposure": null,
+      "skillUse": "A1-07,A2-04",
+      "toolcalls": 17,
+      "tokens": 523243,
+      "start": "2026-10-16T05:25:37.326Z",
+      "end": "2026-10-16T05:32:22.856Z",
+      "duration": "6m46s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S15-slot-error-boundary-crash/noskill": {
+      "status": "ok",
+      "subagentId": "937e1f48-79c4-4b50-b316-07e3b6a7c172",
+      "sessions": [
+        {
+          "id": "937e1f48-79c4-4b50-b316-07e3b6a7c172",
+          "createdAt": 1792128473244
+        }
+      ],
+      "dispatchedAt": 1792128473244,
+      "dispatchedIso": "2026-10-16T05:27:53.244Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S15-slot-error-boundary-crash.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 15,
+        "candidates": 15
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 9,
+      "tokens": 333811,
+      "start": "2026-10-16T05:27:53.385Z",
+      "end": "2026-10-16T05:36:03.280Z",
+      "duration": "8m10s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S15-slot-error-boundary-crash/skill": {
+      "status": "ok",
+      "subagentId": "050b7349-3412-45a1-a384-3eb54e71f457",
+      "sessions": [
+        {
+          "id": "050b7349-3412-45a1-a384-3eb54e71f457",
+          "createdAt": 1792128576982
+        }
+      ],
+      "dispatchedAt": 1792128576982,
+      "dispatchedIso": "2026-10-16T05:29:36.982Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S15-slot-error-boundary-crash-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 67,
+        "candidates": 67
+      },
+      "exposure": null,
+      "skillUse": "A1-01",
+      "toolcalls": 23,
+      "tokens": 1253315,
+      "start": "2026-10-16T05:29:37.087Z",
+      "end": "2026-10-16T05:44:38.250Z",
+      "duration": "15m01s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S16-self-host-upgrade-trap/noskill": {
+      "status": "ok",
+      "subagentId": "fda3b96a-4b30-42c1-87b9-2cfebad8ae8a",
+      "sessions": [
+        {
+          "id": "fda3b96a-4b30-42c1-87b9-2cfebad8ae8a",
+          "createdAt": 1792128747069
+        }
+      ],
+      "dispatchedAt": 1792128747069,
+      "dispatchedIso": "2026-10-16T05:32:27.069Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S16-self-host-upgrade-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 37,
+        "candidates": 37
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 25,
+      "tokens": 294920,
+      "start": "2026-10-16T05:32:27.138Z",
+      "end": "2026-10-16T05:38:50.703Z",
+      "duration": "6m24s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S16-self-host-upgrade-trap/skill": {
+      "status": "ok",
+      "subagentId": "e9c14dac-6678-4f1b-b779-828c85288cb6",
+      "sessions": [
+        {
+          "id": "e9c14dac-6678-4f1b-b779-828c85288cb6",
+          "createdAt": 1792128978719
+        }
+      ],
+      "dispatchedAt": 1792128978719,
+      "dispatchedIso": "2026-10-16T05:36:18.719Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S16-self-host-upgrade-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 41,
+        "candidates": 41
+      },
+      "exposure": null,
+      "skillUse": "A1-20,A5-03",
+      "toolcalls": 27,
+      "tokens": 480182,
+      "start": "2026-10-16T05:36:18.799Z",
+      "end": "2026-10-16T05:41:18.405Z",
+      "duration": "5m00s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S17-external-ui-plugin-onboarding-trap/noskill": {
+      "status": "ok",
+      "subagentId": "cf202589-ec1e-4433-92df-a56cd9339051",
+      "sessions": [
+        {
+          "id": "cf202589-ec1e-4433-92df-a56cd9339051",
+          "createdAt": 1792129145999
+        }
+      ],
+      "dispatchedAt": 1792129145999,
+      "dispatchedIso": "2026-10-16T05:39:05.999Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S17-external-ui-plugin-onboarding-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 26,
+        "candidates": 26
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 10,
+      "tokens": 271136,
+      "start": "2026-10-16T05:39:06.079Z",
+      "end": "2026-10-16T05:45:55.521Z",
+      "duration": "6m49s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S17-external-ui-plugin-onboarding-trap/skill": {
+      "status": "ok",
+      "subagentId": "84c9aca6-4c3a-4434-a2ad-8e20c2a286af",
+      "sessions": [
+        {
+          "id": "84c9aca6-4c3a-4434-a2ad-8e20c2a286af",
+          "createdAt": 1792129290068
+        }
+      ],
+      "dispatchedAt": 1792129290068,
+      "dispatchedIso": "2026-10-16T05:41:30.068Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S17-external-ui-plugin-onboarding-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 93,
+        "candidates": 93
+      },
+      "exposure": null,
+      "skillUse": "A1-19,A1-20,A1-25,A1-26,A2-04,J1-30,J1-31,J1-34,R1-01,R1-03",
+      "toolcalls": 23,
+      "tokens": 1109191,
+      "start": "2026-10-16T05:41:30.146Z",
+      "end": "2026-10-16T05:48:51.195Z",
+      "duration": "7m21s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S18-terminal-sprite-render-trap/noskill": {
+      "status": "ok",
+      "subagentId": "32965452-2c95-4187-bedd-6b534b16e3eb",
+      "sessions": [
+        {
+          "id": "32965452-2c95-4187-bedd-6b534b16e3eb",
+          "createdAt": 1792129480500
+        }
+      ],
+      "dispatchedAt": 1792129480500,
+      "dispatchedIso": "2026-10-16T05:44:40.500Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S18-terminal-sprite-render-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 60,
+        "candidates": 60
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 32,
+      "tokens": 407854,
+      "start": "2026-10-16T05:44:40.581Z",
+      "end": "2026-10-16T05:53:08.101Z",
+      "duration": "8m28s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S18-terminal-sprite-render-trap/skill": {
+      "status": "relaunched",
+      "subagentId": "e700f505-2e82-4deb-b07f-094b439af3c9",
+      "sessions": [
+        {
+          "id": "e700f505-2e82-4deb-b07f-094b439af3c9",
+          "createdAt": 1792129569265
+        },
+        {
+          "id": "e0c9a615-971e-4be9-9537-c708079b174c",
+          "createdAt": 1792130225396
+        }
+      ],
+      "dispatchedAt": 1792130225396,
+      "dispatchedIso": "2026-10-16T05:57:05.396Z",
+      "attempt": 2,
+      "relaunched": true,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S18-terminal-sprite-render-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 78,
+        "candidates": 78
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 29,
+      "tokens": 904202,
+      "start": "2026-10-16T05:46:09.351Z",
+      "end": "2026-10-16T06:10:10.088Z",
+      "duration": "23m48s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S19-phantom-update-stale-host/noskill": {
+      "status": "ok",
+      "subagentId": "1e28fb8d-0f50-43d0-b718-d511e11dfbe3",
+      "sessions": [
+        {
+          "id": "1e28fb8d-0f50-43d0-b718-d511e11dfbe3",
+          "createdAt": 1792129764054
+        }
+      ],
+      "dispatchedAt": 1792129764054,
+      "dispatchedIso": "2026-10-16T05:49:24.054Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S19-phantom-update-stale-host.md"
+      ],
+      "allOutputFiles": [
+        "forensics-demo\\demo-session.generations.zst",
+        "forensics-demo\\demo-source.svg",
+        "forensics-demo\\reconstructed-payload.svg",
+        "forensics-demo\\reconstructed-reread.svg",
+        "forensics-demo\\recovered-payload.txt",
+        "forensics-demo\\recovered-reread.txt",
+        "forensics-run-log.txt",
+        "S19-phantom-update-stale-host.md",
+        "zstd-frame-forensics.mjs"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\benchmark\\results\\artifacts\\2026-10-16-step5-preview-s1-s24-r2\\noskill\\zstd-frame-forensics.mjs",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "1e28fb8d-0f50-43d0-b718-d511e11dfbe3/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 323,
+        "candidates": 328
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 86,
+      "tokens": 4595181,
+      "start": "2026-10-16T05:49:24.137Z",
+      "end": "2026-10-16T06:19:42.710Z",
+      "duration": "30m19s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S19-phantom-update-stale-host/skill": {
+      "status": "ok",
+      "subagentId": "09553370-424c-47a6-8936-1c64da7c8c66",
+      "sessions": [
+        {
+          "id": "09553370-424c-47a6-8936-1c64da7c8c66",
+          "createdAt": 1792130001312
+        }
+      ],
+      "dispatchedAt": 1792130001312,
+      "dispatchedIso": "2026-10-16T05:53:21.312Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S19-phantom-update-stale-host.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 137,
+        "candidates": 137
+      },
+      "exposure": null,
+      "skillUse": "A1-05,A2-01,A2-04",
+      "toolcalls": 41,
+      "tokens": 2150679,
+      "start": "2026-10-16T05:53:21.410Z",
+      "end": "2026-10-16T06:11:34.092Z",
+      "duration": "18m13s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S20-msvc-flock-trap/noskill": {
+      "status": "ok",
+      "subagentId": "ae9b1beb-25a7-4a32-b8dc-693e9ee470b9",
+      "sessions": [
+        {
+          "id": "ae9b1beb-25a7-4a32-b8dc-693e9ee470b9",
+          "createdAt": 1792131052722
+        }
+      ],
+      "dispatchedAt": 1792131052722,
+      "dispatchedIso": "2026-10-16T06:10:52.722Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 72,
+        "candidates": 72
+      },
+      "exposure": "hit: DSH-0.",
+      "skillUse": null,
+      "toolcalls": 32,
+      "tokens": 233133,
+      "start": "2026-10-16T06:10:52.828Z",
+      "end": "2026-10-16T06:17:06.748Z",
+      "duration": "6m14s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S20-msvc-flock-trap/skill": {
+      "status": "ok",
+      "subagentId": "7cde1c3b-44f5-4db6-9d35-7183dc6a884d",
+      "sessions": [
+        {
+          "id": "7cde1c3b-44f5-4db6-9d35-7183dc6a884d",
+          "createdAt": 1792131121890
+        }
+      ],
+      "dispatchedAt": 1792131121890,
+      "dispatchedIso": "2026-10-16T06:12:01.890Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "report.md"
+      ],
+      "allOutputFiles": [
+        "report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 67,
+        "candidates": 67
+      },
+      "exposure": null,
+      "skillUse": "A1-03,A1-13",
+      "toolcalls": 20,
+      "tokens": 873301,
+      "start": "2026-10-16T06:12:02.051Z",
+      "end": "2026-10-16T06:19:29.583Z",
+      "duration": "7m28s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S21-resource-service-unavailable-trap/noskill": {
+      "status": "ok",
+      "subagentId": "95f5d731-acd0-4413-9398-760d78c79ec4",
+      "sessions": [
+        {
+          "id": "95f5d731-acd0-4413-9398-760d78c79ec4",
+          "createdAt": 1792131447653
+        }
+      ],
+      "dispatchedAt": 1792131447653,
+      "dispatchedIso": "2026-10-16T06:17:27.653Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S21-report.md"
+      ],
+      "allOutputFiles": [
+        "S21-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 22,
+        "candidates": 22
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 13,
+      "tokens": 228613,
+      "start": "2026-10-16T06:17:27.772Z",
+      "end": "2026-10-16T06:25:52.799Z",
+      "duration": "8m25s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S21-resource-service-unavailable-trap/skill": {
+      "status": "ok",
+      "subagentId": "05952dbc-d4d3-410d-be7f-d51f2d61a433",
+      "sessions": [
+        {
+          "id": "05952dbc-d4d3-410d-be7f-d51f2d61a433",
+          "createdAt": 1792131582683
+        }
+      ],
+      "dispatchedAt": 1792131582683,
+      "dispatchedIso": "2026-10-16T06:19:42.683Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S21-report.md"
+      ],
+      "allOutputFiles": [
+        "S21-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 73,
+        "candidates": 73
+      },
+      "exposure": null,
+      "skillUse": "A1-20,A2-01,A2-02,A2-09,A2-10,A2-14,A2-21",
+      "toolcalls": 38,
+      "tokens": 527863,
+      "start": "2026-10-16T06:19:42.887Z",
+      "end": "2026-10-16T06:26:28.513Z",
+      "duration": "6m46s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S22-duplicate-insert-boot-crash-trap/noskill": {
+      "status": "ok",
+      "subagentId": "c71c79ce-0d46-4b62-b81d-8ea8c7721a23",
+      "sessions": [
+        {
+          "id": "c71c79ce-0d46-4b62-b81d-8ea8c7721a23",
+          "createdAt": 1792131582683
+        }
+      ],
+      "dispatchedAt": 1792131582683,
+      "dispatchedIso": "2026-10-16T06:19:42.683Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S22-report.md"
+      ],
+      "allOutputFiles": [
+        "S22-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 17,
+        "candidates": 17
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 6,
+      "tokens": 144257,
+      "start": "2026-10-16T06:19:43.011Z",
+      "end": "2026-10-16T06:24:00.784Z",
+      "duration": "4m18s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S22-duplicate-insert-boot-crash-trap/skill": {
+      "status": "ok",
+      "subagentId": "1de0f5d1-4e92-445a-9f0f-6de5e615fbf5",
+      "sessions": [
+        {
+          "id": "1de0f5d1-4e92-445a-9f0f-6de5e615fbf5",
+          "createdAt": 1792131868629
+        }
+      ],
+      "dispatchedAt": 1792131868629,
+      "dispatchedIso": "2026-10-16T06:24:28.629Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S22-duplicate-insert-boot-crash-trap.md"
+      ],
+      "allOutputFiles": [
+        "S22-duplicate-insert-boot-crash-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 99,
+        "candidates": 99
+      },
+      "exposure": null,
+      "skillUse": "A1-11,A1-20",
+      "toolcalls": 61,
+      "tokens": 1270736,
+      "start": "2026-10-16T06:24:28.706Z",
+      "end": "2026-10-16T06:33:30.764Z",
+      "duration": "9m02s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S23-passing-compat-guard-trap/noskill": {
+      "status": "ok",
+      "subagentId": "854773f9-82e0-4ace-ba9a-dd69f61e4599",
+      "sessions": [
+        {
+          "id": "854773f9-82e0-4ace-ba9a-dd69f61e4599",
+          "createdAt": 1792131999877
+        }
+      ],
+      "dispatchedAt": 1792131999877,
+      "dispatchedIso": "2026-10-16T06:26:39.877Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "report.md"
+      ],
+      "allOutputFiles": [
+        "report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 59,
+        "candidates": 59
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 33,
+      "tokens": 487161,
+      "start": "2026-10-16T06:26:40.077Z",
+      "end": "2026-10-16T06:37:31.160Z",
+      "duration": "10m51s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S23-passing-compat-guard-trap/skill": {
+      "status": "ok",
+      "subagentId": "8dc1891c-ca93-4ba2-935d-e837e9f59e03",
+      "sessions": [
+        {
+          "id": "8dc1891c-ca93-4ba2-935d-e837e9f59e03",
+          "createdAt": 1792131999877
+        }
+      ],
+      "dispatchedAt": 1792131999877,
+      "dispatchedIso": "2026-10-16T06:26:39.877Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S23-passing-compat-guard-trap.md"
+      ],
+      "allOutputFiles": [
+        "S23-passing-compat-guard-trap.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [
+          {
+            "path": "E:\\deepseek-harness\\dsh-plugin-upgrade-skill\\skills",
+            "reason": "quoted path literal without filesystem access",
+            "ctx": "8dc1891c-ca93-4ba2-935d-e837e9f59e03/run_code:code",
+            "source": "text"
+          }
+        ],
+        "oks": 63,
+        "candidates": 64
+      },
+      "exposure": null,
+      "skillUse": "none",
+      "toolcalls": 41,
+      "tokens": 787128,
+      "start": "2026-10-16T06:26:40.190Z",
+      "end": "2026-10-16T06:37:49.388Z",
+      "duration": "11m09s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S24-dock-cotenant-crash-trap/noskill": {
+      "status": "ok",
+      "subagentId": "657041a2-e180-4394-87eb-ecd14f865fc5",
+      "sessions": [
+        {
+          "id": "657041a2-e180-4394-87eb-ecd14f865fc5",
+          "createdAt": 1792132426746
+        }
+      ],
+      "dispatchedAt": 1792132426746,
+      "dispatchedIso": "2026-10-16T06:33:46.746Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S24-dock-cotenant-crash-trap-report.md"
+      ],
+      "allOutputFiles": [
+        "S24-dock-cotenant-crash-trap-report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 31,
+        "candidates": 31
+      },
+      "exposure": "clean",
+      "skillUse": null,
+      "toolcalls": 11,
+      "tokens": 443538,
+      "start": "2026-10-16T06:33:46.841Z",
+      "end": "2026-10-16T06:42:57.499Z",
+      "duration": "9m11s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    },
+    "S24-dock-cotenant-crash-trap/skill": {
+      "status": "ok",
+      "subagentId": "ca580161-1c0c-48b3-9e3f-cc668d7b525e",
+      "sessions": [
+        {
+          "id": "ca580161-1c0c-48b3-9e3f-cc668d7b525e",
+          "createdAt": 1792132665487
+        }
+      ],
+      "dispatchedAt": 1792132665487,
+      "dispatchedIso": "2026-10-16T06:37:45.487Z",
+      "attempt": 1,
+      "fixturePostOk": true,
+      "fixtureMismatches": [],
+      "reportFiles": [
+        "S24-dock-cotenant-crash-trap.report.md"
+      ],
+      "allOutputFiles": [
+        "S24-dock-cotenant-crash-trap.report.md"
+      ],
+      "roaming": "clean",
+      "roamingDetail": {
+        "violations": [],
+        "readmits": [],
+        "oks": 100,
+        "candidates": 100
+      },
+      "exposure": null,
+      "skillUse": "A2-02,A2-03",
+      "toolcalls": 79,
+      "tokens": 393863,
+      "start": "2026-10-16T06:37:45.604Z",
+      "end": "2026-10-16T06:45:28.490Z",
+      "duration": "7m43s",
+      "models": [
+        "stepfun/step-5-preview"
+      ]
+    }
+  }
+}

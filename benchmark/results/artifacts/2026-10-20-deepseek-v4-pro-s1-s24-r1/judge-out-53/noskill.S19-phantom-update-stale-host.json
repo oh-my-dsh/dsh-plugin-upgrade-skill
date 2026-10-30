@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "构建先于bump致0.3.6入包、运行时不重读、修正顺序+发布前查常量+保留镜像校验"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "PNG200/SVG404三角定位运行中host白名单过期，需重启，结论限定本生命周期"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "源文件与TYPE结果干净、拼接在持久化文本，定位于上游装配层，明确不修好文件"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "资产路由→DOMParser校验→无脚本sandbox iframe保SMIL→显式错误，坏负载不进iframe"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "逐帧解码保序重构并比对源、上报上游；清单含bump先/查常量/镜像SHA，探针法在正文"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "最终建议均为正确方向，错误做法仅作被否定的反例"
+    }
+  ]
+}

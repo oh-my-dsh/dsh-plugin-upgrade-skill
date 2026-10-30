@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "Reconstructs the 16:22 build / 16:23 bump order, explains tsdown inlining PLUGIN_VERSION at build time with no runtime package.json reread, notes correct mirrored tag SHAs, gives bump-before-build corrected order plus artifact-constant grep, and correctly separates v0.3.8's later corrected build from the v0.3.7 artifact."
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "Uses the probe triple: PNG 200 proves the route exists; SVG 404 'unsupported image type' shows a live old-whitelist handler; refreshed toggle proves client plane fresh; attributes staleness to the running host's boot/apply-time closure and prescribes a full host restart with two-probe re-check, scoped to this lifecycle."
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "Triangulates clean source XML, clean typed read result vs spliced model-visible persisted text (15 lines dropped, splice at shared prefix 'stro') to locate corruption in upstream result-text assembly; treats the payload as untrusted and explicitly rejects editing the innocent traced SVG with sound reasons."
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "Ordered chain L1 disk bytes via asset route, L2 payload gated by DOMParser parsererror well-formedness check (rejected payload never passed to iframe), L3 sandboxed iframe with allow-scripts omitted while SMIL survives, L4 explicit error state; justified as a plan."
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "Explains decoding all concatenated zstd frames (per-frame slicing plus read_across_frames equivalent, ordering by seq), extracting the exact stored splice, three-way comparison and upstream bug report; checklist covers bump-before-build, shipped-constant verification, per-mirror tag SHA, and plane-specific runtime probes; no magic-byte requirement imposed and no actual decode needed."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "Final advice consistently requires bump-before-build, tag amend/rebuild for the bad release, host restart for the route, and never renders an unvalidated payload or allows scripts in the fallback; the traced SVG is explicitly left untouched, with bad alternatives only rejected."
+    }
+  ]
+}

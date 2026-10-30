@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "给出 alpha.1(A1-02)临时移除→alpha.2(A2-01)恢复的完整走廊史并算净态回到基线、防御失去对象,且将净态应用于 produceExternalEvent(删除防御行,只走公共 append)。"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位 delete (event as any).ignorable,驳斥注释'alpha.2 要保留'的要求并纠正过时理由;指出 literal 无 marker 故 delete 是 no-op 但仍否定剥离策略;删除的是防御代码而非 marker 本身,生产者不应增删 marker。"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "对第三方/informational 生产者的落地正确(不 set/delete marker、不 cast、走公共 append),但未解释 ignorable 仅可用于老 reader 省略后仍可重建的 informational 事件、required 事件不得标记,也未说明持久保留不是读取端过滤、marked 事件仍留在 loaded log。"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "以 cast 证据推断公共 Session.append 可能不暴露 ignorable 参数(仅 'may not even' 且标 unconfirmed),明确禁止 cast 伪造;但缺口识别停留在提示,未明确将生产者/持久化整合推迟到目标 API 验证。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "最终建议是删除防御代码(delete 行与注释),未主张在 alpha.2 保留防御或继续删 marker。"
+    }
+  ]
+}

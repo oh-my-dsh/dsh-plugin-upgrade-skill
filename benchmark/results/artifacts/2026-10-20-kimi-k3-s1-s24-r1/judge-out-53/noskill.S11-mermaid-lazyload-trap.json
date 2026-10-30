@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "兄弟模块按 entry chunk URL 相对解析、发布只含 entry 未含哈希兄弟故 404、entry 200 仍令整个 import() 拒绝且报错指向 entry;建议 inlineDynamicImports 单文件自包含。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "定位第二守卫:LIB_DIR(大写 E:,fileURLToPath 保 URL 大小写)与 realpathSync(小写 e:)跨域比较、startsWith 大小写敏感误拒在库内文件;解释 Linux 字节一致、笔记本两侧大小写巧合;明确否定'Windows 路径不可靠'并指出 realpath 大小写不可依赖。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "根与目标均 realpath 规范化后用 path.relative;拒绝空串/'..'/'..'+sep/绝对结果;先词法后 realpath 双重检查拦软链逃逸;win32 大小写不敏感/POSIX 字节精确;保留 application/javascript MIME。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "partial",
+      "reason": "双触发机制与仲裁方向正确(modal preventDefault+stopPropagation、pane 按来源让位),但未提及 pane 采用祖先 capture 时 modal 事后 stopPropagation 无法补救,且'任一侧单独即可修复'在该场景不成立。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "partial",
+      "reason": "矩阵覆盖打包自包含/pack 清单/E2E 零 404、生产大小写场景应 200、遍历/编码/软链逃逸应 403、modal 缩放而 pane 字号不变及反向用例;但缺'导入失败仍保留代码块回退'的失败路径检查,仅反向断言无回退日志。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "修复方案是规范化后 path.relative 的包容性检查并保留全部拒绝分支(含软链),未削弱或禁用 containment。"
+    }
+  ]
+}

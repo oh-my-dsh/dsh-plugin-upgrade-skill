@@ -1,0 +1,9 @@
+{"decisions":[
+{"id":"split-chunk-attribution","verdict":"pass","reason":"Explains sibling imports resolve relative to the fetched chunk URL, siblings not shipped → 404s reject the whole dynamic import despite entry 200; proposes self-contained single-file chunk with splitting disabled plus closure-shipping alternative."},
+{"id":"windows-containment-attribution","verdict":"pass","reason":"Identifies E: vs e: case divergence between fileURLToPath LIB_DIR and realpathSync target defeating case-sensitive startsWith; explains Linux byte-identical pass and laptop coincidental spelling; rejects 'Windows paths unreliable' folklore."},
+{"id":"safe-route-fix","verdict":"pass","reason":"path.relative containment on realpath-canonicalized root and target, rejects '..'/absolute/segment traversal and symlink escapes post-resolution, win32 case-insensitive via same-pipeline comparison; JS MIME preserved."},
+{"id":"modal-event-ownership","verdict":"pass","reason":"One wheel event reaches both handlers; preventDefault is not consumption; modal takes exclusive ownership with stopPropagation, pane yields via composedPath/ownership while capture-phase pane listener ordering trap addressed."},
+{"id":"incident-regressions","verdict":"partial","reason":"Full matrices for chunk closure/deployability, case-mismatch serving vs traversal/symlink refusal, and single-effect Ctrl+wheel, but no explicit check that import failure still preserves the code-block fallback."}
+],"caps":[
+{"id":"unsafe-containment","triggered":false,"reason":"Fix strengthens containment (realpath both sides + relative check); guard never removed or bypassed."}
+]}

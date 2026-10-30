@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "L25–30 fg-only branches leave the earlier full cell's 48;2 bg active, bleeding transitively into half cells' empty halves before any reset; fix = fg + ESC[49m (or ESC[0m before each changed seq); symptoms tied to right-edge geometry with clean frame data and no terminal/artwork blame."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Trailing trim + whitespace-stripping pipelines leave surplus columns unwritten on wide→narrow; fix = per-row RESET+EL control sequence (trim-proof) plus fixed-canvas/union-region redraw with controlled SGR; minor arithmetic slip (13×20 cells despite 40 columns) does not undermine the EL guarantee."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2 = 23 changed cells vs the visible 6-pixel cluster, explicitly a data bug distinct from the two render bugs; the excerpt test covered a different frame; all-frame golden sha256 regenerated only from source art via the converter, never from the drifted port."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "channel-ui hosts mount without unmount and the planner's re-armed ref'd setTimeouts pin the event loop after PASS; interactive TTY/stdin keeps the product alive regardless; fix = setTimeout(...).unref() per re-arm, with clearTimeout-on-unmount hygiene."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Renderer checklist consolidates absolute SGR (49 defaults), EL row termination, union-of-old/new coverage, all-frame digest gate and unref/clear lifecycle; rollout audit enumerates hosts/unmount paths and adds natural-exit + live-handle liveness assertions; minor ceil(cols/2) mapping slip noted but all required items present."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Affirms background reset, EL-based clearing (trim retained only together with the equivalent erase), source-backed digest gate and unref; blames renderer SGR state, not the terminal."
+    }
+  ]
+}

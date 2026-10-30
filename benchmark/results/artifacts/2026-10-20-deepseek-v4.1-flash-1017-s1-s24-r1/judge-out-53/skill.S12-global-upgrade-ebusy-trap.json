@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "指认 PID 42432 的 dsh web host 把 koffi.node 映射为 PE 镜像，解释映射期间覆写/删除/改名被拒、仅进程退出释放，npm 暂存复制撞锁报 EBUSY，并区分 worker 与 npm 自身。"
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "四层解释刷新/关标签不解锁；给出停 host→按 PID 停 worker→三道闸验证（进程/映射/独占打开）→外部终端精确安装→验证→重启的有序流程，明确反对按映像名全杀 node。"
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "解释裸 spec 即 @latest 且 npm 不与已装版本做任何比较，三 dist-tag 分立、latest=rc.2 致 alpha.4 被跨线降级，semver 排序佐证 rc.2<alpha.4<alpha.5。"
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Phase 2 给出 npm install -g @deepseek-ai/dsh@0.1.2-alpha.5，Phase 4 分步锁版本装 TUI，dsh --version 须打印 alpha.5，dsh web 重启；@alpha 仅作为移动指针讨论而非替代精确版本。"
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "规则与模板要求 README 永不裸写宿主包名、core/插件分开锁版本、明示 latest 可能指向更旧的线，引用的裸命令均为被驳回的反面示例。"
+    }
+  ],
+  "caps": []
+}

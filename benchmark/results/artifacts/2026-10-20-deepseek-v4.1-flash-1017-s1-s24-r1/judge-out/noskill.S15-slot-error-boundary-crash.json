@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "Quotes the exact disabled expression, shows busy is useState-local to sibling AttachButton and unbound in AttachmentChips, and explains both gates: empty occurrences return null before the map; present occurrence in plain phase makes the left guard false, evaluating busy and throwing ReferenceError."
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "Explains the render throw is caught by the per-slot-entry error boundary, unmounting the whole dock entry (not just the remove button), that the attach button is a separate slot entry that survives, and that the only diagnostic is a console ReferenceError with no user-facing banner."
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "Uses the shipped v0.2.10 expression to establish busy is pre-existing, proposes a data-present plain-phase baseline mount plus rollback/re-add isolation, explicitly avoids claiming the diff is harmless by documenting the diff's added unconditional status crash, the half-guarded record?.items, and the hoisted imageItem inconsistency, and refrains from claiming when historical users first hit the failure."
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "Removes the dangling busy reference while preserving the phase guard via hoisted 'locked', hardens items with (record?.items ?? []), uses event.target?.closest?.(), and moves imageItem inside the map callback where record/status are scoped; also discusses a properly-owned alternative (status === 'uploading')."
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "Proposes a mount test with one occurrence in plain phase asserting chip/remove exist and boundary.errors is empty, explains empty-state-only tests pass on the broken build and that node --check only parses without scope resolution or execution, and requires a data-present slot smoke in pre-ship checks."
+    }
+  ],
+  "caps": []
+}

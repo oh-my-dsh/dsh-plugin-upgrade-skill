@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "native-module-owner", "verdict": "pass", "reason": "Identifies PID 42432 dsh web host as koffi.node holder; explains image-section mapping keeps the file in use until host exits, so npm copy fails with EBUSY."},
+    {"id": "browser-versus-host-sequence", "verdict": "pass", "reason": "Explains refresh only reloads the SPA while the host keeps the lock; gives ordered stop/verify-host, install, verify version, restart procedure."},
+    {"id": "unpinned-dist-tag-resolution", "verdict": "pass", "reason": "Explains bare name resolves latest=0.1.1-rc.2 while alpha=0.1.2-alpha.5, silently replacing alpha.4 with rc.2; corrects the 'keeps installed version' misconception."},
+    {"id": "safe-exact-commands", "verdict": "pass", "reason": "Provides npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 and pinned dsh-tui install after stopping host, verifies dsh --version, restarts; @alpha only as noted mutable alternative."},
+    {"id": "readme-prevention", "verdict": "pass", "reason": "Tells README authors to eliminate bare package names, pin exact core version, split core/plugin commands, and explain latest-tag downgrade risk."}
+  ],
+  "caps": []
+}

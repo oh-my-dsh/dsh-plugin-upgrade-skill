@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "两个单半分支只发 fg，残留背景涂透明半；修复在半格自身序列内置 ESC[49m(两分支空缺半皆属 bg 通道，39m 无效)，行尾 reset 已晚；机制对应 outline/sleep-Z/heart 三类右缘症状且帧数据本身干净"
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "行 trim 删尾格 + 下游再删空白 → 宽帧多余列残留；两段修：全画布宽无 trim + 每行 ESC[0K(非空白不被 trim)；并论证为何单独 pad 或单独 EL 皆不足(实测 43→0 ghost slots)"
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "tail2 手工转写 23 格整体左移一列的数据缺陷，渲染器忠实画错格；excerpt 回归覆盖/窗口/期望源自移植数据三重失明；全帧 sha256 清单自源美术生成并强制所有帧 + 结构校验 + 显式 bump"
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "重臂链的 ref'd Timeout 使不 unmount 的 probe 无法退出；交互端 TTY/stdin 保活故无感；t.unref() 一行修复且其他句柄在时动画照常，配 clearTimeout 消毒与活性证明(实测 2572ms 不退 vs 174ms 退)"
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "渲染契约清单(状态完备/固定宽/EL 语义/全帧摘要/可测性断言)+默认开启前审计(grep 全部定时器并 unref/每个宿主带硬期限跑完并退出断言/挂卸载生命周期/数据与渲染门/灰度回滚)"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "全部最终建议与契约一致：49m 重置、去 trim 加 ESC[K、源美术全帧校验、unref；未怪终端模拟器"
+    }
+  ]
+}

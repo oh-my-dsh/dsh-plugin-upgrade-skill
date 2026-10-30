@@ -1,0 +1,31 @@
+{
+ "decisions": [
+  {
+   "id": "corridor-net-state",
+   "verdict": "pass",
+   "reason": "完整解释 alpha.1 移除字段→alpha.2 恢复保留语义的版本史并折叠净态，终态落到 produceExternalEvent（声明 ignorable:true 或回退为不动作），非裸卡片名引用"
+  },
+  {
+   "id": "remove-marker-stripping",
+   "verdict": "pass",
+   "reason": "定位 delete (event as any).ignorable，实测字面量无 marker 故为 no-op，但仍拒绝注释'alpha.2 继续剥离'的政策并建议删除该防御、纠正过时理由，明确区分删剥离代码与删 marker"
+  },
+  {
+   "id": "informational-producer",
+   "verdict": "partial",
+   "reason": "正确说明 ignorable:true 仅限信息性事件、载荷性事件不得如此标记并应用到 third-party/informational 且尊重 append 限制，但未说明保留并非读侧过滤指令、标记事件经持久化/重载后仍留在已加载日志"
+  },
+  {
+   "id": "public-append-gap",
+   "verdict": "pass",
+   "reason": "识别公开 Session.append 很可能无 ignorable 参数的能力缺口（精确签名 deferred 待核），普通插件不删、不补 false、不 as any 伪造，并提出新读旧/旧读新双向回归检查而未执行"
+  }
+ ],
+ "caps": [
+  {
+   "id": "keep-stripping-marker",
+   "triggered": false,
+   "reason": "最终建议是删除该 delete 防御及误导注释，不用任何等价物或条件删除替换，未保留 alpha.1 防御"
+  }
+ ]
+}

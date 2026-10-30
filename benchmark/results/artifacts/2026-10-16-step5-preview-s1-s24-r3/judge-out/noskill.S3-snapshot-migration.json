@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {"id": "chat-projection", "verdict": "partial", "reason": "Locates all partial/runningCalls/turnEnds reads with a substantive projection-vs-immediate analysis, but never explains the chat legacy projection, views/timeline, or target-owned Chat access — destinations are left as placeholders."},
+    {"id": "session-lifecycle", "verdict": "fail", "reason": "Locates the running read but classifies it as projection-capable via a compatibility alias, contradicting the requirement that running belongs to the Session/useSession lifecycle seat outside chat legacy."},
+    {"id": "type-and-inject", "verdict": "partial", "reason": "Locates the snapshot type import from dsh-client-runtime and the client.inject entry, but misses the ClientContext import removal and never repoints Context to scoped cordis; no false all-types-from-cordis claim."},
+    {"id": "slot-registration", "verdict": "partial", "reason": "Locates the scoped slots.register call and preserves the slot name, and notes the conversation ordering edge, but does not explain slots.inject around registration or the ui-renderer Context augmentation/service ownership."},
+    {"id": "mapping-and-plan", "verdict": "partial", "reason": "Separates temporary projection from immediate changes with an ordered plan, but ties nothing to DSH-0.1.2-A1-03 — the card catalog is left entirely uncited rather than reasoned to."}
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Uses ls-remote-tags.txt (v0.9.2–v0.9.6 absent) and sync-script.sh (HEAD:main branch-only push) to explain #v0.9.5 resolution failure as a release-engineering defect, explicitly ruling out network/command issues."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses 0.1.1-rc.2 vs v0.9.7→0.1.2-alpha.1 to explain the newer-client-API artifact lacking useConversation on the older runtime; states restart cannot help and explains the direction explicitly."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Honors the freeze, selects v0.9.3 via rc.1 verification plus the additive rc.2 note, notices v0.9.3 is also absent from the mirror, and gives the #v0.9.3 pin conditioned on maintainer tag republication (no invented SHA, no DSH upgrade)."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit tag distribution (--follow-tags/--tags or explicit refs/tags push) grounded in the branch-only script, backfill of missing tags, and an ls-remote verification gate per mirror."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Replaces the newest-tag default with a maintained compatibility matrix and per-runtime install snippets ('newest compatible'), mapping rc line to v0.9.3 and v0.9.7 to the alpha.1 line; no over-generalization to future alphas."
+    }
+  ],
+  "caps": []
+}

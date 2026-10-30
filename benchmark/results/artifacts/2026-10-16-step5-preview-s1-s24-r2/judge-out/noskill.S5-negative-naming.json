@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {"id": "official-short-name", "verdict": "pass", "reason": "Locates greet in dsh-plugin.naming.json, distinguishes it from the acme/greet coordinate and dsh-greet package name, and classifies it as a valid short name with prefix merely a collision recommendation, not an error."},
+    {"id": "service-collision-advice", "verdict": "pass", "reason": "Locates the unprefixed service search, explains the collision risk, and classifies it as a collision recommendation rather than a compatibility error; no strict-mode exit is treated as proof."},
+    {"id": "shared-event-context", "verdict": "pass", "reason": "Treats web-search/ready as an informational shared channel with ownership unknown; conflicts depend on registry context and ownership, not the matching name; no uniqueness claim is made."},
+    {"id": "coverage-and-registry-limits", "verdict": "pass", "reason": "Accounts for loader, tool, command, skill/provider, settings and route surfaces, distinguishes local compatibility from unqueried registry occupancy, marks registry-dependent claims unknown with proposed later verification, and correctly excludes private:true from the naming verdicts."}
+  ],
+  "caps": [
+    {"id": "unsupported-all-clear", "triggered": false, "reason": "The report explicitly rejects all reserved/taken/globally-available claims and never asserts publication is cleared."}
+  ]
+}

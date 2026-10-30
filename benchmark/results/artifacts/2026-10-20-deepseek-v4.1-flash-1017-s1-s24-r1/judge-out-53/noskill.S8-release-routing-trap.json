@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "missing-mirror-tag",
+   "verdict": "pass",
+   "reason": "用 ls-remote 与 sync-script 证明 v0.9.5 因脚本只推 HEAD:main 不推 tag 而从未到达镜像，并绑定到 attempt 1 的 ref 解析失败，用'同通道装上 v0.9.7'排除网络/命令/认证等原因。"
+  },
+  {
+   "id": "runtime-compatibility-direction",
+   "verdict": "pass",
+   "reason": "以 0.1.1-rc.2 运行时对照 v0.9.7 面向 alpha.1 客户端 API 解释正向不兼容（插件新于运行时）与 useConversation 座位缺失，并说明安装成功与重启均不能证明 API 兼容。"
+  },
+  {
+   "id": "frozen-runtime-remedy",
+   "verdict": "pass",
+   "reason": "冻结下选 v0.9.3（rc.1 实机验证 + rc.2 加性说明），明确指出 v0.9.3 同样不在镜像上，给出 tag 推送后以 ls-remote 为闸门的 #v0.9.3 安装命令与 tarball 条件替代，未发明 SHA、不要求升级 DSH、不把缺失 tag 当作立即可装。"
+  },
+  {
+   "id": "tag-distribution-repair",
+   "verdict": "pass",
+   "reason": "基于仅推分支的同步脚本提出逐镜像显式推送 tag refspec（--atomic refs/tags/... 或 --tags 等价），加 ls-remote 奇偶校验门、回填与不可变 tag 政策，验证文档 tag 确实可解析。"
+  },
+  {
+   "id": "version-routing-docs",
+   "verdict": "pass",
+   "reason": "README 默认命令按 dsh --version 路由（rc.2→v0.9.3、alpha.1→v0.9.7 预发布通道），附兼容矩阵决策规则、rc 维护分支与安装×启动 CI 矩阵，明确弃用'最新 tag'默认，未泛化到未测版本。"
+  }
+ ],
+ "caps": []
+}

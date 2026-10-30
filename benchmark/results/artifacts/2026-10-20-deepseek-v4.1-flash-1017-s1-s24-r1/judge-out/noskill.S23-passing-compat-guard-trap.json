@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Walks resolve() precisely: getSnapshot() succeeds, current absent from published value, id undefined, return null every keystroke, bail before preventDefault. Explains guard survival (four presence probes see service/members/observable, only a payload field gone) and the deliberate quiet ignore of a legitimate undefined no-session sentinel; never claims the service or guard was removed or throws."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Full type walk: SessionListState.current gone, navigation moved to view owners, and uiSession.adapter.current as ObservableSnapshot<SessionBindingValue> with key/ctx/hooks/keyedHooks/props, key replacing current and ctx replacing sessions.scope(id). Card not used to substitute the walk."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "One build reads uiSession.adapter.current.getSnapshot() when the binding contract holds, falls back to legacy current + sessions.scope; inject gains optional uiSession; conversation resolved via the binding ctx (actx.get('conversation')) and input.for receives that scope; guard order/shape equivalents accepted."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "partial",
+      "reason": "Correctly names field-level removal behind service-level stability and specifies capability-level leaf probes (assert 'current'/'key'+'ctx', feature-detect uiSession, disjunction of complete contracts). But it explicitly rejects lazy/per-use probing and insists on activation-only checks, contradicting the rubric's requirement that the probe run lazily or per-use, not only at activation."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "partial",
+      "reason": "Covers chord behavior on both hosts with one artifact, a negative control, and a host-side throwing deprecated getter for prevention. Missing the temporary probe of adapter.current key with one session open as a verification step and does not present typecheck against alpha.2 published types as the strongest pre-ship gate (it dismisses type-level checks in §4.3)."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Final remedy is a real code fix (dual-contract reader plus inject change); slot re-registration and inject-only advice are quoted only as the explicitly rejected colleague hypothesis."
+    }
+  ]
+}

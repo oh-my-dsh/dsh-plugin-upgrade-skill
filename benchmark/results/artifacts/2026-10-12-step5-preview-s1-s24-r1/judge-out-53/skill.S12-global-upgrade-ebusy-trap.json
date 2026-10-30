@@ -1,0 +1,7 @@
+{"decisions":[
+{"id":"native-module-owner","verdict":"pass","reason":"PID 42432 web host mapped koffi.node as executable image section; lock released only on process exit, so npm copyfile gets EBUSY."},
+{"id":"browser-versus-host-sequence","verdict":"pass","reason":"Refresh reloads SPA only, host survives; ordered stop every dsh process (targeted taskkill by PID), pinned install, restart; does not kill unrelated Node processes."},
+{"id":"unpinned-dist-tag-resolution","verdict":"pass","reason":"Bare name resolves via latest=0.1.1-rc.2 (alpha tag holds alpha.5), silently downgrading alpha.4; unpinned install does not preserve installed version."},
+{"id":"safe-exact-commands","verdict":"pass","reason":"One pinned install with @deepseek-ai/dsh@0.1.2-alpha.5 and pinned TUI after stopping host, verifies dsh --version = 0.1.2-alpha.5, restarts dsh web."},
+{"id":"readme-prevention","verdict":"pass","reason":"README guidance: never bare host name, pin exact versions for core and plugin (split or fully pinned combined), plus verification step."}
+],"caps":[]}

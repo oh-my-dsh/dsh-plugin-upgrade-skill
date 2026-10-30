@@ -1,0 +1,197 @@
+{
+  "model": "fledge-alpha-free (OpenCode Zen, identity unverified)",
+  "judge_model": "glm-5.3-flash (canonical; S1-S17 judged in-session, S18-S24 judged via judge-flash re-judge after initial glm-5.3 pass)",
+  "judge_status": "48/48 canonical flash verdicts written across judge/ (S1-S17) and judge-flash/ (S18-S24); scores deterministically recomputed into aggregate.json (24 tasks, all scored)",
+  "harness": "opencode 1.18.34 subagents, fresh instance per cell, one attempt per task per arm",
+  "base_commit": "215d010d1bb412dc15f94e7c0d5c7de6831c0bbf",
+  "base_commit_note": "S1-S17 ran on branch benchmark/fledge-alpha-s1-s24-r1 @ 215d010; during interruption the repo was switched externally to 8c68ba58a72129ccf1cddb9106ca286b2bdee908 (branch docs/cards/v0.2.1-alpha.1-corridor); S18-S24 rerun cells used fixture copies sealed under the same 215d010-era task definitions",
+  "round": "fledge-alpha S1-S24 round 1",
+  "protocol": "R1 single attempt; tasks S1..S24 static pool; noskill arm forbidden from skills/ and solution/tests; skill arm given skills/plugin-upgrade only; strict cell-only read whitelist enforced via prompt clause; fixtures sha256-verified against the repo copy after each cell; noskill exposure audit recorded; skill-arm card citations recorded; transcript audit for out-of-whitelist reads",
+  "concurrency": 3,
+  "execution_notes": [
+    "first attempt (started 15:41) invalidated — solvers roamed beyond the sealed environment; restarted with a strict cell-only allowlist and transcript audit",
+    "run interrupted at S18 noskill by free-quota exhaustion ('Free usage exceeded, subscribe to Go') at ~16:5x on 2026-10-04; S18 noskill's interrupted launch did not complete and produced no files; resumed 2026-10-05 after quota reset, S18 noskill counts as a fresh formal attempt",
+    "post-reset resume: S18-S24 cells initially ran without fixtures (orchestrator skipped fixture copy/prompt regeneration for those 14 cells); the 3 resulting reports lacking fixture evidence (noskill/S18, skill/S18, noskill/S19) were detected as invalid (noskill/S19 also self-reported reading outside the cell — transcript_violation), all 3 reports deleted, fixtures copied for all 14 cells, prompts regenerated with the identical whitelist clause, and all 14 cells re-run as first attempts",
+    "current r1 tree: S1-S17 noskill+skill artifacts were relocated away from the results dir externally (DSH-side); locally unverifiable/relocatable exposure_audit entries are marked accordingly; S13-S17 noskill reports were relocated before exposure audit could be run",
+    "no further retries beyond the recorded S18-noskill quota abort and the deleted fixture-less S18/S19 triple; every other cell completed on its first attempt",
+    "telemetry: per-cell tool-call counts and durations were not captured by this harness's task-tool interface; per_cell.duration_s/tool_calls recorded as null rather than estimated"
+  ],
+  "solver_prompt": "instruction.md with /app paths rewritten to local cell dirs; common cell-only read whitelist clause appended verbatim, plus arm-specific tail (noskill: 'You have no skills available.'; skill: 'You may additionally read (only) <repo>/skills/plugin-upgrade/ — nothing else outside the cell.')",
+  "exposure_audit": {
+    "S1-static-scan/noskill": "hit: cards/SKILL.md mentions in report (3 matches)",
+    "S2-negative-scan/noskill": "hit (5)",
+    "S3-snapshot-migration/noskill": "hit (19)",
+    "S4-legacy-client-imports/noskill": "hit (8)",
+    "S5-negative-naming/noskill": "hit (6)",
+    "S6-corridor-net-state/noskill": "hit (3)",
+    "S7-unpublished-cohort/noskill": "hit (6)",
+    "S8-release-routing-trap/noskill": "hit (4)",
+    "S9-composer-coordinate-trap/noskill": "hit (1)",
+    "S10-paste-rename-and-version-chip/noskill": "clean",
+    "S11-mermaid-lazyload-trap/noskill": "hit (4)",
+    "S12-global-upgrade-ebusy-trap/noskill": "hit (5)",
+    "S13-peer-range-vs-runtime/noskill": "unknown (report relocated before audit)",
+    "S14-link-install-lock-trap/noskill": "unknown (report relocated before audit)",
+    "S15-slot-error-boundary-crash/noskill": "unknown (report relocated before audit)",
+    "S16-self-host-upgrade-trap/noskill": "unknown (report relocated before audit)",
+    "S17-external-ui-plugin-onboarding-trap/noskill": "unknown (report relocated before audit)",
+    "S18-terminal-sprite-render-trap/noskill": "clean",
+    "S19-phantom-update-stale-host/noskill": "hit (1)",
+    "S20-msvc-flock-trap/noskill": "hit (3)",
+    "S21-resource-service-unavailable-trap/noskill": "hit (5)",
+    "S22-duplicate-insert-boot-crash-trap/noskill": "hit (5)",
+    "S23-passing-compat-guard-trap/noskill": "hit (1)",
+    "S24-dock-cotenant-crash-trap/noskill": "hit (7)"
+  },
+  "skill_use": {
+    "S1-static-scan/skill": "per solver summary: A1-0x/A2-01 card mapping; report relocated, not re-scanned",
+    "S2-negative-scan/skill": "per solver summary: DSH-0.1.2-A1-01, A2-02; not re-scanned",
+    "S3-snapshot-migration/skill": "per solver summary: A1-25, A1-03, A1-27, A1-26, A2-03, API-10; not re-scanned",
+    "S4-legacy-client-imports/skill": "per solver summary: A1-25, A1-26, A1-27, A1-30; not re-scanned",
+    "S6-corridor-net-state/skill": "per solver summary: A1-02 -> A2-01; not re-scanned",
+    "S16-self-host-upgrade-trap/skill": "per solver summary: R-12/R-12-style skill rules; not re-scanned",
+    "S20-msvc-flock-trap/skill": "DSH-0.1.3-A1-03",
+    "S21-resource-service-unavailable-trap/skill": "DSH-0.1.5-A2-01",
+    "S24-dock-cotenant-crash-trap/skill": "DSH-0.1.6-A2-02",
+    "S18-terminal-sprite-render-trap/skill": "no DSH- card id cited",
+    "S19-phantom-update-stale-host/skill": "no DSH- card id cited",
+    "S22-duplicate-insert-boot-crash-trap/skill": "no DSH- card id cited",
+    "S23-passing-compat-guard-trap/skill": "no DSH- card id cited"
+  },
+  "per_cell": "48 cells; S1-S17 artifacts relocated (reports present at their DSH destination; fixture sha256 verified OK locally before relocation); S18-S24 both arms fixture sha256 verified OK and report present; per-cell tool_calls/duration_s not captured (null), transcript violations: S18-noskill r0, skill/S18 r0, S19-noskill r0 fixture-less wave (all three deleted, re-run clean), S19-noskill r0 additionally self-reported out-of-cell reads (deleted)",
+  "totals": {
+    "noskill": 2125,
+    "skill": 2370,
+    "max": 2400,
+    "lift": 245,
+    "mean_noskill": 88.54,
+    "mean_skill": 98.75,
+    "mean_lift": 10.21
+  },
+  "scores_detail": {
+    "S1-static-scan": {
+      "noskill": 45,
+      "skill": 100,
+      "delta": 55
+    },
+    "S10-paste-rename-and-version-chip": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S11-mermaid-lazyload-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S12-global-upgrade-ebusy-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S13-peer-range-vs-runtime": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S14-link-install-lock-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S15-slot-error-boundary-crash": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S16-self-host-upgrade-trap": {
+      "noskill": 100,
+      "skill": 90,
+      "delta": -10
+    },
+    "S17-external-ui-plugin-onboarding-trap": {
+      "noskill": 90,
+      "skill": 100,
+      "delta": 10
+    },
+    "S18-terminal-sprite-render-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S19-phantom-update-stale-host": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S2-negative-scan": {
+      "noskill": 80,
+      "skill": 100,
+      "delta": 20
+    },
+    "S20-msvc-flock-trap": {
+      "noskill": 72.5,
+      "skill": 100,
+      "delta": 27.5
+    },
+    "S21-resource-service-unavailable-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S22-duplicate-insert-boot-crash-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S23-passing-compat-guard-trap": {
+      "noskill": 100,
+      "skill": 90,
+      "delta": -10
+    },
+    "S24-dock-cotenant-crash-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S3-snapshot-migration": {
+      "noskill": 30,
+      "skill": 100,
+      "delta": 70
+    },
+    "S4-legacy-client-imports": {
+      "noskill": 62.5,
+      "skill": 100,
+      "delta": 37.5
+    },
+    "S5-negative-naming": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S6-corridor-net-state": {
+      "noskill": 75,
+      "skill": 100,
+      "delta": 25
+    },
+    "S7-unpublished-cohort": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    },
+    "S8-release-routing-trap": {
+      "noskill": 70,
+      "skill": 90,
+      "delta": 20
+    },
+    "S9-composer-coordinate-trap": {
+      "noskill": 100,
+      "skill": 100,
+      "delta": 0
+    }
+  },
+  "second_opinion_judge": {
+    "model": "glm-5.3 (initial pass over S18-S24; full 34-cell panel over S1-S17 in judge-glm53/)",
+    "agreement_note": "judge-panel.json has S1-S17 dual-judge decision agreement: 94.0%, weighted kappa 0.802"
+  }
+}

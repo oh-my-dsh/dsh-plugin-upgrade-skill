@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "Correctly attributes failure to fs-ext@2.1.1 install script (node-gyp configure build) as a pinned dependency of dsh-session-persistence-jsonl, with missing Visual Studio/MSVC toolchain as the cause."
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "Explains the static top-level flock import forces fs-ext to load even on Windows, so --ignore-scripts trades a build failure for a boot-time module-load failure."
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "Distinguishes acquireLockHandleWin32/named kernel semaphore from POSIX flock with evidence, concludes the fs-ext flock branch is dead on Windows, and keeps real flock on Linux/macOS."
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "Full plan: platform-gated install script, pure-JS flock shim with callback no-op on Windows only, patch registered in pnpm-workspace.yaml plus allowBuilds, and reinstall/module-load/HTTP-boot verification while POSIX keeps the native addon."
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "Explicitly respects the no-Visual-Studio owner constraint and uses the repository-managed patch mechanism with no upstream changes."
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "Cites DSH-0.1.3-A1-03 and connects it to the fs-ext install-channel failure and the Windows pnpm-patch recipe."
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "Final plan explicitly installs no Visual Studio or Build Tools."
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "Rejects --ignore-scripts alone; final plan patches the entry so it loads, not just skipping the build."
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "Uses a repository-local pnpm patch; no upstream repository edit or release is required."
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows locking stays on the named kernel semaphore; the no-op shim covers only the unused Windows flock path and POSIX keeps real flock."
+    }
+  ]
+}

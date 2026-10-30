@@ -1,0 +1,15 @@
+1. glob pattern=**/* path=fixture
+2. working_directory 无参数（读取当前 cwd）
+3. read file_path=fixture/README.md（全量 3 行）
+4. read file_path=fixture/package.json（全量 6 行）
+5. read file_path=fixture/src/events.ts（全量 8 行）
+6. glob pattern=**/* path=.（枚举格目录全部文件）
+7. pwsh Get-ChildItem -Force -Recurse | Select-Object FullName,Length（含隐藏项递归列格目录）
+8. grep pattern=ignorable|append|SessionEvent|alpha path=fixture
+9. pwsh Get-Date -Format o
+10. write file_path=agent-output/S6-corridor-net-state/report.md（迁移报告正文）
+11. write file_path=agent-output/report.md（同一报告副本，兜底默认位置）
+12. pwsh Get-FileHash -Algorithm SHA256 fixture\README.md, fixture\package.json, fixture\src\events.ts（fixture 完整性自审）
+13. write file_path=agent-output/tool-transcript.txt
+14. write file_path=agent-output/transcript-manifest.txt
+15. send_message agent_id=session-5d3ebe0e-127d-4dc4-a3b9-cb2199b04f8e（向父 agent 报告结果）

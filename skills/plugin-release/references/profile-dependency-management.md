@@ -90,6 +90,7 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
 - [ ] A renamed plugin uses the same name in the lockfile, the bundles list, and `cordis.patch.yml`, and the old directory junction has been cleaned up;
 - [ ] The `--dump-config` row set matches expectations;
 - [ ] Real cold boot leaves the entry active;
+- [ ] After a host upgrade, check the affected profile's resolved package paths and versions against the intended target cohort, including profile-local overrides; reload the host after replacing a loaded package and read back the affected flow (Section 12).
 - [ ] Custom-channel authentication smoke: 401 without authentication, 200 after exchanging the Cookie (Section 6 flow).
 
 ## 8. Plugin version must be routed by DSH version (a wrong pick crashes)
@@ -213,3 +214,41 @@ complete doc-only release.
 Related: Section 9 (the re-pointed tag must land on **every** mirror) and Section 10 (the update
 chip is the surface where this bug becomes user-visible — a chip that never clears is this section's
 signature symptom, not a prompt-wording problem).
+
+## 12. Profile-local packages can survive a host upgrade
+
+Community report [#263](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill/issues/263)
+describes an upgrade to `0.1.7-rc.2` where an older profile-local
+`@deepseek-ai/dsh-schedule` remained under
+`~/.dsh/profiles/<profile>/node_modules/@deepseek-ai/`. The affected scheduled
+flow repeatedly failed with `format v4 message requires a producer-owned source kind`.
+The reporter attributed the failure to the host resolving the old package and reported
+recovery only after refreshing the package **and restarting the host**. This is a
+community diagnosis, not a universal explanation of that error or a reproduction by
+this guide's authors.
+
+For this symptom after a host upgrade:
+
+1. Inspect the affected profile's declared dependencies and lockfile, plus the package
+   path actually resolved by that host/profile. Record the real path, package version,
+   and expected target-cohort source. Compare profile-local copies, linked workspaces,
+   and the shared/main installation separately. Modification times can help locate a
+   stale candidate, but do not establish compatibility; equal versions can also hide
+   different copied or built content.
+2. If the resolved package is stale, plan a targeted refresh using that profile's
+   existing installation track and package manager. Preserve the manifest, lockfile,
+   and resolved source identity needed for rollback. Do not delete every profile's
+   `node_modules` or assume that removing a local directory will produce a compatible
+   fallback; confirm the resulting resolution and cohort first. Obtain authorization
+   for the affected profile changes under the owning upgrade workflow.
+3. Restart the affected host through its normal lifecycle after the package refresh.
+   Replacing files does not prove that the running process stopped using the old
+   loaded package; a browser refresh alone is not a host restart.
+4. Verify the newly resolved path/version and cold-boot activation. Then exercise the
+   affected scheduled flow and read back its persisted result. An `accepted` response
+   alone does not prove that the session write succeeded. Record what was actually
+   observed, and investigate other causes if the error remains.
+
+Keep the source report, target host version, profile identity, package identities,
+restart evidence, and behavior readback with the upgrade record. The report's recovery
+is evidence for this checklist; it does not replace validation of a consumer's profile.

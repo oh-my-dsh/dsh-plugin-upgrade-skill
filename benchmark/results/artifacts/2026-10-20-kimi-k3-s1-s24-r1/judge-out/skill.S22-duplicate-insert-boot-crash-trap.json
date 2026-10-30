@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "Identifies both workspace-files inserts (bundle L110–111 vs profile), traces the throw to EntryGroup.update via Include._apply in the crash stack, argues fail-closed over last-write-wins, and explicitly refutes the redundancy comment as not just redundant but fatal."
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "Covers all three operations (override by id safe, new-id insert safe, bundle-shipped-id insert fatal), classifies the maintainer's row as the fatal case, grounded in both excerpts with sibling rows as convention evidence."
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "Removes only the manual workspace-files block from the profile patch, explicitly forbids touching the bundle patch, plugin, or unrelated rows, and points to patch-by-id as the route if config adjustment is ever needed."
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "States the plugin never loads — the failure is a composition-layer duplicate before module import — so no plugin change can fix it; and keeps the original runtime service-resolution symptom as a separate post-boot problem."
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "Author side: grep installed bundle patches for the id and distinguish runtime symptom from missing row before inserting. Host side: diagnostic naming both origins of workspace-files, blaming the profile layer and prescribing deletion, plus distinguishing duplicate-id from missing-id."
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "Final advice deletes the duplicate; the redundant-keeping comments are quoted only as stale assumptions to reject, and plugin-side fixes are explicitly ruled out."
+    }
+  ]
+}
