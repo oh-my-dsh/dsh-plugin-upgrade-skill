@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | **English**
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-238-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-238-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 
 **Agent skills that teach AI to upgrade your DSH plugins.** Community-built.
 
@@ -14,7 +14,7 @@
 
 - **238 upgrade cards**: each records one real pitfall: what breaks, why, how to fix it, and which version the evidence comes from. Cards are ordered along the version corridor from 0.1.0-rc.8 to 0.2.1-rc.5, with a 0.2.2-alpha.2 branch from rc.4 (the 0.1.7-rc.1 → 0.1.7-rc.2 edge is not yet carded); per-edge counts and status are in the [coverage table](#which-versions-are-covered).
 - **13 general-purpose countermeasures**: version-independent problems (back up first, run old and new side by side, what to do when startup hangs) collected in one checklist.
-- **11 skills**: a unified workflow selects and coordinates stages; nine skills check upgrades, write, test, and release plugins, diff two DSH versions, debug runtime failures, integrate heavy dependencies, sweep the installed plugin fleet after a host upgrade, and turn upgrade experience into benchmark tasks; one framework-agnostic migration methodology without DSH-specific facts serves as the control arm for comparative experiments.
+- **12 skills**: a unified workflow selects and coordinates stages; ten skills check upgrades, fast-adapt plugins straight from the official upgrade guides, write, test, and release plugins, diff two DSH versions, debug runtime failures, integrate heavy dependencies, sweep the installed plugin fleet after a host upgrade, and turn upgrade experience into benchmark tasks; one framework-agnostic migration methodology without DSH-specific facts serves as the control arm for comparative experiments.
 - **65 auto-graded benchmark tasks**: 27 written exams (read the code, produce the answer) and 38 hands-on tasks (actually install dsh and run the plugin), including two real migrations (dsh-web and dsh-data-agent).
 - **A paper with fully traceable evidence**: raw answers, criterion-level grading, and cross-model re-grading are public and recomputable; see [Paper](#paper).
 
@@ -116,12 +116,13 @@ registration remains a separate external-publication step. On a proxied network,
 Node 24+ and `node --use-env-proxy`; Node 20-23 built-in `fetch` is not guaranteed to consume proxy
 environment variables. A failed, oversized, or invalid-v2 query is unknown/not checked, never available.
 
-## What each of the 11 skills does
+## What each of the 12 skills does
 
 | Skill | What it's for |
 | --- | --- |
 | [plugin-workflow](skills/plugin-workflow/) | The unified entry point. Choose inspection, upgrade, testing, naming and registration, packaging, and release capabilities before execution; receive a phase ledger with separate write, runtime, and publication confirmations |
 | [plugin-upgrade](skills/plugin-upgrade/) | The main one. Checks whether a plugin needs upgrading, performs the upgrade, adapts old plugins to a new dsh version |
+| [plugin-fast-adapt](skills/plugin-fast-adapt/) | A card-free fast-adapt pipeline against vendor sources: resolves the target from npm dist-tags, fetches that version's official upgrade guides, scans plugin code for breaking-change hits, then smoke-tests and audits; a snapshot of [taxueseek/plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt), not orchestrated by the unified workflow |
 | [plugin-write](skills/plugin-write/) | Writing new plugins, with naming rules and a name-collision check |
 | [plugin-test](skills/plugin-test/) | Testing whether a plugin change is correct, including a Docker smoke test (actually boots dsh with your plugin) |
 | [plugin-release](skills/plugin-release/) | Packaging and releasing a plugin, with automatic pre-release checks |

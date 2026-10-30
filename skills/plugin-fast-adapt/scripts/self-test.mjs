@@ -1642,6 +1642,14 @@ test('runlog 记录工具仓 dirty 标记（版本与 commit 拆对可识别）'
   }
 })
 
+test('runlog 作用域包名（@scope/name）落盘为单个文件，不落进 @scope 子目录', () => {
+  process.env.DSH_PFA_RUNS_DIR = tmpPluginDir('runs-scoped')
+  try {
+    const { file } = writeRunLog({ time: new Date().toISOString(), plugin: { name: '@scope/t-scoped' }, tool: {} }, { toolDir: null })
+    assert.ok(fs.existsSync(file) && path.dirname(file) === process.env.DSH_PFA_RUNS_DIR && file.endsWith('-@scope__t-scoped.json'))
+  } finally { delete process.env.DSH_PFA_RUNS_DIR }
+})
+
 test('runlog 保留策略：保留期前的运行被清理，索引行同步剔除', () => {
   const runsDir = tmpPluginDir('runs-prune')
   fs.writeFileSync(path.join(runsDir, '2026-01-01T00-00-00-000Z-old-plugin.json'), '{}')
@@ -1652,9 +1660,12 @@ test('runlog 保留策略：保留期前的运行被清理，索引行同步剔�
     path.join(runsDir, 'index.jsonl'),
     `${JSON.stringify({ file: '2026-01-01T00-00-00-000Z-old-plugin.json' })}\n${JSON.stringify({ file: '2999-01-01T00-00-00-000Z-fresh-plugin.json' })}\n`
   )
+  fs.writeFileSync(path.join(runsDir, 'unrelated-notes.txt'), 'keep')
+  fs.utimesSync(path.join(runsDir, 'unrelated-notes.txt'), new Date('2026-01-01'), new Date('2026-01-01'))
   const result = pruneRuns(runsDir)
   assert.ok(result.pruned.includes('2026-01-01T00-00-00-000Z-old-plugin.json'))
   assert.ok(!fs.existsSync(path.join(runsDir, '2026-01-01T00-00-00-000Z-old-plugin.json')))
+  assert.ok(fs.existsSync(path.join(runsDir, 'unrelated-notes.txt')), '非运行记录文件不受保留期清理影响')
   assert.ok(fs.existsSync(path.join(runsDir, '2999-01-01T00-00-00-000Z-fresh-plugin.json')), '新运行保留')
   const kept = fs.readFileSync(path.join(runsDir, 'index.jsonl'), 'utf8')
   assert.ok(!kept.includes('old-plugin'), '索引行同步剔除')

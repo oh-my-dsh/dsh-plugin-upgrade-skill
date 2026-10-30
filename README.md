@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-11-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-238-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-238-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 
 **教 AI 帮你升级 DSH 插件的 skill 集合**，社区共建。
 
@@ -14,7 +14,7 @@
 
 - **238 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.1-rc.5，并在 rc.4 处分出 0.2.2-alpha.2 一支（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
 - **13 条通用对策**：与具体版本无关的坑（先备份、新旧共存、启动卡死怎么办等），集中在一份清单里。
-- **11 个 skill**：统一工作流负责选择与编排，另外九个分别负责查升级、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
+- **12 个 skill**：统一工作流负责选择与编排，另外十个分别负责查升级、直连官方升级指南做快速适配、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
 - **65 道自动判分的考题（benchmark）**：27 道笔试（读代码给答案）、38 道实操（真装 dsh 真跑插件），其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
 - **一篇论文和完整的评估证据**：从原始回答、逐条评分到跨模型复评全部公开可复算，见下方[论文](#论文)。
 
@@ -118,12 +118,13 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 代理网络下使用 Node 24+ 的 `node --use-env-proxy` 运行查询，Node 20-23 不保证内置 `fetch`
 自动读取代理环境变量。查询失败、索引超限或 v2 契约不合法都表示“未知/未检查”，不能解释为名称可用。
 
-## 11 个 skill 各自管什么
+## 12 个 skill 各自管什么
 
 | Skill | 干什么用 |
 | --- | --- |
 | [plugin-workflow](skills/plugin-workflow/) | 统一入口。运行前选择检查、升级、测试、命名注册、打包发布等功能，生成阶段账本并分别确认写入、运行和外部发布 |
 | [plugin-upgrade](skills/plugin-upgrade/) | 主角。检查插件要不要升级、执行升级、把老插件适配到新 dsh 版本 |
+| [plugin-fast-adapt](skills/plugin-fast-adapt/) | 不读升级卡，直连官方源的快速适配流水线：从 npm dist-tags 定目标版本、取该版本官方 upgrade-guide、扫描插件代码命中破坏性变更，再做冒烟与体检；独立仓库 [taxueseek/plugin-fast-adapt](https://github.com/taxueseek/plugin-fast-adapt) 的快照，不经统一工作流编排 |
 | [plugin-write](skills/plugin-write/) | 写新插件，附命名规范和查重（避免和别人插件撞名） |
 | [plugin-test](skills/plugin-test/) | 测插件改得对不对，含 docker 冒烟测试（装上 dsh 真启动一遍） |
 | [plugin-release](skills/plugin-release/) | 打包发布插件，含发布前的自动检查 |

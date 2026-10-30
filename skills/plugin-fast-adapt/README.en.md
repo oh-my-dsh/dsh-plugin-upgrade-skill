@@ -13,7 +13,7 @@
 | Upstream ships a new release | Works immediately, zero changes (reads vendor sources, no hand-curated cards) |
 | Scan false positives | 12 → 0 (four noise-reduction layers) |
 | Verifying one change | 3,600 s real host cold start → millisecond-scale in-memory smoke test |
-| Self-test | 129 assertions, zero network, runs on any machine |
+| Self-test | 130 assertions, zero network, runs on any machine |
 | External dependencies | 0 (Node built-ins + the `git`/`npm` commands only) |
 | Scaffolding | One command emits a smoke-testable skeleton in five forms, then a write gate issues the birth certificate |
 
@@ -22,7 +22,7 @@
 DSH (DeepSeek Harness) is an AI runtime framework where everything is a plugin, and the trouble is that every new release can break existing plugins. The common workaround is hand-written upgrade cards: dozens of cards per version range, each recording what broke and how to fix it. That path has three problems it cannot get around:
 
 1. **Cards go stale the moment they are written**. A single upstream jump can touch thousands of files, and there are "corridor gaps" the cards never cover.
-2. **A large knowledge base crowds out reasoning**. In the paper's evaluation a weaker model (qwen3.8-27b) scored -3.07 pp worse with the full card library loaded (equal-weight difference over 56 tasks: 7 improved, 18 regressed, 31 flat).
+2. **A large knowledge base costs context**. Loading the full card library is a real burden for small models. The paper's only negative result — a locally served qwen3.8-27b at -3.07 pp over 56 tasks (7 improved, 18 regressed, 31 flat) — is judged **inconclusive and infrastructure-confounded** there (CI [-8.13, +1.99], heavy skill-arm local-serving timeouts), and Qwen3.8-Max records +8.13 under the same protocol, so it is not evidence that cards hurt weaker models; it only says context cost is worth controlling.
 3. **Verification is expensive**. Every change needs a real host cold start (a 3,600-second timeout is on record), and stale packages left in the profiles overlay after a host upgrade break plugin loading.
 
 This project takes a different approach: **maintain the method of obtaining knowledge, not the knowledge itself.** The authoritative description of breaking changes lives in the vendor harness repository at `docs/upgrade-guide/<version>/<topic>/guide.md`, updated with each release in a fixed format (`## Change` for what changed, `## Migration` for how to fix it); version information lives in the npm registry's `dist-tags`. Both are vendor sources, so the skill catches up the moment upstream ships.
@@ -33,7 +33,7 @@ This project takes a different approach: **maintain the method of obtaining know
 - **Zero false positives**: four noise-reduction layers took a real plugin from 12 false positives to 0, and every finding carries `severity`, `evidence` and provenance anchors pointing straight at the official guide
 - **Cheap verification**: the in-memory Cordis smoke test returns in milliseconds to seconds, with no real host cold start; add `--real-smoke` when you need real-host evidence (clean profile, install and boot)
 - **Zero external dependencies**: Node built-ins plus the `git`/`npm` commands only — no TypeScript, no AST library, no HTTP client
-- **Reproducible**: 129 assertions, zero network, runs on any machine; CI runs on every push and pull request
+- **Reproducible**: 130 assertions, zero network, runs on any machine; CI runs on every push and pull request
 - **More than adaptation**: `scaffold.mjs` emits a smoke-testable skeleton in five forms in one command, and `write-gate.mjs` issues a birth certificate when you are done
 - **Honest about its limits**: a passing smoke test is not host compatibility, and the tool says so in its output; soft audit metrics are passed through, never turned into a verdict on your behalf
 
@@ -169,7 +169,7 @@ No TypeScript, no AST library, no HTTP client. Runs on Node 22.13+ (`import.meta
 Self-test:
 
 ```sh
-npm test   # node scripts/self-test.mjs, 129 assertions
+npm test   # node scripts/self-test.mjs, 130 assertions
 ```
 
 Contributors should enable the pre-commit gate (one time): `git config core.hooksPath .githooks` — every commit runs the self-test, so a forgotten downstream sync is caught at commit time.
@@ -234,7 +234,7 @@ The two projects complement each other:
 | New release ships | Wait for cards, corridor gaps in between | Works immediately, zero changes needed |
 | Verifying one change | Real host cold start, measured up to 3,600 s | In-memory Cordis smoke test, milliseconds to seconds |
 | Stale overlay packages | Manual troubleshooting | `env-doctor` inspection + `env-heal` healing (dry-run by default) |
-| Weaker models | Full card library in context, -3.07 pp | Six independent scripts, one small output each |
+| Context cost | Full card library in context | Six independent scripts, one small output each |
 | Code-level scanning | None | Anchor matching + four noise-reduction layers |
 | Fleet-wide sweep | `plugin-fleet-sweep` owns breadth | The six-step pipeline owns depth |
 

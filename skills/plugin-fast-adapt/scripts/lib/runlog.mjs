@@ -62,6 +62,9 @@ function phasesOf(record) {
 // （文件按 mtime 判定，index 同步剔除对应行）。now 可注入供自检。
 // 删除动作全部内部 try/catch——清理失败不影响日志写入本身。
 const RETENTION_DAYS = 90
+// 只清理 writeRunLog 自己写出的记录（<ISO 时间戳>-<插件名>.json）：DSH_PFA_RUNS_DIR
+// 可指向任意目录，不能把别人的文件按 mtime 一并删掉。
+const RUN_FILE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-.+\.json$/
 export function pruneRuns(root = getLogRoot(), { retentionDays = RETENTION_DAYS, now = Date.now() } = {}) {
   const cutoff = now - retentionDays * 86400_000
   let names = []
@@ -72,7 +75,7 @@ export function pruneRuns(root = getLogRoot(), { retentionDays = RETENTION_DAYS,
   }
   const pruned = []
   for (const name of names) {
-    if (name === 'index.jsonl') continue
+    if (!RUN_FILE_RE.test(name)) continue
     const file = path.join(root, name)
     try {
       if (fs.statSync(file).mtimeMs < cutoff) {
@@ -105,7 +108,8 @@ export function writeRunLog(payload, { toolDir } = {}) {
     const root = getLogRoot()
     fs.mkdirSync(root, { recursive: true })
     const stamp = new Date().toISOString().replace(/[:.]/g, '-')
-    const plugin = payload.plugin?.name || 'unknown'
+    // 作用域包名（@scope/name）含路径分隔符，不转义会写进不存在的子目录而静默失败。
+    const plugin = (payload.plugin?.name || 'unknown').replace(/[\\/]/g, '__')
     const file = path.join(root, `${stamp}-${plugin}.json`)
     const record = {
       ...payload,
