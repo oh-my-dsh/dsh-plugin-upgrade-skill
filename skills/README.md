@@ -38,6 +38,7 @@ description: 一句话说明做什么、何时触发，以及重要的只读/写
 |---|---|---|
 | [plugin-workflow](plugin-workflow/) | 统一选择并编排检查、升级、测试、命名注册、发布与回滚，维护阶段账本和独立授权边界 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
 | [plugin-upgrade](plugin-upgrade/) | 只读检查、已安装插件升级、宿主兼容迁移；七类触点 + 版本卡片 + 安全回滚 | [@oh-my-dsh](https://github.com/oh-my-dsh) |
+| [plugin-fast-adapt](plugin-fast-adapt/) | 独立衍生项目。不依赖人工维护的升级卡片，改为直连官方源：探测本机环境 → 从 npm dist-tags 定目标版本 → 取该版本的官方 upgrade-guide → 词法扫描插件代码匹配破坏性变更锚点。覆盖层旧包自愈默认 dry-run | [@taxueseek](https://github.com/taxueseek) |
 | [plugin-write](plugin-write/) | 编写 DSH 插件，按目标 Harness 版本选择扩展形态，并区分官方单仓与外部插件规则 | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-test](plugin-test/) | 为 DSH 插件变更选择测试层级，并覆盖真实组合、发布产物与目标版本产品入口 | [@omdsh-dev](https://github.com/omdsh-dev) |
 | [plugin-release](plugin-release/) | 打包、发布与分发 DSH 插件：发布轨选择、未发布 cohort 安装、CI 门禁与回滚 | [@omdsh-dev](https://github.com/omdsh-dev) |
