@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | **English**
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-238-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-246-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 
 **Agent skills that teach AI to upgrade your DSH plugins.** Community-built.
 
@@ -12,7 +12,7 @@
 
 ## What's in this repo
 
-- **238 upgrade cards**: each records one real pitfall: what breaks, why, how to fix it, and which version the evidence comes from. Cards are ordered along the version corridor from 0.1.0-rc.8 to 0.2.1-rc.5, with a 0.2.2-alpha.2 branch from rc.4 (the 0.1.7-rc.1 → 0.1.7-rc.2 edge is not yet carded); per-edge counts and status are in the [coverage table](#which-versions-are-covered).
+- **246 upgrade cards**: each records one real pitfall: what breaks, why, how to fix it, and which version the evidence comes from. Cards are ordered along the version corridor from 0.1.0-rc.8 to 0.2.1-rc.5, with a 0.2.2-alpha.2 branch from rc.4 (the 0.1.7-rc.1 → 0.1.7-rc.2 edge is not yet carded); per-edge counts and status are in the [coverage table](#which-versions-are-covered).
 - **13 general-purpose countermeasures**: version-independent problems (back up first, run old and new side by side, what to do when startup hangs) collected in one checklist.
 - **12 skills**: a unified workflow selects and coordinates stages; ten skills check upgrades, fast-adapt plugins straight from the official upgrade guides, write, test, and release plugins, diff two DSH versions, debug runtime failures, integrate heavy dependencies, sweep the installed plugin fleet after a host upgrade, and turn upgrade experience into benchmark tasks; one framework-agnostic migration methodology without DSH-specific facts serves as the control arm for comparative experiments.
 - **65 auto-graded benchmark tasks**: 27 written exams (read the code, produce the answer) and 38 hands-on tasks (actually install dsh and run the plugin), including two real migrations (dsh-web and dsh-data-agent).
@@ -173,6 +173,7 @@ environment variables. A failed, oversized, or invalid-v2 query is unknown/not c
 | 0.2.1-rc.3 → 0.2.1-rc.4 | 📝 Draft | [v0.2.1-rc.4.md](skills/plugin-upgrade/references/v0.2.1-rc.4.md) | 1 draft card (synchronization release: byte-identical CLI `lib/`, only an ACP stdout diagnostics fix) |
 | 0.2.1-rc.4 → 0.2.1-rc.5 | 📝 Draft | [v0.2.1-rc.5.md](skills/plugin-upgrade/references/v0.2.1-rc.5.md) | 1 draft card (`conversation.chat.reasoning.body` `text` becomes display-ready text, raw output moves to a new `rawText`) |
 | 0.2.1-rc.4 → 0.2.2-alpha.2 | 📝 Draft | [v0.2.2-alpha.2.md](skills/plugin-upgrade/references/v0.2.2-alpha.2.md) | 3 draft cards (start of the 0.2.2 line (diverges from rc.5): Plugin Manager third-party updates, Web Client mobile overhaul, six-plugin contract sweep; **34 upstream upgrade guides not yet carded** (incl. breaking ones such as the Node.js 24.9 floor), listed at the end of the file) |
+| 0.2.2-alpha.2 → 0.2.2-alpha.3 | 📝 draft | [v0.2.2-alpha.3.md](skills/plugin-upgrade/references/v0.2.2-alpha.3.md) | 8 draft cards (unified right-click/keyboard context menus: \`MenuTarget\`→\`ContextMenuTarget\`, keyed \`contextMenu.icon\`; pi-ai dynamic per-session/purpose request headers with pre-send validation and image-overflow auto-omit; Cordis Core 4.0.0-rc.11 / Loader 1.0.0-rc.8 unified config access and entry changes; plugin-manager settings nav icons + install-vs-enable failure diagnostics; fs read-before-write/external-modification guards default off; host-level scheduled tasks + worktree merged into change requests (manual bundle removal) + default-off \`apply_patch\`; six-plugin fleet verified on 0.2.2-alpha.3 + npm interrupted-install recovery runbook) |
 | 0.2.1-alpha.5 ⇒ 0.2.2-alpha.2 (jump) | 📝 Draft | [jump-0.2.1-alpha.5-to-0.2.2-alpha.2.md](skills/plugin-upgrade/references/jump-0.2.1-alpha.5-to-0.2.2-alpha.2.md) | 6 jump cards — not a corridor edge, but a merged view for a deployment jumping from 0.2.1-alpha.5 straight to 0.2.2-alpha.2: the compatibility-ledger gate, the dependency-aware plugin lifecycle, model and web surfaces, README detail pages, the new Web Client, the fleet verification record; shares the per-edge file's gap of 34 uncarded upstream guides |
 
 ## Benchmark
