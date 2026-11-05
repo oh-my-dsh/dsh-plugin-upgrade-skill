@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-246-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-248-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 
 **教 AI 帮你升级 DSH 插件的 skill 集合**，社区共建。
 
@@ -12,7 +12,7 @@
 
 ## 这个仓库里有什么
 
-- **246 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.1-rc.5，并在 rc.4 处分出 0.2.2-alpha.2 一支（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
+- **248 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.1-rc.5，并在 rc.4 处分出 0.2.2-alpha.2 一支（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
 - **13 条通用对策**：与具体版本无关的坑（先备份、新旧共存、启动卡死怎么办等），集中在一份清单里。
 - **12 个 skill**：统一工作流负责选择与编排，另外十个分别负责查升级、直连官方升级指南做快速适配、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
 - **65 道自动判分的考题（benchmark）**：27 道笔试（读代码给答案）、38 道实操（真装 dsh 真跑插件），其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
@@ -176,6 +176,7 @@ Claude Code 中按名字调用 skill（插件安装后带命名空间）：
 | 0.2.1-rc.4 → 0.2.1-rc.5 | 📝 草稿 | [v0.2.1-rc.5.md](skills/plugin-upgrade/references/v0.2.1-rc.5.md) | 1 张草稿卡（`conversation.chat.reasoning.body` 的 `text` 改为展示文本、原始输出移到新增 `rawText`） |
 | 0.2.1-rc.4 → 0.2.2-alpha.2 | 📝 草稿 | [v0.2.2-alpha.2.md](skills/plugin-upgrade/references/v0.2.2-alpha.2.md) | 3 张草稿卡（0.2.2 线起点（与 rc.5 分叉）：插件管理器第三方包更新、Web 客户端移动端重做、六插件契约巡检；**34 篇上游升级指南尚未成卡**（含 Node.js 24.9 下限等破坏性变更），见文件末尾清单） |
 | 0.2.2-alpha.2 → 0.2.2-alpha.3 | 📝 草稿 | [v0.2.2-alpha.3.md](skills/plugin-upgrade/references/v0.2.2-alpha.3.md) | 8 张草稿卡（统一右键/键盘菜单：\`MenuTarget\`→\`ContextMenuTarget\`、keyed \`contextMenu.icon\`；pi-ai 动态请求头（无效头请求前报错）与图片超限自动省略；Cordis Core 4.0.0-rc.11/Loader 1.0.0-rc.8 统一配置访问与条目变更；插件管理器设置导航图标+安装/启用失败区分；文件先读/外部修改防护默认关闭；自动化任务宿主级管理+工作树并入变更请求（需手动移除 bundle）+默认关闭的 \`apply_patch\`；六插件舰队 0.2.2-alpha.3 实测+npm 中断安装双层损坏恢复 runbook） |
+| 0.2.2-alpha.3 → 0.2.2-rc.1 | 📝 草稿 | [v0.2.2-rc.1.md](skills/plugin-upgrade/references/v0.2.2-rc.1.md) | 2 张草稿卡（RC 汇总边：仅 4 个提交（版本 bump/changelog），零新增插件 API 面；六插件零代码改动实测+npm 树迁移与 Windows 安装锁 runbook） |
 | 0.2.1-alpha.5 ⇒ 0.2.2-alpha.2（jump） | 📝 草稿 | [jump-0.2.1-alpha.5-to-0.2.2-alpha.2.md](skills/plugin-upgrade/references/jump-0.2.1-alpha.5-to-0.2.2-alpha.2.md) | 6 张 jump 卡（不是走廊边，而是从 0.2.1-alpha.5 直接跳到 0.2.2-alpha.2 的合并视图：兼容清单门槛、依赖感知的插件生命周期、模型与 Web 面、README 详情页、新 Web 客户端、舰队验证记录；与逐边文件共享 34 篇未成卡的上游指南缺口） |
 
 ## 考题（benchmark）
