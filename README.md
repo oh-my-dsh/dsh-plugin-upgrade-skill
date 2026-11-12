@@ -1,8 +1,10 @@
 # DSH Plugin Upgrade Skill
+| 0.2.2-alpha.3 → 0.2.2-rc.1 | 📝 草稿 | [v0.2.2-rc.1.md](skills/plugin-upgrade/references/v0.2.2-rc.1.md) | 2 张草稿卡（RC 汇总边：仅 4 个提交，零新增插件 API 面；六插件零代码改动实测+npm 树迁移与 Windows 安装锁 runbook） |
+| 0.2.2-rc.1 → 0.2.2-rc.2 | 📝 草稿 | [v0.2.2-rc.2.md](skills/plugin-upgrade/references/v0.2.2-rc.2.md) | 3 张草稿卡（工作树审阅扩展到分支/提交/文件类型过滤+GitHub 评审处理；SubAgent 具名多层协作+AgentTeam 按会话开启；浮层定位新接口需适配+六插件零适配实测——走廊最宽边 1568 commits） |
 
 **简体中文** | [English](README.en.md)
 
-[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-246-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.30120-b31b1b.svg)](https://arxiv.org/abs/2609.30120) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) ![Skills](https://img.shields.io/badge/skills-12-blue) ![Upgrade cards](https://img.shields.io/badge/upgrade%20cards-251-blue) ![Benchmark](https://img.shields.io/badge/benchmark-65%20tasks-blue)
 
 **教 AI 帮你升级 DSH 插件的 skill 集合**，社区共建。
 
@@ -12,7 +14,7 @@
 
 ## 这个仓库里有什么
 
-- **246 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.1-rc.5，并在 rc.4 处分出 0.2.2-alpha.2 一支（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
+- **251 张升级说明卡**：每张卡记录一个真实的坑——什么坏了、为什么坏、怎么修、信息来自哪个版本。按版本走廊排好序，覆盖 0.1.0-rc.8 → 0.2.1-rc.5，并在 rc.4 处分出 0.2.2-alpha.2 一支（其中 0.1.7-rc.1 → 0.1.7-rc.2 一段尚未成卡），每条边的卡数与状态见下方[覆盖表](#升级卡覆盖到哪个版本了)。
 - **13 条通用对策**：与具体版本无关的坑（先备份、新旧共存、启动卡死怎么办等），集中在一份清单里。
 - **12 个 skill**：统一工作流负责选择与编排，另外十个分别负责查升级、直连官方升级指南做快速适配、写插件、测插件、发插件、对比两个版本、排查运行时故障、接入重依赖、宿主升级后巡检整批已装插件、把升级经验提取成考题；还有一个不含 DSH 专有知识的通用迁移方法论，用作对照实验的控制组。
 - **65 道自动判分的考题（benchmark）**：27 道笔试（读代码给答案）、38 道实操（真装 dsh 真跑插件），其中包含 dsh-web 与 dsh-data-agent 两次真实迁移。
