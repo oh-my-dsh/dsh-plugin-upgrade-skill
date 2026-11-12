@@ -1,4 +1,6 @@
 # references/ · reference material loaded on demand
+| 32 | [v0.2.2-rc.1.md](v0.2.2-rc.1.md) | \`dsh-v0.2.2-alpha.3\` | \`dsh-v0.2.2-rc.1\` | 2 | draft / curated (RC aggregation edge: 4 commits, version bump + changelog only; npm tree relocation (openai nests inside dsh pkg) + Windows install-lock recovery runbook) |
+| 35 | [v0.2.2-rc.2.md](v0.2.2-rc.2.md) | \`dsh-v0.2.2-rc.1\` | \`dsh-v0.2.2-rc.2\` | 3 | draft / curated (worktree review expands to branch/commit/file-type filters with in-place GitHub review handling; named multi-layer subagents with per-session AgentTeam and shared member/task panels; new overlay/menu positioning interface under zoom/pan/long lists — custom floating overlays must adapt; six-plugin fleet verified zero-adaptation incl. nested-tree headless smoke; widest corridor edge: 1568 commits absorbed the rc.2 feature freeze) |
 
 > `SKILL.md` keeps only the decision flow; version facts and scan patterns live here and load on demand.
 
