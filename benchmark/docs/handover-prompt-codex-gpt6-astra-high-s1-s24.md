@@ -3,7 +3,7 @@
 先读交接文档 benchmark/docs/handover-codex-gpt6-astra-high-s1-s24.md——里面有全部背景。要点摘要：
 
 1. S1–S24 共 24 题，全部是 BENCHMARK-AUTH-v1 只读任务（fixture 不许改，报告写到 /app/agent-output/）。
-2. 全部默认 LLM-as-judge（report-judge-v2）：必须先配好 REPORT_JUDGE_BASE_URL / REPORT_JUDGE_MODEL / REPORT_JUDGE_API_KEY 三个环境变量，缺一个 verifier 直接失败。判卷器故障记 evaluator failure 单列，绝不写成 0 分。
+2. 判卷走宿主机 Codex 登录通道（零配置）：先 Harbor 关验证（或直接跑 solver）收集每题产物，再统一用 benchmark/report-judge/codex-judge.mjs --packet <task>/tests/packet.json --app <产物> --logs <评分输出> --model <判卷模型> --bin codex --effort high 判卷——复用 ~/.codex/auth.json，无需任何 API key。（仅当选择容器内 API 通道时才需 REPORT_JUDGE_* 三个环境变量。）判卷器故障记 evaluator failure 单列，绝不写成 0 分。
 3. 上一次 Astra 完整跑分（2026-09-09 full56）用 xhigh，报告在 benchmark/results/validation-report-2026-09-09-codex-gpt-6-astra-xhigh-full56.md——本次是 high 档，不可与 xhigh 结果混表。
 4. 执行参数沿用上一次：skill 只装 plugin-upgrade、bundled skills/plugins/apps/memories/web search 全关、agent/verifier 超时倍率 2/2、自动重试 0、最多 2 并发。
 

@@ -13,11 +13,9 @@
 
 1. **共 24 题**：`benchmark/tasks/S1-static-scan` … `S24-dock-cotenant-crash-trap`。全部是**只读/文书**类（BENCHMARK-AUTH-v1 契约：不改 fixture，只写报告到 `/app/agent-output/`）。
 2. **判卷**：S1–S24 全部默认 **LLM-as-judge**（report-judge-v2 协议，task version 4.0.0/4.1.0）。判卷模型是**独立的 verifier**，与被测模型分开；判卷挂了=评测器故障，**绝不允许**回落到关键词计分。
-3. **判卷环境变量**（每个 task.toml 的 `[verifier.env]` 都会透传）：
-   - `REPORT_JUDGE_BASE_URL` — 判卷模型 API 地址
-   - `REPORT_JUDGE_MODEL` — 判卷模型名
-   - `REPORT_JUDGE_API_KEY` — 判卷 key
-   三个都必须配好，缺一个 verifier 直接失败。
+3. **判卷有两条通道**（report-judge-pilot.md）：
+   - **通道 A·宿主机 Codex 登录判卷（推荐，零配置）**：两段式——Harbor 关验证跑 solver 收集产物 → 宿主机 `node benchmark/report-judge/codex-judge.mjs --packet benchmark/tasks/<task>/tests/packet.json --app <产物目录> --logs <评分输出> --model <判卷模型> --bin codex --effort high`。复用 `~/.codex/auth.json` 登录态，**无需任何 API key 或环境变量**。
+   - **通道 B·容器内 API 判卷**：`harbor run` 直接跑注册任务时，task.toml 的 `[verifier.env]` 透传 `REPORT_JUDGE_BASE_URL/MODEL/API_KEY`——三个都必须配好，缺一个 verifier 直接失败。仅当你有独立的判卷 API 端点时选这条。
 4. **分数语义**：每题 0–100（Harbor reward 0–1 = score/100）。语义分（v4）**不可**与历史关键词分混用。
 5. **陷阱设计**：fixture 里有诱导性注释（照做=死）、与升级无关的预存失败测试（考验诚实报告）。被测 agent 被误导/谎报都会扣分。
 
