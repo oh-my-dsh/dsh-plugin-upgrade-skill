@@ -39,15 +39,10 @@
 3. 确认 `harbor --version`（≥0.22）；Codex 登录态可用。
 4. 配好三个 `REPORT_JUDGE_*` 环境变量（判卷模型建议与被测模型不同家族，避免自评偏置；上一次跑分用的判卷配置见 report-judge 文档）。
 
-### 跑题
-5. 单题试跑（先 S1 验证链路通）：
-   ```
-   cd benchmark
-   harbor run tasks/S1-static-scan
-   ```
-   （具体 CLI 语法以 `harbor run --help` 为准；env 从 shell 继承。）
-6. 链路通后，S2–S24 批量跑。可以写个循环脚本按序执行，或用 Harbor 的多任务能力（参考上一次跑分的 2-worker 编排）。
-7. 每题结束检查 `/logs/verifier/reward.txt` 存在且 verifier 没报 evaluator failure。
+### 跑题（solver-only，两段式第一段）
+5. **Codex 只跑 solver、只收集产物——评分回 DSH 会话做**（先例：benchmark/results/artifacts/2026-10-12-step5-preview-s1-s24-r1/，其 manifest 的 judge_status 原文就是 "NOT JUDGED — solvers only; judging deferred to DSH session"）。
+6. 逐题读 instruction.md 按契约执行，产物归档到 \`results/artifacts/<日期>-...-r1/skill/<任务名>/{fixture,agent-output}/\`。
+7. 写 run-manifest.json（模型/effort/版本/commit/每题状态）；**不运行 verifier、不配判卷环境变量、不跑 codex-judge.mjs**。
 
 ### 汇总
 8. 产出三件套（沿用 results/ 目录惯例）：
