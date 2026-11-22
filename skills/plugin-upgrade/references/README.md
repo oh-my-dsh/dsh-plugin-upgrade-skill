@@ -1,4 +1,5 @@
 # references/ · reference material loaded on demand
+| 34 | [v0.2.3-alpha.2.md](v0.2.3-alpha.2.md) | \`dsh-v0.2.2-rc.5\` | \`dsh-v0.2.3-alpha.2\` | 2 | draft / curated (**0.2.3-alpha.1 is DOA — skip it entirely**: dsh-app-boot named-imports 4 unpublished cordis-plugin-loader exports; ledgers jump rc.x → alpha.2) |
 
 > `SKILL.md` keeps only the decision flow; version facts and scan patterns live here and load on demand.
 
