@@ -1,0 +1,12 @@
+# Attempt 1 — bundler default code-splitting (mermaid entry → mermaid-chunk.js + 97 siblings)
+# Browser console, page load with one ```mermaid fence:
+
+GET http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js        200  (8.1 kB)
+GET http://127.0.0.1:3080/dsh-attach-input/resources/src-BfvxrPJe.js         404
+GET http://127.0.0.1:3080/dsh-attach-input/resources/pie-WAS4IAKB-CQHCQWWM.js 404
+TypeError: Failed to fetch dynamically imported module:
+  http://127.0.0.1:3080/dsh-attach-input/resources/mermaid-chunk.js
+[dsh-attach-input] mermaid chunk fell back to code block: TypeError: Failed to fetch ...
+
+# ls of the shipped lib/ at the time: mermaid-chunk.js WAS present; the sibling
+# files listed in its import statements were NOT shipped with the package.

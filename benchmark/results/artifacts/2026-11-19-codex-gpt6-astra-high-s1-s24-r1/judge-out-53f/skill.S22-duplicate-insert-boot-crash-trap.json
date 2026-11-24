@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "对比两 excerpt 的同 id workspace-files 插入并定位 EntryGroup.update 抛错，说明重复插入致命而非静默合并，明确驳回无害冗余注释"
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "清晰区分 override 已有 id、插入全新 id、插入 bundle 已供 id 三类操作，并归类维护者行为为第三类且以两 excerpt 为据"
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "仅删除 profile 的 workspace-files insert 块并保留 bundle 声明与无关条目，配置需求走 override，明确拒绝改名/删服务/再加插入"
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "指出崩溃发生在插件执行前的组合层、改插件代码无效，且移除重复只恢复 boot 可能、不证明原资源读取失败已治愈"
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "要求插入前检查已装 bundle patch 文件与各层 id 并区分 override/insert，给出点名 id 与双方声明来源及删除指引的可操作宿主诊断"
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "最终建议删除重复块而非保留/新增，也不建议改外部插件来治本"
+    }
+  ]
+}

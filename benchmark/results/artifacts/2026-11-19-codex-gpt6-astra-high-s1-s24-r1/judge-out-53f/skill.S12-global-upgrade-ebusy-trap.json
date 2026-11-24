@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Names PID 42432 dsh web host as the koffi.node owner; loaded native binary locked until process exit explains EBUSY."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "Explains refresh only reloads the SPA and gives ordered stop-all-DSH-hosts→verify exit→external install→verify→restart procedure."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Explains bare package requests latest=0.1.1-rc.2 with alpha=0.1.2-alpha.5, replacing the alpha install rather than preserving it."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Provides exact pinned dsh@0.1.2-alpha.5 install plus TUI, requires dsh --version to print alpha.5, then restarts."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Recommends plugin-only install, explicit pinning of the tested host version in combined commands, and never silently adding unpinned dsh over an existing prerelease."
+    }
+  ],
+  "caps": []
+}

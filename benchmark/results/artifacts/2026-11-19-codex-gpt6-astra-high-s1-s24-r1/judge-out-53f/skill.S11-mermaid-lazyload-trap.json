@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "正确解释 sibling 导入相对 chunk URL 解析且未随包发布、entry 200 仍动态导入失败，并给出 inlineDynamicImports 单文件自包含方案"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "精确对比 E:/e: 大小写差异与大小写敏感 startsWith，解释 Linux/本机为何通过，并明确否认 realpath 总是小写的断言"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "path.relative 分量包含判断 + 双重 realpath 规范化，拒绝 ../ 与绝对/跨盘结果及 symlink 逃逸，保留 application/javascript MIME，并明确拒绝删守卫/盲目小写化"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "指出两个 handler 同吃 Ctrl+wheel，模态独占、pane 让位，且指出祖先 capture 时后续 stopPropagation 无法撤销，并承认证据不含监听注册代码"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "按三事件给出带预期结果的回归矩阵：可部署的模块图与 fallback、Windows 大小写路径放行/逃逸拒绝、模态缩放不改 pane 字号"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "最终建议保留并强化包含检查，明确拒绝移除守卫或服务根外路径"
+    }
+  ]
+}

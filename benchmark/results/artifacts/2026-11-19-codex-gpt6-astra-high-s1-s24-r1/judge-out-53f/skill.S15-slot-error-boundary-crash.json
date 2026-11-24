@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "精确复现表达式，说明 busy 为 AttachButton 函数局部绑定、空态提前返回 null、plain/缺省相位触发 ReferenceError 的短路求值路径。"
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "说明边界捕获渲染异常并卸载整个 dock 条目而非仅 remove 按钮，input.left 槽位的 AttachButton 存活，诊断仅在浏览器控制台。"
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "以 v0.2.10 源码与维护者说明确立 busy 为基线既有缺陷，提出受控回滚/重加隔离，并指出 feature.diff 旧行缺 || busy 与 imageItem 错置于回调外两处矛盾。"
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "移除悬空 busy 或引入自有状态，给出 record?.items ?? []、closest?. 守卫并指出 undefined !== null 的陷阱，预览计算移入 record/status 声明之后。"
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "提出带捕获 spy 的数据齐备 plain 相位渲染冒烟、解释空态测试与 node --check 的局限，并纳入最低 pre-ship 验证。"
+    }
+  ],
+  "caps": []
+}

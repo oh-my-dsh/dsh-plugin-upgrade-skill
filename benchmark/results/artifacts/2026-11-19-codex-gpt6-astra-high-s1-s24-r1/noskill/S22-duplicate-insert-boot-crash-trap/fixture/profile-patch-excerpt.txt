@@ -1,0 +1,20 @@
+# Profile patch excerpt — C:\Users\lhh\.dsh\profiles\web\cordis.patch.yml
+# (the manual workspace-files insert block at the end; the rest is pre-existing)
+
+# dsh-file-trace: 文件追踪面板（file-trace）
+- insert:
+    - id: dsh-file-trace
+      name: '@dsh-external/dsh-file-trace'
+
+# ... (six external client plugins) ...
+
+# dsh-profiles: 供应商 Profile 管理（Claude Code / ZCode 切换、密钥、GUI）
+- insert:
+    - id: dsh-profiles
+      name: '@lhh010/dsh-profiles'
+
+# workspace-files: 右侧 Sidebar 文件预览所需的宿主服务（0.1.5 系列新增）
+# 如果 web-app bundle 已包含此行则此条为冗余；保留以确保升级 profile 不遗漏
+- insert:
+    - id: workspace-files
+      name: '@deepseek-ai/dsh-api-workspace-files'

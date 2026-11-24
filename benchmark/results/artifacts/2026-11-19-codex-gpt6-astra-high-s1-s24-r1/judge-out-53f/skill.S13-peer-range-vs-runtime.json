@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "定位 plugin-source-excerpt.js 的 session.events 读取、crash-stack 的迭代路径，引用 changelog alpha.4 移除及 seq/eventAt/snapshotEvents 替代，解释 undefined 不可迭代"
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "用 npm 输出解释 ^0.1.2-alpha.2 同基 prerelease 排序使 alpha.5 满足范围，且 npm 只做声明版本比对、不验证 API/运行时"
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "给出至少两类独立类别：移除/改名 API 与签名/返回/事件负载变更，另加运行时服务缺失"
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "要求实测目标 alpha.5 cohort 并给出收窄 peer 范围或特性检测+正确新旧路径策略，说明 engines 不检测 API 行为"
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "给出 rg 扫描 .events 加对照 changelog 的具体预装检查，并绑定本事件的兼容边界"
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "明确声明 peer 范围满足不证明运行时兼容，也未否认 alpha.4 移除"
+    }
+  ]
+}

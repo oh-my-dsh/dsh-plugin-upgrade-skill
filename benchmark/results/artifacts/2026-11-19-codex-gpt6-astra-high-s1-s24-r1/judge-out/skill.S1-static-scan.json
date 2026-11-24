@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 patch 声明/目标/脚本，区分组合 overlay 与源码 patch，解释 SessionView 耦合并挂 A1-03"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位 producer/consumer 与 ignorable:true，正确折叠 alpha.1→alpha.2，并明确 alpha.2 公共 Session.append 不能设置 ignorable"
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "定位 apiProxy 与 A1-01 移除，明确 Host 域服务(ctx.llm.listProviders)与 Web Client Remote 投影之分，未给 Host 开 remote 处方"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位硬编码 homedir/.dsh/profiles/default，要求运行时 DSH_HOME/选中 profile 主导，并明确否认 alpha.1 引入 --profile"
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "定位私有 SessionView import 与 registerCommand，给出拆分后确认 owning exports/公共 seam 的验证路径"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位休眠 loopback 服务器，明确 loopback 不是认证、区分 Connection 认证通道与 raw 路由"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处子进程与 JSON.parse，说明 rc.2 stdout 本就是最终文本、缺陷先于走廊存在，未虚构 alpha.2 stdout 变更"
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "逐条映射 A1-03/A2-01+A1-02/A1-01(+A2-02 条件)/A1-04/A1-08/A1-05 并说明理由，非空卡列表"
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "七类全命中、静态局限充分，提出目标 build/typecheck、真实 profile 挂载与功能冒烟，明确不执行本静态 fixture"
+    }
+  ],
+  "caps": []
+}

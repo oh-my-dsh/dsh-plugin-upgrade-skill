@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "Clearly distinguishes clipboard-text draft/Occurrence coordinates from detect spans of insertReference/consumeToken; chip = clipboardText vs one U+FFFC; text keeps width."
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "Locates snapshot.draft.length in add, shows empty-composer coincidence then 29 vs detect 2, false return turned into changed-composer toast, not a concurrent edit."
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "Traces [0,28) vs [0,1) unconverted span, ignored boolean, unconditional records.delete leaving live occurrence, 'unavailable' dock state and surviving chip — one coordinate cause."
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "Derives detect(p)=p-sum(o.length-1) for preceding chips at both call sites, insert-at-end subtracts all occurrences, removal uses start+1 span, keeps revision guard, deletes records only after success or verified fallback."
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "pass",
+   "reason": "Plan covers two successive pastes with all chips present and removal with a preceding chip, asserting occurrence+dock chip+record removed together while the other chip survives, plus declined-consumption variants."
+  }
+ ],
+ "caps": []
+}

@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Ties the log timeline (cleanup/removal/fetch/linkStuff) to host death and lost result recording, structural self-host dependency not flaky networking, tool outcome kept unknown."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "rc.1 content plus manually placed files with missing dsh/dsh.cmd and stale dsh.ps1 read as interrupted link stage; hand-swapping and shim-writing rejected as repair."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Repair-notes-grounded external npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerating all three shims, dsh --version=rc.1, checkout tag aligned, recorded repair separated from analysis."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Agent must not execute the global install in-session; ordered external procedure stops all hosts before the exact pinned install then restart/refresh/verify; stop-first and pinning framed as established rules plus the new self-host boundary; dependent child terminal rejected."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Guard compares target paths/junctions/ancestry with own host; 252-file version-only diff means no plugin re-migration; post-checks cover shims, version markers, plugin registration, cleanup deferred until verified."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "All final advice executes the install from an external terminal with every dsh host stopped."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Explicitly forbids directory swaps and handmade shims; formal pinned installation is the remedy."
+    }
+  ]
+}

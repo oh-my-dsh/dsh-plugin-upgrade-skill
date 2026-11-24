@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "missing-mirror-tag",
+      "verdict": "pass",
+      "reason": "Shows v0.9.5 absent from ls-remote while sync-script pushes only HEAD:main, tying attempt 1 to missing tag distribution rather than network or typo."
+    },
+    {
+      "id": "runtime-compatibility-direction",
+      "verdict": "pass",
+      "reason": "Uses rc.2 versus v0.9.7-targeting-alpha.1 to explain the newer-plugin-on-older-runtime direction of the missing useConversation seat and that install success proves nothing."
+    },
+    {
+      "id": "frozen-runtime-remedy",
+      "verdict": "pass",
+      "reason": "Honors the freeze with v0.9.3 based on rc.1 verification plus the additive rc.2 note, explicitly notices v0.9.3 is also absent from the mirror, and gives the #v0.9.3 pin conditional on publication without inventing a SHA."
+    },
+    {
+      "id": "tag-distribution-repair",
+      "verdict": "pass",
+      "reason": "Proposes explicit non-forced git push refs/tags/v0.9.3 to every advertised mirror with resolution verification, grounded in the branch-only sync script."
+    },
+    {
+      "id": "version-routing-docs",
+      "verdict": "pass",
+      "reason": "Requires a version-selection table keyed on dsh --version routing rc.2 users to v0.9.3 and alpha.1 users to v0.9.7, without generalizing to untested alphas."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Distinguishes the package.json declaration from README's published version universe (alpha.1 absent, alpha.2 present) and proposes verifying alpha.2 package metadata before adoption without requiring a live lookup."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains the range resolves to alpha.2 without needing its lower bound published, naming the silent baseline movement and unconfirmed prerelease compatibility."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Complete alpha.2 exact-pin plan with lockfile, README correction, API-delta review and stated tradeoff that alpha.2 does not validate alpha.1; plus two coherent alternatives."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "npm throughout, committed package-lock with npm ci --include=dev, typecheck against packed declarations, explicit exit/override-removal procedure for the source-built lane, and honest unconfirmed labels."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Alpha.1 route is explicitly source-built tarballs via file: dependencies, never an npm install of the unpublished alpha.1 version."
+    }
+  ]
+}

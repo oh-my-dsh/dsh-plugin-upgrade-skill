@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "published-version-evidence",
+      "verdict": "pass",
+      "reason": "Uses package.json and README to separate the ^0.1.2-alpha.1 declaration from the published list where alpha.1 is absent and alpha.2 present, with proposed package metadata verification and no online-lookup requirement."
+    },
+    {
+      "id": "caret-resolution",
+      "verdict": "pass",
+      "reason": "Explains ^0.1.2-alpha.1 resolves to published 0.1.2-alpha.2 despite the missing lower bound, identifying the silent declaration/type-baseline mismatch and prerelease compatibility uncertainty."
+    },
+    {
+      "id": "workable-baseline-plan",
+      "verdict": "pass",
+      "reason": "Complete recommended plan: exact-pin 0.1.2-alpha.2 with dependency inventory, metadata inspection, lockfile and checks, explicitly acknowledging it does not validate alpha.1; tradeoff stated."
+    },
+    {
+      "id": "reproducibility-and-exit",
+      "verdict": "pass",
+      "reason": "One consistent package manager (npm), committed lockfile with npm ci including dev deps, proposed typecheck/host smoke, explicit exit/rollback, and honest unconfirmed markers for unexecuted steps."
+    }
+  ],
+  "caps": [
+    {
+      "id": "install-unpublished-registry-version",
+      "triggered": false,
+      "reason": "Never prescribes installing alpha.1 from npm; alternative B explicitly states public npm cannot provide it and requires verified source artifacts instead."
+    }
+  ]
+}

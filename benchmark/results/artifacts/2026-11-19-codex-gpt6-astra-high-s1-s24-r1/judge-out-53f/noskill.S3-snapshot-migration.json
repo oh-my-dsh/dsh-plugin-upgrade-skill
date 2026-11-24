@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "partial",
+      "reason": "Locates all partial/runningCalls/turnEnds reads in Pet.tsx and analyzes their semantics and failure modes, but no chat legacy projection or views/timeline/target-owned Chat access is explained — the report defers everything to absent target docs with a conditional checklist only."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "partial",
+      "reason": "Locates running at Pet.tsx:18-20 and correctly does not demand renaming useSession, but never assigns it to the Session/useSession lifecycle seat distinct from chat legacy; it is treated as one more selector needing an unknown target path."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "partial",
+      "reason": "Locates the removed dsh-client-runtime imports and the package.json client.inject entry and explicitly defers unknown snapshot symbols to target exports (allowed), but never repoints Context as ClientContext to scoped cordis, presenting that too as blocked."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "partial",
+      "reason": "Locates the scoped slots.register call and explains inject=['slots','conversation'] and the throw-on-undeclared-slot contract, but does not cover ui-renderer ownership of the slots service or the Context augmentation/service-ownership split."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "partial",
+      "reason": "Well separates temporary projection eligibility from immediate changes and lays out an ordered migration plan, but no card mapping to DSH-0.1.2-A1-03 exists — the report explicitly states full card numbers cannot be reconstructed from the permitted material."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Uses host-input-contract.ts and host-input-facade.ts line references to distinguish clipboard-text draft/Occurrence coordinates (chip = full clipboardText) from detect-coordinate TokenSpan (one U+FFFC) consumed by insertReference/consumeToken, with normal width for text and spaces."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length at plugin-client.js:29-30, derives first success at [0,0) then [29,29) vs required [2,2), ties the false to the detect-span splice/revision analysis, and states the toast does not prove a concurrent edit or need hardcoded counts."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove sending [0,28) unconverted, consumeToken's ignored boolean, unconditional records.delete leaving the live occurrence, the 'unavailable' metadata branch and intact composer chip — one coordinate mistake plus bookkeeping, not a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detectOffset(p)=p-sum(o.length-1) with all-occurrence insertion end and mapped-offset + one-detect-char removal span at both call sites, keeps the revision CAS, and retires records only after verified successful consumption, with correct clipboard-unit fallback handling."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes successive pastes with multiple chips and removals where another chip precedes the target, asserting composer occurrence, dock chip and record removed together while other chips and text survive, plus declined-consumption, first/last-chip and shared-ref variants."
+    }
+  ],
+  "caps": []
+}

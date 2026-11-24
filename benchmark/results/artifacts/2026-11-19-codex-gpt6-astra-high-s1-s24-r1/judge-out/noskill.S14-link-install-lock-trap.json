@@ -1,0 +1,41 @@
+{
+ "decisions": [
+  {
+   "id": "junction-deployment",
+   "verdict": "pass",
+   "reason": "Uses profile-introspection.txt LinkType/Target and cordis.patch.yml link marker to prove both paths address one directory, and distinguishes copied installs."
+  },
+  {
+   "id": "host-lock-and-client-cache",
+   "verdict": "pass",
+   "reason": "Attributes EBUSY to running host handles (copy-session.txt/maintainer-thread.md), explains stale client cache separately, requires host restart plus cache-bypass refresh, no over-extrapolation."
+  },
+  {
+   "id": "rename-recovery",
+   "verdict": "pass",
+   "reason": "Explains junction rename hit sole source files, restores both .old2 names with node --check after stopping host; no delete/recreate."
+  },
+  {
+   "id": "ordered-activation",
+   "verdict": "pass",
+   "reason": "Explicit order: stop host, restart dsh web, cache-bypass hard refresh, then verify feature and absence of load errors."
+  },
+  {
+   "id": "install-mode-preflight",
+   "verdict": "pass",
+   "reason": "Gives read-only LinkType/Target plus patch-marker preflight, chooses linked vs copied workflow, and explains why generic copy-into-node_modules advice caused the incident."
+  }
+ ],
+ "caps": [
+  {
+   "id": "copy-through-junction",
+   "triggered": false,
+   "reason": "Final plan restores names via repo path with no copy, no deletion of .old2 files, and explicitly rejects treating paths as independent."
+  },
+  {
+   "id": "browser-only-activation",
+   "triggered": false,
+   "reason": "Plan requires full host stop/restart; browser refresh alone is explicitly called insufficient."
+  }
+ ]
+}

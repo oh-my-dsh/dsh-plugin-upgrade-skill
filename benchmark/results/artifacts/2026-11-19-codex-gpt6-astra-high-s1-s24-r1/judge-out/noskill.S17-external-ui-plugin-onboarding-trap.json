@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "把 client.js 顶层 ESM import、classic-script 拼合与整体编译失败连通，说明 typert-registry 只是被 await 的受害者，且未断言 ESM 在一切上下文非法。"
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "给出按 insert 行二分+按 classic-script 模式解析（等价 vm.Script，并指明 module 模式检查不足），并给出 load({id,factory})、require 取宿主 React、inject/apply 导出的完整模板。"
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "用 apply-error 解释声明归属与顺序不保证，精确描述 ctx.slots.inject 包裹 register 的延迟注册（伪代码但结构完整），登记方只给 name/id/order 并移除 kind/scope。"
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "说明 combo 为启动期快照，须完整停/重启宿主、taskkill /PID /T /F 清理进程树，EADDRINUSE 归因旧进程占端口而非打包缺陷。"
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "提出按插件 classic-script 校验+组合失败时的真凶归属，模板覆盖 loader 工厂、宿主 React、inject/apply、延迟跨条目 slots、重启与 Windows 进程树清理。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "全部建议与事故契约一致：去除顶层 ESM、保留 slots.inject、登记方不带 kind/scope、要求宿主重启。"
+    }
+  ]
+}

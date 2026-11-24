@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位 ClientContext 导入、映射 A1-25，给出从实际目标持有包导入 Context 的具体方向并说明类型擦除不免除可解析声明"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "对比 loader ID 与 package.json 名称、映射 A1-26，要求精确对齐并给出 token/entries/注册证明的客户端激活验证"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes 并映射 A1-27，给出 useChat+chat.order+nodes.get 保序读取面，未声称旧扁平 API 仍可用，Pet.tsx 判定无破坏面"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 connection.api.agentPresets.list 并映射 A1-30，迁移到生成的 Client Remote 投影并标注 list 签名未确认，含 RemoteResult 处理"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "报告明确否定将 hook 移入初始化与盲目 inject，未主张 setup/activate 替换或 inject 必须入 manifest"
+    }
+  ]
+}

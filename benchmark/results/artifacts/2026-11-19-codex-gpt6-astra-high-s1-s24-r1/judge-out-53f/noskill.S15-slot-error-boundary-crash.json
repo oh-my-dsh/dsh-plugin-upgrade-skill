@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "精确定位 disabled 表达式，说明 busy 属 AttachButton 局部作用域、空态提前返回 null、plain 相位求值 busy 抛 ReferenceError。"
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "说明渲染异常被 slot 边界捕获并卸载整个 dock 条目、attach 槽位独立存活、诊断仅出现在浏览器控制台。"
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "以 v0.2.10 源码确立 busy 基线已存在，提出数据齐备 plain 相位挂载/回滚隔离，并指出 feature.diff 关于旧行与 imageItem 作用域的两处不一致。"
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "移除悬空 busy 或显式提供自有状态，给出 record?.items ?? []、event.target?.closest?.(...) 并将预览计算移入 record/status 所在回调。"
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "提出 plain 相位数据齐备渲染冒烟断言 chip/remove 存在且边界零捕获，解释空态测试为何漏检及 node --check 无法解析自由标识符，并纳入 pre-ship 检查。"
+    }
+  ],
+  "caps": []
+}

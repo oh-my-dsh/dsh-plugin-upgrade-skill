@@ -1,0 +1,14 @@
+# Running dsh-tui for the first time after install:
+$ dsh-tui
+
+Error: dsh: plugin tree failed to load: failed to apply loader entry dsh-tui
+  (@deepseek-harness-tui/dsh-tui): events is not iterable
+TypeError: events is not iterable
+    at prepareReplayEvents (channel.js:623:25)
+    at replayEvents (channel.js:6127:33)
+    at createChannel (channel.js:6685:5)
+    at apply (plugin.js:425:21)
+    at async Fiber._reload (cordis/lib/index.js:1355:5)
+
+# The crash happens INSIDE the plugin's own code, reading something called
+# `events` from the dsh session object and trying to iterate it.

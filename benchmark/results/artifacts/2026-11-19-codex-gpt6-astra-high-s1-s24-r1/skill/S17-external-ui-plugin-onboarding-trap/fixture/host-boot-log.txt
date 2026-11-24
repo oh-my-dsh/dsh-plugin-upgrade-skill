@@ -1,0 +1,14 @@
+Host log fragments (typical boot):
+
+[boot] cordis patch layer: 3 insert rows resolved (dsh-brand-version, dsh-file-trace, dsh-profiles)
+[boot] client-modules: composed 53 loader entries into client bundle combo (4.5 MB, classic script)
+[boot] web profile ready
+
+Notes recorded by the user while iterating on the new plugin:
+
+- The combo line appears ONCE per boot. Editing any plugin file afterwards changes nothing
+  in the browser until the host process itself is restarted.
+- Second observation: after restarting once, the NEW host process failed to bind with
+  EADDRINUSE — the previous host's node process was still alive holding the port. The old
+  process only went away after killing the whole process tree
+  (taskkill /PID <pid> /T /F); the next boot then bound normally.

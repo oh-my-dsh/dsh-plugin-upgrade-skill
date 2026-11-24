@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "完整解释 A1-02 移除→A2-01 恢复的净状态并引用参考资料佐证，据 alpha.2 终态对 src/events.ts（删除 line 6 防御、保留 append 待验证）落地；历史非裸卡名。"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位 line 6 的 delete (event as any).ignorable，驳回注释并建议删除防御、修正过时理由，区分删代码与删标记，指出当前字面量无标记故为 no-op。"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "pass",
+      "reason": "明确仅省略后不影响重建的辅助信息事件可带 ignorable:true、必需事件不得标记，且标记不是过滤/删除指令、被标记未知事件仍留在加载序列，并应用到该生产者。"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "据 API-05 肯定识别公开 Session.append 不接受/不持久化 ignorable，禁止 cast/发明参数/手改 JSONL 等伪造，明确推迟至正式生产者 API 验证。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "最终建议删除该防御与过时注释，未保留 alpha.1 剥离策略。"
+    }
+  ]
+}

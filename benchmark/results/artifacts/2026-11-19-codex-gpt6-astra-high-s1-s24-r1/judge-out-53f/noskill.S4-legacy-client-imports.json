@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位 ClientContext 类型导入与 apply 影响，映射 A1-25，要求移除被删包导入并改用目标公共 API，未虚构具体包名且标注未确认。"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "对比 pet-legacy-bundle 与 dsh-pet-session-bench 并映射 A1-26、给出精确对齐方案，但未提出客户端激活验证步骤。"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes[0] 并映射 A1-27，要求迁移到目标受支持会话读取面并保留首节点语义与空会话处理，未声称旧扁平 API 仍受支持。"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 connection.api.agentPresets.list 并映射 A1-30，要求移除被删 face 改用经验证的目标公共接口，未虚构替代名并标注未确认。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未断言 setup/activate 生命周期替换或 service inject 必须迁入 manifest，并明确说明 inject 无独立迁移依据。"
+    }
+  ]
+}

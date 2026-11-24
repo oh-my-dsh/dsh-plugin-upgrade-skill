@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Locates the upper-only/lower-only branches emitting foreground only with stale background, prescribes ESC[49m reset in both branches, and ties it to edge/outline symptoms not the emulator."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains the trailing-space trim plus downstream whitespace trimming leave surplus columns unpainted; proposes full 40-column output plus explicit erase (CSI X / ESC[K scoped) surviving the pipeline."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Uses the digest report to identify tail2's 23 changed cells (distinguishing it from the visible cluster), attributes it to hand-port drift, notes the different-frame excerpt test missed it, and requires all-frame source-digest gating."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Explains never-unmounting probe hosts keep a continually re-armed referenced setTimeout chain alive; prescribes unref on every reschedule so animation continues while probes can exit."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Consolidates background reset, full-width/erase, SGR state and source-backed digests into a renderer contract, plus a pre-default-on host/timer audit with an exit-liveness regression."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Final advice affirms the background reset, equivalent clearing, source-backed frame checks, and unref; no denial of any of them."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "paste_image(2)(3) scheme with smallest-free search, batch reservation in used set, add(source:'paste') scoping before validateItems, other callers unchanged."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Declares getSnapshot().occurrences the authoritative conflict source, explains transient-empty-snapshot records.delete with record?.label??occurrence.label, reservations and cache-supplements-not-replaces."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Explains cached x-cache HIT page ending at v0.2.9 and the renderCurrentChip(tag) bug; requires remote vs local PLUGIN_VERSION semantic compare, never displaying older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Table covers same-batch/repeated paste uniqueness, records-empty-but-live-occurrence case, pick/drop name preservation, and local 0.2.10 vs stale 0.2.9/equal/0.2.11 chip assertions."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Syncs package version and all inlined PLUGIN_VERSION constants in shipped lib, node --check plus behavior regressions, manual artifact deployment with host reload/hard refresh, no update endpoint."
+    }
+  ],
+  "caps": []
+}

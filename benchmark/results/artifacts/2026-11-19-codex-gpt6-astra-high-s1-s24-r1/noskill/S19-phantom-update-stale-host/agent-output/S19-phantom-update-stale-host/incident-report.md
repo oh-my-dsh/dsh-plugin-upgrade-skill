@@ -1,0 +1,65 @@
+# S19 incident analysis (read-only)
+
+## Scope and evidence limits
+
+Only this cell's solver instruction and eight fixture files were read. No skills, external services, repository history, installations, migrations, runtime restarts, or fixture edits were used. This report is the only output. The fixture supplies historical excerpts and probe results, not the full application, SVG, live host, or compressed generation file. Findings below are supported by those excerpts; XML validation, HTTP probes, builds, mirror queries, and decompression were not independently rerun. No additional confirmation was needed under BENCHMARK-AUTH-v1.
+
+## 1. Phantom self-update: the artifact contains yesterday's version
+
+`client-bundle-excerpt.js` explicitly exports `PLUGIN_VERSION = "0.3.6"` in the bundle shipped as v0.3.7. tsdown inlined this value from package.json at build time. It is not a runtime read of the currently installed manifest. `newerTag` compares the newest mirror tag against that constant, so v0.3.7 is greater than 0.3.6 and triggers “新版本 v0.3.7 可用” even on the newly released artifact.
+
+The mistake is concrete in `release-log.md`: build at 16:22, then bump 0.3.6 to 0.3.7 at 16:23, then commit the already-built bundle and tag at 16:24. Updating the manifest after bundling does not rewrite an inlined constant. Passing typechecks and 104 tests before that release did not check artifact version consistency.
+
+The three mirrors' matching v0.3.7 SHA, 748b5e56e41ca4dc22da1631569fb29d8ae0b99d, establishes replication consistency, not correctness of the replicated bundle. All mirrors can faithfully deliver the same stale constant. A browser refresh cannot fix a constant already embedded in that artifact. The current fixture manifest is 0.3.8 and cannot establish the version baked into the earlier build. `git-tags.txt` also lists v0.3.8 on all mirrors; it represents the later session state. Once both tags exist, the highest-tag algorithm would select v0.3.8. The original self-update symptom belongs to the earlier v0.3.7 release phase.
+
+Correct release order: finish changes; bump package.json and relevant release references to the intended version; run checks; build from that versioned tree; inspect the actual shipped lib/client.js; verify its baked PLUGIN_VERSION equals both package.json and the planned tag (normalizing the tag's v prefix); verify the equal-version update check produces no badge; then commit manifest, source, and generated artifacts together, tag that commit, and push. Grepping the emitted bundle for PLUGIN_VERSION or its minified literal and asserting the expected value before pushing would have caught this. Rebuild after any further input change. The log records a historical amend/rebuild/force-moved-tag recovery, but no such mutation was performed here; a new corrective release avoids silently changing an existing public tag.
+
+## 2. Client and host update on different lifecycles
+
+The browser executes the client bundle after fetching/reloading it. The visible, clickable SVG toggle proves the v0.3.8 client feature reached that browser. The host loads lib/index.js and registers its route handler at host process startup. Replacing a link-installed repo's files changes disk contents; it does not replace an already registered handler or its in-memory content-type table.
+
+`asset-route-probe.txt` distinguishes this from a missing route: PNG returns 200 with image/png, while SVG returns 404 with the specific body “unsupported image type.” The existing handler is alive and rejecting the extension. Meanwhile `lib-index-excerpt.js` shows svg mapped to image/svg+xml in the shipped host file. Together with the explicit observation that the host has not restarted since before the whitelist change, the evidence pins this discrepancy to the running host's older handler, not a missing SVG change in the release or an unrefreshed browser.
+
+The effective remedy is a controlled restart of the host process that owns the route, so it loads the intended installed lib/index.js and registers the updated handler. A supported host-module lifecycle that actually unloads/reloads the module and re-registers routes could also work, but none is evidenced here. Browser refresh alone is insufficient. After restart, repeat both PNG and SVG probes and verify SVG returns 200 with image/svg+xml, then exercise Render. If rejection persists, verify the actual host executable, installation path, and loaded version rather than assuming disk contents are active. These are proposed checks, not completed actions.
+
+“Plugins hot-update” applies to the refreshed client path in this incident. A host-plane route/whitelist change is the exception because boot-time host registration has its own lifecycle. This does not imply every plugin change needs a restart.
+
+## 3. Broken image: corrupted result-text assembly, not corrupt SVG source
+
+`session-log-excerpt.txt` reports the source XML passes System.Xml XmlDocument loading. Source line 232 is a complete circle with stroke-width="6.5". The stored payload instead ends that circle's prefix at `stro` and splices in the tail of source line 247's path, omitting intervening source content. The logged XML fails with an attribute-value error for `stro0`. A separate re-read is clean.
+
+Crucially, the excerpt says the read tool's TYPE result delivered to the caller was clean; the model-visible result block persisted in the session log was corrupted. The supported attribution is upstream result-text assembly between the clean read output and stored model-visible text, before the plugin consumes that text. This is not evidence that the plugin damaged the SVG or that the source file was malformed. The nondeterministic clean re-read supports that boundary but does not identify a precise internal algorithm or source-code defect; those internals are absent.
+
+The plugin must treat session payload text as untrusted rendering input even if the underlying file is valid. A trace entry is a representation of a read, not an authoritative copy of disk bytes. Editing or heuristically “repairing” the traced source would alter a valid user artifact, conceal the upstream failure, and risk discarding intended geometry. Preserve the file and retain the mismatching payload as bug evidence.
+
+## 4. Defensive SVG rendering chain
+
+1. **Prefer the host asset route serving disk bytes.** Use an appropriately encoded path and the existing authorized, path-validated asset route as the first source, rendered through an image element. Correct image/svg+xml typing and browser load/error handling matter. This bypasses session text assembly and preserves the source bytes. Treat 404, wrong content, or image decode failure as a failed source rather than leaving a broken image visible. A disk read gives the current file, which may differ from a historical trace; make the source clear when relevant.
+2. **Use session text only after XML validation.** If the route fails, parse the candidate SVG using `new DOMParser().parseFromString(text, 'image/svg+xml')`; reject parsererror nodes (including namespace variants), and require an SVG root in the SVG namespace. Do not feed a truncated excerpt or line-numbered diagnostic into rendering as if it were the complete file. On success, render a Blob with image/svg+xml through an image element and handle its load/error events; revoke object URLs when no longer needed. XML well-formedness prevents this incident's malformed payload from reaching the renderer, but it is not a security sanitization guarantee. Keep the text out of the application's live DOM and apply the product's resource and size restrictions.
+3. **Use a sandboxed iframe only as the last rendering fallback.** If a valid SVG still cannot be displayed by the image path, an isolated SVG document can be shown in an iframe with an empty sandbox attribute: no allow-scripts and no allow-same-origin. Block scripts and event-handler execution; do not relax the sandbox to make a preview work. SVG's declarative SMIL animation can run without JavaScript in supporting browsers, so script blocking need not freeze those animations. Restrict external resource loading with a suitable CSP as needed for the preview. The iframe must use complete, validated SVG from a trusted retrieval or the validation gate above; it must never be a way to bypass a parsererror. Handle iframe/load failure and clean up resources.
+4. **End with an explicit error state.** If disk retrieval fails and payload validation or rendering fails, show “SVG preview unavailable” with the relevant reason, source, and retry/re-read option. Distinguish an unavailable host asset route from invalid session XML. Never silently retain the browser's broken-image icon, automatically rewrite the source, or attempt to guess missing XML.
+
+For this case specifically, the stale host first causes the disk route to fail; the corrupted payload must then fail the XML gate. The correct temporary outcome is an explicit error until a clean re-read or refreshed host route supplies valid bytes. The iframe cannot repair missing source lines.
+
+## 5. Forensics method and release prevention
+
+The supplied log excerpt is already decoded. Reproducing the original forensic extraction requires the absent concatenated-Zstandard generation file. A robust read-only procedure is:
+
+- Record the generation file's hash, size, session identity, and relevant read invocation/result IDs. Write any decoded artifacts only to an authorized output directory, preserving the original file.
+- Use a Zstandard decoder supporting concatenated frames, explicitly processing one frame at a time. For example, with a decompression-object API, create a fresh decoder per frame, feed compressed bytes until its end-of-frame/eof flag is true, preserve any unused_data for the next decoder, and record the consumed compressed offsets and decoded byte lengths. Respect skippable frames if present using the decoder/format rules. Do not assume a single convenience decompress call traverses every frame, scan for magic bytes inside compressed payloads, or silently accept an incomplete final frame. Stream with bounded resource use.
+- Append decoded bytes in frame order. Decode UTF-8 incrementally or after joining bytes so multibyte characters crossing frame boundaries remain intact. Parse the generation format only after reassembly: frame boundaries need not coincide with JSON or record boundaries. Preserve raw decoded bytes as evidence. Do not filter or normalize away line endings, escapes, or whitespace before retaining the original representation.
+- Identify the exact stored read-result/model-visible text by session, tool invocation, and file path; decode record escaping once as required by the actual format. Keep both serialized record bytes and extracted text, with frame/record offsets and hashes. Compare this stored text against a separate read of the source and against the clean TYPE result where available. Validate each complete XML document independently and retain the first differing region and parser diagnostic.
+- In this fixture the decisive comparison is the line-232/source-line-247 splice plus missing lines, accompanied by source-valid/payload-invalid verdicts and a clean re-read. Do not claim a fresh decompression or XML test from the partial excerpt alone.
+
+Release checklist additions:
+
+- Bump version before building, including corrective releases; prohibit tagging artifacts built from an older manifest.
+- Grep/inspect the shipped client bundle for the baked constant and assert equality with the manifest and planned release tag. Exercise the self-update check with equal and genuinely newer versions.
+- Commit the generated artifacts with their matching source/manifest. Verify the release commit/tag relationship before push.
+- Verify each mirror's tag SHA after push. For annotated tags compare the tag object and peeled commit appropriately. This remains a necessary transport/integrity check, separate from artifact semantic checks.
+- Identify host-plane changes explicitly in release notes and installation steps. Where route registration changes, restart/reload the host through a supported lifecycle and probe newly supported and existing types; verify browser client refresh separately.
+- Validate session SVG payloads, retain disk-first rendering and clear failure states, and report the upstream nondeterministic result-text corruption. The bug report should include the exact stored block, clean read/source comparison, invocation identifiers, source and payload hashes, XML diagnostics, generation/frame offsets, and clean re-read behavior, subject to appropriate redaction. Preserve original evidence privately. Do not paper over the corruption with guessed repairs in the plugin.
+
+## Completion
+
+The requested analysis is complete from the supplied evidence. There are no blockers to this report. Independent runtime verification and original compressed-log extraction are unavailable because those materials are not part of the fixture. No skill was used and no fixture file was changed.

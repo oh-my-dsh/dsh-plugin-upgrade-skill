@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位类型导入与 Web Client 影响，映射 A1-25，给出以目标自有包导入 Context 并带类型增强的迁移方向，细节标注未确认且不虚构。"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "pass",
+      "reason": "对比 pet-legacy-bundle 与包名 dsh-pet-session-bench，映射 A1-26，要求对齐 ID/PLUGIN_ID 并提出以 __DSH_BOOT__.entries 与真实挂载验证注册与激活。"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes[0] 并映射 A1-27，给出 useChat/order/nodes.get 保序读取方向及 durable 备选面，未声称旧扁平 API 仍受支持，Pet.tsx 判为无破坏面。"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 connection.api.agentPresets.list 并映射 A1-30，要求迁移到生成的 Client Remote 投影（remote.agentPresets）并标注精确签名待验证，未虚构调用。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未断言 setup/activate 生命周期替换，也未声称 service inject 必须迁入 manifest，相关内容为依赖声明跟进检查并明确不要求。"
+    }
+  ]
+}

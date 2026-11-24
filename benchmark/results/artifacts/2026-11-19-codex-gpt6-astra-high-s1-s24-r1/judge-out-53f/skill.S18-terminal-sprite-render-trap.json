@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "half-cell-background",
+      "verdict": "pass",
+      "reason": "Pinpoints the foreground-only half-filled branches in renderer-excerpt.ts, prescribes SGR 49 (or RESET+fg) in both, and explains the contour-edge mechanism rather than blaming the emulator."
+    },
+    {
+      "id": "frame-clearing",
+      "verdict": "pass",
+      "reason": "Explains trim plus downstream whitespace normalization leave old columns; proposes full-width output with ESC[K/CSI 40X erasure that survives trimming while keeping SGR controlled."
+    },
+    {
+      "id": "frame-data-integrity",
+      "verdict": "pass",
+      "reason": "Identifies hand-ported tail2 with 23 differing cells distinct from the visible cluster, separates data drift from renderer artifacts, and gates every frame against pinned source digests."
+    },
+    {
+      "id": "timer-liveness",
+      "verdict": "pass",
+      "reason": "Shows mounted-without-unmount hosts keep the re-armed referenced timeout chain alive after checks finish; unref on every re-arm preserves interactive animation via TTY/stdin handles."
+    },
+    {
+      "id": "renderer-and-rollout-prevention",
+      "verdict": "pass",
+      "reason": "Renderer contract covers bg reset, full-footprint clearing, SGR balance and all-frame digests; pre-rollout audit enumerates mounting hosts and requires a natural-exit regression including mount-without-unmount."
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-render-advice",
+      "triggered": false,
+      "reason": "Affirms background reset, pipeline-proofed clearing, source-digest frame checks, and timer.unref throughout; nothing matches the cap conditions."
+    }
+  ]
+}

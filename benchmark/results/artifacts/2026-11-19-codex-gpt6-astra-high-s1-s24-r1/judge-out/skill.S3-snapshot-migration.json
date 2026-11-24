@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "chat-projection",
+   "verdict": "pass",
+   "reason": "Locates all reads; prescribes temporary chat.legacy projection via useChat/views.get('chat')?.legacy for partial/runningCalls/turnEnds with later migration to the owning timeline API."
+  },
+  {
+   "id": "session-lifecycle",
+   "verdict": "pass",
+   "reason": "States running belongs to useSession lifecycle immediately, is not part of chat legacy, and the existing useSession call needs no rename."
+  },
+  {
+   "id": "type-and-inject",
+   "verdict": "pass",
+   "reason": "Repoints Context as ClientContext from scoped cordis, ChatSnapshot to its owner package, fixes client.inject; explicitly defers unenumerated native timeline symbols rather than claiming cordis exports them."
+  },
+  {
+   "id": "slot-registration",
+   "verdict": "pass",
+   "reason": "Covers the scoped registration region, explains renderer-owned slots declaration and augmentation/service ownership, and preserves slot name and registration ordering/lifetime."
+  },
+  {
+   "id": "mapping-and-plan",
+   "verdict": "pass",
+   "reason": "Ties reads to full DSH-0.1.2-A1-03 (field note naming partial/runningCalls/turnEnds, excluding running) plus A1-25 package removal, and separates staged projection from immediate lifecycle/type/inject changes."
+  }
+ ],
+ "caps": []
+}

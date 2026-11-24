@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "正确归因 fs-ext@2.1.1（由 dsh-session-persistence-jsonl 引入）install 阶段 node-gyp 因缺 MSVC 失败，排除变量/类型包等误导因素。"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "引用顶层静态 flock 导入说明 --ignore-scripts 只免构建，Windows 模块加载先于分支选择，忽略脚本无法达成服务启动。"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "区分 win32 信号量绑定与 POSIX flock(2)，Windows flock 路径未用故可 stub 但真实锁定必须仍走信号量，非 Windows 保留原生模块。"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "遵循 patchedDependencies/node-pty 先例，给出平台门控安装脚本、导入安全纯 JS fallback（保留回调形状）、pnpm-workspace.yaml/allowBuilds 注册及重装/加载/启动与双写者互斥检查。"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "明确不安装 VS、不改上游/发布依赖，仅用仓库管理补丁并区分本地 patch 与上游修改。"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "完整引用 DSH-0.1.3-A1-03 并连接到 fs-ext 安装失败与 Windows 补丁方案，超出仅报卡片 ID。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "计划明确不安装 Visual Studio，靠平台门控补丁消除 MSVC 依赖。"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "同时修补安装脚本与模块入口，使静态导入可加载，非仅跳过构建。"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "全部通过本地 pnpm patch/patch-commit 与 workspace 注册，不改上游仓库或发布物。"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows fallback 仅限未使用的 flock 路径且 warn-once 不伪装获锁，信号量路径与 POSIX 原生 flock 完整保留。"
+    }
+  ]
+}

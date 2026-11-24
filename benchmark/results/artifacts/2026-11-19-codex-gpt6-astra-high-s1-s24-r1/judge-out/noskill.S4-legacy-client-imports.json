@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "runtime-removal",
+      "verdict": "pass",
+      "reason": "定位已删除包的 ClientContext 导入并映射 A1-25，要求改用受支持目标包并诚实标注替换名未确认，未虚构"
+    },
+    {
+      "id": "registration-id",
+      "verdict": "partial",
+      "reason": "对比 pet-legacy-bundle 与包名并映射 A1-26、给出精确对齐方向，但未提出客户端激活验证步骤"
+    },
+    {
+      "id": "session-content",
+      "verdict": "pass",
+      "reason": "定位 useSession/nodes[0] 扁平访问并映射 A1-27，给出迁移到受支持内容读取面并保留首节点/顺序语义的方向，未声称旧 API 仍受支持"
+    },
+    {
+      "id": "connection-face",
+      "verdict": "pass",
+      "reason": "定位 connection.api.agentPresets.list 并映射 A1-30，要求移除已删 face 改用受支持目标接口，细节标注未确认且未虚构"
+    }
+  ],
+  "caps": [
+    {
+      "id": "invented-migration",
+      "triggered": false,
+      "reason": "未断言 setup/activate 替换或 inject 必须入 manifest，仅要求移除已删包依赖"
+    }
+  ]
+}

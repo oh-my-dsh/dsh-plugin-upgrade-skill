@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "projection-contract",
+   "verdict": "pass",
+   "reason": "Uses contract and facade sources to separate clipboard draft/Occurrence coordinates from detect spans; chip expands to clipboardText vs one U+FFFC; text/space width normal."
+  },
+  {
+   "id": "repeat-paste-failure",
+   "verdict": "pass",
+   "reason": "Locates snapshot.draft.length at plugin-client.js:29-30, explains empty-composer coincidence then [29,29) vs [2,2), false return rendered as generic changed-composer toast, not concurrent edit."
+  },
+  {
+   "id": "removal-and-bookkeeping",
+   "verdict": "pass",
+   "reason": "Traces [0,28) vs [0,1) removal span, ignored boolean with unconditional records.delete, surviving occurrence/chip and 'unavailable' dock branch — both symptoms from one mismatch."
+  },
+  {
+   "id": "conversion-and-success-gate",
+   "verdict": "pass",
+   "reason": "Derives detectOffset(p)=p-sum(o.length-1 for preceding complete chips) at both sites, insert-at-end over all occurrences, removal start+1 one-unit span, revision CAS kept, records retired only on confirmed success."
+  },
+  {
+   "id": "regression-sequences",
+   "verdict": "pass",
+   "reason": "Sequences include successive pastes with all chips present and removal with other/preceding chips surviving, jointly asserting occurrence, dock chip and record removal, plus CAS-rejected and stale-callback variants."
+  }
+ ],
+ "caps": []
+}
