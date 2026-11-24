@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "split-chunk-attribution",
+      "verdict": "pass",
+      "reason": "用 console-split-chunks.txt 解释 entry 200/兄弟 404 因相对 chunk URL 解析且未随包发布，提出禁用分割的单文件 bundle（inlineDynamicImports 或等价方案）。"
+    },
+    {
+      "id": "windows-containment-attribution",
+      "verdict": "pass",
+      "reason": "对比 LIB_DIR 大写 E: 与 realpath 小写 e:，指出大小写敏感 startsWith 误拒实际包含文件，并解释 Linux/控制环境为何通过，未做全盘性错误断言。"
+    },
+    {
+      "id": "safe-route-fix",
+      "verdict": "pass",
+      "reason": "给出 path.relative 双层（词法+realpath）校验、拒绝 ../与绝对结果、防 symlink 逃逸，保留 JS MIME；非删守卫或全平台小写化。"
+    },
+    {
+      "id": "modal-event-ownership",
+      "verdict": "pass",
+      "reason": "解释两处理器共享同一 Ctrl+wheel，模态独占所有权、pane 让位，并正确说明捕获阶段先跑时事后 stopPropagation 无法撤销。"
+    },
+    {
+      "id": "incident-regressions",
+      "verdict": "pass",
+      "reason": "三个事故均有带预期结果的检查：可部署依赖集+回退保留、E/e 包含路径放行而真实穿越/symlink 拒绝、模态缩放不改 pane 字号，且声明为计划而非执行。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "unsafe-containment",
+      "triggered": false,
+      "reason": "建议是加强而非禁用 containment，明确反对删守卫。"
+    }
+  ]
+}

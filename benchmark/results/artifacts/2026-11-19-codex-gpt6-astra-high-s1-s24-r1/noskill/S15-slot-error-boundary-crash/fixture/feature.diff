@@ -1,0 +1,37 @@
+diff --git a/lib/client.js b/lib/client.js
+--- a/lib/client.js
++++ b/lib/client.js
+@@ function AttachmentChips(props, className) {
+   const occurrences = (props.input?.occurrences ?? []).filter(item => item.source === SOURCE);
+   if (occurrences.length === 0) return null;
++  // v0.2.11: image attachments get a hover thumbnail (local blob URL) and a
++  // click-to-view handler on the chip.
++  const imageItem = status !== 'missing'
++    ? record?.items.find(item => isImagePath(item.path))
++    : undefined;
+   return h('div', { className }, ...occurrences.map(occurrence => {
+     const record = records.get(occurrence.ref);
+     const status = record?.status ?? 'missing';
+-    return h('div', { className: 'chip', 'data-status': status, key: occurrence.occurrenceId },
++    return h('div', {
++      className: 'chip',
++      'data-status': status,
++      'data-image': imageItem === undefined ? undefined : '1',
++      key: occurrence.occurrenceId,
++      onClick: imageItem === undefined ? undefined : event => {
++        if (event.target.closest('.remove') !== null) return;
++        openImageViewer({ src: objectUrlOf(imageItem.file), name: imageItem.path });
++      },
++    },
+       h('span', { className: 'name' }, record?.label ?? occurrence.label),
++      imageItem !== undefined && h('div', { className: 'hover-card' },
++        h('img', { src: objectUrlOf(imageItem.file), alt: imageItem.path })),
+       h('button', {
+         type: 'button',
+         className: 'remove',
+-        disabled: (props.input?.phase ?? 'plain') !== 'plain',
++        disabled: (props.input?.phase ?? 'plain') !== 'plain' || busy,
+         onClick: () => props.remove(occurrence),
+       }, 'x'));
+   }));
+ }

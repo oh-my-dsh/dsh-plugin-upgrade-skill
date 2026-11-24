@@ -1,0 +1,25 @@
+{
+ "decisions": [
+  {
+   "id": "host-break",
+   "verdict": "partial",
+   "reason": "Locates index.js inject/apiProxy.llm.providers and the dead package.json dependency, but the required A1-01 card mapping is declined as unverifiable rather than made."
+  },
+  {
+   "id": "negative-coverage",
+   "verdict": "pass",
+   "reason": "All six non-hit categories tabulated with per-file scanned evidence; session-notes.js shown as pure string/array utility; no invented coupling."
+  },
+  {
+   "id": "inference-boundary",
+   "verdict": "pass",
+   "reason": "Explicitly argues no-hit does not prove compatibility (coverage, dependency/config/runtime limits) and separates the decisive apiProxy break from the six negatives."
+  },
+  {
+   "id": "verification-plan",
+   "verdict": "pass",
+   "reason": "Specifies post-migration build/typecheck, isolated fresh-profile target-version cold boot, and a real provider-enumeration call, all as proposed not executed."
+  }
+ ],
+ "caps": []
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "对比两 excerpt 指出双 insert workspace-files，崩溃定位于 EntryGroup.update/include 组合期，明确为致命而非静默合并，并驳回 profile 注释的无害冗余说法。"
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "三种操作（按 id 覆盖配置安全、全新 id 插入允许、已由 bundle 提供的 id 插入致命）齐全并据两 excerpt 把维护者行归为第三类。"
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "仅删除 profile 中冗余 insert 块及其注释，保留 bundle 原声明与无关插件，后续调整走 override，明确反对改名或再插入。"
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "说明崩溃是插件执行前的组合错误、改外部插件代码无效，且删除重复只恢复启动可能、先前的资源读取失败需另行验证。"
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "要求插入前 grep 安装 bundle 的 cordis.patch.yml 区分 override/insert，并给出点名 workspace-files 与双来源、指向删除 profile 块的宿主诊断文案。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "最终建议是删除重复插入并纠正组合，未保留/新增重复或转向改插件代码。"
+    }
+  ]
+}

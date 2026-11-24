@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "busy-scope-and-trigger",
+      "verdict": "pass",
+      "reason": "定位 disabled 表达式，指出 busy 为兄弟 AttachButton 局部绑定不可见，空列表先 return null，plain 相位短路失败触发 ReferenceError"
+    },
+    {
+      "id": "slot-boundary",
+      "verdict": "pass",
+      "reason": "说明渲染异常被 slot 边界捕获并卸载整个 dock 条目而非仅移除按钮，attach-button 独立 slot 存活，诊断仅在浏览器控制台"
+    },
+    {
+      "id": "attribution-and-isolation",
+      "verdict": "pass",
+      "reason": "用 v0.2.10 出厂源证明 busy 先于发布存在，提出数据在场的 plain 相位基线挂载与回滚/逐项重加隔离，并充分讨论 diff 两处不一致"
+    },
+    {
+      "id": "fix-and-hardening",
+      "verdict": "pass",
+      "reason": "移除悬空 busy 保留相位守卫，record?.items ?? [] 加固，event.target?.closest?.(...) 守卫，imageItem 移入回调作用域"
+    },
+    {
+      "id": "data-present-regression",
+      "verdict": "pass",
+      "reason": "给出 plain 相位含匹配 occurrence 的边界挂载测试并断言 chip/移除按钮存在且零捕获，解释空态测试与 node --check 的盲区，纳入出厂前 data-present 冒烟"
+    }
+  ],
+  "caps": []
+}

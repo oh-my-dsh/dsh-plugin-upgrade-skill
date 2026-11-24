@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "据 README 阐明 alpha.1 移除、alpha.2 恢复 ignorable 保留的净状态，并据此建议删除 src/events.ts 中的防御代码；历史正确非仅卡名。"
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "定位 delete (event as any).ignorable，驳回继续剥离的注释并要求修正其过时理由，区分删剥离代码与删标记本身，且指出当前字面量无标记故为 no-op。"
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "正确说明仅可省略的信息性事件可带 ignorable:true、必需事件不得标记并应用到该生产者，但未明确“保留不是读取端过滤指令、被标记事件仍留在加载日志”这一要点。"
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "partial",
+      "reason": "禁止以 cast/发明参数伪造并明确推迟待目标 API 验证，但对 Session.append 无 ignorable 参数这一缺口仅以条件句表述（“若无该参数”），未肯定识别。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "最终建议删除该防御并修正注释，非保留 alpha.1 剥离策略。"
+    }
+  ]
+}

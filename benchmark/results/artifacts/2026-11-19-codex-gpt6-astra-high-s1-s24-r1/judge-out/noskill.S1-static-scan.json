@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 cordis.patch.yml/patch.yml/apply-patch.mjs，区分 patch 组合与普通组合，并解释 SessionView 私有源耦合"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位 producer/consumer 与 ignorable:true，正确折叠 alpha.1 移除/alpha.2 恢复，未声称 Session.append 可写标记"
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "定位 apiProxy 调用且未虚构 Host remote，但未实际给出 Host 域服务注入(llm/listProviders)与 Web Client Remote 的明确区分说明"
+    },
+    {
+      "id": "host-path",
+      "verdict": "partial",
+      "reason": "定位硬编码路径并提及绕过 profile 解析，但未说明用运行时 DSH_HOME/profile 信息；未触犯 --profile 红线"
+    },
+    {
+      "id": "ui",
+      "verdict": "partial",
+      "reason": "定位私有 import 与 registerCommand，但未解释拆分后公共 owner/seam 验证步骤"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位 loopback 服务器，指出其不继承 Host Gateway 认证、raw 路由与托管认证通道的区分"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处 dsh 子进程与 JSON.parse，正确说明 stdout 最终文本契约、JSONL 假设本已错误，未虚构 alpha.2 stdout 变更"
+    },
+    {
+      "id": "mapping",
+      "verdict": "fail",
+      "reason": "以缺少卡片目录为由拒绝任何 A1-xx 映射，要求的 A1-01/A1-02+A2-01/A1-03/A1-04/A1-08 映射完全未给出"
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "覆盖全部七类命中并详述静态扫描局限，但未提出目标版本 build/typecheck、隔离启动与功能路径验证建议"
+    }
+  ],
+  "caps": []
+}

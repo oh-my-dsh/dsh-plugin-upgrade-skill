@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "连通 client.js:1 ESM import、boot 时拼合的 4.5MB classic script 与整体编译失败，零注册解释空列表，typert-registry 仅为首个被 await 的受害条目。"
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "给出 insert 行二分流程与按 script 源类型解析（并指明 module 模式检查不足），完整 load({id,factory}) 模板含 require 宿主 React 与真实导出的 inject/apply。"
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "用 apply-error 说明父条目 children 表拥有声明且 apply 顺序不保证，给出精确的 ctx.slots.inject('settings.section', () => ctx.slots.register(...)) 代码，登记方仅 name/id/order（可 label）并移除 kind/scope。"
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "说明组合为启动期快照、改文件+刷新不重建，要求完整停机/重启、taskkill /PID /T /F 与端口释放验证，EADDRINUSE 归因旧进程占口。"
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "提出启动期逐插件 classic-script 校验、偏移映射的真凶归属与“被 await 条目可能无辜”的诊断，模板覆盖工厂、宿主 React、延迟 slots、重启与 Windows 进程树清理。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "建议与契约一致：消除顶层 ESM、使用 slots.inject 延迟注册、登记方无 kind/scope、要求冷重启而非刷新。"
+    }
+  ]
+}

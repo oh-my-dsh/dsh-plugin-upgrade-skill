@@ -1,0 +1,30 @@
+{
+ "decisions": [
+  {
+   "id": "chat-projection",
+   "verdict": "partial",
+   "reason": "Locates partial/runningCalls/turnEnds reads precisely, but never explains the temporary chat legacy projection or names views/timeline target ownership, deferring everything to an absent contract."
+  },
+  {
+   "id": "session-lifecycle",
+   "verdict": "partial",
+   "reason": "Locates running at Pet.tsx:18 and keeps useSession without rename, but does not identify it as the Session/useSession lifecycle seat outside chat legacy."
+  },
+  {
+   "id": "type-and-inject",
+   "verdict": "partial",
+   "reason": "Locates removed dsh-client-runtime imports and the client.inject entry, but only says 'check target export' rather than repointing Context as ClientContext to cordis or assigning snapshot types an owner."
+  },
+  {
+   "id": "slot-registration",
+   "verdict": "partial",
+   "reason": "Locates the slots.register call and preserves slot name/ordering, but does not explain slots.inject around registration or ui-renderer/Context augmentation service ownership."
+  },
+  {
+   "id": "mapping-and-plan",
+   "verdict": "fail",
+   "reason": "Contains no DSH-0.1.2-A1-03 or any card mapping at all (explicitly refused), and gives no separation of temporary projection from immediate changes."
+  }
+ ],
+ "caps": []
+}

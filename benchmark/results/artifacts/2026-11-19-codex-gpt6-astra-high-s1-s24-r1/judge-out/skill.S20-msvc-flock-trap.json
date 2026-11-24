@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "定位 fs-ext@2.1.1 属 dsh-session-persistence-jsonl 运行时依赖，install 阶段 node-gyp 无 MSVC 失败，归属依赖构建阶段"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "指出顶层 import { flock } 使 Windows 必须加载 fs-ext，ignore-scripts 只绕过构建不能启动服务"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "明确 Windows 用 acquireLockHandleWin32/命名内核信号量且不走 flock，POSIX 保留真实 flock，stub 仅导入安全"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "pass",
+      "reason": "沿 patchedDependencies/node-pty 先例本地 patch，win32 跳 node-gyp、纯 JS 回调形 flock fallback，非 Windows 保留原生，注册 workspace+allowBuilds 并给重装/加载/启动检查"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "尊重不装 VS 约束，仓库托管 patch 且明确不动上游/发布物"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "pass",
+      "reason": "完整引用 DSH-0.1.3-A1-03 并将其与 fs-ext 安装陷阱和 Windows patch 方案逐点关联"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "方案不依赖安装 VS，用平台门控安装脚本替代"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "最终方案同时修补入口导出使静态导入可加载，非仅跳过构建"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "仅本地 pnpm patch-commit，未要求改上游"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows 回调 fallback 仅防御性且明示不得替代信号量，POSIX flock 与信号量均保留"
+    }
+  ]
+}

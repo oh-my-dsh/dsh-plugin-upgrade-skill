@@ -1,0 +1,41 @@
+{
+ "decisions": [
+  {
+   "id": "junction-deployment",
+   "verdict": "pass",
+   "reason": "Cites LinkType Junction/Target and link: marker to establish repo-profile identity; explicitly separates linked from copied installs and rules out copying."
+  },
+  {
+   "id": "host-lock-and-client-cache",
+   "verdict": "pass",
+   "reason": "Attributes the in-use error to running host handles (not the browser tab), separately explains boot bundle cache and browser cache needing restart plus cache-bypass reload, with evidence limits stated."
+  },
+  {
+   "id": "rename-recovery",
+   "verdict": "pass",
+   "reason": "Explains junction rename hit the sole source files making the copy fail; restores both .old2 names with node --check after stopping the host; no delete/recreate."
+  },
+  {
+   "id": "ordered-activation",
+   "verdict": "pass",
+   "reason": "Ordered steps: stop host tree, recover/check, start fresh dsh web, hard cache-bypass reload, then verify both client feature and new host route with no load errors."
+  },
+  {
+   "id": "install-mode-preflight",
+   "verdict": "pass",
+   "reason": "Pre-flight inspects LinkType/Target and patch marker before any file op, branches linked vs copied, and explains why generic copy-into-node_modules advice caused the incident."
+  }
+ ],
+ "caps": [
+  {
+   "id": "copy-through-junction",
+   "triggered": false,
+   "reason": "Final plan renames via repo path only; no copy onto junction target, no .old2 deletion, no independent-copy assumption."
+  },
+  {
+   "id": "browser-only-activation",
+   "triggered": false,
+   "reason": "Host stop and restart explicitly required; browser reload/reconnect explicitly not a host restart."
+  }
+ ]
+}

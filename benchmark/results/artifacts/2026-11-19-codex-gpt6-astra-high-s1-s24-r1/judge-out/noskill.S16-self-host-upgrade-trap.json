@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "self-host-failure",
+      "verdict": "pass",
+      "reason": "Connects session/tool worker to the replaced global dsh install, host death and GUI disconnect explain the missing durable result, structural hazard not random network failure, outcome kept unknown."
+    },
+    {
+      "id": "interrupted-install-signature",
+      "verdict": "pass",
+      "reason": "Content present but dsh/dsh.cmd missing and dsh.ps1 stale, manually swapped tree tied to broken shims, hand-swapping/hand-written shims explicitly rejected."
+    },
+    {
+      "id": "external-pinned-repair",
+      "verdict": "pass",
+      "reason": "Grounded in repair-notes: external exact npm install -g @deepseek-ai/dsh@0.1.2-rc.1 regenerating shims, dsh --version verified, checkout tag aligned, recorded repair clearly separated from this analysis."
+    },
+    {
+      "id": "handoff-protocol",
+      "verdict": "pass",
+      "reason": "Recognizes running on the target, hands off to independent terminal with stop-host-first then exact-version install then restart/refresh/verify; distinguishes baseline rules from the new self-host rule and rejects dependent shells."
+    },
+    {
+      "id": "guard-and-postupgrade-checks",
+      "verdict": "pass",
+      "reason": "Guard compares mutation target to own host install root/ancestry; alpha.5→rc.1 version-only diff means no re-migration; checks version markers, plugin loading after restart, backup cleanup only after verification."
+    }
+  ],
+  "caps": [
+    {
+      "id": "execute-inside-target",
+      "triggered": false,
+      "reason": "Final procedure mandates an external independent terminal with the host stopped before npm; no in-host execution advised."
+    },
+    {
+      "id": "manual-shim-repair",
+      "triggered": false,
+      "reason": "Report explicitly rejects hand-swapped directories and hand-written shims in favor of the formal pinned install."
+    }
+  ]
+}

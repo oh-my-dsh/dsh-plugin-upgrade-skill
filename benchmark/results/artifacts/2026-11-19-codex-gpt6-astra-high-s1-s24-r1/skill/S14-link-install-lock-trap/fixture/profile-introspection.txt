@@ -1,0 +1,14 @@
+PS E:\dev> Get-Item C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input | Select-Object FullName, LinkType, Target
+
+FullName : C:\Users\me\.dsh\profiles\web\node_modules\@org\dsh-attach-input
+LinkType : Junction
+Target   : {E:\dev\dsh-attach-input}
+
+PS E:\dev> Get-Item E:\dev\dsh-attach-input | Select-Object FullName, LinkType, Target
+
+FullName : E:\dev\dsh-attach-input
+LinkType :
+Target   : {}
+
+PS E:\dev> Get-Content C:\Users\me\.dsh\profiles\web\cordis.patch.yml | Select-String dsh-attach-input
+  - node_modules/@org/dsh-attach-input  # link:E:\dev\dsh-attach-input (installed 2026-08-30)

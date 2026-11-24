@@ -1,0 +1,1427 @@
+{
+  "audit_type": "Solver delivery completion review; no verifier or answer grading",
+  "checked_at": "2026-11-23T14:25:35.513940+00:00",
+  "manifest_sha256": "7bd934ee36fa8e6abf5441988e65b2f3e3942771038c589b7f81071c3bfcd82d",
+  "cells": 48,
+  "arm_counts": {
+    "noskill": 24,
+    "skill": 24
+  },
+  "all_marked_complete": true,
+  "all_have_finish_records": true,
+  "all_have_nonempty_reports": true,
+  "min_report_bytes": 4891,
+  "max_report_bytes": 16771,
+  "odd_fence_reports": [],
+  "interruption_events": [
+    {
+      "time": "2026-11-19T08:07:56.059433+00:00",
+      "event": "User resumed after network interruption; existing S1 subagent continued, no new attempt."
+    },
+    {
+      "time": "2026-11-19T08:36:25.681496+00:00",
+      "event": "User expanded scope to paired 48 cells. Existing S1-S3 skill attempts retained; noskill cells newly staged."
+    },
+    {
+      "time": "2026-11-19T10:54:12.694225+00:00",
+      "event": "Account usage limit interrupted S1/S2 noskill and coordinator. User requested continuation after reset. Original agents resumed; existing reports retained, no new attempts."
+    },
+    {
+      "time": "2026-11-20T03:03:22.610583+00:00",
+      "event": "Nov20 user resume after usage-limit infrastructure interruption; same S8 skill and S9 noskill child agents resumed, no new attempt; no evaluator or scoring invoked."
+    },
+    {
+      "time": "2026-11-21T10:53:38.062111+00:00",
+      "event": "Nov21 user resumed with limited quota and explicitly requested finishing only existing S14 skill and S15 noskill attempts, then pausing. Root resumed same agents; coordinator remains idle."
+    },
+    {
+      "time": "2026-11-21T10:55:40.754357+00:00",
+      "event": "S14 skill and S15 noskill completed in original attempts; paused at 29/48 by explicit user request. No new cells launched."
+    },
+    {
+      "time": "2026-11-22T14:10:57.183036+00:00",
+      "event": "Nov22 user resumed remaining 19 cells; prior 29 completed attempts preserved."
+    },
+    {
+      "time": "2026-11-23T06:19:04.718392+00:00",
+      "event": "Nov23 user resume after usage-limit infrastructure interruption; same S20 skill and S21 noskill agents resumed, no new attempts, no evaluator invoked."
+    },
+    {
+      "time": "2026-11-23T07:02:52.810763+00:00",
+      "event": "User requested stop after active cells. S23 skill and S24 noskill completed; S24 skill dispatch raced with pause delivery, immediately interrupted, same attempt preserved."
+    },
+    {
+      "time": "2026-11-23T14:18:58.178063+00:00",
+      "event": "User resumes final S24 skill cell; original interrupted agent resumed, attempt count remains1."
+    },
+    {
+      "time": "2026-11-23T14:21:54.298696+00:00",
+      "event": "Final S24 skill completed in original attempt. All48 solver cells complete; no judging performed."
+    }
+  ],
+  "cells_detail": [
+    {
+      "task": "S1-static-scan",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T10:54:33.364994+00:00",
+      "files": [
+        {
+          "path": "noskill/S1-static-scan/agent-output/S1-static-scan/touchpoint-report.md",
+          "bytes": 11448,
+          "lines": 91,
+          "sha256": "08ae63e6128eb1779fb3f0bdaf9ccfc2bccbc45809f775634674f8f67efecfb7",
+          "headings": [
+            "# S1 static touchpoint inspection",
+            "## Evidence and scan coverage",
+            "## #1 Source patch — HIT",
+            "## #2 Internal/persistent events — HIT, with final-state folding",
+            "## #3 Service/Remote — HIT",
+            "## #4 Host directory — HIT",
+            "## #5 UI/commands/tools — HIT",
+            "## #6 Custom channel — HIT, statically dormant",
+            "## #7 Subprocess/output parsing — HIT in two implementations",
+            "## Negative findings and limits",
+            "## Outstanding evidence",
+            "## Read-only verification"
+          ],
+          "tail": "ed to perform this scan; the blocker is missing admissible reference material. The scan itself is complete, but the exact-ID requirement remains unresolved.\n\n## Read-only verification\n\nOnly this report directory was created/written. SHA-256 hashes were recorded after the read-only inspection and rechecked after report generation; the six fixture files remained byte-identical across those checks. No initial Git-baseline comparison was performed because repository metadata and reference material were outside this task's permitted reading scope.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S1-static-scan",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T08:14:20.991892+00:00",
+      "files": [
+        {
+          "path": "skill/S1-static-scan/agent-output/S1-static-scan/touchpoint-report.md",
+          "bytes": 14744,
+          "lines": 83,
+          "sha256": "464a02c33355162a6736e1464e2460d157ca628f864caaae02a8ffcdf57af522",
+          "headings": [
+            "# Static touchpoint inspection — legacy-plugin",
+            "## Scope and evidence",
+            "## Completed: all seven touchpoints hit",
+            "### #1 — source-patch ownership and unresolved replacement",
+            "### #2 — fold to the final event state",
+            "### #3 — distinguish Host from Web Client",
+            "### #4 — trace the full write destination",
+            "### #5 — private UI dependency remains unresolved",
+            "### #6 — dormant but concrete authentication coupling",
+            "### #7 — separate pre-existing parsing defects from corridor change",
+            "## Skipped / negative evidence",
+            "## Pending / validation / rollback"
+          ],
+          "tail": " and teardown; and wrapper text/reasoning/empty output/nonzero/spawn-error/cancellation cases. Do not execute this fixture to obtain those checks.\n\nRollback: no source/configuration/dependency changes were made, so no fixture rollback is needed. The report is the only authored artifact; fixture file hashes were compared immediately before and after report creation to confirm no mutation by that operation. No claim is made about an unobserved upstream git baseline. The skill was read only, and no external service or credential access occurred.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T10:54:21.777025+00:00",
+      "files": [
+        {
+          "path": "noskill/S2-negative-scan/agent-output/S2-negative-scan/report.md",
+          "bytes": 8796,
+          "lines": 55,
+          "sha256": "9efca999088371506dbd10f77c236ec93bde734bcf9358e84d4caa5a4e2f289b",
+          "headings": [
+            "# S2 read-only migration scan",
+            "## Scope and method",
+            "## Seven-category result",
+            "## Change-card mapping and missing evidence",
+            "## Compatibility judgment",
+            "## Mandatory post-migration acceptance steps (not executed here)",
+            "## Completion limits"
+          ],
+          "tail": "s. Only successful completion of these mandatory checks plus resolution of all applicable/unknown cards supports a scoped compatibility verdict.\n\n## Completion limits\n\nRead-only source analysis and report complete. Exact official six-category definitions and change-card mappings remain unavailable within the permitted evidence. Runtime verification is deliberately unperformed because this is a static, non-executable copy with dsh absent; it is a mandatory later step, not a claimed result. No skills were loaded. No fixture files were modified.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S2-negative-scan",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T08:36:22.281414+00:00",
+      "files": [
+        {
+          "path": "skill/S2-negative-scan/agent-output/S2-negative-scan/report.md",
+          "bytes": 11895,
+          "lines": 74,
+          "sha256": "125737d2e640f1378858c8479d333b06967ae15057619f10b8d620cd353c0e63",
+          "headings": [
+            "# S2 read-only compatibility scan",
+            "## Scope, identity and method",
+            "## Seven touchpoint conclusions",
+            "## Hit mapping and migration recommendation (not executed)",
+            "## Why no-hit does not mean compatible",
+            "## Required validation after migration — pending, not run",
+            "## Completion, skipped work, risk and rollback"
+          ],
+          "tail": " prevented delivery of this report; these limitations prevent compatibility certification. Source inspection establishes a required migration, not a successfully migrated plugin.\n\n**Rollback:** fixture and supplied skill were left unchanged. There is no migration to undo. The report is the only created artifact. Before a future migration, preserve the real package/lockfile, source entry and task-owned composition baseline; recovery must be limited to those owned paths. No Git SHA or lockfile baseline can be manufactured from this static copy.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T10:59:05.408824+00:00",
+      "files": [
+        {
+          "path": "noskill/S3-snapshot-migration/agent-output/S3-snapshot-migration/assessment.md",
+          "bytes": 10837,
+          "lines": 70,
+          "sha256": "a7fd05280e3645a71cc384ad8bf4297a947aa4eedec081cb7d604505b612fecd",
+          "headings": [
+            "# Snapshot read-surface migration assessment",
+            "## Scope and evidence",
+            "## Snapshot read inventory",
+            "## Integration surfaces requiring target-contract review",
+            "## Compatibility projection versus immediate new reads",
+            "## Concrete next migration steps once the missing contract is available",
+            "## Completion limits"
+          ],
+          "tail": "hould not be assigned upgrade cards without evidence.\n\n## Completion limits\n\nDelivered: full source inventory of old snapshot reads and related integration contracts, expected behavior, failure modes, and a constrained migration checklist. Not delivered as verified facts: target API spellings, confirmed exhaustive breakage against target code, full upgrade-card mappings, or the target projection's actual supported-field split. The blocker is missing authoritative target documentation within the allowed evidence, not missing user confirmation.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S3-snapshot-migration",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T08:36:22.281414+00:00",
+      "files": [
+        {
+          "path": "skill/S3-snapshot-migration/agent-output/S3-snapshot-migration/migration-assessment.md",
+          "bytes": 14522,
+          "lines": 121,
+          "sha256": "05531fc2b33aaa6ad7be78cdc2ff711e2d495622a34e5230a5ec97082620c2d9",
+          "headings": [
+            "# Snapshot read-surface migration assessment",
+            "## Evidence and version boundary",
+            "## Completed: source-linked migration inventory",
+            "### Exact staged read shape",
+            "### Compatibility boundary and long-term form",
+            "## Packaging baseline caveat",
+            "## Skipped and preserved, with evidence",
+            "## Pre-existing, validation, and residual risk",
+            "## Rollback and delivery"
+          ],
+          "tail": "ations/build artifact and runtime validation; exact native timeline API beyond the documented compatibility projection. These do not block delivering the read-only assessment.\n\n## Rollback and delivery\n\nNo migration was performed. The six fixture files and skill remain unchanged; rollback of source, dependencies, host, and composition is unnecessary. Only this report was written under the authorized `agent-output/S3-snapshot-migration/` directory. No confirmation blocker remains: BENCHMARK-AUTH-v1 authorized the inspection and report writing.\r\n",
+          "fence_count": 6,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T10:58:26.156776+00:00",
+      "files": [
+        {
+          "path": "noskill/S4-legacy-client-imports/agent-output/S4-legacy-client-imports/migration-touchpoints.md",
+          "bytes": 4936,
+          "lines": 26,
+          "sha256": "4dbe3b35b0d6e73e333e64a8fe2bf79eb6d8fb3d220606d8cc48b0e6ec6ef50b",
+          "headings": [
+            "# S4 migration touchpoint report",
+            "## Scope and evidence",
+            "## Touchpoints",
+            "## Coverage and remaining verification"
+          ],
+          "tail": "mplete scan of the supplied static files, not proof of runtime compatibility or completeness against the unavailable full release documentation. Before implementing, obtain the authoritative text for the four cards and target SDK declarations to resolve the explicitly unconfirmed replacement details. No execution or validation against dsh 0.1.2-alpha.2 was performed.\n\nBlocker: none for producing this evidence-bounded report. The missing full cards/target API definitions prevent a verified, exact replacement patch; no such patch was attempted.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S4-legacy-client-imports",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:04:14.058644+00:00",
+      "files": [
+        {
+          "path": "skill/S4-legacy-client-imports/agent-output/S4-legacy-client-imports/migration-touchpoints.md",
+          "bytes": 11070,
+          "lines": 69,
+          "sha256": "7cbf4a7c33063ff981931bedff106396d35ce778ded321883740bf876096e10b",
+          "headings": [
+            "# Migration touchpoint report: dsh-pet-session-bench",
+            "## Completed: read-only assessment",
+            "## Required migration touchpoints",
+            "## Packaging and composition follow-through",
+            "## Scan coverage and skipped items",
+            "## Validation, residual risk, and rollback"
+          ],
+          "tail": "eb profile to redeem the token URL, inspect `__DSH_BOOT__.entries`, fetch the advertised artifact, and prove registration plus UI/core behavior. HTTP 200 alone is insufficient. Sources: API-10, **DSH-0.1.2-A1-26**, **DSH-0.1.2-A1-19**, **DSH-0.1.2-A1-08**, and **DSH-0.1.2-A2-02**. These steps were not executed or provisioned.\n\nRollback: no fixture changes were made, so no source rollback is needed. Only this report was written under the explicitly designated output directory. No Git operations or restoration of unrelated paths were attempted.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:02:56.174993+00:00",
+      "files": [
+        {
+          "path": "noskill/S5-negative-naming/agent-output/S5-negative-naming/naming-judgment.md",
+          "bytes": 5346,
+          "lines": 31,
+          "sha256": "2b97749aeafa46d3e90b131e6bb0424fd473dbda6355406b4cf1935fbb7ecc88",
+          "headings": [
+            "# Naming compatibility and registry judgment",
+            "## Evidence limits and disposition"
+          ],
+          "tail": " was not modified.\n\nDisposition: retain the valid short-name judgment; treat generic-name collision concerns as advice; treat the shared event as informational; leave registry status unknown/not checked. This report is not a global availability certificate or publication clearance. Authoritative policy/runtime evidence and an authorized registry lookup would be needed to resolve the remaining unknowns.\n\nNo skills were consulted. There is no blocker to completing this local report; the missing authoritative context limits stronger conclusions.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S5-negative-naming",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:06:50.641271+00:00",
+      "files": [
+        {
+          "path": "skill/S5-negative-naming/agent-output/S5-negative-naming/naming-judgment.md",
+          "bytes": 5974,
+          "lines": 40,
+          "sha256": "902564a3966e026d47ef7b3d719314af9f4271efd42cd592807bb051b51d5501",
+          "headings": [
+            "# Read-only naming judgment: acme/greet",
+            "## Judgment categories",
+            "## Registry status and conclusion"
+          ],
+          "tail": "ormed.\n\nPending: authoritative policy validation, ownership checks against the relevant registries, and target-profile contract/route inventory if publication validation is later authorized. These evidence gaps do not block this bounded read-only report.\n\nRollback: no fixture changes were made; no rollback is necessary. Only this report was created in the authorized agent-output directory. `private: true` is expressly test-material discipline in the fixture README, not a naming defect; no change or publication is recommended for this fixture.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:07:53.325184+00:00",
+      "files": [
+        {
+          "path": "noskill/S6-corridor-net-state/agent-output/S6-corridor-net-state/migration-report.md",
+          "bytes": 4891,
+          "lines": 33,
+          "sha256": "2f1fb31c9314a1f232d4cad9c7962d74137828ea29305fa9201382bc26698111",
+          "headings": [
+            "# S6 migration report: alpha.2 event semantics",
+            "## Decision",
+            "## Corridor and net effect",
+            "## Producer semantics and ordinary plugins",
+            "## What the code actually demonstrates",
+            "## Evidence limits and execution"
+          ],
+          "tail": ".md`, `package.json`, and `src/events.ts`. No skills, network, external references, tests, builds, installations, reproduction environment, scoring tools, or other repository material were used. The remove-then-restore decision is supported by the fixture's explicit account, not independently verified against upstream releases. Missing alpha.2 API and runtime evidence limits verification but does not block the requested read-only recommendation. All writes were confined to the designated agent-output directory; the fixture was left unchanged.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S6-corridor-net-state",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:11:32.108021+00:00",
+      "files": [
+        {
+          "path": "skill/S6-corridor-net-state/agent-output/S6-corridor-net-state/report.md",
+          "bytes": 7385,
+          "lines": 44,
+          "sha256": "f23526dd7ffa7f09ea9d61f5a5657f0f4abe905b1087c2a472d6dbd05d302352",
+          "headings": [
+            "# S6: alpha.2 corridor net-state migration report",
+            "## Decision",
+            "## Evidence and complete relevant history",
+            "## Correct producer and reader semantics",
+            "## Completed",
+            "## Skipped and pre-existing",
+            "## Pending / residual risk and validation plan",
+            "## Rollback and recommendation"
+          ],
+          "tail": "plicitly refuse restoration. For the sidecar approach, verify state survives restart keyed to the correct Session without introducing unknown Session log events. No such tests were run here.\n\n## Rollback and recommendation\n\nNo fixture or deployment state was changed, so no migration rollback is necessary. Only this report was created. A later implementation should capture its own source/configuration baseline, remove the stale defense/comment, and resolve the producer capability gap as described above; removing line 6 alone is not completion.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:12:17.315868+00:00",
+      "files": [
+        {
+          "path": "noskill/S7-unpublished-cohort/agent-output/S7-unpublished-cohort/installation-type-baseline-plan.md",
+          "bytes": 7755,
+          "lines": 53,
+          "sha256": "d8118fedb2f580959d322e80e409e0d739dfb656c839c2574b18d5089140a2af",
+          "headings": [
+            "# Installation and type-baseline plan",
+            "## 1. Actual consequence of the declaration",
+            "## 2. Recommended path: explicitly adopt the published alpha.2 baseline",
+            "## 3. Alternative paths",
+            "### A. Preserve the current caret range, with an honest alpha.2 resolution claim",
+            "### B. Require an authentic alpha.1 baseline",
+            "### C. Adopt the published rc.2 cohort",
+            "## 4. Proposed README correction and acceptance criteria",
+            "## Scope and blockers"
+          ],
+          "tail": "pe and blockers\n\nOnly the solver instruction and the two fixture files were read. No skill was used, no network service was contacted, and no install, build, migration, reproduction environment, or fixture modification was performed. Only this report was written under agent-output. There is no blocker to completing the planning task. Actual installation success and baseline compatibility remain **unconfirmed** because execution is prohibited and the fixture lacks package artifacts, implementation source, dependency graph and runtime evidence.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S7-unpublished-cohort",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:15:57.397263+00:00",
+      "files": [
+        {
+          "path": "skill/S7-unpublished-cohort/agent-output/S7-unpublished-cohort/installation-type-baseline-plan.md",
+          "bytes": 10066,
+          "lines": 60,
+          "sha256": "06d09dc934871481ca3cb081aa2c6f6ddb223b89024a3c007fa7fe0b39170c1e",
+          "headings": [
+            "# S7 — Installation and type-baseline plan",
+            "## Consequence of the existing declaration",
+            "## Inspected evidence and limits",
+            "## Recommended path: explicitly adopt published alpha.2",
+            "## Alternative: retain published rc.2 and add an alpha.1 type-check lane",
+            "## Alternative: exact alpha.1 source-built cohort",
+            "## Completion, skipped work and residual risk"
+          ],
+          "tail": " transitive cohort closure, declaration compatibility, tag/build reproducibility, current host compatibility and runtime activation. These do not block the requested read-only plan; they block claims of verified install or runtime success.\n\n**Rollback:** none required for the fixture because it was unchanged. For later implementation, restore only the explicitly recorded manifest/README/lockfile and any task-owned CI/tsconfig changes; preserve unrelated work. The plugin's own version remains 0.1.0 and must not be confused with the DSH cohort.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-19T11:16:08.666063+00:00",
+      "files": [
+        {
+          "path": "noskill/S8-release-routing-trap/agent-output/S8-release-routing-trap/diagnosis.md",
+          "bytes": 6040,
+          "lines": 41,
+          "sha256": "a63e140e0b916c669b22f1137c563f9e4a74427411411ef66566b29b87983616",
+          "headings": [
+            "# Release routing diagnosis",
+            "## Attempt 1: missing release ref",
+            "## Attempt 2: newer plugin on an older host",
+            "## Remedy under the runtime freeze",
+            "## Prevent recurrence: release tooling and documentation",
+            "## Scope and evidence limits"
+          ],
+          "tail": "alone does not establish that it is compatible with rc.2; the supplied table gives no such guarantee.\n\n## Scope and evidence limits\n\nSingle static, no-skill analysis using only this cell's instruction and fixture. No network requests, installs, migrations, publishing, runtime execution, grading, or fixture edits were performed. The report is complete; execution of the consumer remedy is blocked by the missing compatible public tag and remains a maintainer publication action. Remote state and boot success have not been independently validated.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S8-release-routing-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:05:06.562314+00:00",
+      "files": [
+        {
+          "path": "skill/S8-release-routing-trap/agent-output/S8-release-routing-trap/report.md",
+          "bytes": 8201,
+          "lines": 48,
+          "sha256": "7cd331f0eeeb82dbf685cb29c51cd5ec38273393e3d69d6a546174c86f931789",
+          "headings": [
+            "# Release-routing diagnosis",
+            "## 1. Attempt 1: missing public tag",
+            "## 2. Attempt 2: newer plugin on older host",
+            "## 3. Remedy under the production freeze",
+            "## 4. Maintainer prevention: publication and routing",
+            "## Completion and limits"
+          ],
+          "tail": "pplied.\n- **Rollback:** Fixture and consumer installation remain unchanged; only this report was written. Before a real replacement, preserve the consumer's profile composition and package/lockfile baseline so those specific files can be restored if necessary. No arbitrary lifecycle side-effect rollback is promised.\n- **Blockers:** None to completing this read-only diagnosis. Missing public v0.9.3 availability blocks immediate execution of the proposed consumer install until the maintainer publishes or supplies a verified compatible artifact.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:05:17.594493+00:00",
+      "files": [
+        {
+          "path": "noskill/S9-composer-coordinate-trap/agent-output/S9-composer-coordinate-trap/report.md",
+          "bytes": 10990,
+          "lines": 74,
+          "sha256": "7a3d691a7d5f8c0e5612572c7fd1bd38d89e03c4f2c987a6f51f866266211f08",
+          "headings": [
+            "# S9: Composer coordinate contract diagnosis",
+            "## Evidence and scope",
+            "## One contract mismatch explains both symptoms",
+            "### First paste versus subsequent pastes",
+            "### Why the cross produces `unavailable`",
+            "## Fix direction derived from the source",
+            "## Regression interaction plan",
+            "## Routine source checks before release"
+          ],
+          "tail": "ase and revision guards, return values, chip width/serialization, automatic separators, and structured-edit versus `setDraft` semantics. Keep endpoint calculations and their revision tied to one snapshot. Check occurrence identity and record lifetime separately, and make repeated operations, mixed-source chips and failed-edit bookkeeping part of release regression coverage.\n\nNo blocker to the static diagnosis. The omitted helper implementations and absence of an executable host limit exact internal-branch attribution and runtime verification.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S9-composer-coordinate-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:09:39.997504+00:00",
+      "files": [
+        {
+          "path": "skill/S9-composer-coordinate-trap/agent-output/S9-composer-coordinate-trap/diagnosis.md",
+          "bytes": 10690,
+          "lines": 60,
+          "sha256": "591883a43f48dccc3e0668b748c5d18dbb0a1fd988b5c5b723243c5c00f145e1",
+          "headings": [
+            "# S9: one coordinate-contract error explains both symptoms",
+            "## 1. Why insertion works once",
+            "## 2. Why × produces unavailable",
+            "## 3. Derived correction and call sites",
+            "## 4. Regression interaction plan",
+            "## 5. Routine source checks and disposition"
+          ],
+          "tail": " static diagnosis). Skipped: installs, migrations, source edits, lifecycle scripts, builds, and real-host tests; none are needed or authorized for this evidence-pack task. Pending: executing the regression plan and examining full splice internals in the maintainer's target build. Source identity here is the supplied excerpt/capture; installed resolution, Node version, Git SHA, and a broader version corridor are not supplied and are not inferred. Rollback: no fixture changes; only this report was created. No blocker to the requested diagnosis.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:09:51.873619+00:00",
+      "files": [
+        {
+          "path": "noskill/S10-paste-rename-and-version-chip/agent-output/S10-paste-rename-and-version-chip/report.md",
+          "bytes": 12044,
+          "lines": 74,
+          "sha256": "f7a3d55c213d5edfdd862d12699113bb6d8288ccffd5565ede733c625d6236b0",
+          "headings": [
+            "# S10 report: paste names and version chip",
+            "## 1. Paste-only renaming",
+            "## 2. Extension and visible/uploaded name",
+            "## 3. Why the version chip lied",
+            "## 4. Proposed regression coverage",
+            "## 5. Lib-only release hygiene"
+          ],
+          "tail": "er installed v0.2.10. Publish/distribute the updated lib-only package through the supported plugin installation channel and give users the supported manual update/reinstall instructions, followed by host reload if required. Link the chip to those instructions or the release. Do not invent an automatic update call or claim installation has succeeded from seeing a newer tag. After actual installation and reload, verify the running local constant shows the new version. Exact install commands and channel details are outside the supplied evidence.\r\n",
+          "fence_count": 0,
+          "screening_matches": [
+            {
+              "line": 42,
+              "text": "A manual refresh, browser revalidation/no-cache request strategy, and bounded retry after suspected stale data can improve discovery. They cannot guarantee upstream cache invalidation. Review API rate limits and handle errors; do not promise immediate tag propagation. The ten-tag page is also a bounded observation, not proof of the globally newest release. These are separate robustness concerns from the demonstrated wrong-version rendering bug."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "task": "S10-paste-rename-and-version-chip",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:14:21.021828+00:00",
+      "files": [
+        {
+          "path": "skill/S10-paste-rename-and-version-chip/agent-output/S10-paste-rename-and-version-chip/report.md",
+          "bytes": 14120,
+          "lines": 78,
+          "sha256": "941edc98984385d7dfd795accc6c41867a9d1af3cf8ccbf1bc34477b7aa4907f",
+          "headings": [
+            "# S10: paste naming and version-chip review",
+            "## Completed: evidence and identity",
+            "## 1. Rename only clipboard files, before duplicate validation",
+            "## 2. Extension and display contract",
+            "## 3. Version-chip diagnosis and corrected rule",
+            "## 4. Regression test plan (proposed, not executed)",
+            "## 5. Lib-only release hygiene and user delivery",
+            "## Validation status, skipped work and rollback"
+          ],
+          "tail": "ce pack. No blocker prevents this report; implementation and runtime validation remain future work.\n\nRollback: fixture and installed software are untouched, so no source/configuration rollback is needed. The only new artifact is this report under the authorized agent-output directory. For a later release, retain the prior shipped artifact and exact package/lockfile identity before editing; rollback only the plugin-owned changed files/package selection, then restart/reload and verify. No claim is made about recovering unrelated script effects.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:14:11.910515+00:00",
+      "files": [
+        {
+          "path": "noskill/S11-mermaid-lazyload-trap/agent-output/S11-mermaid-lazyload-trap/report.md",
+          "bytes": 10471,
+          "lines": 65,
+          "sha256": "e9adc3c829096efb13ef19f5c335302ca78997c2d78fbe80171285eed9060d03",
+          "headings": [
+            "# S11 — Mermaid lazy-loading diagnosis",
+            "## 1. Split-chunk failure",
+            "## 2. Windows containment failure",
+            "## 3. Guard repair and module serving",
+            "## 4. Ctrl+wheel ownership",
+            "## 5. Regression coverage"
+          ],
+          "tail": "opagation-only repair fails. Cover events over nested modal elements, modal closure restoring pane font zoom, ordinary scrolling, and repeated open/close cycles without duplicate listeners. Check browser default suppression where required. Record listener phase/order in the reproduction to resolve the current evidence gap.\n\nNo blocker prevents this report. Exact bundler settings, native runtime reproduction and precise event registration order remain unverified because build configuration, runnable host and listener sources were not supplied.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S11-mermaid-lazyload-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:18:37.672155+00:00",
+      "files": [
+        {
+          "path": "skill/S11-mermaid-lazyload-trap/agent-output/S11-mermaid-lazyload-trap/report.md",
+          "bytes": 11520,
+          "lines": 69,
+          "sha256": "e77b7888c6e5cf00f0e955f17d4e2d9e062dcca3752324e9d06b963a10278ef6",
+          "headings": [
+            "# S11 — Mermaid lazy-load diagnosis",
+            "## 1. Split chunks: the entry is only the first module in the graph",
+            "## 2. Windows 403: lexical prefix comparison versus filesystem identity",
+            "## 3. Correct containment and serving contract",
+            "## 4. Ctrl+wheel: one event needs one owner",
+            "## 5. Regression coverage to add",
+            "## Completion and limits"
+          ],
+          "tail": " Git-wide inspection are outside this read-only evidence task. No tests above are claimed to have passed.\n- **Pending/residual risk:** modal listener topology, bundler configuration, packed artifact, complete host source, host version and Git SHA are not provided. They limit implementation verification but do not block this diagnostic report. Windows/Linux runtime validation remains follow-up work.\n- **Rollback:** fixture was not modified. Only this report was created under the designated agent-output directory; no runtime rollback is needed.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:18:48.848779+00:00",
+      "files": [
+        {
+          "path": "noskill/S12-global-upgrade-ebusy-trap/agent-output/S12-global-upgrade-ebusy-trap/report.md",
+          "bytes": 6036,
+          "lines": 83,
+          "sha256": "ceebddd9852f9536da079b480b2bd2cfdcae058acd7fd06aab33413cd10b4151",
+          "headings": [
+            "# S12: Windows global upgrade failure and downgrade",
+            "## Attempt 1: the host holds a native binary open",
+            "## Attempt 2: the combined command selects latest again",
+            "## Safe ordered commands",
+            "# Only if this is still the intended dsh web host:",
+            "## README prevention",
+            "## Scope and evidence limits"
+          ],
+          "tail": "allations, migrations, runtime process termination, tests, scoring, or other cases were accessed. Only this report was written under agent-output; the fixture was unchanged. The fixture explicitly attributes the lock to the host, but no live handle inspection or execution was performed. Registry mappings are the captured state, not a claim about today's registry. No blockers prevented the requested diagnosis and procedure; actual installation success and plugin compatibility remain unverified because execution is outside the authorized scope.\r\n",
+          "fence_count": 12,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S12-global-upgrade-ebusy-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:22:48.871397+00:00",
+      "files": [
+        {
+          "path": "skill/S12-global-upgrade-ebusy-trap/agent-output/S12-global-upgrade-ebusy-trap/report.md",
+          "bytes": 7605,
+          "lines": 80,
+          "sha256": "76ff054f75b0e8c610222b7f185cf33e2fb287fc6b547c97a296ab76742f3532",
+          "headings": [
+            "# S12: Windows global upgrade diagnosis",
+            "## Attempt 1: the host owns the lock",
+            "## Attempt 2: latest is an explicit replacement request",
+            "## Exact upgrade procedure (commands to run externally, not executed here)",
+            "## README prevention",
+            "## Completion, limitations and recovery"
+          ],
+          "tail": "command missing or damaged, keep DSH stopped and rerun the formal pinned alpha.5 install externally to regenerate package content and shims; do not hand-copy package trees or hand-write shims. If an actual rollback is needed, alpha.4 is the recorded pre-upgrade host version: use `npm install -g @deepseek-ai/dsh@0.1.2-alpha.4` externally after stopping the host, with data/configuration compatibility reviewed and pre-upgrade backups retained. An npm package rollback does not automatically undo data changes or third-party install-script effects.\r\n",
+          "fence_count": 10,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:22:39.844389+00:00",
+      "files": [
+        {
+          "path": "noskill/S13-peer-range-vs-runtime/agent-output/S13-peer-range-vs-runtime/report.md",
+          "bytes": 6120,
+          "lines": 39,
+          "sha256": "647a051d75d7d7eb2ac1948c5b4f420aff8172b933bafe6d7dbb1a449b877794",
+          "headings": [
+            "# S13: Peer range satisfaction versus runtime compatibility",
+            "## Diagnosis and evidence",
+            "## Why installation succeeds",
+            "## What the author should do",
+            "## Concrete pre-install check",
+            "## Scope and limits"
+          ],
+          "tail": "lation; a clean textual scan alone cannot prove compatibility. Also seek a published startup/replay test result for the exact plugin and host pair.\n\n## Scope and limits\n\nThis is one static, read-only analysis of the supplied evidence. No skills, network access, installations, migrations, runtime execution, external repository material, or grading tools were used. The fixture was not modified. No execution blocker prevented the requested report; full compatibility certification and replacement API semantics remain beyond the supplied excerpts.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S13-peer-range-vs-runtime",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:26:34.409739+00:00",
+      "files": [
+        {
+          "path": "skill/S13-peer-range-vs-runtime/agent-output/S13-peer-range-vs-runtime/report.md",
+          "bytes": 8472,
+          "lines": 53,
+          "sha256": "4c3f4ea7f2e1c95eca26d9e981195dab84547334f91071315391983314f539b5",
+          "headings": [
+            "# S13: peer range satisfaction is not runtime compatibility",
+            "## Exact incompatibility and release boundary",
+            "## Why npm emitted no peer warnings",
+            "## What the author should do",
+            "## A concrete pre-install check the user can do now",
+            "## Scope and validation record"
+          ],
+          "tail": "ot invented.\n- **Pending/residual risk:** A full plugin audit and real-host validation are needed to certify a corrected release. The excerpt alone cannot establish every compatibility issue or a known-good replacement version.\n- **Rollback:** Fixture and installation were unchanged. Only this report was written; no runtime rollback is necessary.\n- **Recommendations:** Correct all Session event reads, align compatibility metadata with verified support, and provide an actionable runtime feature guard. No blocker prevented the requested report.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-20T03:27:00.202071+00:00",
+      "files": [
+        {
+          "path": "noskill/S14-link-install-lock-trap/agent-output/S14-link-install-lock-trap/report.md",
+          "bytes": 9832,
+          "lines": 88,
+          "sha256": "37c769c89f5f7a69d8b377c026fa390da48d146b891c6ad1538ca21a403cbd6e",
+          "headings": [
+            "# S14: linked plugin recovery and activation",
+            "## Diagnosis and evidence",
+            "## The two host-side obstacles, plus browser cache",
+            "## Why both paths lost their entry files",
+            "## Exact recovery from the reported state (instructions only)",
+            "## Ordered activation after recovery or future repository edits",
+            "## Pre-flight before touching files",
+            "## Scope and completion"
+          ],
+          "tail": " and runtime verification.\n\n## Scope and completion\n\nThis report used only the cell instruction and its four fixture files. No skills, network, installations, migrations, runtime restarts, fixture edits, grading, or verification harnesses were used. No blocker prevents the static diagnosis and recovery plan. Live process identification, syntax validation, and successful feature activation remain unverified because this evidence pack contains transcripts only; all operational commands above are proposed maintainer actions, not claimed results.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S14-link-install-lock-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-21T10:55:38.853327+00:00",
+      "files": [
+        {
+          "path": "skill/S14-link-install-lock-trap/agent-output/S14-link-install-lock-trap/report.md",
+          "bytes": 11366,
+          "lines": 94,
+          "sha256": "aa39bc08dfe6facd7b6baa8f734b6c68969fcd32eb5dfea2d2bafaf1458bcb0a",
+          "headings": [
+            "# S14 — linked-plugin activation and safe recovery",
+            "## Completed: installation identity and cause",
+            "## The two locks and their owners",
+            "## Why both directories lost their entry files",
+            "## Recovery from the recorded broken state",
+            "## Ordered activation after recovery or later repo edits",
+            "## Pre-flight before touching files",
+            "## Validation, limits, and rollback"
+          ],
+          "tail": " two `.old2` files are the recorded surviving artifacts. Restore their names without overwriting new work. They preserve the edited content; they are not proven to be a previous good release. A feature rollback would require an independently identified backup or reviewed diff and must preserve unrelated edits. The junction and profile configuration need no rollback because this report changes neither.\n- **Recommendation:** make installation-mode inspection and separate host/client verification mandatory before future linked-plugin activation.\r\n",
+          "fence_count": 8,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-21T10:55:13.407668+00:00",
+      "files": [
+        {
+          "path": "noskill/S15-slot-error-boundary-crash/agent-output/S15-slot-error-boundary-crash/report.md",
+          "bytes": 9180,
+          "lines": 70,
+          "sha256": "aff33c5b7d1088ffcc40c024c44d651c29ab5c2c9282b997c97497bf45b5cf44",
+          "headings": [
+            "# S15: missing attachment dock — read-only diagnosis",
+            "## Finding and evidence limits",
+            "## Why the old bug can hide, and why the dock disappears",
+            "## Correct isolation and bisection",
+            "## Recommended repair",
+            "## Regression and minimum pre-ship gate",
+            "## Delivery status"
+          ],
+          "tail": "atic undefined-variable checking would cheaply flag both `busy` and the diff's misplaced preview identifiers, but does not replace the populated render. These are proposed checks; none were run in this read-only task.\n\n## Delivery status\n\nAnalysis complete within the available static evidence. No skills used. No fixture modifications or external access. No authorization blocker. Exact first failure in the real v0.2.11 deployment remains unverified because the supplied diff is inconsistent and there is no runtime trace or full deployed bundle.\r\n",
+          "fence_count": 6,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S15-slot-error-boundary-crash",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:15:23.712576+00:00",
+      "files": [
+        {
+          "path": "skill/S15-slot-error-boundary-crash/agent-output/S15-slot-error-boundary-crash/report.md",
+          "bytes": 11347,
+          "lines": 86,
+          "sha256": "6e66ef8b1f7b01b3beaafbcfa4021f04635836ce82b05f406cf1732471d161a6",
+          "headings": [
+            "# S15: pending attachment dock render failure",
+            "## Completed: read-only diagnosis",
+            "## Root cause and exact evaluation path",
+            "## Attribution and bisection, including contradictory evidence",
+            "## Minimal fix and preview hardening",
+            "## Regression and minimum pre-ship gate",
+            "## Validation status, skipped work and rollback"
+          ],
+          "tail": "ated repository content was consulted.\n- Pending/residual risk: exact shipped v0.2.11 artifact, actual browser stack, historical v0.2.10 render state and live boundary verification are absent. The diff inconsistencies prevent an honest claim that the first production exception has been directly observed.\n- Rollback: no fixture or installation changes occurred, so none are needed. Rolling back to v0.2.10 alone is not a reliable fix for the old dangling reference. The only new artifact is this report under the designated agent-output directory.\r\n",
+          "fence_count": 8,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:15:41.074480+00:00",
+      "files": [
+        {
+          "path": "noskill/S16-self-host-upgrade-trap/agent-output/S16-self-host-upgrade-trap/report.md",
+          "bytes": 9729,
+          "lines": 74,
+          "sha256": "9c75e3f9055b2466736dfacf16432c0cd1ed080d058f08ae2da9a32f096b8af0",
+          "headings": [
+            "# S16: Self-host upgrade incident report",
+            "## Scope and evidence",
+            "## 1. Structural root cause",
+            "## 2. Why the command vanished",
+            "## 3. Repair actually applied",
+            "## 4. Required agent protocol and external procedure",
+            "## 5. Prevention and post-upgrade checklist",
+            "## Completion and limits"
+          ],
+          "tail": " fixes or repeat a migration simply because the release label changed. Runtime checks remain necessary to validate the repaired installation, profile, and browser state. The diff finding is taken from the supplied notes; source trees were not provided for independent diff verification.\n\n## Completion and limits\n\nThe report is complete. No blocker prevented static analysis. Live repair, process-level forensic confirmation, source-diff reproduction, and the remaining web/plugin checks are outside this read-only task and have not been performed.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S16-self-host-upgrade-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:20:20.926825+00:00",
+      "files": [
+        {
+          "path": "skill/S16-self-host-upgrade-trap/agent-output/S16-self-host-upgrade-trap/report.md",
+          "bytes": 11465,
+          "lines": 78,
+          "sha256": "a6e4f27a454f7d3330519ae05f439d5c851f53ccc3eaefe3e972ca9d347fee84",
+          "headings": [
+            "# S16: Self-host upgrade incident diagnosis",
+            "## Evidence and scope",
+            "## 1. Structural root cause",
+            "## 2. Why the command disappeared",
+            "## 3. Repair actually recorded",
+            "## 4. Procedure the original agent should have handed off",
+            "## 5. Prevention and acceptance checklist",
+            "## Completion, limits, and recovery baseline"
+          ],
+          "tail": "g per the repair notes. No live npm state, process state, or lifecycle side effects were independently checked. No blocker to producing this report.\n\n**Rollback:** no fixture changes need rollback. If the user later needs host rollback, the recorded baseline is alpha.5 and recovery must use an external formal install pinned to that known version after stopping hosts, preserving configuration/data. The existence of `dsh-old-*` backups does not justify manually swapping them into place or promising recovery of arbitrary lifecycle-script effects.\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:20:33.392800+00:00",
+      "files": [
+        {
+          "path": "noskill/S17-external-ui-plugin-onboarding-trap/agent-output/S17-external-ui-plugin-onboarding-trap/incident-report.md",
+          "bytes": 11495,
+          "lines": 90,
+          "sha256": "b2ee126b45447b12657222ccafc495e696edd052eb39a76e4030974964ce73ba",
+          "headings": [
+            "# S17 — External UI plugin onboarding incident",
+            "## Scope and evidence",
+            "## 1. The first failure is a whole-combo syntax failure",
+            "## 2. Locate the producer, then fix the packaging contract",
+            "## 3. The second failure is slot declaration/order, not bundle parsing",
+            "## 4. Development loop and the Windows restart failure",
+            "## 5. Prevention"
+          ],
+          "tail": "ide effects.\n- The boot-time rebuild/restart/hard-refresh loop, targeted Windows process-tree shutdown recovery, and port-release verification.\n- Acceptance checks for all existing plugins plus the new settings section; clear separation of syntax/load failures, apply-time slot errors, and process bind failures.\n\nThe read-only report is complete. The only substantive evidence limitation is the missing exact slot-injection API and descriptor schema; no executable patch or runtime verification can honestly be claimed from this static pack alone.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S17-external-ui-plugin-onboarding-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:25:15.557889+00:00",
+      "files": [
+        {
+          "path": "skill/S17-external-ui-plugin-onboarding-trap/agent-output/S17-external-ui-plugin-onboarding-trap/report.md",
+          "bytes": 12853,
+          "lines": 105,
+          "sha256": "8ef313903584aa43f91bac5a851c6d3b56f71ae6b4260931a9a9daa9f42bd438",
+          "headings": [
+            "# S17: external UI plugin onboarding diagnosis",
+            "## 1. A syntax error poisoned the complete client combo",
+            "## 2. Diagnosis and the required bundle contract",
+            "## 3. Repackaging exposed a separate slot error",
+            "## 4. Correct development and Windows restart loop",
+            "## 5. Prevention",
+            "## Scope, validation and residuals"
+          ],
+          "tail": ", manifest and resolved dependency cohort are not supplied. The proposed code illustrates the evidenced contract; it was not compiled or mounted. No claim of successful runtime repair is made. These omissions do not block the evidence-backed diagnosis.\n\n**Rollback:** The fixture was never changed, so no rollback is required. The only created artifact is this report. For a future authorized implementation, preserve the original client build and the individual owned patch row; recover those paths only, then cold restart to replace cached bytes.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:25:32.163517+00:00",
+      "files": [
+        {
+          "path": "noskill/S18-terminal-sprite-render-trap/agent-output/S18-terminal-sprite-render-trap/report.md",
+          "bytes": 11987,
+          "lines": 89,
+          "sha256": "c03d7babebeaaffd2531106d2144bb9e7a596ef4b1e4ad0301320607fb7b1f65",
+          "headings": [
+            "# S18 — Terminal sprite rendering and animation rollout audit",
+            "## Scope and evidence",
+            "## 1. Phantom pixels: stale background in a half-filled cell",
+            "## 2. Ghost frames: omitted overwrites and missing erase coverage",
+            "## 3. Frame drift: whole-frame identity, not selected excerpts",
+            "## 4. Finished CI job held alive by a timer chain",
+            "## 5. Renderer contract and pre-default-on audit"
+          ],
+          "tail": "ounds, and neighboring text protection. Include sleep-Z, heart, and tail extremes. Check every frame's full source digest before enabling the feature. These checks catch visual-state, data-integrity, and process-lifecycle regressions that an excerpt assertion or a PASS-only test result misses.\n\nNo implementation was changed. There are no blockers to this static report. Independent reproduction, exact pipeline attribution, actual digest computation, and verification of the concrete timer fix require source/runtime evidence beyond this fixture.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S18-terminal-sprite-render-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:30:46.018813+00:00",
+      "files": [
+        {
+          "path": "skill/S18-terminal-sprite-render-trap/agent-output/S18-terminal-sprite-render-trap/report.md",
+          "bytes": 12344,
+          "lines": 92,
+          "sha256": "9aed90cd1428c95fffd0fdfd31f0197683fad1e40b5da8c743f1ad8d5e078a2d",
+          "headings": [
+            "# S18: terminal sprite diagnosis and rollout contract",
+            "## 1. Phantom pixels: background state leaks into the empty half",
+            "## 2. Ghost frames: omitted cells are not erased cells",
+            "## 3. Frame drift: source-art integrity is separate from rendering",
+            "## 4. Finished but hanging: a referenced timeout chain",
+            "## 5. Renderer contract and default-on audit",
+            "## Scope, validation, and remaining work"
+          ],
+          "tail": "and actual terminal hosts are not supplied. Those omissions limit source-level integration details but do not block this evidence-based diagnosis. The full-pipeline and process-exit checks above are acceptance criteria for a later implementation, not claimed results.\n\nRollback: fixture remains unchanged; only this authorized report was written. No application rollback is necessary. For a later rollout, retain the previous default-off flag and restore it if completion/visual gates regress while correcting the underlying renderer and scheduler.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:31:25.513391+00:00",
+      "files": [
+        {
+          "path": "noskill/S19-phantom-update-stale-host/agent-output/S19-phantom-update-stale-host/incident-report.md",
+          "bytes": 13102,
+          "lines": 65,
+          "sha256": "fe4e66c0e50236e8eb5468aafe71992fa4239ccfe61152447a89864cc9c2cf7b",
+          "headings": [
+            "# S19 incident analysis (read-only)",
+            "## Scope and evidence limits",
+            "## 1. Phantom self-update: the artifact contains yesterday's version",
+            "## 2. Client and host update on different lifecycles",
+            "## 3. Broken image: corrupted result-text assembly, not corrupt SVG source",
+            "## 4. Defensive SVG rendering chain",
+            "## 5. Forensics method and release prevention",
+            "## Completion"
+          ],
+          "tail": " source and payload hashes, XML diagnostics, generation/frame offsets, and clean re-read behavior, subject to appropriate redaction. Preserve original evidence privately. Do not paper over the corruption with guessed repairs in the plugin.\n\n## Completion\n\nThe requested analysis is complete from the supplied evidence. There are no blockers to this report. Independent runtime verification and original compressed-log extraction are unavailable because those materials are not part of the fixture. No skill was used and no fixture file was changed.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S19-phantom-update-stale-host",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:35:25.264744+00:00",
+      "files": [
+        {
+          "path": "skill/S19-phantom-update-stale-host/agent-output/S19-phantom-update-stale-host/incident-report.md",
+          "bytes": 11656,
+          "lines": 63,
+          "sha256": "b84c336dc6fb2321cec7fcc41fe029b6237f081b2f2f86a33532fa4e6c2a2a37",
+          "headings": [
+            "# S19 incident report",
+            "## Completed: findings and evidence",
+            "### 1. Phantom update: the artifact is internally inconsistent",
+            "### 2. Client refresh and host activation are separate",
+            "### 3. Broken image: upstream result-text assembly corruption",
+            "### 4. Defensive SVG render chain",
+            "### 5. Forensics method and prevention",
+            "## Validation scope, skipped work and residual risk"
+          ],
+          "tail": "ds, tests, live HTTP probes, host restart, installations and tag mutation; this is an evidence-only pack, not a runnable full plugin checkout. No host-version corridor migration is implied. Runtime recovery and fallback behavior remain proposed, not verified. No blocker prevents the requested report; raw generation file absence limits new forensic reproduction only.\n\nRollback: no fixture/runtime/configuration changes were made, so no operational rollback is needed. The only created artifact is this report; original evidence remains unchanged.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-22T14:35:09.358095+00:00",
+      "files": [
+        {
+          "path": "noskill/S20-msvc-flock-trap/agent-output/S20-msvc-flock-trap/report.md",
+          "bytes": 6936,
+          "lines": 36,
+          "sha256": "7ad4d8ae03022ec9fe285cb6f6fecb720737cc8fa5c03721ea2ba6bca6b17a8a",
+          "headings": [
+            "# S20 — Windows native dependency installation blocker",
+            "## Diagnosis",
+            "## Runtime lock path",
+            "## Least-invasive fix plan",
+            "## Corridor card and evidence limits"
+          ],
+          "tail": " installation repair. Only the instruction and the five fixture files were read. No skills, network, prior answers, test harnesses, verifiers, scoring material, or other repository content were consulted. The fixture was left unchanged. No install, build, runtime test, or patch application was performed; the steps above are acceptance checks for implementation in the real checkout. The excerpts do not establish other packages' Windows compatibility or the actual fs-ext entry layout, so service boot remains to be verified after implementation.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S20-msvc-flock-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:20:51.082596+00:00",
+      "files": [
+        {
+          "path": "skill/S20-msvc-flock-trap/agent-output/S20-msvc-flock-trap/report.md",
+          "bytes": 7241,
+          "lines": 49,
+          "sha256": "c96033b34e5a47912fdb783c25fabe57f8bbb652dab7bbd44b61ef4330e1a513",
+          "headings": [
+            "# S20 — Windows fs-ext install and load blocker",
+            "## Completed: static diagnosis",
+            "## Concrete least-invasive fix plan",
+            "## Applicable card",
+            "## Verification plan and remaining limits"
+          ],
+          "tail": "ot is made. The fixture contains excerpts rather than the full fs-ext entry or workspace, so exact patch hunks and runtime validation remain implementation work; this does not block the requested diagnosis and plan.\n\nRollback: restore only the recorded workspace/lockfile baseline and remove only the new fs-ext patch, then reinstall the prior dependency state. This restores the pre-fix state, including its Windows blocker; it does not imply recovery of unrelated lifecycle-script effects. No session data or profile configuration needs changing.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:22:07.961837+00:00",
+      "files": [
+        {
+          "path": "noskill/S21-resource-service-unavailable-trap/agent-output/S21-resource-service-unavailable-trap/report.md",
+          "bytes": 11519,
+          "lines": 61,
+          "sha256": "06b69b5fffd2e9488173921c226e307f4dc88bf1f586d8204c1342fe4f1060e3",
+          "headings": [
+            "# S21: resource-service-unavailable attribution and response",
+            "## Scope and evidence",
+            "## 1. Attribution: distinguish claiming a tab from reading a resource",
+            "## 2. Probe discipline",
+            "## 3. Distractors and roster changes",
+            "## 4. Ordered mitigation decision",
+            "## 5. Complete upstream forensics and prevention",
+            "## Evidence limits and blockers"
+          ],
+          "tail": "the probe describes 62; README assigns the absolute-claim dialog to alpha.1, whereas symptom-log places it in the alpha.2 timeline. Preserve and reconcile these against raw boot captures upstream; do not silently rewrite them. Neither discrepancy invalidates the supplied same-file reader contrast or the demonstrated session-only alpha.2 claim rule.\n\nReport completed without blockers to the requested read-only analysis. The exact failed service-chain hop and the synthetic combo 404 mechanism remain unproven pending additional runtime evidence.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S21-resource-service-unavailable-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:31:44.537996+00:00",
+      "files": [
+        {
+          "path": "skill/S21-resource-service-unavailable-trap/agent-output/S21-resource-service-unavailable-trap/report.md",
+          "bytes": 12223,
+          "lines": 65,
+          "sha256": "b8a10a36ed2d1b1e75d21d8a3bb2fc5843b3aa9605f353276a96d513cd0c7deb",
+          "headings": [
+            "# S21 — read-only post-upgrade diagnosis",
+            "## Scope and completed work",
+            "## 1. Attribution: two distinct failures",
+            "## 2. Probe discipline",
+            "## 3. Distractors and version changes",
+            "## 4. Mitigation order and rollback",
+            "## 5. Upstream forensics and prevention",
+            "## Skipped and pending"
+          ],
+          "tail": "lback is needed because it was unchanged. Pending: exact runtime broken link, artifact/manifest count reconciliation, live mitigation validation and upstream delivery. These are limits of the supplied evidence, not blockers to the report.\n\nLocal evidence sources: symptom-log.txt; contrast-probe.txt; boot-manifest-excerpt.txt; combo-probe.txt; console-excerpt.txt; discussion-excerpt.txt; README.md. Prior-art URL supplied by the evidence (not accessed): https://github.com/deepseek-ai/deepseek-harness/discussions/5999#discussioncomment-18371079.\r\n",
+          "fence_count": 0,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:31:56.852957+00:00",
+      "files": [
+        {
+          "path": "noskill/S22-duplicate-insert-boot-crash-trap/agent-output/S22-duplicate-insert-boot-crash-trap/report.md",
+          "bytes": 6216,
+          "lines": 49,
+          "sha256": "99f87f0e34256c84a124624ca1d264c692372d459247eefe98b82935b3ba6a43",
+          "headings": [
+            "# S22: Duplicate workspace-files declaration prevents boot",
+            "## Root cause and evidence",
+            "## Safe profile layering",
+            "## Minimal correction",
+            "## Prevention",
+            "## Scope and evidence limits"
+          ],
+          "tail": "alysis used only the supplied solver instruction and four fixture files. No skill was read or used. No fixture files were modified; no installations, migrations, network calls, application boots, or runtime tests were performed. Installed source code and the full effective profile were not supplied or inspected, so conclusions are limited to the excerpts and stack trace. The report provides a correction for the demonstrated boot crash, not a verified repair of the preceding Sidebar read failure. No blocker prevented completion of this report.\r\n",
+          "fence_count": 2,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S22-duplicate-insert-boot-crash-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:47:42.484825+00:00",
+      "files": [
+        {
+          "path": "skill/S22-duplicate-insert-boot-crash-trap/agent-output/S22-duplicate-insert-boot-crash-trap/report.md",
+          "bytes": 7988,
+          "lines": 70,
+          "sha256": "0e427fb360a3d0a5b295bc81d047112b97ebcb999dab9ad310bd999d1a27ccdc",
+          "headings": [
+            "# S22 — Duplicate insert boot crash diagnosis",
+            "## Root cause",
+            "## Layering rules",
+            "## Exact minimal fix",
+            "## Prevention",
+            "## Validation and status"
+          ],
+          "tail": "d live dependency/activation state are not provided. These do not block the composition diagnosis.\n- **Rollback:** No changes to the fixture or installation need rollback. For a later real correction, retain a copy of the profile patch and remove only the identified manual block; restoring that block would restore the known collision.\n- **Recommendations:** Add provenance-rich host diagnostics and document config-by-id versus insert semantics. No plugin-side migration is indicated by this boot error.\n\nBlockers: none for this read-only report.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S23-passing-compat-guard-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:40:42.114476+00:00",
+      "files": [
+        {
+          "path": "noskill/S23-passing-compat-guard-trap/agent-output/S23-passing-compat-guard-trap/report.md",
+          "bytes": 11719,
+          "lines": 107,
+          "sha256": "3f192c7a862939d9976e684119f43992f87cd05c11d7d4b800962d08426f74ee",
+          "headings": [
+            "# S23 — Silent input-recall failure",
+            "## Attribution and evidence",
+            "## Snapshot and replacement contract",
+            "## One-build migration",
+            "## Guard hardening and lifecycle",
+            "## Verification without a full migration",
+            "## Scope and limits"
+          ],
+          "tail": "ped guard never reads the snapshot.\n\n## Scope and limits\n\nSingle no-skill attempt. Read only the task instruction and attached fixture; no skills, network, other repository material, external tests, or graders were consulted. Fixture files were not changed. This is a source/type analysis and migration recipe, not a compiled or runtime-verified patch. Missing full SDK/injection declarations, plugin helper sources, and executable hosts prevent validating the proposed build and live behavior here; they do not block the field-removal attribution.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S23-passing-compat-guard-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T06:57:48.539238+00:00",
+      "files": [
+        {
+          "path": "skill/S23-passing-compat-guard-trap/agent-output/S23-passing-compat-guard-trap/report.md",
+          "bytes": 14416,
+          "lines": 121,
+          "sha256": "17fb1a6e7ac4a598e9f9a304277d22228424292cf58a12e42a6093acdd163156",
+          "headings": [
+            "# S23 — Read-only diagnosis and migration recipe",
+            "## Scope and evidence",
+            "## 1. Exact failure and why it is silent",
+            "## 2. Type evidence and replacement contract",
+            "## 3. Concrete dual-host recipe",
+            "## 4. Harden the guard at the data boundary",
+            "## 5. Verification and prevention",
+            "## Status"
+          ],
+          "tail": " installations, host upgrades, source edits, full suite, and real mount; the evidence pack is read-only and lacks the author's repository/runtime harness. No executed-test success is claimed. Pending: actual compilation of the recipe, Cordis optional injection validation in the author's package, runtime readiness behavior, exact served-source identity, and two-host functional verification. These do not block the evidence-based report. Rollback: fixture untouched; only this report was created, so there is no runtime/source rollback to perform.\r\n",
+          "fence_count": 6,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S24-dock-cotenant-crash-trap",
+      "arm": "noskill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T07:02:52.442997+00:00",
+      "files": [
+        {
+          "path": "noskill/S24-dock-cotenant-crash-trap/agent-output/S24-dock-cotenant-crash-trap/report.md",
+          "bytes": 13477,
+          "lines": 158,
+          "sha256": "53beec55b1293d7c321b5f97270efa3c6833b0453205cfdfa33b258ca92821f9",
+          "headings": [
+            "# S24 — Dock co-tenant crash diagnosis and repair plan",
+            "## Attribution and mechanism",
+            "## What the experiment establishes",
+            "## Corrected component excerpt",
+            "## Isolation hygiene",
+            "## Verification plan — no host process restart"
+          ],
+          "tail": "ntroduce such faults into the supplied fixture.\n\nEvidence limits: all conclusions above are drawn from the provided evidence files and the solver instruction. The fixture was read only; no install, migration, source edit, host restart, network access, or runtime validation was performed. No skills, sibling cells, previous answers, tests, verifiers, scoring files, credentials, or memories were consulted. Full implementation and live validation require the real plugin checkout and a running host; these do not block this evidence-based report.\r\n\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    },
+    {
+      "task": "S24-dock-cotenant-crash-trap",
+      "arm": "skill",
+      "status": "solver_completed",
+      "attempts": 1,
+      "finished_at": "2026-11-23T14:21:53.845142+00:00",
+      "files": [
+        {
+          "path": "skill/S24-dock-cotenant-crash-trap/agent-output/S24-dock-cotenant-crash-trap/report.md",
+          "bytes": 16771,
+          "lines": 163,
+          "sha256": "a606eea76cbf4bb6f82b9f9f68230ea388995acd485ec6e479869c0948c1a2cd",
+          "headings": [
+            "# S24: shared dock crash diagnosis and proposed fix",
+            "## Scope and basis",
+            "## 1. Culprit and collateral damage",
+            "## 2. What the experiment establishes",
+            "## 3. Corrected component excerpt",
+            "## 4. Tenant and host isolation",
+            "## 5. Verification plan without restarting the host",
+            "## Completion and limits"
+          ],
+          "tail": "profile are needed for those checks; no blocker prevents completing this requested report.\n- **Rollback:** no operational changes to undo. A later implementation should retain A's original source/bundle and restore only its owned paths if necessary; disabling A and resetting the boundary is the evidence-backed temporary mitigation for B. Do not change B or downgrade the host merely to address this render failure.\n- **Recommendation:** implement A's optional-hook adapter and local isolation first; evaluate host per-entry boundaries separately.\r\n",
+          "fence_count": 4,
+          "screening_matches": []
+        }
+      ]
+    }
+  ],
+  "integrity_summary": {
+    "audit_type": "Artifact existence and byte integrity only; no answer scoring",
+    "time": "2026-11-23T14:24:47.649165+00:00",
+    "cells": 48,
+    "unique_cells": 48,
+    "status_counts": {
+      "solver_completed": 48
+    },
+    "all_fixtures_unchanged": true,
+    "all_reports_present": true,
+    "all_report_hashes_match": true,
+    "all_skill_conditions_intact": true,
+    "all_single_attempt": true
+  },
+  "review_conclusion": "No unresolved network/quota interruption found at solver delivery level: all48 reports exist, contain substantive text, end coherently, have completion records and match recorded hashes.",
+  "screening_review": "One match: S10 noskill discusses API rate limits as part of the task recommendation; it is not a solver execution error. No quota-error placeholder or continuation marker found. All report outlines and endings reviewed; no obvious abrupt truncation found.",
+  "recovered_network_or_quota_cells": [
+    {
+      "task": "S1",
+      "arm": "skill"
+    },
+    {
+      "task": "S1",
+      "arm": "noskill"
+    },
+    {
+      "task": "S2",
+      "arm": "noskill"
+    },
+    {
+      "task": "S8",
+      "arm": "skill"
+    },
+    {
+      "task": "S9",
+      "arm": "noskill"
+    },
+    {
+      "task": "S14",
+      "arm": "skill"
+    },
+    {
+      "task": "S15",
+      "arm": "noskill"
+    },
+    {
+      "task": "S20",
+      "arm": "skill"
+    },
+    {
+      "task": "S21",
+      "arm": "noskill"
+    }
+  ],
+  "recovered_user_pause_cells": [
+    {
+      "task": "S24",
+      "arm": "skill"
+    }
+  ],
+  "evidence_limits": [
+    "Completion review covers manifest, archived report files, hashes, interruption events and observed solver completion messages. Full provider transport logs are not archived here.",
+    "No answer correctness or rubric coverage assessment performed. Reports may disclose missing evidence or unexecuted runtime checks; those are not network/quota failures."
+  ]
+}

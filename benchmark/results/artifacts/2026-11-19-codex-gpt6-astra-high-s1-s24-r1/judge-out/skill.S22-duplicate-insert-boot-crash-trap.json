@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "duplicate-loader-attribution",
+      "verdict": "pass",
+      "reason": "对比两 excerpt 双 insert workspace-files，崩溃定位于 EntryGroup.update/include 组合期抛 duplicate loader entry id，明确致命而非 last-write-wins，驳回无害冗余注释。"
+    },
+    {
+      "id": "three-layering-cases",
+      "verdict": "pass",
+      "reason": "三情形（按 id 配置覆盖安全、全新 id 插入有效、bundle 已供 id 插入致命）以表格区分并据两 excerpt 归类维护者行为为第三类。"
+    },
+    {
+      "id": "minimal-profile-fix",
+      "verdict": "pass",
+      "reason": "仅删除 profile 末尾的 workspace-files insert 块及注释，保留 bundle 原声明与其他条目，配置调整走 override，明确改名/删除 bundle 服务均非正解。"
+    },
+    {
+      "id": "plugin-and-failure-boundary",
+      "verdict": "pass",
+      "reason": "说明是插件执行前的组合错误、改插件代码无效，删除重复只解除启动阻塞，先前“文件资源服务不可用”须另行验证。"
+    },
+    {
+      "id": "author-and-host-prevention",
+      "verdict": "pass",
+      "reason": "要求插入前检查安装 bundle 及各组合层的 id 区分 override/insert，并给出点名 workspace-files、双来源路径行号、指向删除 profile 块的可执行宿主诊断示例。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "retain-or-add-duplicate",
+      "triggered": false,
+      "reason": "最终建议删除重复插入并纠正 profile 组合，未保留重复或转向插件侧修改。"
+    }
+  ]
+}
