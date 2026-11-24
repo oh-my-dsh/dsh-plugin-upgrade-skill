@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "paste-names-and-scope",
+      "verdict": "pass",
+      "reason": "Designs paste_image/paste_file with (2)(3) before extension, smallest free candidate, in-batch reservation via working Set, explicit paste-only source option, drop/picker keep real names."
+    },
+    {
+      "id": "live-conflict-state",
+      "verdict": "pass",
+      "reason": "Names input.state.getSnapshot() live occurrences as authoritative, explains records.delete on transient empty snapshot while occurrence stays live, and adds per-session in-flight reservations."
+    },
+    {
+      "id": "stale-tag-display",
+      "verdict": "pass",
+      "reason": "Uses x-cache HIT/age 178/older 0.2.9 and renderCurrentChip(tag) remote<=local branch; requires semantic remote>local comparison and never showing older fetched tag."
+    },
+    {
+      "id": "regressions",
+      "verdict": "pass",
+      "reason": "Concrete tests: three pastes get base/(2)/(3), empty-records live-occurrence blocks reuse, drop/picker unchanged, and old/equal/newer remote tag chip tests."
+    },
+    {
+      "id": "release-hygiene",
+      "verdict": "pass",
+      "reason": "Edits distributed lib/client.js, syncs PLUGIN_VERSION with package metadata, node --check plus regressions, explains deploy + browser reload and no host-side update endpoint."
+    }
+  ],
+  "caps": []
+}

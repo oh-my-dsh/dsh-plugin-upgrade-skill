@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "silent-break-attribution",
+      "verdict": "pass",
+      "reason": "Walks resolve(): snapshot succeeds without current, id undefined, returns null every keystroke, onKeyDown exits before preventDefault; explains both silences (all four probes survive; undefined is a legitimate quiet no-session state) without claiming service/guard removal."
+    },
+    {
+      "id": "evidence-mapping",
+      "verdict": "pass",
+      "reason": "Type-walks alpha.1 SessionListState{byId,current} vs alpha.2 snapshot without current, maps uiSession adapter.current to {key,ctx,hooks,keyedHooks,props} with key replacing current and ctx replacing scope(id)."
+    },
+    {
+      "id": "dual-host-migration",
+      "verdict": "pass",
+      "reason": "Provides one-build resolver reading uiSession.adapter.current.getSnapshot() with legacy current+scope fallback, optional uiSession injection, scoped ctx used for conversation get and input.for."
+    },
+    {
+      "id": "guard-hardening",
+      "verdict": "pass",
+      "reason": "Names field-level removal behind service-level stability checked once at activation; hardens with actual-capability probes (field presence / uiSession feature detect) re-run per binding change rather than presence-list expansion."
+    },
+    {
+      "id": "verification-and-prevention",
+      "verdict": "partial",
+      "reason": "Covers binding-key probe, chord behavior on both hosts and fail-loud prevention, but never proposes typechecking the plugin against the alpha.2 published declarations as the pre-ship gate."
+    }
+  ],
+  "caps": [
+    {
+      "id": "slot-reregistration-misdiagnosis",
+      "triggered": false,
+      "reason": "Explicitly rejects the slot/inject red herring and delivers the resolver code fix as the remedy."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "removed-api-and-crash",
+      "verdict": "pass",
+      "reason": "Locates session.events reads at channel.js:734 and 6685, cites changelog removal at 0.1.2-alpha.4 with seq/eventAt/snapshotEvents, and explains the non-iterable crash."
+    },
+    {
+      "id": "peer-check-boundary",
+      "verdict": "pass",
+      "reason": "Expands ^0.1.2-alpha.2 correctly and explains npm checks declared metadata only, not API existence or runtime behavior; author claim not proof."
+    },
+    {
+      "id": "distinct-breakage-categories",
+      "verdict": "pass",
+      "reason": "Gives three genuinely distinct classes: removed/renamed API, changed argument/return shapes (array-to-promise), changed lifecycle behavior."
+    },
+    {
+      "id": "author-prevention",
+      "verdict": "pass",
+      "reason": "Requires testing actual target versions and gives an actionable policy: narrowed peer range plus runtime capability detection, clarifying engines is not an API probe."
+    },
+    {
+      "id": "user-preinstall-check",
+      "verdict": "pass",
+      "reason": "Concrete rg-based source/changelog cross-check tied to the Session.events incident; goes beyond rerunning npm install."
+    }
+  ],
+  "caps": [
+    {
+      "id": "peers-prove-runtime",
+      "triggered": false,
+      "reason": "Report explicitly states peer satisfaction is not proof of runtime compatibility and affirms the documented removal."
+    }
+  ]
+}

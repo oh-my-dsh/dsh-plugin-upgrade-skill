@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Cites LinkType Junction, Target E:\\dev\\dsh-attach-input and the link: marker, explains repo edits already change the installed copy, calls copy-through-junction never appropriate, and distinguishes a copied dependency installation."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Ties copy-session.txt to host-owned handles, states closing the tab does not stop the host, separately explains browser HTTP cache, and explicitly limits itself against extrapolating this host's serving behavior."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains renaming through the junction renamed the sole source files making the copy fail, restores .old2 names via Rename-Item preserving contents, runs node --check on both, and stops the host first as a precaution without requiring locked renames or recreation."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Gives the semantic dependency order: fully stop host, start fresh dsh web, cache-bypassing hard refresh, then verify served code, feature, route and absence of errors; states browser restart alone is insufficient and syntax check is not activation."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Pre-flight inspects LinkType/Target on both paths and the cordis.patch.yml marker, chooses linked vs copied procedure, and explains generic copy-into-node_modules advice as actively harmful cause of the incident."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "Final plan only renames .old2 back via the repo path and explicitly forbids copying, deleting .old2 content, or treating the paths as independent."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "Plan requires fully stopping and restarting the dsh host before cache-bypassing refresh; explicitly says closing/reopening a tab is not the host step."
+    }
+  ]
+}

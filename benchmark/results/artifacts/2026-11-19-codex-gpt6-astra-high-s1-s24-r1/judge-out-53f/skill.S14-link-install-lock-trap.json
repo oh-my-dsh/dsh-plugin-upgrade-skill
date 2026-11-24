@@ -1,0 +1,41 @@
+{
+  "decisions": [
+    {
+      "id": "junction-deployment",
+      "verdict": "pass",
+      "reason": "Quotes LinkType Junction and Target from profile-introspection.txt plus the link: marker, establishes the profile entry resolves to the repo tree, explains edits already change the installed copy, calls copying harmful, and distinguishes a copied dependency install."
+    },
+    {
+      "id": "host-lock-and-client-cache",
+      "verdict": "pass",
+      "reason": "Relates copy-session.txt and maintainer-thread.md to host-owned handles and loaded module/bundle state, explains closing the tab only closes a client connection, separately covers browser cache and stale executing module, and avoids treating browser caching as a filesystem lock or generalizing host behavior."
+    },
+    {
+      "id": "rename-recovery",
+      "verdict": "pass",
+      "reason": "Explains the junction made $dst renames act on the sole repo source and the subsequent copy fail on missing names; restores .old2 names via the repo path preserving contents, node --check both, stop host first as precaution, no locked renaming or file recreation."
+    },
+    {
+      "id": "ordered-activation",
+      "verdict": "pass",
+      "reason": "Ordered plan: pre-flight identity, fully stop host tree, restore/check, start fresh dsh web with verified PID, Ctrl+Shift+R hard reload, then verify both client code and route with explicit insufficiency notes for reload-only or 200-only evidence."
+    },
+    {
+      "id": "install-mode-preflight",
+      "verdict": "pass",
+      "reason": "Pre-flight inspects LinkType/Target on both entries and the composition marker before any file operation, resolves link chains, decides linked vs copied procedure, and explains generic copy-into-node_modules guidance as the actively harmful cause."
+    }
+  ],
+  "caps": [
+    {
+      "id": "copy-through-junction",
+      "triggered": false,
+      "reason": "Final advice renames .old2 back via the repository path only and explicitly forbids copy, reinstall, or unlink; no affirmative copy-through-junction, deletion of .old2 content, or independent-copies claim."
+    },
+    {
+      "id": "browser-only-activation",
+      "triggered": false,
+      "reason": "Activation requires full host stop/restart with verified PID before the browser hard reload; explicitly states a browser reload or tab close is not a host restart and reconnect is insufficient."
+    }
+  ]
+}

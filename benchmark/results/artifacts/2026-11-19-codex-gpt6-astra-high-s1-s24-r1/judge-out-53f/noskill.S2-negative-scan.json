@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "partial",
+      "reason": "Correctly locates index.js:3 inject apiProxy and index.js:9 ctx.apiProxy.llm.providers() and explains the dead host-apiproxy dependency, but never maps the break to A1-01, explicitly declaring the card catalog absent and the mapping blocked."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "Accounts for all six other categories with per-file scanned evidence, identifies session-notes.js as a pure string/array utility, and treats cordis.patch.yml as ordinary composition/patch registration without denying its existence or inventing coupling."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explicitly explains no-hit cannot establish compatibility (coverage limits, dependency/config/runtime needing separate evidence) and keeps the confirmed apiProxy break separate from the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies build/typecheck against real alpha.2 dependencies, an isolated fresh-profile cold boot checking patch discovery and non-pending injection, and a functional provider-enumeration smoke, all framed as mandatory later steps, not executed."
+    }
+  ],
+  "caps": []
+}

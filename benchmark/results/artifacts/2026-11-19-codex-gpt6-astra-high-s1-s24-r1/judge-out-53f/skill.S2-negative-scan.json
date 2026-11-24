@@ -1,0 +1,25 @@
+{
+  "decisions": [
+    {
+      "id": "host-break",
+      "verdict": "pass",
+      "reason": "Locates index.js:3 apiProxy injection and index.js:9 ctx.apiProxy.llm.providers(), maps the break to DSH-0.1.2-A1-01 + API-01 with the llm/listProviders Host migration sketch, and explains the obsolete dsh-host-apiproxy dependency in package.json:17."
+    },
+    {
+      "id": "negative-coverage",
+      "verdict": "pass",
+      "reason": "All six negative categories carry per-file scanned evidence; session-notes.js is identified as a pure string/array utility and cordis.patch.yml is classified via API-08 as ordinary composition, not a host-source patch, without denying its existence or inventing coupling."
+    },
+    {
+      "id": "inference-boundary",
+      "verdict": "pass",
+      "reason": "Explains no-hit only means no detected coupling under scanned patterns, dependencies/composition/runtime are separate obligations, and keeps the decisive apiProxy removal distinct from the six negative categories."
+    },
+    {
+      "id": "verification-plan",
+      "verdict": "pass",
+      "reason": "Specifies baseline + build/typecheck against real alpha.2 artifacts, an isolated-profile cold boot proving activation with no pending services, and an actual provider-listing call asserting real results — all marked pending, not executed."
+    }
+  ],
+  "caps": []
+}

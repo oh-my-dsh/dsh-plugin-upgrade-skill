@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 patch 声明/目标/脚本，明确区分组合 overlay 与真实源码替换并阐明私有 SessionView 耦合与目标重验需求。"
+    },
+    {
+      "id": "events",
+      "verdict": "pass",
+      "reason": "定位 producer/consumer 与 ignorable:true，正确解释 A1-02 移除被 A2-01 恢复、omission-safe 语义与未知必需事件须 fail closed，并明确否认 Session.append 可写标记。"
+    },
+    {
+      "id": "host-services",
+      "verdict": "pass",
+      "reason": "定位两处 apiProxy 与 A1-01 移除，区分 Host 域服务（ctx.llm.listProviders）与 Web Client remote 投影并告诫勿向 Host 激活注入 Client-only remote。"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位固定 homedir/.dsh/profiles/default 路径，说明须由运行时 DSH_HOME/所选 profile 决定，并明确否认 alpha.1 引入 --profile。"
+    },
+    {
+      "id": "ui",
+      "verdict": "pass",
+      "reason": "定位私有 SessionView 导入与 registerCommand，说明拆分后需按 API-07 校验目标导出/打包产物并使用维护中的公共 seam，不虚构替代导入。"
+    },
+    {
+      "id": "channel",
+      "verdict": "pass",
+      "reason": "定位休眠回环服务器，明确『回环绑定不是认证』，区分 Connection 受管认证 seam 与裸路由并给出 401/403 验证项。"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处子进程调用，说明 stdout 早已是最终文本、JSONL 解析是既有缺陷、alpha.1 在 stderr 增加推理输出，须以退出状态判完成。"
+    },
+    {
+      "id": "mapping",
+      "verdict": "pass",
+      "reason": "将各处耦合逐一映射到 A1-03、A2-01/A1-02、A1-01、A1-04、A1-08 并补 A1-05，全部与实际定位对应而非裸卡片清单。"
+    },
+    {
+      "id": "limits",
+      "verdict": "pass",
+      "reason": "说明七类全命中与静态副本局限，提出目标 build/typecheck、真实 profile 挂载与功能冒烟，且不要求执行该静态 fixture。"
+    }
+  ],
+  "caps": []
+}

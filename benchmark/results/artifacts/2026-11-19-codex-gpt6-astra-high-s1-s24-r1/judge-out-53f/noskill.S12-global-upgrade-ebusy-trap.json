@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "native-module-owner",
+      "verdict": "pass",
+      "reason": "Identifies PID 42432 dsh web host as koffi.node loader; loaded native module locked until host exits causes EBUSY copyfile failure."
+    },
+    {
+      "id": "browser-versus-host-sequence",
+      "verdict": "pass",
+      "reason": "States browser refresh only affects SPA not the host, and gives ordered stop→verify exit→install→verify→restart procedure without killing unrelated node processes."
+    },
+    {
+      "id": "unpinned-dist-tag-resolution",
+      "verdict": "pass",
+      "reason": "Explains unpinned bare request follows latest=0.1.1-rc.2 (alpha=0.1.2-alpha.5), replacing alpha.4 rather than preserving it."
+    },
+    {
+      "id": "safe-exact-commands",
+      "verdict": "pass",
+      "reason": "Gives npm install -g @deepseek-ai/dsh@0.1.2-alpha.5 plus TUI, verifies dsh --version equals alpha.5, and restarts the host."
+    },
+    {
+      "id": "readme-prevention",
+      "verdict": "pass",
+      "reason": "Tells README authors to pin the exact tested core version and avoid silently following latest over an existing prerelease, across plugin-only and combined command forms."
+    }
+  ],
+  "caps": []
+}

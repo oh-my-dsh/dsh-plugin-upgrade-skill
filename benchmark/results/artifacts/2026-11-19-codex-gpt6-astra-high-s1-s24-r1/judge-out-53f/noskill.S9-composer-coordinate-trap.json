@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "projection-contract",
+      "verdict": "pass",
+      "reason": "Uses host-input-contract.ts and host-input-facade.ts to distinguish clipboard-text draft/Occurrence offsets (chip expands to clipboardText) from detect-coordinate TokenSpan (one U+FFFC per chip) used by insertReference/consumeToken, with normal width for text and spaces."
+    },
+    {
+      "id": "repeat-paste-failure",
+      "verdict": "pass",
+      "reason": "Locates snapshot.draft.length in plugin-client.js add, derives [29,29) vs required [2,2) after the first chip, ties the false to the detect-span splice, and explicitly says the changed-composer toast does not prove a concurrent edit."
+    },
+    {
+      "id": "removal-and-bookkeeping",
+      "verdict": "pass",
+      "reason": "Traces remove passing [0,28) unconverted to consumeToken, the ignored boolean, unconditional records.delete, surviving occurrence, unavailable dock metadata and intact composer chip — all tied to the same coordinate mismatch, not a separate upload failure."
+    },
+    {
+      "id": "conversion-and-success-gate",
+      "verdict": "pass",
+      "reason": "Derives detect(p)=p-sum(o.length-1), applies it at both call sites (insertion end accounting all occurrences, removal mapped offset plus one-detect-char span), keeps the revision guard, and gates record deletion on confirmed successful consumption."
+    },
+    {
+      "id": "regression-sequences",
+      "verdict": "pass",
+      "reason": "Proposes successive pastes with multiple chips, then removes a chip with another preceding chip asserting composer occurrence, dock chip and record disappear together while the other chip survives; adds stale-revision and declined-consumption variants as valid extras."
+    }
+  ],
+  "caps": []
+}

@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "native-install-failure",
+      "verdict": "pass",
+      "reason": "正确归因 fs-ext@2.1.1 由 dsh-session-persistence-jsonl 引入、install 脚本 node-gyp configure build 因缺 Visual Studio 失败，排除 pnpm/网络因素。"
+    },
+    {
+      "id": "static-import-trap",
+      "verdict": "pass",
+      "reason": "引用 lease-excerpt 顶层 flock 导入，说明 --ignore-scripts 只免构建、Windows 上模块加载仍先于运行时分支，无法达成可用启动。"
+    },
+    {
+      "id": "platform-lock-contract",
+      "verdict": "pass",
+      "reason": "区分 win32 acquireLockHandleWin32 命名内核信号量与 POSIX flock，提出 Windows 导入安全 stub 且真实锁定仍走信号量、非 Windows 保留原生 flock。"
+    },
+    {
+      "id": "reproducible-local-patch",
+      "verdict": "partial",
+      "reason": "遵循 patchedDependencies/node-pty 先例并提出平台门控安装脚本、入口 stub、workspace 注册与重装/加载/启动检查，但未考虑 pnpm 构建脚本权限（allowBuilds/批准）问题。"
+    },
+    {
+      "id": "machine-and-upstream-boundaries",
+      "verdict": "pass",
+      "reason": "明确遵守无 Visual Studio 约束，仅用仓库本地补丁机制，不改动上游仓库/发布依赖，也未把本地 patch 误判为禁止的上游修改。"
+    },
+    {
+      "id": "corridor-mapping",
+      "verdict": "fail",
+      "reason": "报告明确表示无法确立卡片 ID，未引用完整 DSH-0.1.3-A1-03，仅有语义描述不满足引用要求。"
+    }
+  ],
+  "caps": [
+    {
+      "id": "requires-visual-studio",
+      "triggered": false,
+      "reason": "计划明确拒绝安装 Visual Studio，仅用平台门控补丁。"
+    },
+    {
+      "id": "ignore-scripts-only",
+      "triggered": false,
+      "reason": "除跳过构建外还修补入口导出使其可加载，并同时处理安装与加载两道门槛。"
+    },
+    {
+      "id": "upstream-edit-required",
+      "triggered": false,
+      "reason": "全部改动通过本地 pnpm patch 与 workspace 注册，不改上游。"
+    },
+    {
+      "id": "lock-bypass",
+      "triggered": false,
+      "reason": "Windows stub 仅限未被调用的 flock 路径且调用即报错，信号量路径与 POSIX flock 均完整保留。"
+    }
+  ]
+}

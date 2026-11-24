@@ -1,0 +1,31 @@
+{
+  "decisions": [
+    {
+      "id": "corridor-net-state",
+      "verdict": "pass",
+      "reason": "Correctly explains alpha.1 removal followed by alpha.2 restoration of ignorable retention and applies the restored state to produceExternalEvent, with full history beyond card names."
+    },
+    {
+      "id": "remove-marker-stripping",
+      "verdict": "pass",
+      "reason": "Locates delete (event as any).ignorable, rejects the continued-stripping comment, prescribes removing the code and its rationale, distinguishes code removal from marker removal, and notes the delete is currently a no-op."
+    },
+    {
+      "id": "informational-producer",
+      "verdict": "partial",
+      "reason": "Covers informational-only marking and required-events exclusion but never states that retention means marked events remain in the loaded log (retention is not a reader-side filter)."
+    },
+    {
+      "id": "public-append-gap",
+      "verdict": "pass",
+      "reason": "Identifies that public Session.append has no ignorable parameter, forbids faking via any-cast or invented arguments, and defers integration pending verification of the actual alpha.2 API."
+    }
+  ],
+  "caps": [
+    {
+      "id": "keep-stripping-marker",
+      "triggered": false,
+      "reason": "Final recommendation deletes the alpha.1 defense and rejects continued stripping on alpha.2."
+    }
+  ]
+}

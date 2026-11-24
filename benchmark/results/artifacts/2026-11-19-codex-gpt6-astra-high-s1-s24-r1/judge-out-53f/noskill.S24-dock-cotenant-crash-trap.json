@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "culprit-attribution",
+      "verdict": "pass",
+      "reason": "Attributes the only crash to plugin A's unconditional useSessionPendingInteraction call (TypeError at client.js:219), explains alpha.2 replaced it with useSessionStatus while useSessions stays, and confirms B uses no standard-kit hooks."
+    },
+    {
+      "id": "cotenant-mechanism",
+      "verdict": "pass",
+      "reason": "Uses render-tree note to show both dock entries share one DrawerErrorBoundary, so A's throw unmounts B chips; attach button survives in conversation.input.left under a separate boundary."
+    },
+    {
+      "id": "experiment-reading",
+      "verdict": "pass",
+      "reason": "Reads disabling-A-restores-B as render-crash coupling only, denies it proves B's full compatibility, explains reinstalling B could never help, and refutes the two-removed-props theory."
+    },
+    {
+      "id": "degradation-fix",
+      "verdict": "pass",
+      "reason": "Provides corrected component code reading useSessionStatus(...).pendingInteraction with capability detection, empty-map fallbacks, and the rationale that degradation must be silent because a throw unmounts co-tenants."
+    },
+    {
+      "id": "verification-and-hygiene",
+      "verdict": "pass",
+      "reason": "Verification needs only browser refresh without host restart, covers joint rendering and B paste/remove/re-paste regression, plus defensive destructuring, tenant-local boundaries and host per-entry boundary tradeoffs."
+    }
+  ],
+  "caps": [
+    {
+      "id": "innocent-plugin-fix",
+      "triggered": false,
+      "reason": "Remedy fixes plugin A and treats B's loss as collateral unmounting, not an independent B bug."
+    }
+  ]
+}

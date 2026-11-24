@@ -1,0 +1,50 @@
+{
+  "decisions": [
+    {
+      "id": "source-patch",
+      "verdict": "pass",
+      "reason": "定位 cordis.patch.yml/patch.yml/apply-patch.mjs 及 SessionView.ts 目标，明确区分组合与源码替换并指出私有 SessionView 耦合。"
+    },
+    {
+      "id": "events",
+      "verdict": "partial",
+      "reason": "定位 producer/consumer 与 ignorable:true 并正确折叠 alpha.1/alpha.2，但未解释 omission-safe 信息标记语义及『非必需事件白名单』含义。"
+    },
+    {
+      "id": "host-services",
+      "verdict": "partial",
+      "reason": "定位两处 apiProxy 调用，但未指明 apiProxy 已被移除（A1-01），也未区分 Host 域服务注入与 Web Client Remote。"
+    },
+    {
+      "id": "host-path",
+      "verdict": "pass",
+      "reason": "定位 homedir/.dsh/profiles/default 固定路径并说明须用运行时 profile 解析，未声称 --profile 为 alpha.1 引入。"
+    },
+    {
+      "id": "ui",
+      "verdict": "partial",
+      "reason": "定位私有 SessionView 导入与 registerCommand，但仅说替代 API 缺失，未阐明拆分后需验证公共 owner/seam 的方法。"
+    },
+    {
+      "id": "channel",
+      "verdict": "partial",
+      "reason": "定位回环服务器并指出无认证，但对『回环绑定不豁免认证要求』及受管认证通道与裸路由的区别阐述不充分。"
+    },
+    {
+      "id": "subprocess",
+      "verdict": "pass",
+      "reason": "定位两处 dsh 子进程与 stdout JSON.parse，正确说明 stdout 为最终文本、JSONL 假设本来就是错的，未虚构 alpha.2 stdout 变更。"
+    },
+    {
+      "id": "mapping",
+      "verdict": "partial",
+      "reason": "语义映射方向与正确卡片实质一致但因无卡片目录未给出任何 A1-xx ID，属实质正确但不完整。"
+    },
+    {
+      "id": "limits",
+      "verdict": "partial",
+      "reason": "覆盖全部七类命中并陈述扫描局限，但未明确提出目标版本 build/typecheck、隔离启动与功能路径验证。"
+    }
+  ],
+  "caps": []
+}

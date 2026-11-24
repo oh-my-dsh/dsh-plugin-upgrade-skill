@@ -1,0 +1,30 @@
+{
+  "decisions": [
+    {
+      "id": "chat-projection",
+      "verdict": "pass",
+      "reason": "Locates all partial/runningCalls/turnEnds reads, routes them through the documented chat legacy projection (useChat(chat => chat?.legacy...), views.get('chat')?.legacy) and notes later migration to the owning timeline API — a supported direct migration with the compatibility option explained."
+    },
+    {
+      "id": "session-lifecycle",
+      "verdict": "pass",
+      "reason": "Locates running at Pet.tsx:18-19, assigns it to the useSession lifecycle seat explicitly outside the chat legacy projection, prescribes keeping useSession(s => s?.running ?? false), and never claims the existing call must be renamed."
+    },
+    {
+      "id": "type-and-inject",
+      "verdict": "pass",
+      "reason": "Locates the removed dsh-client-runtime imports and package.json client.inject entry, repoints Context as ClientContext to scoped @deepseek-ai/cordis, moves snapshot types to their owning ui-chat package, and does not claim cordis exports snapshot types."
+    },
+    {
+      "id": "slot-registration",
+      "verdict": "pass",
+      "reason": "Locates the scoped slots.register call, preserves runtime inject=['slots','conversation','locale'] and the scoped wait, attributes the slots declaration to the ui-renderer owner via Context augmentations, and preserves slot name and lifetime."
+    },
+    {
+      "id": "mapping-and-plan",
+      "verdict": "pass",
+      "reason": "Ties each located change to full DSH-0.1.2-A1-03 (plus A1-25 for package removal) with per-row reasoning, and clearly separates projection-supported content reads from immediate type/inject/lifecycle changes."
+    }
+  ],
+  "caps": []
+}

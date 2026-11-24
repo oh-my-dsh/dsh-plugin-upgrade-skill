@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "baked-version-release-order",
+      "verdict": "pass",
+      "reason": "对照 release-log 与 bundle 常量证明先构建后 bump 导致 0.3.6 烘焙进 v0.3.7 包，说明运行时不读 package.json，给出先 bump 后构建并在提交前检查产物常量、保留镜像校验"
+    },
+    {
+      "id": "client-host-update-asymmetry",
+      "verdict": "pass",
+      "reason": "用 PNG 200/SVG 404 unsupported-type 与 lib-index SVG 映射证明路由存在而运行中白名单过期，需重启宿主重载 boot 时闭包，且限定该宿主生命周期"
+    },
+    {
+      "id": "payload-corruption-attribution",
+      "verdict": "pass",
+      "reason": "以干净源 XML/typed 结果与持久化 spliced 文本及干净重读定位上游 result-text 拼装损坏，插件消费受损副本，磁盘文件无辜且不可修复"
+    },
+    {
+      "id": "validated-render-fallbacks",
+      "verdict": "pass",
+      "reason": "给出有序链：磁盘字节优先、payload 经 DOMParser parsererror 校验后才能渲染、sandbox 无脚本的 iframe 允许 SMIL、最终显式错误，校验失败不放行到 iframe"
+    },
+    {
+      "id": "forensics-and-prevention",
+      "verdict": "pass",
+      "reason": "解释逐 Zstandard frame 顺序解码、按序拼装并定位 JSONL 中精确 splice 与源对比上报上游；checklist 覆盖 bump 前置、产物常量、镜像 SHA 与运行时探针"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-release-render-advice",
+      "triggered": false,
+      "reason": "建议 bump 先于构建、重启宿主、保留镜像校验、不编辑干净 SVG，且渲染前强制 XML 校验并在 iframe 禁脚本"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "whole-combo-attribution",
+      "verdict": "pass",
+      "reason": "把 client.js 顶层 ESM import 与 boot 日志 classic combo 拼接及浏览器编译失败连线，指出 typert-registry 仅是首个被连累的 entry，且不推断 ESM 处处非法"
+    },
+    {
+      "id": "diagnosis-and-packaging",
+      "verdict": "pass",
+      "reason": "给出 profile insert 行二分与以 script 模式解析产物（并说明 module 模式检查不够），完整描述 ModuleLoader.load({id,factory})、宿主 require('react')、inject/apply 导出"
+    },
+    {
+      "id": "cross-entry-slot-registration",
+      "verdict": "pass",
+      "reason": "用 plugin-apply-error 与裸 register 解释声明归属与 apply 顺序不保证，给出精确 ctx.slots.inject('settings.section', ()=>register(...)) 且注册方仅 name/id/order、不带 kind/scope"
+    },
+    {
+      "id": "boot-restart-discipline",
+      "verdict": "pass",
+      "reason": "解释 boot 时快照 combo、编辑+刷新不重建，要求完全停启并 taskkill /T /F 清理占端口的旧进程树，EADDRINUSE 归因于旧进程而非打包缺陷"
+    },
+    {
+      "id": "host-and-author-prevention",
+      "verdict": "pass",
+      "reason": "提出启动期逐 bundle classic 解析+偏移映射归因元凶，checklist 覆盖 factory、宿主 React、延迟跨 entry slot、重启与 Windows 进程树清理"
+    }
+  ],
+  "caps": [
+    {
+      "id": "contradictory-operational-advice",
+      "triggered": false,
+      "reason": "最终建议拒绝裸 ESM、使用 slots.inject、不设 kind/scope，并坚持完全重启而非刷新"
+    }
+  ]
+}

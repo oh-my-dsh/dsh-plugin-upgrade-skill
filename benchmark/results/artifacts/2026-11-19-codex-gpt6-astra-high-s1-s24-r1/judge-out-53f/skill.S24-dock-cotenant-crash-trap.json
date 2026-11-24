@@ -1,0 +1,36 @@
+{
+  "decisions": [
+    {
+      "id": "culprit-attribution",
+      "verdict": "pass",
+      "reason": "归因插件 A 的 useSessionPendingInteraction 渲染期 TypeError，alpha.2 移除并由 useSessionStatus 替代、useSessions 保留，B 未用 standard-kit hooks 不抛错"
+    },
+    {
+      "id": "cotenant-mechanism",
+      "verdict": "pass",
+      "reason": "引用 dock-render-tree 说明 dock 为单一 list slot 共享一个 DrawerErrorBoundary，A 抛错卸载整棵子树连带 B chips，attach 按钮在另一 slot/boundary 下幸存"
+    },
+    {
+      "id": "experiment-reading",
+      "verdict": "pass",
+      "reason": "正确解读禁用 A 恢复 B 只证明 A 触发卸载与 B 可渲染，不证明 B 全面兼容或 A 是唯一缺陷，重装 B 无济于事，并驳回两人都用被移除 prop 的说法"
+    },
+    {
+      "id": "degradation-fix",
+      "verdict": "pass",
+      "reason": "给出经 useSessionStatus(...).pendingInteraction 读取、缺席时可选链+稳定空 map 的降级代码，静默降级理由是抛错会卸载租户共栖者，缺指示仅是外观问题"
+    },
+    {
+      "id": "verification-and-hygiene",
+      "verdict": "pass",
+      "reason": "给出免重启刷新验证两 entry 共存与 B 粘贴/移除/重粘回归，建议租户防御性解构与本地 boundary、宿主按 entry 隔离的取舍"
+    }
+  ],
+  "caps": [
+    {
+      "id": "innocent-plugin-fix",
+      "triggered": false,
+      "reason": "修复对象是插件 A 的适配器，明确不重写/重装 B，也不主张两个独立故障"
+    }
+  ]
+}
